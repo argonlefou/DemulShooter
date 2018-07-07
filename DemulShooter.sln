@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemulShooter", "DemulShooter\DemulShooter.csproj", "{20DE55D0-833D-45CA-96C8-DF3BEDB394A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ds_Diag", "Ds_Diag\Ds_Diag.csproj", "{A42BEED3-14C0-4034-ABD9-75C3D70B02A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20DE55D0-833D-45CA-96C8-DF3BEDB394A8}.Debug|x86.ActiveCfg = Release|x86
+		{20DE55D0-833D-45CA-96C8-DF3BEDB394A8}.Debug|x86.Build.0 = Release|x86
+		{20DE55D0-833D-45CA-96C8-DF3BEDB394A8}.Release|x86.ActiveCfg = Release|x86
+		{20DE55D0-833D-45CA-96C8-DF3BEDB394A8}.Release|x86.Build.0 = Release|x86
+		{A42BEED3-14C0-4034-ABD9-75C3D70B02A2}.Debug|x86.ActiveCfg = Release|x86
+		{A42BEED3-14C0-4034-ABD9-75C3D70B02A2}.Debug|x86.Build.0 = Release|x86
+		{A42BEED3-14C0-4034-ABD9-75C3D70B02A2}.Release|x86.ActiveCfg = Release|x86
+		{A42BEED3-14C0-4034-ABD9-75C3D70B02A2}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

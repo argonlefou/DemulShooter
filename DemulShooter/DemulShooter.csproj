@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{20DE55D0-833D-45CA-96C8-DF3BEDB394A8}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DemulShooter</RootNamespace>
+    <AssemblyName>DemulShooter</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>1463438149_Hunting_2.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ControllerDevice.cs" />
+    <Compile Include="Game_ArtIsDead.cs" />
+    <Compile Include="Game_BE.cs" />
+    <Compile Include="Game_Bhapc.cs" />
+    <Compile Include="Game_DemulAtomiswave.cs" />
+    <Compile Include="Game_BE_OLD.cs" />
+    <Compile Include="Game_Dolphin5.cs" />
+    <Compile Include="Game_Dolphin4.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="Game_GvrAliens.cs" />
+    <Compile Include="Game_GvrAliensHasp.cs" />
+    <Compile Include="Game_DemulHikaru.cs" />
+    <Compile Include="Game_GvrFarCry.cs" />
+    <Compile Include="Game_GvrFearLand.cs" />
+    <Compile Include="Game_HeavyFire3Pc.cs" />
+    <Compile Include="Game_HeavyFire3Pc_ScpVbus.cs" />
+    <Compile Include="Game_HeavyFire4Pc.cs" />
+    <Compile Include="Game_Hod2pc.cs" />
+    <Compile Include="Game_Hod3pc.cs" />
+    <Compile Include="Game_Reload.cs" />
+    <Compile Include="Game_RwLGI3D.cs" />
+    <Compile Include="Game_RwOpGhost.cs" />
+    <Compile Include="Game_RwSGGv2.cs" />
+    <Compile Include="Game_RwLGI.cs" />
+    <Compile Include="Game_RwSDR.cs" />
+    <Compile Include="Game_RwSGGv1.cs" />
+    <Compile Include="Game_TtxEadp.cs" />
+    <Compile Include="Game_TtxGaiaAttack4.cs" />
+    <Compile Include="Game_TtxGundam.cs" />
+    <Compile Include="Game_TtxGungun2.cs" />
+    <Compile Include="Game_TtxHauntedMuseum2.cs" />
+    <Compile Include="Game_Wartran.cs" />
+    <Compile Include="Memory.cs" />
+    <Compile Include="DataStructures.cs" />
+    <Compile Include="Game_Demul.cs" />
+    <Compile Include="Enumerations.cs" />
+    <Compile Include="Game_Model2.cs" />
+    <Compile Include="MouseInfo.cs" />
+    <Compile Include="Game_DemulJvs.cs" />
+    <Compile Include="Game_DemulNaomi.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Game_TtxSha.cs" />
+    <Compile Include="Game_TtxHauntedMuseum.cs" />
+    <Compile Include="Uc_GUI_PlayerDevice.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Uc_GUI_PlayerDevice.Designer.cs">
+      <DependentUpon>Uc_GUI_PlayerDevice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WndParam.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WndParam.Designer.cs">
+      <DependentUpon>WndParam.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Win32.cs" />
+    <Compile Include="XInput.cs" />
+    <Compile Include="XOutput.cs" />
+    <EmbeddedResource Include="Uc_GUI_PlayerDevice.resx">
+      <DependentUpon>Uc_GUI_PlayerDevice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WndParam.resx">
+      <DependentUpon>WndParam.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="Resources\WiimoteNew_v4.ini" />
+    <None Include="Resources\WiimoteNew_v5.ini" />
+    <None Include="Resources\x360kb_hfirea1p.ini" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="1463438149_Hunting_2.ico" />
+    <None Include="Resources\xinput1_3.dll" />
+    <None Include="Resources\dinput8.dll" />
+    <None Include="Resources\x360kb_hfirea2p.ini" />
+    <None Include="bin\Release\m2emulator\artwork\crosshairs\sharps2.png" />
+    <None Include="bin\Release\m2emulator\artwork\crosshairs\sharps1.png" />
+    <None Include="Resources\s70.png" />
+    <None Include="Resources\Crosshair.cur" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
