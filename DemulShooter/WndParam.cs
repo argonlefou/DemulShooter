@@ -913,10 +913,10 @@ namespace DemulShooter
                 
                 _Game.SendInput(mouse, player);
             }       
-            // GUI
+            // GUI only -> show crosshair when shoot
             else
             {
-                if (Chk_DspCorrectedCrosshair.Checked == true)
+                if (Chk_DspCorrectedCrosshair.Checked == true && _TrayIcon.Visible == false)
                 {
                     int X = ScreenScale(mouse.pTarget.X, INPUT_ABSOLUTE_MIN, INPUT_ABSOLUTE_MAX, 0, Screen.PrimaryScreen.Bounds.Width);
                     int Y = ScreenScale(mouse.pTarget.Y, INPUT_ABSOLUTE_MIN, INPUT_ABSOLUTE_MAX, 0, Screen.PrimaryScreen.Bounds.Height);

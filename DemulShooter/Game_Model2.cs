@@ -169,17 +169,28 @@ namespace DemulShooter
                         GameResY = (double)BitConverter.ToInt32(bufferY, 0);
                         WriteLog("Model2 render resolution = " + GameResX.ToString() + "x" + GameResY.ToString());
 
-                        double RatioX = GameResX / TotalResX;
-                        double RatioY = GameResY / TotalResY;
+                        if (GameResX != 0 && GameResY != 0)
+                        {
 
-                        Mouse.pTarget.X = Convert.ToInt16(Math.Round(RatioX * Mouse.pTarget.X));
-                        Mouse.pTarget.Y = Convert.ToInt16(Math.Round(RatioY * Mouse.pTarget.Y)); 
+                            double RatioX = GameResX / TotalResX;
+                            double RatioY = GameResY / TotalResY;
+
+                            Mouse.pTarget.X = Convert.ToInt16(Math.Round(RatioX * Mouse.pTarget.X));
+                            Mouse.pTarget.Y = Convert.ToInt16(Math.Round(RatioY * Mouse.pTarget.Y));
+                        }
+                        //Game rendering resolution autodetection failure ?
+                        else
+                        {
+                            WriteLog("Automatic resolution detection failed, using old game scaling method");
+                            GameResX = TotalResX;
+                            GameResY = TotalResY;
+                        }
                     }
                     // Some user have issue with the emulator and it's window size
                     // In that case, reverting back to OLD method
                     else
                     {
-                        WriteLog("Automatic resolution detection failed, using old game scaling method");
+                        WriteLog("Model2 main window size is null, using old game scaling method");
                         GameResX = TotalResX;
                         GameResY = TotalResY;
                     }

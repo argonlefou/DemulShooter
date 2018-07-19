@@ -45,8 +45,8 @@ namespace DemulShooter
                     {
                         Console.WriteLine("");
                         Console.WriteLine("");
-                        Console.WriteLine("DemulShooter v8.0");
-                        Console.WriteLine("Build date : July, 7th 2018");
+                        Console.WriteLine("DemulShooter v8.1");
+                        Console.WriteLine("Build date : July, 19th 2018");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");

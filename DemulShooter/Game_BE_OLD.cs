@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace DemulShooter
 {
@@ -36,7 +37,9 @@ namespace DemulShooter
         private float _P2_X_Value;
         private float _P2_Y_Value;
        
-        
+        /*** False RightAnalogValue to force the game to refresh data ***/
+        private short _UnusedRightAnalogX = -32000;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -58,8 +61,9 @@ namespace DemulShooter
             _tProcess.Start();
 
             /* Creating X360 controller */
-            //_XOutputManager = new XOutput();
-            //InstallX360Gamepad(2);
+            _XOutputManager = new XOutput();
+            InstallX360Gamepad(2);
+            ApplyKeyboardHook();
 
             WriteLog("Waiting for Windows Game " + _RomName + " game to hook.....");
         }
@@ -305,6 +309,7 @@ namespace DemulShooter
 
         private void SetHack_V2()
         {
+            
             SetHack_Data();
             SetHack_P1X();
             SetHack_P1X_2();
@@ -530,6 +535,11 @@ namespace DemulShooter
 
                 //changing the Right Axis Gamepad Value so that the game can update positioning
                 //If the game does not detect a right axis change, no update is done !!
+                _UnusedRightAnalogX = (short)(- _UnusedRightAnalogX);
+                _XOutputManager.SetRAxis_X(_Player2_X360_Gamepad_Port, _UnusedRightAnalogX);
+
+
+                /*
                 //Value if [-1; 1] float so we convert to [0,32000] int for Xoutput format
                 WriteLog("Float P2 X -----> " + _P2_X_Value.ToString());
                 float fx = (_P2_X_Value + 1.0f) * 16000.0f;
@@ -540,7 +550,7 @@ namespace DemulShooter
                 WriteLog("           -----> " + ix.ToString());
                 buffer = BitConverter.GetBytes(ix);
                 //WriteBytes(_P2_X_Address+0x30, buffer);
-              
+                */
                 //_XOutputManager.SetRAxis_X(_Player2_X360_Gamepad_Port,ix);
                 //_XOutputManager.SetRAxis_Y(_Player2_X360_Gamepad_Port, iy);
 
@@ -573,6 +583,116 @@ namespace DemulShooter
                     _XOutputManager.SetButton_B(_Player2_X360_Gamepad_Port, false);   
                 }
             }
+        }
+
+        // Keyboard callback used for pedal-mode
+        protected override IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            if (nCode >= 0)
+            {
+                Win32.KBDLLHOOKSTRUCT s = (Win32.KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(Win32.KBDLLHOOKSTRUCT));
+                if ((UInt32)wParam == Win32.WM_KEYDOWN)
+                {
+                    if (s.scanCode == 0x48 /* Up */)
+                    {
+                        _XOutputManager.SetRAxis_Y(_Player2_X360_Gamepad_Port, 32000);
+                    }
+                    else if (s.scanCode == 0x50 /* Down */)
+                    {
+                        _XOutputManager.SetRAxis_Y(_Player2_X360_Gamepad_Port, -32000);
+                    }
+                    else if (s.scanCode == 0x4B /* Left */)
+                    {
+                        _XOutputManager.SetRAxis_X(_Player2_X360_Gamepad_Port, -32000);
+                    }
+                    else if (s.scanCode == 0x4D /* Right */)
+                    {
+                        byte[] buffer = BitConverter.GetBytes(0.7f);
+                        WriteBytes(_P2_X_Address, buffer);
+                        
+                        _XOutputManager.SetRAxis_X(_Player2_X360_Gamepad_Port, 32000);
+                    }
+
+                    else if (s.scanCode == 0x10 /* A */)
+                    {
+                        _XOutputManager.SetButton_A(_Player2_X360_Gamepad_Port, true);
+                    }
+                    else if (s.scanCode == 0x30 /* B */)
+                    {
+                        _XOutputManager.SetButton_B(_Player2_X360_Gamepad_Port, true);
+                    }
+                    else if (s.scanCode == 0x2D /* X */)
+                    {
+                        _XOutputManager.SetButton_X(_Player2_X360_Gamepad_Port, true);
+                    }
+                    else if (s.scanCode == 0x15 /* Y */)
+                    {
+                        _XOutputManager.SetButton_Y(_Player2_X360_Gamepad_Port, true);
+                    }
+                    else if (s.scanCode == 0x22 /* G */)
+                    {
+                        _XOutputManager.SetButton_Guide(_Player2_X360_Gamepad_Port, true);
+                    }
+                    else if (s.scanCode == 0x0E /* Backspace */)
+                    {
+                        _XOutputManager.SetButton_Back(_Player2_X360_Gamepad_Port, true);
+                    }
+                    else if (s.scanCode == 0x1C /* ENTER */)
+                    {
+                        _XOutputManager.SetButton_Start(_Player2_X360_Gamepad_Port, true);
+                    }
+                    
+                }
+                else if ((UInt32)wParam == Win32.WM_KEYUP)
+                {
+                    if (s.scanCode == 0x48 /* Up */)
+                    {
+                        _XOutputManager.SetRAxis_Y(_Player2_X360_Gamepad_Port, 0);
+                    }
+                    else if (s.scanCode == 0x50 /* Down */)
+                    {
+                        _XOutputManager.SetRAxis_Y(_Player2_X360_Gamepad_Port, 0);
+                    }
+                    else if (s.scanCode == 0x4B /* Left */)
+                    {
+                        _XOutputManager.SetRAxis_X(_Player2_X360_Gamepad_Port, 0);
+                    }
+                    else if (s.scanCode == 0x4D /* Right */)
+                    {
+                        _XOutputManager.SetRAxis_X(_Player2_X360_Gamepad_Port, 0);
+                    }
+
+                    else if (s.scanCode == 0x10 /* A */)
+                    {
+                        _XOutputManager.SetButton_A(_Player2_X360_Gamepad_Port, false);
+                    }
+                    else if (s.scanCode == 0x30 /* B */)
+                    {
+                        _XOutputManager.SetButton_B(_Player2_X360_Gamepad_Port, false);
+                    }
+                    else if (s.scanCode == 0x2D /* X */)
+                    {
+                        _XOutputManager.SetButton_X(_Player2_X360_Gamepad_Port, false);
+                    }
+                    else if (s.scanCode == 0x15 /* Y */)
+                    {
+                        _XOutputManager.SetButton_Y(_Player2_X360_Gamepad_Port, false);
+                    }
+                    else if (s.scanCode == 0x22 /* G */)
+                    {
+                        _XOutputManager.SetButton_Guide(_Player2_X360_Gamepad_Port, false);
+                    }
+                    else if (s.scanCode == 0x0E /* Backspace */)
+                    {
+                        _XOutputManager.SetButton_Back(_Player2_X360_Gamepad_Port, false);
+                    }
+                    else if (s.scanCode == 0x1C /* ENTER */)
+                    {
+                        _XOutputManager.SetButton_Start(_Player2_X360_Gamepad_Port, false);
+                    }
+                }
+            }
+            return Win32.CallNextHookEx(_KeyboardHookID, nCode, wParam, lParam);
         }
 
         #endregion
