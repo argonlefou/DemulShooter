@@ -12,7 +12,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-git_update.sh
+*.sh
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
