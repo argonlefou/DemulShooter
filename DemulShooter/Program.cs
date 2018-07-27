@@ -45,15 +45,15 @@ namespace DemulShooter
                     {
                         Console.WriteLine("");
                         Console.WriteLine("");
-                        Console.WriteLine("DemulShooter v8.1");
-                        Console.WriteLine("Build date : July, 19th 2018");
+                        Console.WriteLine("DemulShooter v8.2");
+                        Console.WriteLine("Build date : July, 27th 2018");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [target] :");
                         Console.WriteLine("demul057\tDemul v0.57");
                         Console.WriteLine("demul058\tDemul v0.582");
-                        Console.WriteLine("demul07a\tDemul v0.7a 111117");
+                        Console.WriteLine("demul07a\tDemul v0.7a 180428");
                         Console.WriteLine("dolphin4\tDolphin v4.0.2");
                         Console.WriteLine("dolphin5\tDolphin v5.0");
                         Console.WriteLine("globalvr\tGlobal VR");

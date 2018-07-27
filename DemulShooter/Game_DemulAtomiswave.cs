@@ -53,7 +53,7 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("83 F9 41");
             //je @
             CaveMemory.Write_StrBytes("0F 84 08 00 00 00");
-            //mov [ecx*2+padDemul.dll+2FE50],ax
+            //mov [ecx*2+padDemul.dll+OFFSET],ax
             CaveMemory.Write_StrBytes("66 89 04 4D");
             Buffer.AddRange(BitConverter.GetBytes((int)_PadDemul_ModuleBaseAddress + _Paddemul_PtrButtons_Offset));
             CaveMemory.Write_Bytes(Buffer.ToArray());
@@ -65,7 +65,7 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("83 F8 00");
             //je @
             CaveMemory.Write_StrBytes("0F 84 0A 00 00 00");
-            //or dword ptr [ecx*2+padDemul.dll+2FE50],08
+            //or dword ptr [ecx*2+padDemul.dll+OFFSET],08
             CaveMemory.Write_StrBytes("83 0C 4D");
             Buffer.Clear();
             Buffer.AddRange(BitConverter.GetBytes((int)_PadDemul_ModuleBaseAddress + _Paddemul_PtrButtons_Offset));
@@ -73,7 +73,7 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("08");
             //jmp @
             CaveMemory.Write_StrBytes("EB E5");
-            //and dword ptr [ecx*2+padDemul.dll+2FE50],-09 { 247 }
+            //and dword ptr [ecx*2+padDemul.dll+OFFSET],-09 { 247 }
             CaveMemory.Write_StrBytes("83 24 4D");
             Buffer.Clear();
             Buffer.AddRange(BitConverter.GetBytes((int)_PadDemul_ModuleBaseAddress + _Paddemul_PtrButtons_Offset));
