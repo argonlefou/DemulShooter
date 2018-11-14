@@ -65,6 +65,7 @@ namespace DemulShooter
         private const string SHA_CONF_FILEPATH = @"\bemani_config\sha_v01.cfg";
         private const string LOG_FILENAME = "debug.txt";
         private bool _VerboseEnable = false;
+        private bool _RunGuiMode = false;
         private string _Rom = String.Empty;
         private string _Target = String.Empty;
         private int _Ddinumber = 3;
@@ -114,11 +115,15 @@ namespace DemulShooter
                 _TrayIcon = new NotifyIcon();
                 _TrayIcon.Text = "DemulShooter";
                 _TrayIcon.Icon = DemulShooter.Properties.Resources.DemulShooter_Icon;
-                _TrayIconMenu = new ContextMenu();                
+                _TrayIconMenu = new ContextMenu();
                 _TrayIconMenu.MenuItems.Add("Exit", OnExit);
                 _TrayIcon.ContextMenu = _TrayIconMenu;
                 _Has_ExplorerExe = true;
-            }
+            }/*
+            else
+            {
+                MessageBox.Show("No system tray icon created.\n_Has_ExplorerExe=" + _Has_ExplorerExe.ToString(), "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }*/
 
             // Retrieve all rawinput devices
             _MiceList = new List<MouseInfo>();
@@ -471,6 +476,17 @@ namespace DemulShooter
                                 }; break;
                         }
                     }
+                    // Chihiro games
+                    else if (_Target.Equals("chihiro"))
+                    {
+                        switch (_Rom.ToLower())
+                        {                            
+                            case "vcop3":
+                                {
+                                    _Game = new Game_CxbxVcop3(_Rom.ToLower(), _VerboseEnable);
+                                }; break;
+                        }
+                    }
 
                     //TESTING
                     else if (_Target.Equals("wip"))
@@ -488,6 +504,10 @@ namespace DemulShooter
                             case "bhapc":
                                 {
                                     _Game = new Game_Bhapc(_Rom.ToLower(), _VerboseEnable);
+                                }; break;
+                            case "vcop3":
+                                {
+                                    _Game = new Game_CxbxVcop3(_Rom.ToLower(), _VerboseEnable);
                                 }; break;
                         }
                     }
@@ -510,7 +530,7 @@ namespace DemulShooter
                         else
                         {
                             _Game = new Game_DemulAtomiswave(_Rom.ToLower(), _DemulVersion, _VerboseEnable, _DisableWindow, _WidescreenHack);
-                        }                            
+                        }
                     }
                 }
                 else
@@ -523,6 +543,7 @@ namespace DemulShooter
             else
             {
                 SetVisibility(true);
+                _RunGuiMode = true;
                 Cbo_PageSettings.SelectedIndex = 0;
                 Read_Sha_Conf();
                 Bgw_XInput.RunWorkerAsync();
@@ -914,9 +935,9 @@ namespace DemulShooter
                 _Game.SendInput(mouse, player);
             }       
             // GUI only -> show crosshair when shoot
-            else
+            else if (_RunGuiMode == true)
             {
-                if (Chk_DspCorrectedCrosshair.Checked == true && _TrayIcon.Visible == false)
+                if (Chk_DspCorrectedCrosshair.Checked == true)
                 {
                     int X = ScreenScale(mouse.pTarget.X, INPUT_ABSOLUTE_MIN, INPUT_ABSOLUTE_MAX, 0, Screen.PrimaryScreen.Bounds.Width);
                     int Y = ScreenScale(mouse.pTarget.Y, INPUT_ABSOLUTE_MIN, INPUT_ABSOLUTE_MAX, 0, Screen.PrimaryScreen.Bounds.Height);
@@ -924,7 +945,7 @@ namespace DemulShooter
                     if (_Act_Labs_Offset_Enable == 1)
                     {
                         X += _ControllerDevices[player - 1].Act_Labs_OffsetX;
-                        Y += _ControllerDevices[player - 1].Act_Labs_OffsetY; 
+                        Y += _ControllerDevices[player - 1].Act_Labs_OffsetY;
                     }
 
                     if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_DOWN)
@@ -940,7 +961,7 @@ namespace DemulShooter
                         // Draw Crosshair
                         IntPtr desktopPtr = Win32.GetDC(IntPtr.Zero);
                         Graphics g = Graphics.FromHdc(desktopPtr);
-                        SolidBrush b = new SolidBrush(CrosshairColor); 
+                        SolidBrush b = new SolidBrush(CrosshairColor);
                         Pen p = new Pen(b, 2);
                         g.DrawEllipse(p, X - 20, Y - 20, 40, 40);
                         g.DrawEllipse(p, X - 2, Y - 2, 4, 4);
@@ -950,7 +971,7 @@ namespace DemulShooter
 
                         CrosshairAimTimer.Interval = 300;
                         CrosshairAimTimer.Start();
-                    }                                   
+                    }
                 }
             }
         }

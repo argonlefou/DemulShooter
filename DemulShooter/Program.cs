@@ -24,14 +24,15 @@ namespace DemulShooter
             bool isVerbose = false;
             string _target = string.Empty;
 
-            string[] _Targets = new string[] { "demul057", "demul058", "demul07a", "dolphin4", "dolphin5", "globalvr", "model2", "model2m", "ringwide", "ttx", "windows", "wip" };
+            string[] _Targets = new string[] { "chihiro", "demul057", "demul058", "demul07a", "dolphin4", "dolphin5", "globalvr", "model2", "model2m", "ringwide", "ttx", "windows", "wip" };
             string[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
             string[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
             string[] _WindowsRoms = new string[] { "artdead", "hfa", "hfa2p", "hfa_s", "hfa2p_s", "hfss", "hfss2p", "hfss_s", "hfss2p_s", "hod2pc", "hod3pc", "reload" };
             string[] _TTXRoms = new string[] { "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
             string[] _GlobalVrRoms = new string[] { "aliens", "alienshasp", "farcry", "fearland" };
             string[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr" };
-            string[] _WipRoms = new string[] { "bestate", "wartran", "bhapc" };
+            string[] _ChihiroRoms = new string[] { "vcop3" };
+            string[] _WipRoms = new string[] { "bestate", "wartran", "bhapc"};
         
             if (args.Length > 0)
             {
@@ -45,12 +46,13 @@ namespace DemulShooter
                     {
                         Console.WriteLine("");
                         Console.WriteLine("");
-                        Console.WriteLine("DemulShooter v8.2");
-                        Console.WriteLine("Build date : July, 27th 2018");
+                        Console.WriteLine("DemulShooter v8.3b");
+                        Console.WriteLine("Build date : November, 14th 2018");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [target] :");
+                        Console.WriteLine("chihiro\tCxbx-Reloaded 001100eaf (30 Oct 2018)");
                         Console.WriteLine("demul057\tDemul v0.57");
                         Console.WriteLine("demul058\tDemul v0.582");
                         Console.WriteLine("demul07a\tDemul v0.7a 180428");
@@ -64,6 +66,9 @@ namespace DemulShooter
                         Console.WriteLine("windows\t\tWindows games");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [rom] :");
+                        Console.WriteLine("Chihiro roms :");
+                        Console.WriteLine(" vcop3\t\tVirtua Cop 3");
+                        Console.WriteLine("");
                         Console.WriteLine("Demul roms :");
                         Console.WriteLine(" braveff\tBrave Fire Fighters");
                         Console.WriteLine(" claychal\tSega Clay Challenge");
@@ -173,7 +178,17 @@ namespace DemulShooter
                     if (args[i].ToLower().StartsWith("-rom"))
                     {
                         string rom = (args[i].ToLower().Split('='))[1].Trim();
-                        if (_target.StartsWith("demul"))
+                        if (_target.StartsWith("chihiro"))
+                        {
+                            if (!CheckParameter(rom, _ChihiroRoms))
+                            {
+                                Console.WriteLine("Unsupported Chihiro rom parameter : \"" + rom + "\". See help for supported roms list");
+                                //Dangerous : send ENTER to active window
+                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
+                                Environment.Exit(0);
+                            }
+                        }
+                        else if (_target.StartsWith("demul"))
                         {
                             if (!CheckParameter(rom, _DemulRoms))
                             {

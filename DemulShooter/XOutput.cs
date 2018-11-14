@@ -444,7 +444,7 @@ namespace DemulShooter
             {
                 _Gamepads[UserIndex - 1].Buffer[6] = (byte)(Value & 0xFF);
                 _Gamepads[UserIndex - 1].Buffer[7] = (byte)((Value >> 8) & 0xFF);
-                return XOutputSetState(UserIndex, _Gamepads[UserIndex - 1]);
+                return true;
             }
             else
                 return false;
@@ -494,6 +494,11 @@ namespace DemulShooter
             }
             else
                 return false;
+        }
+
+        public bool UpdateXoutputState(int UserIndex)
+        {
+            return XOutputSetState(UserIndex, _Gamepads[UserIndex - 1]);
         }
 
         private int GetVXbusPath(ref String Path)

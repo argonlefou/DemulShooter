@@ -77,7 +77,7 @@ namespace DemulShooter
 
         #region Screen
 
-        public void GetScreenResolution()
+        public virtual void GetScreenResolution()
         {
             _screenWidth = Screen.PrimaryScreen.Bounds.Width;
             _screenHeight = Screen.PrimaryScreen.Bounds.Height;

@@ -10,7 +10,7 @@ namespace DemulShooter
 {
     class Game_TtxGundam : Game
     {
-        private const string FOLDER_GAMEDATA = @"MemoryData\ttx";        
+        private const string FOLDER_GAMEDATA = @"MemoryData\ttx";
 
         /*** MEMORY ADDRESSES **/
         protected int _P1_X_Offset;
@@ -39,19 +39,19 @@ namespace DemulShooter
         private byte _Pedal1_Key;
         private bool _isPedal1_Pushed = false;
         private int _Pedal2_Enable;
-        private byte _Pedal2_Key;        
+        private byte _Pedal2_Key;
         private bool _isPedal2_Pushed = false;
 
         Memory _Cave_Check1, _Cave_Check2;
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxGundam(string RomName, int Pedal1_Enable, byte Pedal1_Key, int Pedal2_Enable, byte Pedal2_Key, bool Verbose) 
-            : base ()
+        public Game_TtxGundam(string RomName, int Pedal1_Enable, byte Pedal1_Key, int Pedal2_Enable, byte Pedal2_Key, bool Verbose)
+            : base()
         {
             GetScreenResolution();
-            
+
             _RomName = RomName;
             _Pedal1_Enable = Pedal1_Enable;
             _Pedal1_Key = Pedal1_Key;
@@ -115,7 +115,7 @@ namespace DemulShooter
                     Environment.Exit(0);
                 }
             }
-        }        
+        }
 
         #region File I/O
 
@@ -271,7 +271,7 @@ namespace DemulShooter
                         //Player One will have X value cut-off to [0-639] next
                         //For player 2 we first shift value to the left
                         if (Player == 2)
-                            Mouse.pTarget.X -= 640;                        
+                            Mouse.pTarget.X -= 640;
                     }
                     else if (_RomName.Equals("gsoz"))
                     {
@@ -296,13 +296,13 @@ namespace DemulShooter
                     if (Mouse.pTarget.X < 1)
                         Mouse.pTarget.X = 1;
                     if (Mouse.pTarget.X > 639)
-                    Mouse.pTarget.X = 639;
+                        Mouse.pTarget.X = 639;
                     if (Mouse.pTarget.Y < 1)
-                    Mouse.pTarget.Y = 1;
+                        Mouse.pTarget.Y = 1;
                     if (Mouse.pTarget.Y > (int)dMaxY)
-                    Mouse.pTarget.Y = (int)dMaxY;                        
-                                      
-                    return true;                    
+                        Mouse.pTarget.Y = (int)dMaxY;
+
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -326,7 +326,7 @@ namespace DemulShooter
             SetNops((int)_TargetProcess_MemoryBaseAddress, _Btn_Up_NOP_Offset);
             SetNops((int)_TargetProcess_MemoryBaseAddress, _Btn_Up_NOP_Offset2);
             SetNops((int)_TargetProcess_MemoryBaseAddress, _Btn_Reset_NOP_Offset);
-                        
+
             /***
              * If neither Pedal1 nor Pedal2 are enabled, no need for a codecave (default game).
              * Else, We need to make 2 codecave for the 2 checking procedure (X-Y min-max)
@@ -436,7 +436,7 @@ namespace DemulShooter
                 Buffer.AddRange(BitConverter.GetBytes(jumpTo));
                 Buffer.Add(0x90);
                 Win32.WriteProcessMemory((int)ProcessHandle, (int)_TargetProcess_MemoryBaseAddress + _Border_Check1_Injection_Offset, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
-         
+
                 _Cave_Check2 = new Memory(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
                 _Cave_Check2.Open();
                 _Cave_Check2.Alloc(0x800);
@@ -485,7 +485,7 @@ namespace DemulShooter
                 _Cave_Check2.Write_jng((int)_TargetProcess_MemoryBaseAddress + 0xA7B85);
                 //jmp EXIT
                 _Cave_Check2.Write_StrBytes("E9 2E 00 00 00");
-                
+
                 //player2:
                 if (_Pedal2_Enable != 0)
                     //cmp di, 00
@@ -523,7 +523,7 @@ namespace DemulShooter
                 _Cave_Check2.Write_jng((int)_TargetProcess_MemoryBaseAddress + 0xA7B85);
                 //jmp EXIT
                 _Cave_Check2.Write_jmp((int)_TargetProcess_MemoryBaseAddress + _Border_Check2_Injection_Return_Offset);
-                
+
                 WriteLog("Adding check2 CodeCave at : 0x" + _Cave_Check2.CaveAddress.ToString("X8"));
                 bytesWritten = 0;
                 jumpTo = _Cave_Check2.CaveAddress - ((int)_TargetProcess_MemoryBaseAddress + _Border_Check2_Injection_Offset) - 5;
@@ -535,7 +535,7 @@ namespace DemulShooter
 
                 ApplyKeyboardHook();
             }
-            
+
             //Initializing values
             byte[] initX = { 0x10, 0 };
             byte[] initY = { 0x10, 0 };
@@ -556,13 +556,13 @@ namespace DemulShooter
                 Win32.KBDLLHOOKSTRUCT s = (Win32.KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(Win32.KBDLLHOOKSTRUCT));
                 if ((UInt32)wParam == Win32.WM_KEYDOWN)
                 {
-                    if (s.scanCode == _Pedal1_Key && _Pedal1_Enable !=0)
+                    if (s.scanCode == _Pedal1_Key && _Pedal1_Enable != 0)
                     {
                         _isPedal1_Pushed = true;
                         WriteBytes((int)_Cave_Check1.CaveAddress + 0x21, new byte[] { 0x80, 0x02 }); //640
                         WriteBytes((int)_Cave_Check2.CaveAddress + 0x21, new byte[] { 0x80, 0x02 }); //640
                     }
-                    else if (s.scanCode == _Pedal2_Key && _Pedal2_Enable !=0)
+                    else if (s.scanCode == _Pedal2_Key && _Pedal2_Enable != 0)
                     {
                         _isPedal2_Pushed = true;
                         WriteBytes((int)_Cave_Check1.CaveAddress + 0x54, new byte[] { 0x80, 0x02 }); //640
@@ -573,23 +573,23 @@ namespace DemulShooter
                 {
                     if (s.scanCode == _Pedal1_Key && _Pedal1_Enable != 0)
                     {
-                        _isPedal1_Pushed = false;                    
+                        _isPedal1_Pushed = false;
                         WriteBytes((int)_Cave_Check1.CaveAddress + 0x21, new byte[] { 0x00, 0x00 }); //0
                         WriteBytes((int)_Cave_Check2.CaveAddress + 0x21, new byte[] { 0x00, 0x00 }); //0
                     }
                     else if (s.scanCode == _Pedal2_Key && _Pedal2_Enable != 0)
                     {
-                        _isPedal2_Pushed = false;                    
+                        _isPedal2_Pushed = false;
                         WriteBytes((int)_Cave_Check1.CaveAddress + 0x54, new byte[] { 0x00, 0x00 }); //0
                         WriteBytes((int)_Cave_Check2.CaveAddress + 0x54, new byte[] { 0x00, 0x00 }); //0
                     }
                 }
             }
             return Win32.CallNextHookEx(_KeyboardHookID, nCode, wParam, lParam);
-        }  
+        }
 
         public override void SendInput(MouseInfo mouse, int Player)
-        {         
+        {
             byte[] bufferX = { (byte)(mouse.pTarget.X & 0xFF), (byte)(mouse.pTarget.X >> 8) };
             byte[] bufferY = { (byte)(mouse.pTarget.Y & 0xFF), (byte)(mouse.pTarget.Y >> 8) };
 
@@ -602,7 +602,7 @@ namespace DemulShooter
                 //Inputs
                 if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
-                    WriteBytes((int)_TargetProcess_MemoryBaseAddress + _P1_Trigger_Offset, new byte[] { 0x01, 0x01, 0x00});                   
+                    WriteBytes((int)_TargetProcess_MemoryBaseAddress + _P1_Trigger_Offset, new byte[] { 0x01, 0x01, 0x00 });
                 }
                 else if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_UP)
                 {
@@ -633,7 +633,7 @@ namespace DemulShooter
                 }
             }
             else if (Player == 2)
-            {                           
+            {
                 //Write Axis
                 WriteBytes((int)_TargetProcess_MemoryBaseAddress + _P2_X_Offset, bufferX);
                 WriteBytes((int)_TargetProcess_MemoryBaseAddress + _P2_Y_Offset, bufferY);
@@ -649,7 +649,7 @@ namespace DemulShooter
                 }
                 if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_DOWN)
                 {
-                   WriteBytes((int)_TargetProcess_MemoryBaseAddress + _P2_WeaponChange_Offset, new byte[] { 0x01, 0x01, 0x00 });
+                    WriteBytes((int)_TargetProcess_MemoryBaseAddress + _P2_WeaponChange_Offset, new byte[] { 0x01, 0x01, 0x00 });
                 }
                 else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_UP)
                 {
