@@ -46,8 +46,8 @@ namespace DemulShooter
                     {
                         Console.WriteLine("");
                         Console.WriteLine("");
-                        Console.WriteLine("DemulShooter v8.3b");
-                        Console.WriteLine("Build date : November, 14th 2018");
+                        Console.WriteLine("DemulShooter v8.3c");
+                        Console.WriteLine("Build date : November, 21th 2018");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
@@ -143,6 +143,7 @@ namespace DemulShooter
                         Console.WriteLine(" -widescreen \tDemul Widescreen hack");
                         Console.WriteLine(" -ddinumber \tDolphin's DirectInput number for P2 device");
                         Console.WriteLine(" -noautoreload \tDisable ingame automatic reload for hod3pc");
+                        Console.WriteLine(" -noguns \tRemove guns on screen for hod3pc (like real arcade machine)");
                         Console.WriteLine(" -nocrosshair \tHide in-game crosshair (Only for \"Reload\" game from MASTIFF");
                         Console.WriteLine(" -hardffl \tAlternative gameplay for Fright Fear Land / Haunted Museum 2(see README.TXT)");
                         Console.WriteLine(" -parrotloader \tTemporary hack for parrot loader (see README.TXT)");

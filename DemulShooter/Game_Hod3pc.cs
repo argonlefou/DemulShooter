@@ -20,6 +20,7 @@ namespace DemulShooter
         protected int _P2_Y_Address;
         protected string _X_NOP_Offset;
         protected string _Y_NOP_Offset;
+        protected string _Arcade_Mode_Display_NOP_Offset = "0x0008FD29|2";
 
         //Keys
         protected short _P1_Trigger_DIK = 0x2D;
@@ -36,6 +37,7 @@ namespace DemulShooter
         private string P2_Next_Dir = "left";
 
         private bool _NoAutoReload = false;
+        private bool _ArcadeModeDisplay = false;
 
         //Play the "Coins" sound when adding coin
         SoundPlayer _SndPlayer;
@@ -43,13 +45,14 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Hod3pc(string RomName, bool NoAutoReload, bool Verbose) 
+        public Game_Hod3pc(string RomName, bool NoAutoReload, bool ArcadeModeDisplay, bool Verbose) 
             : base ()
         {
             GetScreenResolution();
             
             _RomName = RomName;
             _NoAutoReload = NoAutoReload;
+            _ArcadeModeDisplay = ArcadeModeDisplay;
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "hod3pc";
@@ -258,6 +261,12 @@ namespace DemulShooter
                 SetNops((int)_TargetProcess_MemoryBaseAddress, "0008DEDB|3");
                 SetNops((int)_TargetProcess_MemoryBaseAddress, "0008DF1E|3");
                 WriteLog("NoAutoReload Hack done");
+            }
+
+            //Hide guns at screen, like real arcade machine
+            if (_ArcadeModeDisplay)
+            {
+                SetNops((int)_TargetProcess_MemoryBaseAddress, _Arcade_Mode_Display_NOP_Offset);
             }
 
             //Initialise pour prise en compte des guns direct                
