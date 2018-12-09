@@ -54,8 +54,9 @@
     <Compile Include="Game_BE.cs" />
     <Compile Include="Game_Bhapc.cs" />
     <Compile Include="Game_CxBxVcop3.cs" />
-    <Compile Include="Game_DemulAtomiswave.cs" />
     <Compile Include="Game_BE_OLD.cs" />
+    <Compile Include="Game_DemulAtomiswave.cs" />
+    <Compile Include="Game_DemulManicpnc.cs" />
     <Compile Include="Game_Dolphin5.cs" />
     <Compile Include="Game_Dolphin4.cs" />
     <Compile Include="Game.cs" />

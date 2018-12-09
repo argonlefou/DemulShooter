@@ -12,20 +12,15 @@ namespace DemulShooter
         private const string FOLDER_GAMEDATA = @"MemoryData\demul";
         private const string SYSTEM_NAOMIJVS = "naomiJvs";
         private const string SYSTEM_NAOMI = "naomi";
-        private const string SYSTEM_ATOMISWAVE = "atomiswave";
         
         /*** MEMORY ADDRESSES **/
         protected int _Paddemul_Injection_Offset;
         protected int _Paddemul_Injection_Return_Offset;
         protected int _Paddemul_PtrButtons_Offset;
         protected int _Paddemul_P1_Buttons_Offset;
-        protected int _Paddemul_Aw_P1_Start_Button_Offset;
-        protected int _Paddemul_Aw_P1_Fire_Button_Offset;
         protected int _Paddemul_P1_X_Offset;
         protected int _Paddemul_P1_Y_Offset;
         protected int _Paddemul_P2_Buttons_Offset;
-        protected int _Paddemul_Aw_P2_Start_Button_Offset;
-        protected int _Paddemul_Aw_P2_Fire_Button_Offset;
         protected int _Paddemul_P2_X_Offset;
         protected int _Paddemul_P2_Y_Offset;
         protected int _P1_Ammo_Address;
@@ -77,7 +72,7 @@ namespace DemulShooter
         /// <summary>
         /// Timer event when looking for Demul Process (auto-Hook and auto-close)
         /// </summary>
-        private void tProcess_Tick(Object Sender, EventArgs e)
+        protected virtual void tProcess_Tick(Object Sender, EventArgs e)
         {
             if (!_ProcessHooked)
             {
@@ -209,16 +204,10 @@ namespace DemulShooter
                     */
 
                     //Naomi + awave => 0000 - 00FF
-                    //JVS => 0000 - 0FFF
-                    //Pokasuka exception = 0 - 640 ; 0 - 480
+                    //JVS => 0000 - 0FFF                    
                     double dMaxX = 255.0;
                     double dMaxY = 255.0;
-                    if (_RomName.Equals("pokasuka"))
-                    {
-                        dMaxX = 640.0;
-                        dMaxY = 480.0;
-                    }
-                    else if (_SystemName.Equals(SYSTEM_NAOMIJVS))                        
+                    if (_SystemName.Equals(SYSTEM_NAOMIJVS))                        
                     {
                         dMaxX = 4095.0;
                         dMaxY = 4095.0;
@@ -280,12 +269,6 @@ namespace DemulShooter
                                     case "PADDEMUL_P1_BUTTON_OFFSET":
                                         _Paddemul_P1_Buttons_Offset = int.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
                                         break;
-                                    case "PADDEMUL_AW_P1_START_BUTTON_OFFSET":
-                                        _Paddemul_Aw_P1_Start_Button_Offset = int.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
-                                        break;
-                                    case "PADDEMUL_AW_P1_FIRE_BUTTON_OFFSET":
-                                        _Paddemul_Aw_P1_Fire_Button_Offset = int.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
-                                        break;
                                     case "PADDEMUL_P1_X_OFFSET":
                                         _Paddemul_P1_X_Offset = int.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
                                         break;
@@ -294,12 +277,6 @@ namespace DemulShooter
                                         break;
                                     case "PADDEMUL_P2_BUTTON_OFFSET":
                                         _Paddemul_P2_Buttons_Offset = int.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
-                                        break;
-                                    case "PADDEMUL_AW_P2_START_BUTTON_OFFSET":
-                                        _Paddemul_Aw_P2_Start_Button_Offset = int.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
-                                        break;
-                                    case "PADDEMUL_AW_P2_FIRE_BUTTON_OFFSET":
-                                        _Paddemul_Aw_P2_Fire_Button_Offset = int.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
                                         break;
                                     case "PADDEMUL_P2_X_OFFSET":
                                         _Paddemul_P2_X_Offset = int.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);

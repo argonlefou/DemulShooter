@@ -25,7 +25,7 @@ namespace DemulShooter
             string _target = string.Empty;
 
             string[] _Targets = new string[] { "chihiro", "demul057", "demul058", "demul07a", "dolphin4", "dolphin5", "globalvr", "model2", "model2m", "ringwide", "ttx", "windows", "wip" };
-            string[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
+            string[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "manicpnc", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
             string[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
             string[] _WindowsRoms = new string[] { "artdead", "hfa", "hfa2p", "hfa_s", "hfa2p_s", "hfss", "hfss2p", "hfss_s", "hfss2p_s", "hod2pc", "hod3pc", "reload" };
             string[] _TTXRoms = new string[] { "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
@@ -46,13 +46,13 @@ namespace DemulShooter
                     {
                         Console.WriteLine("");
                         Console.WriteLine("");
-                        Console.WriteLine("DemulShooter v8.3c");
-                        Console.WriteLine("Build date : November, 21th 2018");
+                        Console.WriteLine("DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
+                        Console.WriteLine("Build date : December, 9th 2018");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [target] :");
-                        Console.WriteLine("chihiro\tCxbx-Reloaded 001100eaf (30 Oct 2018)");
+                        Console.WriteLine("chihiro\t\tCxbx-Reloaded 001100eaf (30 Oct 2018)");
                         Console.WriteLine("demul057\tDemul v0.57");
                         Console.WriteLine("demul058\tDemul v0.582");
                         Console.WriteLine("demul07a\tDemul v0.7a 180428");
@@ -78,6 +78,7 @@ namespace DemulShooter
                         Console.WriteLine(" hotd2o\t\tHouse of the Dead II");
                         Console.WriteLine(" hotd2p\t\tHouse of the Dead II (Prototype)");
                         Console.WriteLine(" lupinsho\tLupin the Third");
+                        Console.WriteLine(" manicpnc\tManic Panic Ghosts");
                         Console.WriteLine(" mok\t\tThe Maze of the Kings");
                         Console.WriteLine(" ninjaslt\tNinja Assault (World)");
                         Console.WriteLine(" ninjaslta\tNinja Assault (Asia)");

@@ -1379,7 +1379,7 @@
             this.MinimizeBox = false;
             this.Name = "WndParam";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "DemulShooter 8.3c";
+            this.Text = "DemulShooter";
             this.tabControl1.ResumeLayout(false);
             this.Tab_P1.ResumeLayout(false);
             this.Tab_P2.ResumeLayout(false);

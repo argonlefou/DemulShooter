@@ -207,17 +207,8 @@ namespace DemulShooter
         public override void  SendInput(MouseInfo mouse, int Player)
         {
             //creating X-Y Hex value buffer to write memory
-            //pokasuka is special, needs reverse order
             byte[] buffer = { (byte)(mouse.pTarget.X >> 8), (byte)(mouse.pTarget.X & 0xFF), (byte)(mouse.pTarget.Y >> 8), (byte)(mouse.pTarget.Y & 0xFF) };
-            if (_RomName.Equals("pokasuka"))
-            {
-                buffer[0] = (byte)(mouse.pTarget.X & 0xFF);
-                buffer[1] = (byte)(mouse.pTarget.X >> 8);
-                buffer[2] = (byte)(mouse.pTarget.Y & 0xFF);
-                buffer[3] = (byte)(mouse.pTarget.Y >> 8);
-            }
-
-
+            
             if (Player == 1)
             {
                 //Write Axis
@@ -226,10 +217,7 @@ namespace DemulShooter
                 //pokasuka is special, needs other values
                 if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
-                    if (_RomName.Equals("pokasuka"))
-                        WriteByte((int)_PadDemul_ModuleBaseAddress + _Paddemul_P1_Buttons_Offset, 0x01);
-                    else
-                        WriteByte((int)_PadDemul_ModuleBaseAddress + _Paddemul_P1_Buttons_Offset, 0x02);
+                    WriteByte((int)_PadDemul_ModuleBaseAddress + _Paddemul_P1_Buttons_Offset, 0x02);                        
                 }
                 else if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_UP)
                 {
@@ -237,10 +225,8 @@ namespace DemulShooter
                 }
                 if (mouse.button == Win32.RI_MOUSE_RIGHT_BUTTON_DOWN)
                 {
-                    if (_RomName.Equals("pokasuka"))
-                        WriteByte((int)_PadDemul_ModuleBaseAddress + _Paddemul_P1_Buttons_Offset, 0x02);     
                     //lupinsho reloads only when cursor get to max value ( = out of window) so we force it for Gun who don't update in realtime
-                    else if (_RomName.Equals("lupinsho"))
+                    if (_RomName.Equals("lupinsho"))
                     {
                         buffer[0] = (byte)(0);
                         buffer[1] = (byte)(0xFF);
@@ -257,17 +243,6 @@ namespace DemulShooter
                 {
                     WriteByte((int)_PadDemul_ModuleBaseAddress + _Paddemul_P1_Buttons_Offset, 0x00);
                 }
-                //Middle button used for Pokasuka too charge powershoot
-                else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_DOWN)
-                {
-                    if (_RomName.Equals("pokasuka"))
-                        WriteByte((int)_PadDemul_ModuleBaseAddress + _Paddemul_P1_Buttons_Offset, 0x02);                    
-                }
-                else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_UP)
-                {
-                    if (_RomName.Equals("pokasuka"))
-                        WriteByte((int)_PadDemul_ModuleBaseAddress + _Paddemul_P1_Buttons_Offset, 0x00);                
-                }
             }
             else if (Player == 2)
             {
@@ -277,10 +252,7 @@ namespace DemulShooter
                 //Inputs
                 if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
-                    if (_RomName.Equals("pokasuka"))
-                        WriteByte((int)_PadDemul_ModuleBaseAddress + _Paddemul_P2_Buttons_Offset, 0x01);
-                    else
-                        WriteByte((int)_PadDemul_ModuleBaseAddress + _Paddemul_P2_Buttons_Offset, 0x02);
+                    WriteByte((int)_PadDemul_ModuleBaseAddress + _Paddemul_P2_Buttons_Offset, 0x02);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_UP)
                 {
@@ -288,10 +260,8 @@ namespace DemulShooter
                 }
                 if (mouse.button == Win32.RI_MOUSE_RIGHT_BUTTON_DOWN)
                 {
-                     if (_RomName.Equals("pokasuka"))
-                        WriteByte((int)_PadDemul_ModuleBaseAddress + _Paddemul_P2_Buttons_Offset, 0x02);
                     //lupinsho reloads only when cursor get to max value ( = out of window) so we force it for Gun who don't update in realtime
-                    else if (_RomName.Equals("lupinsho"))
+                    if (_RomName.Equals("lupinsho"))
                     {
                         buffer[0] = (byte)(0);
                         buffer[1] = (byte)(0xFF);

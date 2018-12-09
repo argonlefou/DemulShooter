@@ -97,6 +97,7 @@ namespace DemulShooter
         public WndParam(bool VerboseEnable)
         {           
             InitializeComponent();
+            this.Text = "DemulShooter " + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString();
 
             _This = this;
 
@@ -520,7 +521,7 @@ namespace DemulShooter
                     else
                     {
                         if (_Rom.ToLower().Equals("confmiss") || _Rom.ToLower().Equals("deathcox") || _Rom.ToLower().StartsWith("hotd2")
-                            || _Rom.ToLower().Equals("lupinsho") || _Rom.ToLower().Equals("mok") || _Rom.ToLower().Equals("pokasuka"))
+                            || _Rom.ToLower().Equals("lupinsho") || _Rom.ToLower().Equals("mok"))
                         {
                             _Game = new Game_DemulNaomi(_Rom.ToLower(), _DemulVersion, _VerboseEnable, _DisableWindow, _WidescreenHack);
                         }
@@ -531,6 +532,10 @@ namespace DemulShooter
                         else if (_Rom.ToLower().Equals("braveff"))
                         {
                             _Game = new Game_DemulHikaru(_Rom.ToLower(), _DemulVersion, _VerboseEnable, _DisableWindow, _WidescreenHack);
+                        }
+                        else if (_Rom.ToLower().Equals("manicpnc") || _Rom.ToLower().Equals("pokasuka"))
+                        {
+                            _Game = new Game_DemulManicpnc(_Rom.ToLower(), _VerboseEnable, _DisableWindow, _WidescreenHack);
                         }
                         else
                         {
