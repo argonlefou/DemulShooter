@@ -413,14 +413,28 @@ namespace DemulShooter
                         }
                     }
 
+                    //Lindbergh
+                    else if (_Target.Equals("lindbergh"))
+                    {
+                        switch (_Rom.ToLower())
+                        {
+                            case "hotd4":
+                                {
+                                    _Game = new Game_LindberghHotd4(_Rom.ToLower(), _VerboseEnable);
+                                } break;
+                            default:
+                                break;
+                        }
+                    }
+
                     //Dolphin
                     else if (_Target.Equals("dolphin4"))
                     {
-                        _Game = new Game_Dolphin4(_Rom.ToLower(), _Ddinumber , _VerboseEnable);
+                        _Game = new Game_Dolphin4(_Rom.ToLower(), _Ddinumber, _VerboseEnable);
                     }
                     else if (_Target.Equals("dolphin5"))
                     {
-                        _Game = new Game_Dolphin5(_Rom.ToLower(), _Ddinumber , _VerboseEnable);
+                        _Game = new Game_Dolphin5(_Rom.ToLower(), _Ddinumber, _VerboseEnable);
                     }
 
                     //Windows
@@ -475,10 +489,10 @@ namespace DemulShooter
                             case "hod3pc":
                                 {
                                     _Game = new Game_Hod3pc(_Rom.ToLower(), _NoAutoReload, _NoGuns, _VerboseEnable);
-                                };break;
+                                }; break;
                             case "reload":
                                 {
-                                    _Game = new Game_Reload(_Rom.ToLower(),_HideGameCrosshair ,_VerboseEnable);
+                                    _Game = new Game_Reload(_Rom.ToLower(), _HideGameCrosshair, _VerboseEnable);
                                 }; break;
                         }
                     }
@@ -486,7 +500,7 @@ namespace DemulShooter
                     else if (_Target.Equals("chihiro"))
                     {
                         switch (_Rom.ToLower())
-                        {                            
+                        {
                             case "vcop3":
                                 {
                                     _Game = new Game_CxbxVcop3(_Rom.ToLower(), _VerboseEnable);
@@ -510,10 +524,6 @@ namespace DemulShooter
                             case "bhapc":
                                 {
                                     _Game = new Game_Bhapc(_Rom.ToLower(), _VerboseEnable);
-                                }; break;
-                            case "vcop3":
-                                {
-                                    _Game = new Game_CxbxVcop3(_Rom.ToLower(), _VerboseEnable);
                                 }; break;
                         }
                     }

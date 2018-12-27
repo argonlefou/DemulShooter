@@ -11,8 +11,6 @@ namespace DemulShooter
 {
     class Game_CxbxVcop3 : Game
     {
-        private const string FOLDER_GAMEDATA = @"MemoryData\model2";
-
         /*** MEMORY ADDRESSES **/
         protected int _P1_X_Offset = 0x3578F4;
         protected int _P1_Y_Offset = 0x3578F8;
@@ -43,8 +41,6 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "Cxbx";
-
-            ReadGameData();
 
             _tProcess = new Timer();
             _tProcess.Interval = 500;

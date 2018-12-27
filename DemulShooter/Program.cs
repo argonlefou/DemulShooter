@@ -24,12 +24,13 @@ namespace DemulShooter
             bool isVerbose = false;
             string _target = string.Empty;
 
-            string[] _Targets = new string[] { "chihiro", "demul057", "demul058", "demul07a", "dolphin4", "dolphin5", "globalvr", "model2", "model2m", "ringwide", "ttx", "windows", "wip" };
+            string[] _Targets = new string[] { "chihiro", "demul057", "demul058", "demul07a", "dolphin4", "dolphin5", "globalvr", "lindbergh", "model2", "model2m", "ringwide", "ttx", "windows", "wip" };
             string[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "manicpnc", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
             string[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
             string[] _WindowsRoms = new string[] { "artdead", "hfa", "hfa2p", "hfa_s", "hfa2p_s", "hfss", "hfss2p", "hfss_s", "hfss2p_s", "hod2pc", "hod3pc", "reload" };
             string[] _TTXRoms = new string[] { "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
             string[] _GlobalVrRoms = new string[] { "aliens", "alienshasp", "farcry", "fearland" };
+            string[] _LindberghRoms = new string[] { "hotd4" };
             string[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr" };
             string[] _ChihiroRoms = new string[] { "vcop3" };
             string[] _WipRoms = new string[] { "bestate", "wartran", "bhapc"};
@@ -47,7 +48,7 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : December, 9th 2018");
+                        Console.WriteLine("Build date : December, 25th 2018");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
@@ -62,6 +63,7 @@ namespace DemulShooter
                         Console.WriteLine("model2\t\tNebula Model2Emulator (emulator.exe) v1.1a");
                         Console.WriteLine("model2m\t\tNebula Model2Emulator (emulator_multicpu.exe) v1.1a");
                         Console.WriteLine("ringwide\tTeknoParrot Loader");
+                        Console.WriteLine("lindbergh\tTeknoParrot Loader");
                         Console.WriteLine("ttx\t\tTaito Type X");
                         Console.WriteLine("windows\t\tWindows games");
                         Console.WriteLine("");
@@ -97,6 +99,9 @@ namespace DemulShooter
                         Console.WriteLine(" alienshasp\tAliens Extermination (1st dump, x86 only)");
                         Console.WriteLine(" aliens\t\tAliens Extermination Dehasped (2nd dump, x86 and x64, no need for VM)");
                         Console.WriteLine(" fearland\tFright Fear Land");
+                        Console.WriteLine("");
+                        Console.WriteLine("Lindbergh roms :");
+                        Console.WriteLine(" hotd4\t\tHouse of The Dead 4");
                         Console.WriteLine("");
                         Console.WriteLine("Model2 roms :");
                         Console.WriteLine(" bel\t\tBehind Enemy Lines");
@@ -195,6 +200,16 @@ namespace DemulShooter
                             if (!CheckParameter(rom, _DemulRoms))
                             {
                                 Console.WriteLine("Unsupported Demul rom parameter : \"" + rom + "\". See help for supported roms list");
+                                //Dangerous : send ENTER to active window
+                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
+                                Environment.Exit(0);
+                            }
+                        }
+                        else if (_target.StartsWith("lindbergh"))
+                        {
+                            if (!CheckParameter(rom, _LindberghRoms))
+                            {
+                                Console.WriteLine("Unsupported Lindbergh rom parameter : \"" + rom + "\". See help for supported roms list");
                                 //Dangerous : send ENTER to active window
                                 System.Windows.Forms.SendKeys.SendWait("{ENTER}");
                                 Environment.Exit(0);
