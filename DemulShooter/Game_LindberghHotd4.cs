@@ -11,43 +11,33 @@ namespace DemulShooter
 {
     class Game_LindberghHotd4 : Game
     {
-        /*
-        private const string P1_X_NOP_OFFSET_1 = "0x07772EDB|3";
-        private const string P1_X_NOP_OFFSET_2 = "0x077E9601|3";
-        private const string P1_Y_NOP_OFFSET_1 = "0x07772EE3|3";
-        private const string P1_Y_NOP_OFFSET_2 = "0x077E9604|3";
-        private const string P1_OUT_NOP_OFFSET_1 = "0x07772B6C|3";
-        private const string P1_OUT_NOP_OFFSET_2 = "0x07772F00|7";
-        private const string P1_OUT_NOP_OFFSET_3 = "0x077E960A|3";
-        private const string P1_TRIGGER_NOP_OFFSET_1 = "0x07772B69|3";
-        private const string P1_TRIGGER_NOP_OFFSET_2 = "0x07772F31|7";
-        private const string P1_TRIGGER_NOP_OFFSET_3 = "0x077E9607|3";
-        private const string P1_BTN_NOP_OFFSET_1 = "0x07772B6F|3";
-        private const string P1_BTN_NOP_OFFSET_2 = "0x07772F4B|7";
-        private const string P1_BTN_NOP_OFFSET_3 = "0x077E960D|3";*/
-        private const string P1_X_NOP_ADDRESS_1 = "0x08152EDB|3";
-        private const string P1_X_NOP_ADDRESS_2 = "0x081C9601|3";
-        private const string P1_Y_NOP_ADDRESS_1 = "0x08152EE3|3";
-        private const string P1_Y_NOP_ADDRESS_2 = "0x081C9604|3";
-        private const string P1_OUT_NOP_ADDRESS_1 = "0x08152B6C|3";
-        private const string P1_OUT_NOP_ADDRESS_2 = "0x08152F00|7";
-        private const string P1_OUT_NOP_ADDRESS_3 = "0x081C960A|3";
-        private const string P1_TRIGGER_NOP_ADDRESS_1 = "0x08152B69|3";
-        private const string P1_TRIGGER_NOP_ADDRESS_2 = "0x08152F31|7";
-        private const string P1_TRIGGER_NOP_ADDRESS_3 = "0x081C9607|3";
-        private const string P1_BTN_NOP_ADDRESS_1 = "0x08152B6F|3";
-        private const string P1_BTN_NOP_ADDRESS_2 = "0x08152F4B|7";
-        private const string P1_BTN_NOP_ADDRESS_3 = "0x081C960D|3";
+        private const string P1_X_INIT_NOP_ADDRESS          = "0x081C9601|3";
+        private const string P1_Y_INIT_NOP_ADDRESS          = "0x081C9604|3";
+        private const string P1_TRIGGER_INIT_NOP_ADDRESS    = "0x081C9607|3";        
+        private const string P1_RELOAD_INIT_NOP_ADDRESS     = "0x081C960A|3";
+        private const string P1_WEAPONBTN_INIT_NOP_ADDRESS  = "0x081C960D|3";
 
+        // Pointer address used to find the INPUT_SET struct containing both players data in game
         private const int BASE_PLAYER_DATA_PTR_OFFSET = 0x0013BF8C;
-
+        // INPUT_SET direct address
         private int _Base_Player_Data_Address = 0;
-        private const int P1_X_OFFSET = 0x04;
-        private const int P1_Y_OFFSET = 0x05;
-        private const int P1_OUT_OFFSET = 0x0C;
+        // INPUT_SET offsets to find data
+        private const int P1_X_OFFSET       = 0x04;
+        private const int P1_Y_OFFSET       = 0x05;
         private const int P1_TRIGGER_OFFSET = 0x08;
-        private const int P1_BTN_OFFSET = 0x10;
-        
+        private const int P1_RELOAD_OFFSET  = 0x0C;        
+        private const int P1_WPNBTN_OFFSET  = 0x10;
+        //+0x14 => ? 
+        //+0x18 => ?
+        //+0x1C => ?
+        //                P1_START          = 0x20; 
+        private const int P2_X_OFFSET       = 0x28;
+        private const int P2_Y_OFFSET       = 0x29;
+        private const int P2_TRIGGER_OFFSET = 0x2C;
+        private const int P2_RELOAD_OFFSET  = 0x30;
+        private const int P2_WPNBTN_OFFSET  = 0x34;
+        //                P2_START          = 0x44;
+                
         /// <summary>
         /// Constructor
         /// </summary>
@@ -106,12 +96,6 @@ namespace DemulShooter
                                 WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
 
                                 SetHack();
-                                /*byte[] b = new byte[3];
-                                b = ReadBytes((int)_TargetProcess_MemoryBaseAddress + Test_OFfset, 3);
-                                for (int i = 0; i < 3; i++)
-                                {
-                                    WriteLog(b[0].ToString("X2") + " " + b[1].ToString("X2") + " " + b[2].ToString("X2"));
-                                }*/
                             }
                         }
                     }
@@ -183,24 +167,56 @@ namespace DemulShooter
         #region MemoryHack
 
         private void SetHack()
-        {            
-            SetNops(0, P1_X_NOP_ADDRESS_1);
-            SetNops(0, P1_X_NOP_ADDRESS_2);
-            SetNops(0, P1_Y_NOP_ADDRESS_1);
-            SetNops(0, P1_Y_NOP_ADDRESS_2);
-            SetNops(0, P1_OUT_NOP_ADDRESS_1);
-            SetNops(0, P1_OUT_NOP_ADDRESS_2);
-            SetNops(0, P1_OUT_NOP_ADDRESS_3);
-            SetNops(0, P1_TRIGGER_NOP_ADDRESS_1);
-            SetNops(0, P1_TRIGGER_NOP_ADDRESS_2);
-            SetNops(0, P1_TRIGGER_NOP_ADDRESS_3);
-            SetNops(0, P1_BTN_NOP_ADDRESS_1);
-            SetNops(0, P1_BTN_NOP_ADDRESS_2);
-            SetNops(0, P1_BTN_NOP_ADDRESS_3);
+        {
+            SetHack_GunInit();
+            SetHack_GunMainProc();
+            SetHackEnableP2();
+            
             WriteLog("Memory Hack complete !");
             WriteLog("-");
         }
 
+        // CgunMgr::Init() => 0x081C95F4 ~ 0x081C9619
+        // Init Axis and buttons values to 0
+        // Not called that often (maybe after START or CONTINUE or new level), maybe not necessary to block them
+        private void SetHack_GunInit()
+        {
+            SetNops(0, P1_X_INIT_NOP_ADDRESS);            
+            SetNops(0, P1_Y_INIT_NOP_ADDRESS);
+            SetNops(0, P1_TRIGGER_INIT_NOP_ADDRESS);
+            SetNops(0, P1_RELOAD_INIT_NOP_ADDRESS);
+            SetNops(0, P1_WEAPONBTN_INIT_NOP_ADDRESS);
+        }
+
+        // CGunMgr::MainProc() => 0x08152B4C ~~ 0x08153053
+        // Called in a loop by CGunMgr::Main() [0x08152844 ~~ 0x08152B3C]
+        // Noping Axis and Buttons instructions after game start causes crash, so hacks are a little more specific
+        private void SetHack_GunMainProc()
+        {
+            // At the beginning, Buttons are all set to 0 
+            // We are replace the offset byte of Trigger, Reload and Grenade 
+            // with START button offset: mov [ebp+0x08], edi => mov [ebp+0x20], edi ----> (89 7D 08 => 89 7D 20) 
+            WriteByte(0x08152B6B, 0x20);
+            WriteByte(0x08152B6E, 0x20);
+            WriteByte(0x08152B71, 0x20);
+
+            // The procedures sets Axis values after reading JVS data
+            // Replacing a conditional Jump by a single Jump will force skipping Axis/Reload update (74 18 => EB 10)
+            WriteBytes(0x08152ED4, new byte[] {0xEB, 0x10});
+        
+            // The procedures uses masks to test JVS bits
+            // Again, replacing conditionnal Jumps by single Jumps will skip updates for Trigger/Grenade (74 06 => EB 06)
+            WriteByte(0x08152F2F, 0xEB);
+            WriteByte(0x08152F49, 0xEB);
+        }
+
+        // amCreditIsEnough() => 0x0831D800 ~~ 0x0831D895
+        // Even though Freeplay is forced by TeknoParrot, this procedure always find "NO CREDITS" for P2
+        // Replacing conditionnal Jump by single Jump force OK (for both players)
+        private void SetHackEnableP2()
+        {
+            WriteByte(0x831d827, 0xEB);
+        }
 
         public override void SendInput(MouseInfo mouse, int Player)
         {
@@ -220,24 +236,51 @@ namespace DemulShooter
                 }
                 else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_DOWN)
                 {
-                    WriteByte(_Base_Player_Data_Address + P1_BTN_OFFSET, 0x01);
+                    WriteByte(_Base_Player_Data_Address + P1_WPNBTN_OFFSET, 0x01);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_UP)
                 {
-                    WriteByte(_Base_Player_Data_Address + P1_BTN_OFFSET, 0x00);
+                    WriteByte(_Base_Player_Data_Address + P1_WPNBTN_OFFSET, 0x00);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_RIGHT_BUTTON_DOWN)
                 {
-                    WriteByte(_Base_Player_Data_Address + P1_OUT_OFFSET, 0x01);
+                    WriteByte(_Base_Player_Data_Address + P1_RELOAD_OFFSET, 0x01);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_RIGHT_BUTTON_UP)
                 {
-                    WriteByte(_Base_Player_Data_Address + P1_OUT_OFFSET, 0x00);
+                    WriteByte(_Base_Player_Data_Address + P1_RELOAD_OFFSET, 0x00);
                 }
             }
             else if (Player == 2)
             {
-                
+                WriteByte(_Base_Player_Data_Address + P2_X_OFFSET, (byte)mouse.pTarget.X);
+                WriteByte(_Base_Player_Data_Address + P2_Y_OFFSET, (byte)mouse.pTarget.Y);
+
+                //Inputs
+                if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_DOWN)
+                {
+                    WriteByte(_Base_Player_Data_Address + P2_TRIGGER_OFFSET, 0x01);
+                }
+                else if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_UP)
+                {
+                    WriteByte(_Base_Player_Data_Address + P2_TRIGGER_OFFSET, 0x00);
+                }
+                else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_DOWN)
+                {
+                    WriteByte(_Base_Player_Data_Address + P2_WPNBTN_OFFSET, 0x01);
+                }
+                else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_UP)
+                {
+                    WriteByte(_Base_Player_Data_Address + P2_WPNBTN_OFFSET, 0x00);
+                }
+                else if (mouse.button == Win32.RI_MOUSE_RIGHT_BUTTON_DOWN)
+                {
+                    WriteByte(_Base_Player_Data_Address + P2_RELOAD_OFFSET, 0x01);
+                }
+                else if (mouse.button == Win32.RI_MOUSE_RIGHT_BUTTON_UP)
+                {
+                    WriteByte(_Base_Player_Data_Address + P2_RELOAD_OFFSET, 0x00);
+                }
             }
         }
 
