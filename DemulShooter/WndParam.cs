@@ -277,16 +277,17 @@ namespace DemulShooter
                     SetVisibility(false);
 
                     //Install Low Level keyboard hook to detect virtual buttons if set in config
-                    bool EnableVirtualMiddleProc = false;
+                    bool EnableVirtualGunButtonsProc = false;
                     foreach (ControllerDevice Device in _ControllerDevices)
                     {
-                        if (Device.EnableVirtualMiddleClick != 0)
+                        if (Device.EnableGunVirtualButtons != 0)
                         {
-                            EnableVirtualMiddleProc = true;
-                            WriteLog("Enabling virtual Middle Mouse button: P" + Device.Player + "=[" + GetKeyStringFromScanCode(Device.DiK_VirtualMiddleButton) + "]");
+                            EnableVirtualGunButtonsProc = true;
+                            WriteLog("Enabling virtual gun Mouse buttons: P" + Device.Player +  " Middle = [" + GetKeyStringFromScanCode(Device.DiK_VirtualMiddleButton) + "]");
+                            WriteLog("Enabling virtual gun Mouse buttons: P" + Device.Player + " Right = [" + GetKeyStringFromScanCode(Device.DiK_VirtualRightButton) + "]");
                         }
                     }
-                    if (EnableVirtualMiddleProc)
+                    if (EnableVirtualGunButtonsProc)
                     {
                         _KeyboardHookProc = new Win32.HookProc(VirtualButtonsKeyboardHookCallback);
                         using (Process curProcess = Process.GetCurrentProcess())
@@ -634,6 +635,14 @@ namespace DemulShooter
                             _This._ControllerDevices[2].DiK_VirtualMiddleButton = (byte)s.scanCode;
                         else if (_This._Txtbox == _This._GUI_PlayerDevices[3].VirtualMiddleButton)
                             _This._ControllerDevices[3].DiK_VirtualMiddleButton = (byte)s.scanCode;
+                        else if (_This._Txtbox == _This._GUI_PlayerDevices[0].VirtualRightButton)
+                            _This._ControllerDevices[0].DiK_VirtualRightButton = (byte)s.scanCode;
+                        else if (_This._Txtbox == _This._GUI_PlayerDevices[1].VirtualRightButton)
+                            _This._ControllerDevices[1].DiK_VirtualRightButton = (byte)s.scanCode;
+                        else if (_This._Txtbox == _This._GUI_PlayerDevices[2].VirtualRightButton)
+                            _This._ControllerDevices[2].DiK_VirtualRightButton = (byte)s.scanCode;
+                        else if (_This._Txtbox == _This._GUI_PlayerDevices[3].VirtualRightButton)
+                            _This._ControllerDevices[3].DiK_VirtualRightButton = (byte)s.scanCode;
                         
                         _This._Txtbox = null;
                         _This._Start_KeyRecord = false;
@@ -656,12 +665,22 @@ namespace DemulShooter
                     Win32.KBDLLHOOKSTRUCT s = (Win32.KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(Win32.KBDLLHOOKSTRUCT));
                     foreach (ControllerDevice Device in _This._ControllerDevices)
                     {
-                        if (s.scanCode == Device.DiK_VirtualMiddleButton && Device.EnableVirtualMiddleClick != 0)
+                        if (Device.EnableGunVirtualButtons != 0)
                         {
-                            if (Device.LastMouseInfo == null)
-                                Device.LastMouseInfo = new MouseInfo();
-                            Device.LastMouseInfo.button = Win32.RI_MOUSE_MIDDLE_BUTTON_DOWN;
-                            _This._Game.SendInput(Device.LastMouseInfo, Device.Player);
+                            if (s.scanCode == Device.DiK_VirtualMiddleButton)
+                            {
+                                if (Device.LastMouseInfo == null)
+                                    Device.LastMouseInfo = new MouseInfo();
+                                Device.LastMouseInfo.button = Win32.RI_MOUSE_MIDDLE_BUTTON_DOWN;
+                                _This._Game.SendInput(Device.LastMouseInfo, Device.Player);
+                            }
+                            else if (s.scanCode == Device.DiK_VirtualRightButton)
+                            {
+                                if (Device.LastMouseInfo == null)
+                                    Device.LastMouseInfo = new MouseInfo();
+                                Device.LastMouseInfo.button = Win32.RI_MOUSE_RIGHT_BUTTON_DOWN;
+                                _This._Game.SendInput(Device.LastMouseInfo, Device.Player);
+                            }
                         }
                     }
                 }
@@ -670,12 +689,22 @@ namespace DemulShooter
                     Win32.KBDLLHOOKSTRUCT s = (Win32.KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(Win32.KBDLLHOOKSTRUCT));
                     foreach (ControllerDevice Device in _This._ControllerDevices)
                     {
-                        if (s.scanCode == Device.DiK_VirtualMiddleButton && Device.EnableVirtualMiddleClick != 0)
+                        if (Device.EnableGunVirtualButtons != 0)
                         {
-                            if (Device.LastMouseInfo == null)
-                                Device.LastMouseInfo = new MouseInfo();
-                            Device.LastMouseInfo.button = Win32.RI_MOUSE_MIDDLE_BUTTON_UP;
-                            _This._Game.SendInput(Device.LastMouseInfo, Device.Player);
+                            if (s.scanCode == Device.DiK_VirtualMiddleButton)
+                            {
+                                if (Device.LastMouseInfo == null)
+                                    Device.LastMouseInfo = new MouseInfo();
+                                Device.LastMouseInfo.button = Win32.RI_MOUSE_MIDDLE_BUTTON_UP;
+                                _This._Game.SendInput(Device.LastMouseInfo, Device.Player);
+                            }
+                            else if (s.scanCode == Device.DiK_VirtualRightButton)
+                            {
+                                if (Device.LastMouseInfo == null)
+                                    Device.LastMouseInfo = new MouseInfo();
+                                Device.LastMouseInfo.button = Win32.RI_MOUSE_RIGHT_BUTTON_UP;
+                                _This._Game.SendInput(Device.LastMouseInfo, Device.Player);
+                            }
                         }
                     } 
                 }
@@ -1341,11 +1370,12 @@ namespace DemulShooter
                         sr.WriteLine("P" + Device.Player + "Act_Labs_Offset_Y = " + Device.Act_Labs_OffsetY.ToString());
                     }
                     sr.WriteLine("");
-                    sr.WriteLine(";Virtual MiddleButton keys for users who don't have more than a trigger with Aimtrak");
+                    sr.WriteLine(";VirtualGun Button keys for users who don't have more than a trigger with Aimtrak");
                     foreach (ControllerDevice Device in _ControllerDevices)
                     {
-                        sr.WriteLine("P" + Device.Player + "VirtualMiddle_Enable = " + Device.EnableVirtualMiddleClick.ToString());
+                        sr.WriteLine("P" + Device.Player + "VirtualButtons_Enable = " + Device.EnableGunVirtualButtons.ToString());
                         sr.WriteLine("P" + Device.Player + "VirtualMiddle_Key = " + Device.DiK_VirtualMiddleButton.ToString());
+                        sr.WriteLine("P" + Device.Player + "VirtualRight_Key = " + Device.DiK_VirtualRightButton.ToString());
                     }
                     sr.WriteLine("");
                     sr.WriteLine(";Heavy Fire Afghanistan settings");

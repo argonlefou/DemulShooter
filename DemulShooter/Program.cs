@@ -48,7 +48,7 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : January, 3rd 2019");
+                        Console.WriteLine("Build date : February, 14th 2019");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");

@@ -190,13 +190,15 @@ namespace DemulShooter
             Tbar_VibrationStrength.Value = _PlayerDevice.Gamepad_VibrationStrength;
 
 
-            if (_PlayerDevice.EnableVirtualMiddleClick != 0)
+            if (_PlayerDevice.EnableGunVirtualButtons != 0)
             {
                 Chk_VirtualMiddleBtn.Checked = true;
                 Txt_VirtualMiddleBtn.Enabled = true;
+                Txt_VirtualRightBtn.Enabled = true;
             }
 
             Txt_VirtualMiddleBtn.Text = GetKeyStringFromScanCode(_PlayerDevice.DiK_VirtualMiddleButton);
+            Txt_VirtualRightBtn.Text = GetKeyStringFromScanCode(_PlayerDevice.DiK_VirtualRightButton);
         }
 
         private String GetKeyStringFromScanCode(int ScanCode)
@@ -215,6 +217,11 @@ namespace DemulShooter
         public TextBox VirtualMiddleButton
         {
             get { return Txt_VirtualMiddleBtn; }
+        }
+
+        public TextBox VirtualRightButton
+        {
+            get { return Txt_VirtualRightBtn; }
         }
 
         public ComboBox Combobox_Pad_MouseLeft
@@ -302,13 +309,15 @@ namespace DemulShooter
         {
             if (Chk_VirtualMiddleBtn.Checked)
             {
-                _PlayerDevice.EnableVirtualMiddleClick = 1;
+                _PlayerDevice.EnableGunVirtualButtons = 1;
                 Txt_VirtualMiddleBtn.Enabled = true;
+                Txt_VirtualRightBtn.Enabled = true;
             }
             else
             {
-                _PlayerDevice.EnableVirtualMiddleClick = 0;
+                _PlayerDevice.EnableGunVirtualButtons = 0;
                 Txt_VirtualMiddleBtn.Enabled = false;
+                Txt_VirtualRightBtn.Enabled = false;
             }
         }
 
@@ -317,6 +326,15 @@ namespace DemulShooter
             _WndParam.TXT_DirectInput_MouseClick(sender, e);
         }
 
+        private void Txt_VirtualRightBtn_MouseClick(object sender, MouseEventArgs e)
+        {
+            _WndParam.TXT_DirectInput_MouseClick(sender, e);
+        }
+
         #endregion
+
+        
+
+        
     }
 }

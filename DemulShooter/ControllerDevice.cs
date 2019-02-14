@@ -17,6 +17,7 @@ namespace DemulShooter
         // RawInput type Data
         private IntPtr _MouseHandle = IntPtr.Zero;
         private byte _DiK_VirtualMiddleButton;
+        private byte _DiK_VirtualRightButton;
 
         // GamePad type data
         private int _GamepadID = -1;
@@ -34,7 +35,7 @@ namespace DemulShooter
         private int _Act_Labs_OffsetY = 0;
 
         // Virtual Middle click
-        private int _EnableVirtualMiddleClick = 0;
+        private int _EnableGunVirtualButtons = 0;
 
         //
         private MouseInfo _LastMouseInfo;
@@ -84,6 +85,12 @@ namespace DemulShooter
         {
             get { return _DiK_VirtualMiddleButton; }
             set { _DiK_VirtualMiddleButton = value; }
+        }
+
+        public byte DiK_VirtualRightButton
+        {
+            get { return _DiK_VirtualRightButton; }
+            set { _DiK_VirtualRightButton = value; }
         }
 
         public int GamepadID
@@ -145,10 +152,10 @@ namespace DemulShooter
             set { _Act_Labs_OffsetY = value; }
         }            
 
-        public int EnableVirtualMiddleClick
+        public int EnableGunVirtualButtons
         {
-            get { return _EnableVirtualMiddleClick; }
-            set { _EnableVirtualMiddleClick = value; }
+            get { return _EnableGunVirtualButtons; }
+            set { _EnableGunVirtualButtons = value; }
         }
 
         public MouseInfo LastMouseInfo
@@ -168,12 +175,17 @@ namespace DemulShooter
             _Player = PlayerNumber;
             _WndParam = MainWindow;
 
-            // Default virtual middle buttons are :
-            // P1 => 0x2E   [C]
-            // P1 => 0x2F   [V]
-            // P1 => 0x30   [B]
-            // P1 => 0x31   [N]
+            // Default virtual buttons are :
+            // P1 Middle => 0x2E   [C]
+            // P2 Middle => 0x2F   [V]
+            // P3 Middle => 0x30   [B]
+            // P4 Middle => 0x31   [N]
             _DiK_VirtualMiddleButton = (byte)(0x2D + _Player);
+            // P1 Right => 0x21   [F]
+            // P2 Right => 0x22   [G]
+            // P3 Right => 0x23   [H]
+            // P4 Right => 0x24   [J]            
+            _DiK_VirtualRightButton = (byte)(0x20 + _Player);
         }
 
         /// <summary>
@@ -251,14 +263,19 @@ namespace DemulShooter
                 if (!int.TryParse(StrValue, out _Act_Labs_OffsetY))
                     return false;
             }
-            else if (StrKey.Equals("virtualmiddle_enable"))
+            else if (StrKey.Equals("virtualbuttons_enable"))
             {
-                if (!int.TryParse(StrValue, out _EnableVirtualMiddleClick))
+                if (!int.TryParse(StrValue, out _EnableGunVirtualButtons))
                     return false;;
             }
             else if (StrKey.Equals("virtualmiddle_key"))
             {
                 if (!byte.TryParse(StrValue, out _DiK_VirtualMiddleButton))
+                    return false;
+            }
+            else if (StrKey.Equals("virtualright_key"))
+            {
+                if (!byte.TryParse(StrValue, out _DiK_VirtualRightButton))
                     return false;
             }
 

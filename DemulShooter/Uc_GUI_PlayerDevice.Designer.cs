@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.Gbox_GunOptions = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.Txt_VirtualRightBtn = new System.Windows.Forms.TextBox();
             this.Lbl_MidButonEnable = new System.Windows.Forms.Label();
             this.Chk_VirtualMiddleBtn = new System.Windows.Forms.CheckBox();
             this.label36 = new System.Windows.Forms.Label();
@@ -57,6 +59,8 @@
             // 
             // Gbox_GunOptions
             // 
+            this.Gbox_GunOptions.Controls.Add(this.label1);
+            this.Gbox_GunOptions.Controls.Add(this.Txt_VirtualRightBtn);
             this.Gbox_GunOptions.Controls.Add(this.Lbl_MidButonEnable);
             this.Gbox_GunOptions.Controls.Add(this.Chk_VirtualMiddleBtn);
             this.Gbox_GunOptions.Controls.Add(this.label36);
@@ -64,10 +68,30 @@
             this.Gbox_GunOptions.Enabled = false;
             this.Gbox_GunOptions.Location = new System.Drawing.Point(4, 65);
             this.Gbox_GunOptions.Name = "Gbox_GunOptions";
-            this.Gbox_GunOptions.Size = new System.Drawing.Size(145, 131);
+            this.Gbox_GunOptions.Size = new System.Drawing.Size(145, 189);
             this.Gbox_GunOptions.TabIndex = 43;
             this.Gbox_GunOptions.TabStop = false;
             this.Gbox_GunOptions.Text = "Gun Options";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 133);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(107, 13);
+            this.label1.TabIndex = 56;
+            this.label1.Text = "\"Right Mouse\"  Key :";
+            // 
+            // Txt_VirtualRightBtn
+            // 
+            this.Txt_VirtualRightBtn.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_VirtualRightBtn.Enabled = false;
+            this.Txt_VirtualRightBtn.Location = new System.Drawing.Point(7, 152);
+            this.Txt_VirtualRightBtn.Name = "Txt_VirtualRightBtn";
+            this.Txt_VirtualRightBtn.ReadOnly = true;
+            this.Txt_VirtualRightBtn.Size = new System.Drawing.Size(132, 20);
+            this.Txt_VirtualRightBtn.TabIndex = 57;
+            this.Txt_VirtualRightBtn.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Txt_VirtualRightBtn_MouseClick);
             // 
             // Lbl_MidButonEnable
             // 
@@ -76,7 +100,7 @@
             this.Lbl_MidButonEnable.Name = "Lbl_MidButonEnable";
             this.Lbl_MidButonEnable.Size = new System.Drawing.Size(82, 26);
             this.Lbl_MidButonEnable.TabIndex = 13;
-            this.Lbl_MidButonEnable.Text = "Enable \"Virtual\"\r\nmiddle button";
+            this.Lbl_MidButonEnable.Text = "Enable \"Virtual\"\r\n mouse buttons";
             // 
             // Chk_VirtualMiddleBtn
             // 
@@ -93,9 +117,9 @@
             this.label36.AutoSize = true;
             this.label36.Location = new System.Drawing.Point(6, 75);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(79, 13);
+            this.label36.Size = new System.Drawing.Size(110, 13);
             this.label36.TabIndex = 13;
-            this.label36.Text = "Keyboard Key :";
+            this.label36.Text = "\"Middle Mouse\" Key :";
             // 
             // Txt_VirtualMiddleBtn
             // 
@@ -359,5 +383,7 @@
         private System.Windows.Forms.Label label32;
         private System.Windows.Forms.ComboBox Cbo_Device;
         private System.Windows.Forms.Label Lbl_Player;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox Txt_VirtualRightBtn;
     }
 }
