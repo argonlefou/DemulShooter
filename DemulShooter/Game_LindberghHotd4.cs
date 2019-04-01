@@ -18,7 +18,7 @@ namespace DemulShooter
         private const string P1_WEAPONBTN_INIT_NOP_ADDRESS  = "0x081C960D|3";
 
         // Pointer address used to find the INPUT_SET struct containing both players data in game
-        private const int BASE_PLAYER_DATA_PTR_OFFSET = 0x0013BF8C;
+        private const int BASE_PLAYER_DATA_PTR_OFFSET = 0x007F621C;
         // INPUT_SET direct address
         private int _Base_Player_Data_Address = 0;
         // INPUT_SET offsets to find data
@@ -81,11 +81,13 @@ namespace DemulShooter
                         {
                             byte[] Buffer = ReadBytes((int)_TargetProcess_MemoryBaseAddress + BASE_PLAYER_DATA_PTR_OFFSET, 4);
                             int i = BitConverter.ToInt32(Buffer, 0);
-                            Buffer = ReadBytes(i + 0x300, 4);
-                            i = BitConverter.ToInt32(Buffer, 0);
-                            Buffer = ReadBytes(i, 4);
+                            
+                            Buffer = ReadBytes(i + 0x5C0, 4);
                             i = BitConverter.ToInt32(Buffer, 0);
                             
+                            Buffer = ReadBytes(i + 0x00, 4);
+                            i = BitConverter.ToInt32(Buffer, 0);
+                                                       
                             if (i != 0)
                             {
                                 _Base_Player_Data_Address = i + 0x34;
@@ -169,7 +171,7 @@ namespace DemulShooter
         private void SetHack()
         {
             SetHack_GunInit();
-            SetHack_GunMainProc();
+            SetHackV2();
             SetHackEnableP2();
             
             WriteLog("Memory Hack complete !");
@@ -183,31 +185,30 @@ namespace DemulShooter
         {
             SetNops(0, P1_X_INIT_NOP_ADDRESS);            
             SetNops(0, P1_Y_INIT_NOP_ADDRESS);
-            SetNops(0, P1_TRIGGER_INIT_NOP_ADDRESS);
-            SetNops(0, P1_RELOAD_INIT_NOP_ADDRESS);
-            SetNops(0, P1_WEAPONBTN_INIT_NOP_ADDRESS);
+            //SetNops(0, P1_TRIGGER_INIT_NOP_ADDRESS);
+            //SetNops(0, P1_RELOAD_INIT_NOP_ADDRESS);
+            //SetNops(0, P1_WEAPONBTN_INIT_NOP_ADDRESS);
         }
 
-        // CGunMgr::MainProc() => 0x08152B4C ~~ 0x08153053
-        // Called in a loop by CGunMgr::Main() [0x08152844 ~~ 0x08152B3C]
-        // Noping Axis and Buttons instructions after game start causes crash, so hacks are a little more specific
-        private void SetHack_GunMainProc()
+        private void SetHackV2()
         {
-            // At the beginning, Buttons are all set to 0 
-            // We are replace the offset byte of Trigger, Reload and Grenade 
-            // with START button offset: mov [ebp+0x08], edi => mov [ebp+0x20], edi ----> (89 7D 08 => 89 7D 20) 
-            WriteByte(0x08152B6B, 0x20);
-            WriteByte(0x08152B6E, 0x20);
-            WriteByte(0x08152B71, 0x20);
-
-            // The procedures sets Axis values after reading JVS data
-            // Replacing a conditional Jump by a single Jump will force skipping Axis/Reload update (74 18 => EB 10)
-            WriteBytes(0x08152ED4, new byte[] {0xEB, 0x10});
-        
-            // The procedures uses masks to test JVS bits
-            // Again, replacing conditionnal Jumps by single Jumps will skip updates for Trigger/Grenade (74 06 => EB 06)
-            WriteByte(0x08152F2F, 0xEB);
-            WriteByte(0x08152F49, 0xEB);
+            //Axis blocking
+            SetNops(0, "0x08152EDB|3");
+            SetNops(0, "0x08152EE3|3");
+            //Trigger
+            SetNops(0, "0x08152B69|3");
+            //Weapon
+            SetNops(0, "0x08152B6F|3");
+            //Reload
+            SetNops(0, "0x08152B6C|3");
+            SetNops(0, "0x08152F00|7");
+            WriteByte(_Base_Player_Data_Address + P1_RELOAD_OFFSET, 0x00);
+            WriteByte(_Base_Player_Data_Address + P2_RELOAD_OFFSET, 0x00);
+            //Init : center cursors for P1 and P2
+            WriteByte(_Base_Player_Data_Address + P1_X_OFFSET, 0x7F);
+            WriteByte(_Base_Player_Data_Address + P1_Y_OFFSET, 0x7F);
+            WriteByte(_Base_Player_Data_Address + P2_X_OFFSET, 0x7F);
+            WriteByte(_Base_Player_Data_Address + P2_Y_OFFSET, 0x7F);
         }
 
         // amCreditIsEnough() => 0x0831D800 ~~ 0x0831D895

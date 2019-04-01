@@ -30,7 +30,7 @@ namespace DemulShooter
             string[] _WindowsRoms = new string[] { "artdead", "hfa", "hfa2p", "hfa_s", "hfa2p_s", "hfss", "hfss2p", "hfss_s", "hfss2p_s", "hod2pc", "hod3pc", "reload" };
             string[] _TTXRoms = new string[] { "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
             string[] _GlobalVrRoms = new string[] { "aliens", "alienshasp", "farcry", "fearland" };
-            string[] _LindberghRoms = new string[] { "hotd4" };
+            string[] _LindberghRoms = new string[] { "hotd4", "lgj" };
             string[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr" };
             string[] _ChihiroRoms = new string[] { "vcop3" };
             string[] _WipRoms = new string[] { "bestate", "wartran", "bhapc"};
@@ -48,7 +48,7 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : February, 14th 2019");
+                        Console.WriteLine("Build date : March, 29th 2019");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
@@ -100,8 +100,9 @@ namespace DemulShooter
                         Console.WriteLine(" aliens\t\tAliens Extermination Dehasped (2nd dump, x86 and x64, no need for VM)");
                         Console.WriteLine(" fearland\tFright Fear Land");
                         Console.WriteLine("");
-                        Console.WriteLine("Lindbergh roms :");
+                        Console.WriteLine("Lindbergh roms (TeknoParrot 1.93 only) :");
                         Console.WriteLine(" hotd4\t\tHouse of The Dead 4");
+                        Console.WriteLine(" lgj\t\tLet's Go Jungle");
                         Console.WriteLine("");
                         Console.WriteLine("Model2 roms :");
                         Console.WriteLine(" bel\t\tBehind Enemy Lines");

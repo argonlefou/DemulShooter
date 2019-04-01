@@ -423,6 +423,10 @@ namespace DemulShooter
                                 {
                                     _Game = new Game_LindberghHotd4(_Rom.ToLower(), _VerboseEnable);
                                 } break;
+                            case "lgj":
+                                {
+                                    _Game = new Game_LindberghLgj(_Rom.ToLower(), _VerboseEnable);
+                                } break;
                             default:
                                 break;
                         }
