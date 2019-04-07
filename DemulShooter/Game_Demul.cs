@@ -51,6 +51,9 @@ namespace DemulShooter
             _WidescreenHack = WidescreenHack;
             _Target_Process_Name = "demul";
             _ListWidescreenHacks = new List<WidescreenData>();
+            _KnownMd5Prints.Add("Demul 0.7a_180428", "ce0a6fd5552903311a8935b6f60e26ad");
+            _KnownMd5Prints.Add("Demul 0.582", "ab4e7654e7b3a4743e9753221cc48fcd");
+            _KnownMd5Prints.Add("Demul 0.57", "3071ba77ff46d2137f46bfcd8dda5b4f");
 
             ReadGameData();
 
@@ -102,6 +105,7 @@ namespace DemulShooter
 
                                     WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     WriteLog("Demul.exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8") + ", padDemul.dll = 0x" + _PadDemul_ModuleBaseAddress.ToString("X8"));
+                                    ChecExeMd5();
 
                                     if (_DemulVersion.Equals("057") || _DemulVersion.Equals("058"))
                                         SetHack_057();

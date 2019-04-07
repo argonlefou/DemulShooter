@@ -40,6 +40,7 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "hod2";
+            _KnownMd5Prints.Add("hod2pc", "1111");
 
             ReadGameData();
 
@@ -73,6 +74,7 @@ namespace DemulShooter
                             _ProcessHooked = true;
                             WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
+                            ChecExeMd5();
 
                             //Adding a "Coin" button 
                             ApplyKeyboardHook();

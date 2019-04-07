@@ -56,6 +56,7 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "hod3pc";
+            _KnownMd5Prints.Add("hod3pc", "1111");
 
             ReadGameData();
             ReadKeyConfig();
@@ -90,6 +91,7 @@ namespace DemulShooter
                             _ProcessHooked = true;
                             WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
+                            ChecExeMd5();
                             SetHack();
                             ApplyMouseHook();
                             ApplyKeyboardHook();
@@ -102,7 +104,7 @@ namespace DemulShooter
                             }
                             catch
                             {
-                                WriteLog("Unable to find/open the coin002.aif file for Hotd2");
+                                WriteLog("Unable to find/open the coin002.aif file for Hotd3");
                             }
                         }
                     }

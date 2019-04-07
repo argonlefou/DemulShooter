@@ -20,7 +20,7 @@ namespace DemulShooter
         private byte[] _AxisX_HexCode = new byte[] { 0xF3, 0x0F, 0x11, 0x83, 0x34, 0x01, 0x00, 0x00};
 
         //Base PTR to find P1 & P2 float axis values
-        private const int PLAYER_AXIS_PTR_OFFSET = 0x00130824;
+        private const int PLAYER_AXIS_PTR_OFFSET = 0x006AA6C8;
         private int _Player1_Float_Axis_Address = 0;
         private int _Player2_Float_Axis_Address = 0;
         private float _P1_X_Float;
@@ -88,20 +88,18 @@ namespace DemulShooter
                             
                             byte[] Buffer = ReadBytes((int)_TargetProcess_MemoryBaseAddress + PLAYER_AXIS_PTR_OFFSET, 4);
                             int i1 = BitConverter.ToInt32(Buffer, 0);
-                            int i2 = i1;
-
-                            Buffer = ReadBytes(i1 + 0x51C, 4);
+                            Buffer = ReadBytes(i1 + 0x58C, 4);
                             i1 = BitConverter.ToInt32(Buffer, 0);
-                            Buffer = ReadBytes(i2 + 0xC4, 4);
+                            Buffer = ReadBytes(i1 + 0x4, 4);
+                            i1 = BitConverter.ToInt32(Buffer, 0);
+                            
+                            Buffer = ReadBytes((int)_TargetProcess_MemoryBaseAddress + PLAYER_AXIS_PTR_OFFSET, 4);
+                            int i2 = BitConverter.ToInt32(Buffer, 0);
+                            Buffer = ReadBytes(i2 + 0x58C, 4);
                             i2 = BitConverter.ToInt32(Buffer, 0);
-
-                            Buffer = ReadBytes(i1 + 0x0, 4);
-                            i1 = BitConverter.ToInt32(Buffer, 0);
                             Buffer = ReadBytes(i2 + 0x0, 4);
-                            i2 = BitConverter.ToInt32(Buffer, 0); 
-
-
-
+                            i2 = BitConverter.ToInt32(Buffer, 0);
+                            
                             if (i1 != 0 && i2 != 0 && GameLoaded)
                             {
                                 _Player1_Float_Axis_Address = i1 + 0x134;

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Windows.Forms;
-using Microsoft.Win32;
 
 namespace DemulShooter
 {
@@ -21,6 +22,8 @@ namespace DemulShooter
         protected IntPtr _TargetProcess_MemoryBaseAddress = IntPtr.Zero;
         protected bool _VerboseEnable;
         protected bool _DisableWindow = false;
+        protected string _TargetProcess_Md5Hash = string.Empty;
+        protected Dictionary<string, string> _KnownMd5Prints;
 
         public bool ProcessHooked
         { get { return _ProcessHooked; } }
@@ -62,7 +65,9 @@ namespace DemulShooter
         protected string _RomName = string.Empty;
 
         public Game()
-        { }
+        {
+            _KnownMd5Prints = new Dictionary<string, string>();
+        }
 
         ~Game()
         {
@@ -74,6 +79,52 @@ namespace DemulShooter
                     UninstallX360Gamepad(2);
             }
         }
+
+        #region MD5 Verification
+
+        protected void ChecExeMd5()
+        {
+            GetMd5HashAsString();
+            WriteLog("MD5 hash of " + _TargetProcess.MainModule.FileName + " = " + _TargetProcess_Md5Hash); 
+
+            string FoundExe = string.Empty;
+            foreach (KeyValuePair<string, string> pair in _KnownMd5Prints)
+            {
+                if (pair.Value == _TargetProcess_Md5Hash)
+                {
+                    FoundExe = pair.Key;
+                    break;
+                }
+            }
+
+            if (FoundExe == string.Empty)
+            {
+                WriteLog(@"/!\ MD5 Hash unknown, DemulShooter may not work correctly with this target /!\");
+            }
+            else
+            {
+                WriteLog("MD5 Hash is corresponding to a known target = " + FoundExe);
+            }
+            
+        }
+
+        private void GetMd5HashAsString()
+        {
+            string process_path = _TargetProcess.MainModule.FileName;
+            if (File.Exists(process_path))
+            {
+                using (var md5 = MD5.Create())
+                {
+                    using (var stream = File.OpenRead(process_path))
+                    {
+                        var hash = md5.ComputeHash(stream);
+                        _TargetProcess_Md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                    }
+                }
+            }
+        }        
+
+        #endregion
 
         #region Screen
 

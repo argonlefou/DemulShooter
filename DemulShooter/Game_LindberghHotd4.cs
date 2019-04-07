@@ -18,7 +18,7 @@ namespace DemulShooter
         private const string P1_WEAPONBTN_INIT_NOP_ADDRESS  = "0x081C960D|3";
 
         // Pointer address used to find the INPUT_SET struct containing both players data in game
-        private const int BASE_PLAYER_DATA_PTR_OFFSET = 0x007F621C;
+        private const int BASE_PLAYER_DATA_PTR_OFFSET = 0x00235870;
         // INPUT_SET direct address
         private int _Base_Player_Data_Address = 0;
         // INPUT_SET offsets to find data
@@ -82,10 +82,13 @@ namespace DemulShooter
                             byte[] Buffer = ReadBytes((int)_TargetProcess_MemoryBaseAddress + BASE_PLAYER_DATA_PTR_OFFSET, 4);
                             int i = BitConverter.ToInt32(Buffer, 0);
                             
-                            Buffer = ReadBytes(i + 0x5C0, 4);
+                            Buffer = ReadBytes(i + 0x590, 4);
                             i = BitConverter.ToInt32(Buffer, 0);
                             
-                            Buffer = ReadBytes(i + 0x00, 4);
+                            Buffer = ReadBytes(i + 0x98, 4);
+                            i = BitConverter.ToInt32(Buffer, 0);
+
+                            Buffer = ReadBytes(i + 0x0C, 4);
                             i = BitConverter.ToInt32(Buffer, 0);
                                                        
                             if (i != 0)
