@@ -495,6 +495,11 @@ namespace DemulShooter
                                 {
                                     _Game = new Game_Hod3pc(_Rom.ToLower(), _NoAutoReload, _NoGuns, _VerboseEnable);
                                 }; break;
+                            case "hod5pc":
+                                {
+                                    _Game = new 
+                                        Game_Hod5pc(_Rom.ToLower(), _VerboseEnable);
+                                }; break;
                             case "reload":
                                 {
                                     _Game = new Game_Reload(_Rom.ToLower(), _HideGameCrosshair, _VerboseEnable);

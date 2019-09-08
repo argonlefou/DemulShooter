@@ -70,6 +70,7 @@
     <Compile Include="Game_HeavyFire4Pc.cs" />
     <Compile Include="Game_Hod2pc.cs" />
     <Compile Include="Game_Hod3pc.cs" />
+    <Compile Include="Game_Hod5pc.cs" />
     <Compile Include="Game_LindberghHotd4.cs" />
     <Compile Include="Game_LindberghLgj.cs" />
     <Compile Include="Game_Reload.cs" />

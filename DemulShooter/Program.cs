@@ -27,7 +27,7 @@ namespace DemulShooter
             string[] _Targets = new string[] { "chihiro", "demul057", "demul058", "demul07a", "dolphin4", "dolphin5", "globalvr", "lindbergh", "model2", "model2m", "ringwide", "ttx", "windows", "wip" };
             string[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "manicpnc", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
             string[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
-            string[] _WindowsRoms = new string[] { "artdead", "hfa", "hfa2p", "hfa_s", "hfa2p_s", "hfss", "hfss2p", "hfss_s", "hfss2p_s", "hod2pc", "hod3pc", "reload" };
+            string[] _WindowsRoms = new string[] { "artdead", "hfa", "hfa2p", "hfa_s", "hfa2p_s", "hfss", "hfss2p", "hfss_s", "hfss2p_s", "hod2pc", "hod3pc", "hod5pc", "reload" };
             string[] _TTXRoms = new string[] { "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
             string[] _GlobalVrRoms = new string[] { "aliens", "alienshasp", "farcry", "fearland" };
             string[] _LindberghRoms = new string[] { "hotd4", "lgj" };
@@ -142,6 +142,7 @@ namespace DemulShooter
                         Console.WriteLine(" hfss2p_s\tHeavy Fire Shattered Spear (Dual player) [STEAM]");
                         Console.WriteLine(" hod2pc\t\tHouse of the Dead 2");
                         Console.WriteLine(" hod3pc\t\tHouse of the Dead 3");
+                        Console.WriteLine(" hod5pc\t\tHouse of the Dead Overkill");
                         Console.WriteLine(" reload\t\tReload");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
