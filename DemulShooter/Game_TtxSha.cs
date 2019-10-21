@@ -39,6 +39,8 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "KSHG_no_cursor";
+            _KnownMd5Prints.Add("Unmodified KSHG_no_cursor.exe", "0e58fd1c7bcb5e0cace0e4ee548ecd0c");
+            _KnownMd5Prints.Add("Unmodified KSHG.exe", "2778219dcaf3d8e09fb197417b17dc1b");
 
             ReadGameData();
             ReadKeyConfig();

@@ -61,6 +61,7 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "BEGame";
+            _KnownMd5Prints.Add("Blue Estate CODEX", "188605d4083377e4ee3552b4c89f52fb");
 
             // To play as Player2 the game needs a Joypad
             // By using x360kb.ini and xinput1_3.dll in the game's folder, we can add a virtual X360 Joypad to act as player 2
@@ -118,7 +119,7 @@ namespace DemulShooter
                                 _ProcessHooked = true;
                                 WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-
+                                ChecExeMd5();
                                 SetHack();
                             }
                         }

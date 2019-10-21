@@ -27,11 +27,11 @@ namespace DemulShooter
             string[] _Targets = new string[] { "chihiro", "demul057", "demul058", "demul07a", "dolphin4", "dolphin5", "globalvr", "lindbergh", "model2", "model2m", "ringwide", "ttx", "windows", "wip" };
             string[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "manicpnc", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
             string[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
-            string[] _WindowsRoms = new string[] { "artdead", "hfa", "hfa2p", "hfa_s", "hfa2p_s", "hfss", "hfss2p", "hfss_s", "hfss2p_s", "hod2pc", "hod3pc", "reload" };
+            string[] _WindowsRoms = new string[] { "artdead", "hfa", "hfa2p", "hfa_s", "hfa2p_s", "hfss", "hfss2p", "hfss_s", "hfss2p_s", "hod2pc", "hod3pc", "hodo", "reload" };
             string[] _TTXRoms = new string[] { "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
             string[] _GlobalVrRoms = new string[] { "aliens", "alienshasp", "farcry", "fearland" };
             string[] _LindberghRoms = new string[] { "hotd4", "lgj" };
-            string[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr" };
+            string[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr", "tha" };
             string[] _ChihiroRoms = new string[] { "vcop3" };
             string[] _WipRoms = new string[] { "bestate", "wartran", "bhapc"};
         
@@ -48,7 +48,7 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : April, 4th 2019");
+                        Console.WriteLine("Build date : October, 21th 2019");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
@@ -100,7 +100,7 @@ namespace DemulShooter
                         Console.WriteLine(" aliens\t\tAliens Extermination Dehasped (2nd dump, x86 and x64, no need for VM)");
                         Console.WriteLine(" fearland\tFright Fear Land");
                         Console.WriteLine("");
-                        Console.WriteLine("Lindbergh roms (TeknoParrot 1.0.0.112 only) :");
+                        Console.WriteLine("Lindbergh roms (TeknoParrot 1.0.0.226 only) :");
                         Console.WriteLine(" hotd4\t\tHouse of The Dead 4");
                         Console.WriteLine(" lgj\t\tLet's Go Jungle");
                         Console.WriteLine("");
@@ -118,6 +118,7 @@ namespace DemulShooter
                         Console.WriteLine(" lgi3d\t\tLet's Go Island 3D");
                         Console.WriteLine(" og\t\tOperation G.H.O.S.T.");
                         Console.WriteLine(" sdr\t\tSega Dream Riders");
+                        Console.WriteLine(" tha\t\tTransformers Human Alliance");
                         Console.WriteLine("");
                         Console.WriteLine("Taito Type X Games :");
                         Console.WriteLine(" eadp\t\tElevator Action Death Parade");
@@ -142,6 +143,7 @@ namespace DemulShooter
                         Console.WriteLine(" hfss2p_s\tHeavy Fire Shattered Spear (Dual player) [STEAM]");
                         Console.WriteLine(" hod2pc\t\tHouse of the Dead 2");
                         Console.WriteLine(" hod3pc\t\tHouse of the Dead 3");
+                        Console.WriteLine(" hodo\t\tHouse of the Dead Overkill");
                         Console.WriteLine(" reload\t\tReload");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");

@@ -45,6 +45,8 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "game";
+            _KnownMd5Prints.Add("Original game.exe", "590677da06b758728a1dd607cbf032de");
+            _KnownMd5Prints.Add("Jconfig modified game.exe", "57fb4970df6ef979d7ffc044e6161e84");
 
             ReadGameData();
             _tProcess = new Timer();

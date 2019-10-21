@@ -373,7 +373,7 @@ namespace DemulShooter
                                 } break;
                             case "farcry":
                                 {
-                                    _Game = new Game_GvrFarCry(_Rom.ToLower(), _VerboseEnable);
+                                    _Game = new Game_GvrFarCryV2(_Rom.ToLower(), _VerboseEnable);
                                 } break;
                               case "fearland":
                                 {
@@ -409,6 +409,10 @@ namespace DemulShooter
                                 {
                                     _Game = new Game_RwSDR(_Rom.ToLower(), _ParrotLoader, _VerboseEnable);
                                 };break;
+                            case "tha":
+                                {
+                                    _Game = new Game_RwTransformers(_Rom.ToLower(), _VerboseEnable);
+                                }; break;
                             default:
                                     break;
                         }
@@ -494,6 +498,10 @@ namespace DemulShooter
                             case "hod3pc":
                                 {
                                     _Game = new Game_Hod3pc(_Rom.ToLower(), _NoAutoReload, _NoGuns, _VerboseEnable);
+                                }; break;
+                            case "hodo":
+                                {
+                                    _Game = new Game_HotdoPc(_Rom.ToLower(), _VerboseEnable);
                                 }; break;
                             case "reload":
                                 {

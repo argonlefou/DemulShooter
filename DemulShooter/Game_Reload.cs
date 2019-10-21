@@ -64,6 +64,7 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "Reload";
+            _KnownMd5Prints.Add("Reload IGG", "aaaf22c6671c12176d8317d4cc4b478d");
 
             ReadGameData();
 
@@ -104,7 +105,7 @@ namespace DemulShooter
                                     WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                     WriteLog("rld_game.dll Module Base Address = 0x " + _RldGameDll_ModuleBaseAddress.ToString("X8"));
-
+                                    ChecExeMd5();
                                     SetHack();
 
                                     break;

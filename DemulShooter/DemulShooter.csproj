@@ -64,12 +64,14 @@
     <Compile Include="Game_GvrAliensHasp.cs" />
     <Compile Include="Game_DemulHikaru.cs" />
     <Compile Include="Game_GvrFarCry.cs" />
+    <Compile Include="Game_GvrFarCryV2.cs" />
     <Compile Include="Game_GvrFearLand.cs" />
     <Compile Include="Game_HeavyFire3Pc.cs" />
     <Compile Include="Game_HeavyFire3Pc_ScpVbus.cs" />
     <Compile Include="Game_HeavyFire4Pc.cs" />
     <Compile Include="Game_Hod2pc.cs" />
     <Compile Include="Game_Hod3pc.cs" />
+    <Compile Include="Game_HotdoPc.cs" />
     <Compile Include="Game_LindberghHotd4.cs" />
     <Compile Include="Game_LindberghLgj.cs" />
     <Compile Include="Game_Reload.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="Game_RwLGI.cs" />
     <Compile Include="Game_RwSDR.cs" />
     <Compile Include="Game_RwSGGv1.cs" />
+    <Compile Include="Game_RwTransformers.cs" />
     <Compile Include="Game_TtxEadp.cs" />
     <Compile Include="Game_TtxGaiaAttack4.cs" />
     <Compile Include="Game_TtxGundam.cs" />

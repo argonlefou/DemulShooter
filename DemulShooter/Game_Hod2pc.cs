@@ -40,7 +40,8 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "hod2";
-            _KnownMd5Prints.Add("hod2pc", "1111");
+            _KnownMd5Prints.Add("hod2 SEGA Windows", "97c9e516a287aab33a455a396dadaa45");
+            _KnownMd5Prints.Add("hod2 Cracked", "eb51d3856997581ed3aa8ecb7d6d8d07");
 
             ReadGameData();
 
