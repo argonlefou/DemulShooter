@@ -296,7 +296,7 @@ namespace DemulShooter
 
         #endregion
 
-        #region MemoryHack
+        #region MemoryHack x86
 
         public virtual void SendInput(MouseInfo mouse, int Player)
         {
@@ -311,7 +311,8 @@ namespace DemulShooter
                 WriteLog("Cannot read memory at address 0x" + Address.ToString("X8"));
             }
             return Buffer[0];
-        }
+        } 
+
         protected Byte[] ReadBytes(int Address, int Bytes)
         {
             byte[] Buffer = new byte[Bytes];
@@ -323,19 +324,6 @@ namespace DemulShooter
             return Buffer;
         }
 
-        protected bool WriteBytes(int Address, byte[] Buffer)
-        {
-            int bytesWritten = 0;
-            if (Win32.WriteProcessMemory((int)_ProcessHandle, Address, Buffer, Buffer.Length, ref bytesWritten))
-            {
-                if (bytesWritten == Buffer.Length)
-                    return true;
-                else
-                    return false;
-            }
-            else
-                return false;
-        }
         protected bool WriteByte(int Address, byte Value)
         {
             int bytesWritten = 0;
@@ -351,6 +339,20 @@ namespace DemulShooter
                 return false;
         }
 
+        protected bool WriteBytes(int Address, byte[] Buffer)
+        {
+            int bytesWritten = 0;
+            if (Win32.WriteProcessMemory((int)_ProcessHandle, Address, Buffer, Buffer.Length, ref bytesWritten))
+            {
+                if (bytesWritten == Buffer.Length)
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+        
         protected void SetNops(int BaseAddress, string OffsetAndNumber)
         {
             if (OffsetAndNumber != null)
@@ -386,6 +388,97 @@ namespace DemulShooter
         }
 
         #endregion
+
+        #region MemoryHack x64
+
+        protected byte ReadByteX64(IntPtr Address)
+        {
+            byte[] Buffer = { 0 };
+            UIntPtr bytesRead = UIntPtr.Zero;
+            WriteLog(Address.ToString("X8"));
+            if (!Win32.ReadProcessMemoryX64((IntPtr)_ProcessHandle, Address, Buffer, (UIntPtr)1, out bytesRead))
+            {
+                WriteLog("Cannot read memory at address 0x" + Address.ToString("X8"));
+            }
+            return Buffer[0];
+        }
+        
+        protected Byte[] ReadBytesX64(IntPtr Address, int Bytes)
+        {
+            byte[] Buffer = new byte[Bytes];
+            UIntPtr bytesRead = UIntPtr.Zero;
+            if (!Win32.ReadProcessMemoryX64((IntPtr)_ProcessHandle, Address, Buffer, (UIntPtr)Buffer.Length, out bytesRead))
+            {
+                WriteLog("Cannot read memory at address 0x" + Address.ToString("X8"));
+            }
+            return Buffer;
+        }
+        
+        protected bool WriteByteX64(IntPtr Address, byte Value)
+        {
+            UIntPtr bytesWritten = UIntPtr.Zero;
+            Byte[] Buffer = { Value };
+            if (Win32.WriteProcessMemoryX64((IntPtr)_ProcessHandle, Address, Buffer, (UIntPtr)1, out bytesWritten))
+            {
+                if ((int)bytesWritten == 1)
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+
+        protected bool WriteBytesX64(IntPtr Address, byte[] Buffer)
+        {
+            UIntPtr bytesWritten = UIntPtr.Zero;
+            if (Win32.WriteProcessMemoryX64((IntPtr)_ProcessHandle, Address, Buffer, (UIntPtr)Buffer.Length, out bytesWritten))
+            {
+                if ((int)bytesWritten == Buffer.Length)
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+        }        
+
+        protected void SetNopsX64(IntPtr BaseAddress, string OffsetAndNumber)
+        {
+            if (OffsetAndNumber != null)
+            {
+                try
+                {
+                    int n = int.Parse((OffsetAndNumber.Split('|'))[1]);
+                    UInt64 address = UInt64.Parse((OffsetAndNumber.Split('|'))[0].Substring(3).Trim(), NumberStyles.HexNumber);
+                    for (int i = 0; i < n; i++)
+                    {
+                        WriteByteX64((IntPtr)((UInt64)BaseAddress + (UInt64)address + (UInt64)i), 0x90);
+                    }
+                }
+                catch
+                {
+                    WriteLog("Impossible de traiter le NOP : " + OffsetAndNumber);
+                }
+            }
+        }
+
+        protected void Apply_OR_ByteMaskX64(IntPtr MemoryAddress, byte Mask)
+        {
+            byte b = ReadByteX64(MemoryAddress);
+            b |= Mask;
+            WriteByteX64(MemoryAddress, b);
+        }
+
+        protected void Apply_AND_ByteMaskX64(IntPtr MemoryAddress, byte Mask)
+        {
+            byte b = ReadByteX64(MemoryAddress);
+            b &= Mask;
+            WriteByteX64(MemoryAddress, b);
+        }
+
+        #endregion
+
 
         #region XOutput
 

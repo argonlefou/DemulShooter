@@ -40,6 +40,45 @@
   <PropertyGroup>
     <ApplicationIcon>1463438149_Hunting_2.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -60,6 +99,7 @@
     <Compile Include="Game_Dolphin5.cs" />
     <Compile Include="Game_Dolphin4.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Game_Es3Lla.cs" />
     <Compile Include="Game_GvrAliens.cs" />
     <Compile Include="Game_GvrAliensHasp.cs" />
     <Compile Include="Game_DemulHikaru.cs" />
@@ -72,10 +112,14 @@
     <Compile Include="Game_Hod2pc.cs" />
     <Compile Include="Game_Hod3pc.cs" />
     <Compile Include="Game_HotdoPc.cs" />
+    <Compile Include="Game_Lindbergh2spicy.cs" />
     <Compile Include="Game_LindberghHotd4.cs" />
+    <Compile Include="Game_LindberghHotd4RevC.cs" />
     <Compile Include="Game_LindberghLgj.cs" />
+    <Compile Include="Game_LindberghRambo.cs" />
     <Compile Include="Game_Reload.cs" />
     <Compile Include="Game_RwLGI3D.cs" />
+    <Compile Include="Game_NuLuigiMansion.cs" />
     <Compile Include="Game_RwOpGhost.cs" />
     <Compile Include="Game_RwSGGv2.cs" />
     <Compile Include="Game_RwLGI.cs" />
@@ -93,6 +137,7 @@
     <Compile Include="Game_Demul.cs" />
     <Compile Include="Enumerations.cs" />
     <Compile Include="Game_Model2.cs" />
+    <Compile Include="MemoryX64.cs" />
     <Compile Include="MouseInfo.cs" />
     <Compile Include="Game_DemulJvs.cs" />
     <Compile Include="Game_DemulNaomi.cs" />

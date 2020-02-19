@@ -400,7 +400,7 @@ namespace DemulShooter
                             case "lgi3d":
                                 {
                                     _Game = new Game_RwLGI3D(_Rom.ToLower(), _ParrotLoader, _VerboseEnable);
-                                } break;
+                                } break;                            
                             case "og":
                                 {
                                     _Game = new Game_RwOpGhost(_Rom.ToLower(), _ParrotLoader, _VerboseEnable);
@@ -418,11 +418,27 @@ namespace DemulShooter
                         }
                     }
 
+                    //Sega NU
+                    else if (_Target.Equals("seganu"))
+                    {
+                        switch (_Rom.ToLower())
+                        {
+                            case "lma":
+                                {
+                                    _Game = new Game_NuLuigiMansion(_Rom.ToLower(), _VerboseEnable);
+                                } break;
+                        }
+                    }
+
                     //Lindbergh
                     else if (_Target.Equals("lindbergh"))
                     {
                         switch (_Rom.ToLower())
                         {
+                            case "2spicy":
+                                {
+                                    _Game = new Game_Lindbergh2spicy(_Rom.ToLower(), _VerboseEnable);
+                                } break;
                             case "hotd4":
                                 {
                                     _Game = new Game_LindberghHotd4(_Rom.ToLower(), _VerboseEnable);
@@ -430,6 +446,10 @@ namespace DemulShooter
                             case "lgj":
                                 {
                                     _Game = new Game_LindberghLgj(_Rom.ToLower(), _VerboseEnable);
+                                } break;
+                            case "rambo":
+                                {
+                                    _Game = new Game_LindberghRambo(_Rom.ToLower(), _VerboseEnable);
                                 } break;
                             default:
                                 break;
@@ -537,6 +557,10 @@ namespace DemulShooter
                             case "bhapc":
                                 {
                                     _Game = new Game_Bhapc(_Rom.ToLower(), _VerboseEnable);
+                                }; break;
+                            case "lla":
+                                {
+                                    _Game = new Game_Es3Lla(_Rom.ToLower(), _VerboseEnable);
                                 }; break;
                         }
                     }

@@ -1,36 +1,41 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace DemulShooter
 {
     class Game_LindberghLgj : Game
     {
-        private const int BUTTONS_INJECTION_ADDRESS = 0x0840F40C;
-        private const int BUTTONS_INJECTION_RETURN_ADDRESS = 0x0840F412;
 
+        //INPUT_STRUCT offset in game
+        private const int INPUT_X_OFFSET = 0x134;
+        private const int INPUT_Y_OFFSET = 0x138;
+
+        //NOP for gun axis
         private const string AXIS_X_NOP_ADDRESS = "0x080A9AD2|8";
         private const string AXIS_Y_NOP_ADDRESS = "0x080A97FE|8";
 
-        private byte[] _AxisX_HexCode = new byte[] { 0xF3, 0x0F, 0x11, 0x83, 0x34, 0x01, 0x00, 0x00};
+        //Codecave injection for Buttons
+        private const int BUTTONS_INJECTION_ADDRESS = 0x0840F40C;
+        private const int BUTTONS_INJECTION_RETURN_ADDRESS = 0x0840F412;
+        
+        //Base PTR to find P1 & P2 Input struct
+        private const int PLAYER1_INPUT_PTR_ADDRESS = 0x087D3BB0;
+        private const int PLAYER2_INPUT_PTR_ADDRESS = 0x087D3BAC;
 
-        //Base PTR to find P1 & P2 float axis values
-        private const int PLAYER_AXIS_PTR_OFFSET = 0x00098E70;
-        private int _Player1_Float_Axis_Address = 0;
-        private int _Player2_Float_Axis_Address = 0;
+        //Base PTR to find Buttons values
+        private const int BUTTONS_ADDRESS = 0x08BECB79;   
+     
+        //Check instruction for game loaded
+        private const int ROM_LOADED_CHECK_INSTRUCTION = 0x0807925B;
+
+        private int _Player1_InputStruct_Address = 0;
+        private int _Player2_InputStruct_Address = 0;
         private float _P1_X_Float;
         private float _P1_Y_Float;
         private float _P2_X_Float;
-        private float _P2_Y_Float;
-
-        //Base PTR to find Buttons values
-        //private const int BUTTONS_PTR_OFFSET = 0x0011ED08;
-        private int _Buttons_Address = 0x08BECB79;
+        private float _P2_Y_Float;             
 
         /// <summary>
         /// Constructor
@@ -73,46 +78,31 @@ namespace DemulShooter
 
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
-                            //Reading the code to be sure that the game is fully loaded by the emulator before hacking it
-                            bool GameLoaded = true;
-                            byte[] AxisBuffer = ReadBytes(0x080A9AD2, 8);                            
-
-                            for (int k = 0; k < _AxisX_HexCode.Length; k++)
+                            //To make sure BurgieLoader has loaded the rom entirely, we're looking for some random instruction to be present in memory before starting                            
+                            byte[] buffer = ReadBytes(ROM_LOADED_CHECK_INSTRUCTION, 6);
+                            if (buffer[0] == 0x8B && buffer[1] == 0x1D && buffer[2] == 0xB0 && buffer[3] == 0x3B && buffer[4] == 0x7D && buffer[5] == 0x08)
                             {
-                                if (_AxisX_HexCode[k] != AxisBuffer[k])
+                                buffer = ReadBytes(PLAYER1_INPUT_PTR_ADDRESS, 4);
+                                _Player1_InputStruct_Address = BitConverter.ToInt32(buffer, 0);
+
+                                buffer = ReadBytes(PLAYER2_INPUT_PTR_ADDRESS, 4);
+                                _Player2_InputStruct_Address = BitConverter.ToInt32(buffer, 0);
+
+                                if (_Player1_InputStruct_Address != 0 && _Player2_InputStruct_Address != 0)
                                 {
-                                    GameLoaded = false;
-                                    break;
+                                    _ProcessHooked = true;
+                                    WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
+                                    WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));                                    
+
+                                    WriteLog("P1 InputStruct address = 0x" + _Player1_InputStruct_Address.ToString("X8"));
+                                    WriteLog("P2 InputStruct address = 0x" + _Player2_InputStruct_Address.ToString("X8"));
+
+                                    SetHack();
                                 }
                             }
-                            
-                            byte[] Buffer = ReadBytes((int)_TargetProcess_MemoryBaseAddress + PLAYER_AXIS_PTR_OFFSET, 4);
-                            int i1 = BitConverter.ToInt32(Buffer, 0);
-                            Buffer = ReadBytes(i1 + 0x4EC, 4);
-                            i1 = BitConverter.ToInt32(Buffer, 0);
-                            Buffer = ReadBytes(i1 + 0x4, 4);
-                            i1 = BitConverter.ToInt32(Buffer, 0);
-                            
-                            Buffer = ReadBytes((int)_TargetProcess_MemoryBaseAddress + PLAYER_AXIS_PTR_OFFSET, 4);
-                            int i2 = BitConverter.ToInt32(Buffer, 0);
-                            Buffer = ReadBytes(i2 + 0x4EC, 4);
-                            i2 = BitConverter.ToInt32(Buffer, 0);
-                            Buffer = ReadBytes(i2 + 0x0, 4);
-                            i2 = BitConverter.ToInt32(Buffer, 0);
-                            
-                            if (i1 != 0 && i2 != 0 && GameLoaded)
+                            else
                             {
-                                _Player1_Float_Axis_Address = i1 + 0x134;
-                                _Player2_Float_Axis_Address = i2 + 0x134;
-
-                                WriteLog("Player1_Axis_Address = 0x" + _Player1_Float_Axis_Address.ToString("X8"));
-                                WriteLog("Player2_Axis_Address = 0x" + _Player2_Float_Axis_Address.ToString("X8"));
-
-                                _ProcessHooked = true;
-                                WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
-                                WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-
-                                SetHack();
+                                WriteLog("Game not Loaded, waiting...");
                             }
                         }
                     }
@@ -271,49 +261,49 @@ namespace DemulShooter
             if (Player == 1)
             {
                 //Write Axis
-                WriteBytes(_Player1_Float_Axis_Address, BitConverter.GetBytes(_P1_X_Float));
-                WriteBytes(_Player1_Float_Axis_Address + 4, BitConverter.GetBytes(_P1_Y_Float));
+                WriteBytes(_Player1_InputStruct_Address + INPUT_X_OFFSET, BitConverter.GetBytes(_P1_X_Float));
+                WriteBytes(_Player1_InputStruct_Address + INPUT_Y_OFFSET, BitConverter.GetBytes(_P1_Y_Float));
 
                 //Inputs
                 if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
-                    Apply_OR_ByteMask(_Buttons_Address, 0x02);
+                    Apply_OR_ByteMask(BUTTONS_ADDRESS, 0x02);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_UP)
                 {
-                    Apply_AND_ByteMask(_Buttons_Address, 0xFD);
+                    Apply_AND_ByteMask(BUTTONS_ADDRESS, 0xFD);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_DOWN)
                 {
-                    Apply_OR_ByteMask(_Buttons_Address, 0x01);
+                    Apply_OR_ByteMask(BUTTONS_ADDRESS, 0x01);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_UP)
                 {
-                    Apply_AND_ByteMask(_Buttons_Address, 0xFE);
+                    Apply_AND_ByteMask(BUTTONS_ADDRESS, 0xFE);
                 }
             }
             else if (Player == 2)
             {
                 //Write Axis
-                WriteBytes(_Player2_Float_Axis_Address, BitConverter.GetBytes(_P2_X_Float));
-                WriteBytes(_Player2_Float_Axis_Address + 4, BitConverter.GetBytes(_P2_Y_Float));
+                WriteBytes(_Player2_InputStruct_Address + INPUT_X_OFFSET, BitConverter.GetBytes(_P2_X_Float));
+                WriteBytes(_Player2_InputStruct_Address + INPUT_Y_OFFSET, BitConverter.GetBytes(_P2_Y_Float));
 
                 //Inputs
                 if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
-                    Apply_OR_ByteMask(_Buttons_Address + 4, 0x02);
+                    Apply_OR_ByteMask(BUTTONS_ADDRESS + 4, 0x02);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_UP)
                 {
-                    Apply_AND_ByteMask(_Buttons_Address + 4, 0xFD);
+                    Apply_AND_ByteMask(BUTTONS_ADDRESS + 4, 0xFD);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_DOWN)
                 {
-                    Apply_OR_ByteMask(_Buttons_Address + 4, 0x01);
+                    Apply_OR_ByteMask(BUTTONS_ADDRESS + 4, 0x01);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_UP)
                 {
-                    Apply_AND_ByteMask(_Buttons_Address + 4, 0xFE);
+                    Apply_AND_ByteMask(BUTTONS_ADDRESS + 4, 0xFE);
                 }
             }
         }

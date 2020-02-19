@@ -56,6 +56,7 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "gs2";
+            _KnownMd5Prints.Add("Operation Ghost dump", "40f795933abc4f441c98acc778610aa2");
             
             ReadGameData();
             _tProcess = new Timer();
@@ -100,6 +101,7 @@ namespace DemulShooter
                                 //WriteLog("P1_Y adddress =  0x" + _P1_Y_Address.ToString("X8"));
                                 WriteLog("P2_X adddress =  0x" + _P2_X_Address.ToString("X8"));
                                 WriteLog("P2_Y adddress =  0x" + _P2_Y_Address.ToString("X8"));
+                                ChecExeMd5();
                                 CreateMemoryBank();
                                 SetHack_Buttons();
                                 SetHack_Axis();

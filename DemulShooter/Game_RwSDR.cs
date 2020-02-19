@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace DemulShooter
 {
@@ -43,6 +43,7 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "game";
+            _KnownMd5Prints.Add("Sega Dream Raider Dump", "4264540b2a24f3359a3deb5f1e95e392");
 
             ReadGameData();
             _tProcess = new Timer();
@@ -80,6 +81,7 @@ namespace DemulShooter
                                 WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 WriteLog("Controls base address = 0x" + _Controls_Base_Address.ToString("X8"));
+                                ChecExeMd5();
                                 if (_ParrotLoaderFullHack)
                                     SetHack2();
                                 else

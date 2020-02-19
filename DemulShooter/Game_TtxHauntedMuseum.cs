@@ -38,6 +38,7 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "game";
+            _KnownMd5Prints.Add("Original game.exe", "ea27e06f3f918697fe9f924e728f5e80");
 
             ReadGameData();
             _tProcess = new Timer();
@@ -70,6 +71,7 @@ namespace DemulShooter
                             _ProcessHooked = true;
                             WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
+                            ChecExeMd5();
                             SetHack();
                         }
                     }

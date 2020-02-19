@@ -186,9 +186,17 @@ namespace DemulShooter
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool ReadProcessMemory(int hProcess, int lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
+                
+        [DllImport("kernel32.dll", SetLastError = true, EntryPoint = "ReadProcessMemory")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern Boolean ReadProcessMemoryX64([In] IntPtr hProcess, [In] IntPtr lpBaseAddress, [Out] Byte[] lpBuffer, [In] UIntPtr nSize, [Out] out UIntPtr lpNumberOfBytesRead);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool WriteProcessMemory(int hProcess, int lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesWritten);
+
+        [DllImport("kernel32.dll", SetLastError = true, EntryPoint = "WriteProcessMemory")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern Boolean WriteProcessMemoryX64([In] IntPtr hProcess, [In] IntPtr lpBaseAddress, [Out] Byte[] lpBuffer, [In] UIntPtr nSize, [Out] out UIntPtr lpNumberOfBytesWritten);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool QueryFullProcessImageName([In]IntPtr hProcess, [In]int dwFlags, [Out]StringBuilder lpExeName, ref int lpdwSize);

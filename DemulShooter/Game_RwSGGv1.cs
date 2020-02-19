@@ -42,6 +42,7 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "RingGunR_RingWide";
+            _KnownMd5Prints.Add("GoldenGun Dump", "9a94458ca852b8b33d8b17b2cfdd663d");
 
             ReadGameData();
             _tProcess = new Timer();
@@ -76,6 +77,7 @@ namespace DemulShooter
                             WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             
                             SetAxisHack();
+                            ChecExeMd5();
                             if (_ParrotLoaderFullHack)
                             {
                                 SetButtonsHack2();                                                              

@@ -44,6 +44,7 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = "game";
+            _KnownMd5Prints.Add("Gaia Attack 4 Dump", "f2d8e8f7d3a9a29d4804ff7cb29aa8a2");
 
             ReadGameData();
             _tProcess = new Timer();
@@ -76,6 +77,7 @@ namespace DemulShooter
                             _ProcessHooked = true;
                             WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
+                            ChecExeMd5();
                             SetHack();
                         }
                     }

@@ -24,16 +24,17 @@ namespace DemulShooter
             bool isVerbose = false;
             string _target = string.Empty;
 
-            string[] _Targets = new string[] { "chihiro", "demul057", "demul058", "demul07a", "dolphin4", "dolphin5", "globalvr", "lindbergh", "model2", "model2m", "ringwide", "ttx", "windows", "wip" };
+            string[] _Targets = new string[] { "chihiro", "demul057", "demul058", "demul07a", "dolphin4", "dolphin5", "globalvr", "lindbergh", "model2", "model2m", "ringwide", "seganu", "ttx", "windows", "wip" };
             string[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "manicpnc", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
             string[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
             string[] _WindowsRoms = new string[] { "artdead", "hfa", "hfa2p", "hfa_s", "hfa2p_s", "hfss", "hfss2p", "hfss_s", "hfss2p_s", "hod2pc", "hod3pc", "hodo", "reload" };
             string[] _TTXRoms = new string[] { "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
             string[] _GlobalVrRoms = new string[] { "aliens", "alienshasp", "farcry", "fearland" };
-            string[] _LindberghRoms = new string[] { "hotd4", "lgj" };
+            string[] _LindberghRoms = new string[] { "2spicy", "hotd4", "lgj", "rambo" };
             string[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr", "tha" };
+            string[] _SegaNuRoms = new string[] { "lma" };
             string[] _ChihiroRoms = new string[] { "vcop3" };
-            string[] _WipRoms = new string[] { "bestate", "wartran", "bhapc"};
+            string[] _WipRoms = new string[] { "bestate", "wartran", "bhapc", "lla"};
         
             if (args.Length > 0)
             {
@@ -48,7 +49,7 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : October, 21th 2019");
+                        Console.WriteLine("Build date : Frebuary, 19th 2020");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
@@ -63,6 +64,7 @@ namespace DemulShooter
                         Console.WriteLine("model2\t\tNebula Model2Emulator (emulator.exe) v1.1a");
                         Console.WriteLine("model2m\t\tNebula Model2Emulator (emulator_multicpu.exe) v1.1a");
                         Console.WriteLine("ringwide\tTeknoParrot Loader");
+                        Console.WriteLine("SEGA Nu\tTeknoParrot Loader");
                         Console.WriteLine("lindbergh\tTeknoParrot Loader");
                         Console.WriteLine("ttx\t\tTaito Type X");
                         Console.WriteLine("windows\t\tWindows games");
@@ -100,9 +102,11 @@ namespace DemulShooter
                         Console.WriteLine(" aliens\t\tAliens Extermination Dehasped (2nd dump, x86 and x64, no need for VM)");
                         Console.WriteLine(" fearland\tFright Fear Land");
                         Console.WriteLine("");
-                        Console.WriteLine("Lindbergh roms (TeknoParrot 1.0.0.226 only) :");
+                        Console.WriteLine("Lindbergh roms :");
+                        Console.WriteLine(" 2spicy\t\tToo Spicy");
                         Console.WriteLine(" hotd4\t\tHouse of The Dead 4");
                         Console.WriteLine(" lgj\t\tLet's Go Jungle");
+                        Console.WriteLine(" rambo\t\tRambo Arcade");
                         Console.WriteLine("");
                         Console.WriteLine("Model2 roms :");
                         Console.WriteLine(" bel\t\tBehind Enemy Lines");
@@ -111,6 +115,9 @@ namespace DemulShooter
                         Console.WriteLine(" rchase2\tRail Chase 2");
                         Console.WriteLine(" vcop\t\tVirtua Cop");
                         Console.WriteLine(" vcop2\t\tVirtua Cop 2");
+                        Console.WriteLine("");
+                        Console.WriteLine("SEGA Nu roms :");
+                        Console.WriteLine(" lma\t\tLuigi's Mansion Arcade");
                         Console.WriteLine("");
                         Console.WriteLine("Ringwide roms :");
                         Console.WriteLine(" sgg\t\tSega Golden Gun");
@@ -263,6 +270,26 @@ namespace DemulShooter
                             if (!CheckParameter(rom, _RingWideRoms))
                             {
                                 Console.WriteLine("Unsupported RingWide rom parameter : \"" + rom + "\". See help for supported roms list");
+                                //Dangerous : send ENTER to active window
+                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
+                                Environment.Exit(0);
+                            }
+                        }
+                        else if (_target.Equals("seganu"))
+                        {
+                            if (!CheckParameter(rom, _SegaNuRoms))
+                            {
+                                Console.WriteLine("Unsupported Saga Nu rom parameter : \"" + rom + "\". See help for supported roms list");
+                                //Dangerous : send ENTER to active window
+                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
+                                Environment.Exit(0);
+                            }
+                        }
+                        else if (_target.Equals("wip"))
+                        {
+                            if (!CheckParameter(rom, _WipRoms))
+                            {
+                                Console.WriteLine("Unsupported W.I.P rom parameter : \"" + rom + "\". See help for supported roms list");
                                 //Dangerous : send ENTER to active window
                                 System.Windows.Forms.SendKeys.SendWait("{ENTER}");
                                 Environment.Exit(0);
