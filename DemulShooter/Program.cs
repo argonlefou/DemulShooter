@@ -49,7 +49,7 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : Frebuary, 19th 2020");
+                        Console.WriteLine("Build date : March, 13th 2020");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
@@ -64,7 +64,7 @@ namespace DemulShooter
                         Console.WriteLine("model2\t\tNebula Model2Emulator (emulator.exe) v1.1a");
                         Console.WriteLine("model2m\t\tNebula Model2Emulator (emulator_multicpu.exe) v1.1a");
                         Console.WriteLine("ringwide\tTeknoParrot Loader");
-                        Console.WriteLine("SEGA Nu\tTeknoParrot Loader");
+                        Console.WriteLine("seganu\tTeknoParrot Loader");
                         Console.WriteLine("lindbergh\tTeknoParrot Loader");
                         Console.WriteLine("ttx\t\tTaito Type X");
                         Console.WriteLine("windows\t\tWindows games");

@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 
 namespace DemulShooter
 {
+    /// <summary>
+    /// This class is the base class to create codecave into some 32bits process memory
+    /// </summary>
     class Memory
     {
         [Flags]

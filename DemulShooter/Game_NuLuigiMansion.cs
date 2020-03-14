@@ -9,31 +9,21 @@ using System.Windows.Forms;
 namespace DemulShooter
 {
     class Game_NuLuigiMansion : Game
-    {
-        //Input structure constants
-        private const UInt64 INPUT_STRUCT_PTR_OFFSET = 0x004F6CB8;
-        private const int P1_X_OFFSET   = 0x2C;
-        private const int P1_Y_OFFSET   = 0x30;
-        private const int P1_BTN_OFFSET = 0x34;
-        private const int P2_X_OFFSET   = 0x40;
-        private const int P2_Y_OFFSET   = 0x44;
-        private const int P2_BTN_OFFSET = 0x48;
-        private UInt64 _Input_Struct_Address = 0;
+    {    
+        private UInt64 _P1_X_Address = 0;
+        private UInt64 _P1_Y_Address = 0;
+        private UInt64 _P1_Buttons_Address = 0;        
+        private const UInt64 P1_INJECTION_OFFSET = 0x00017E76;
+        private const UInt64 P1_INJECTION_RETURN_OFFSET = 0x00017E92;
 
-        //NOP for Guns in game
-        private const string P1_X_NOP_OFFSET = "0x00017EB8|4";
-        private const string P1_Y_NOP_OFFSET = "0x00017EBC|4";
-        private const string P2_X_NOP_OFFSET = "0x00017F1D|4";
-        private const string P2_Y_NOP_OFFSET = "0x00017F21|4";
+        private UInt64 _P2_X_Address = 0;
+        private UInt64 _P2_Y_Address = 0;
+        private UInt64 _P2_Buttons_Address = 0;
+        private const UInt64 P2_INJECTION_OFFSET = 0x00017EDA;
+        private const UInt64 P2_INJECTION_RETURN_OFFSET = 0x00017EF6;
 
-        //Codecave injection : button handling procedure
-        //The current value is 8 bytes less than the actual procedure because of X64 JMP 
-        //This one needs 14 Bytes so we are overwriting X and Y procedures (4 Bytes each) placed just before the BTN procedure
-        //Andso, there will be need to NOP X and Y procedure
-        private const UInt64 P1_BUTTONS_INJECTION_OFFSET = 0x00017EB8; //exact procedure is 0x00017EC0;
-        private const UInt64 P1_BUTTONS_INJECTION_RETURN_OFFSET = 0x00017EC8;
-        private const UInt64 P2_BUTTONS_INJECTION_OFFSET = 0x00017F1D; //exact procedure is 0x00017F25;
-        private const UInt64 P2_BUTTONS_INJECTION_RETURN_OFFSET = 0x00017F2D;
+        private const int ROM_LOADED_CHECK_INSTRUCTION_OFFSET = 0x17E6E;
+        
 
         /// <summary>
         /// Constructor
@@ -76,27 +66,20 @@ namespace DemulShooter
 
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
-                            WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
-                            WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                            Int64 test = _TargetProcess_MemoryBaseAddress.ToInt64() + (Int64)INPUT_STRUCT_PTR_OFFSET;
-                            WriteLog(test.ToString("X16"));
-                            byte[] bTampon = ReadBytesX64((IntPtr)test, 16);
-                            for (int i = 0; i < 16; i++)
-                            {
-                                WriteLog(bTampon[i].ToString("X2"));
-                            }
-                            UInt64 iTampon = BitConverter.ToUInt64(bTampon, 0);
-                            WriteLog(iTampon.ToString("X16"));
-                            bTampon = ReadBytesX64((IntPtr)iTampon, 16);  
-                            _Input_Struct_Address = BitConverter.ToUInt64(bTampon, 0);
-                            if (_Input_Struct_Address != 0)
+                            Int64 aTest = _TargetProcess_MemoryBaseAddress.ToInt64() + ROM_LOADED_CHECK_INSTRUCTION_OFFSET;
+                            
+                            byte[] buffer = ReadBytesX64((IntPtr)aTest, 2);
+                            if (buffer[0] == 0x74 && buffer[1] == 0x58)
                             {
                                 _ProcessHooked = true;
                                 WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                                WriteLog("Input Struct Address = 0x" + _Input_Struct_Address.ToString("X12"));
                                 ChecExeMd5();
                                 SetHack();
+                            }
+                            else
+                            {
+                                WriteLog("ROM not Loaded...");
                             }
                         }
                     }
@@ -171,36 +154,53 @@ namespace DemulShooter
 
         private void SetHack()
         {
-            SetHackP1Buttons();
-            SetHackP2Buttons();
-           
-            /*SetNopsX64(_TargetProcess_MemoryBaseAddress, P1_X_NOP_OFFSET);
-            SetNopsX64(_TargetProcess_MemoryBaseAddress, P1_Y_NOP_OFFSET);
-            SetNopsX64(_TargetProcess_MemoryBaseAddress, P2_X_NOP_OFFSET);
-            SetNopsX64(_TargetProcess_MemoryBaseAddress, P2_Y_NOP_OFFSET);*/
+            SetHackP1();
+            SetHackP2();
 
             WriteLog("Memory Hack complete !");
             WriteLog("-");
         }
-                
+
         /// <summary>
-        /// Start and Gun buttons are on the same byte, so we can't simply NOP,to keep Teknoparrot Start button working
+        /// Axis values and Buttons states are written by Teknoparrot DLL, we can't block it.
+        /// So instead we're targeting the instructions which are reading the values to make them read ou own instead.
+        /// As usual, many buttons are sharing the sam Byte so we are filtering to block only gun buttons and still allow both START buttons
         /// </summary>
-        private void SetHackP1Buttons()
+        private void SetHackP1()
         {
             MemoryX64 CaveMemory = new MemoryX64(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
+
+            /* Because of 64bit asm, I dont know how to load a 64bit data segment address into a register.
+             * But there is an instruction to load address with an offset from RIP (instruction pointer) 
+             * That's why data are stored just after the code (to know the offset)
+             * */
+            WriteLog("_P1_Data_Address = 0x" + (CaveMemory.CaveAddress + 0x50).ToString("X16"));
+            _P1_X_Address = CaveMemory.CaveAddress + 0x50;
+            _P1_Y_Address = CaveMemory.CaveAddress + 0x60;
+            _P1_Buttons_Address = CaveMemory.CaveAddress + 0x70;
+
             List<Byte> Buffer = new List<Byte>();
+            //mov r8d, [RIP+100]     (==> _P1_X_Address)
+            CaveMemory.Write_StrBytes("44 8B 05 49 00 00 00");
+            //mov r9d, [RIP+100]     (==> _P1_Y_Address)
+            CaveMemory.Write_StrBytes("44 8B 0D 52 00 00 00");
+            //mov r10d, [rax+ 000000BC]
+            CaveMemory.Write_StrBytes("44 8B 90 BC 00 00 00");
+            //mov r11d, [rax+ 000000C0]
+            CaveMemory.Write_StrBytes("44 8B 98 C0 00 00 00");
             //and r10d, 0x1000
             CaveMemory.Write_StrBytes("41 81 E2 00 10 00 00");
-            //and [rax+34], 0xFFFFEFFF
-            CaveMemory.Write_StrBytes("81 60 34 FF EF FF FF");
-            //or [rax+34], r10d
-            CaveMemory.Write_StrBytes("44 09 50 34");
-            //mov [rax+38], r11d
-            CaveMemory.Write_StrBytes("44 89 58 38");
-            CaveMemory.Write_jmp((UInt64)_TargetProcess_MemoryBaseAddress + P1_BUTTONS_INJECTION_RETURN_OFFSET);
+            //push rbx
+            CaveMemory.Write_StrBytes("53");
+            //mov rbx, [RIP+100]     (==> _P1_Button_Address)
+            CaveMemory.Write_StrBytes("48 8B 1D 45 00 00 00");
+            //or r10d, rbx
+            CaveMemory.Write_StrBytes("49 09 DA");
+            //pop rbx
+            CaveMemory.Write_StrBytes("5B");
+            CaveMemory.Write_jmp((UInt64)_TargetProcess_MemoryBaseAddress + P1_INJECTION_RETURN_OFFSET);
 
             WriteLog("Adding P1 Buttons Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
 
@@ -215,29 +215,39 @@ namespace DemulShooter
             Buffer.Add(0x00);
             Buffer.Add(0x00);
             Buffer.AddRange(BitConverter.GetBytes(CaveMemory.CaveAddress));
-            Buffer.Add(0x90);
-            Buffer.Add(0x90);
-            Win32.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + P1_BUTTONS_INJECTION_OFFSET - 8), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten); 
+            Win32.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + P1_INJECTION_OFFSET), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
         }
-
-        /// <summary>
-        /// Start and Gun buttons are on the same byte, so we can't simply NOP,to keep Teknoparrot Start button working
-        /// </summary>
-        private void SetHackP2Buttons()
+        private void SetHackP2()
         {
             MemoryX64 CaveMemory = new MemoryX64(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
+
+            WriteLog("_P2_Data_Address = 0x" + (CaveMemory.CaveAddress + 0x50).ToString("X16"));
+            _P2_X_Address = CaveMemory.CaveAddress + 0x50;
+            _P2_Y_Address = CaveMemory.CaveAddress + 0x60;
+            _P2_Buttons_Address = CaveMemory.CaveAddress + 0x70;
+
             List<Byte> Buffer = new List<Byte>();
+            //mov r8d, [RIP+100]     (==> _P2_X_Address)
+            CaveMemory.Write_StrBytes("44 8B 05 49 00 00 00");
+            //mov r9d, [RIP+100]     (==> _P2_Y_Address)
+            CaveMemory.Write_StrBytes("44 8B 0D 52 00 00 00");
+            //mov r10d, [rax+ 000000D0]
+            CaveMemory.Write_StrBytes("44 8B 90 D0 00 00 00");
+            //mov r11d, [rax+ 000000D4]
+            CaveMemory.Write_StrBytes("44 8B 98 D4 00 00 00");
             //and r10d, 0x1000
             CaveMemory.Write_StrBytes("41 81 E2 00 10 00 00");
-            //and [rax+48], 0xFFFFEFFF
-            CaveMemory.Write_StrBytes("81 60 48 FF EF FF FF");
-            //or [rax+48], r10d
-            CaveMemory.Write_StrBytes("44 09 50 48");
-            //mov [rax+4c], r11d
-            CaveMemory.Write_StrBytes("44 89 58 4c");
-            CaveMemory.Write_jmp((UInt64)_TargetProcess_MemoryBaseAddress + P2_BUTTONS_INJECTION_RETURN_OFFSET);
+            //push rbx
+            CaveMemory.Write_StrBytes("53");
+            //mov rbx, [RIP+100]     (==> _P2_Button_Address)
+            CaveMemory.Write_StrBytes("48 8B 1D 45 00 00 00");
+            //or r10d, rbx
+            CaveMemory.Write_StrBytes("49 09 DA");
+            //pop rbx
+            CaveMemory.Write_StrBytes("5B");
+            CaveMemory.Write_jmp((UInt64)_TargetProcess_MemoryBaseAddress + P2_INJECTION_RETURN_OFFSET);
 
             WriteLog("Adding P2 Buttons Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
 
@@ -252,10 +262,8 @@ namespace DemulShooter
             Buffer.Add(0x00);
             Buffer.Add(0x00);
             Buffer.AddRange(BitConverter.GetBytes(CaveMemory.CaveAddress));
-            Buffer.Add(0x90);
-            Buffer.Add(0x90);
-            Win32.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + P2_BUTTONS_INJECTION_OFFSET - 8), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);  
-        }
+            Win32.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + P2_INJECTION_OFFSET), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
+        }    
 
 
         public override void SendInput(MouseInfo mouse, int Player)
@@ -263,49 +271,49 @@ namespace DemulShooter
             if (Player == 1)
             {
                 //Write Axis
-                WriteBytesX64((IntPtr)(_Input_Struct_Address + P1_X_OFFSET), BitConverter.GetBytes(mouse.pTarget.X));
-                WriteBytesX64((IntPtr)(_Input_Struct_Address + P1_Y_OFFSET), BitConverter.GetBytes(mouse.pTarget.Y));
+                WriteBytesX64((IntPtr)(_P1_X_Address), BitConverter.GetBytes(mouse.pTarget.X));
+                WriteBytesX64((IntPtr)(_P1_Y_Address), BitConverter.GetBytes(mouse.pTarget.Y));
 
                 //Inputs
                 if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
-                    Apply_OR_ByteMaskX64((IntPtr)(_Input_Struct_Address + P1_BTN_OFFSET + 1), 0x20);
+                    Apply_OR_ByteMaskX64((IntPtr)(_P1_Buttons_Address + 1), 0x40);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_UP)
                 {
-                    Apply_AND_ByteMaskX64((IntPtr)(_Input_Struct_Address + P1_BTN_OFFSET + 1), 0xDF);
+                    Apply_AND_ByteMaskX64((IntPtr)(_P1_Buttons_Address + 1), 0xBF);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_DOWN)
                 {
-                    Apply_OR_ByteMaskX64((IntPtr)(_Input_Struct_Address + P1_BTN_OFFSET + 1), 0x40);
+                    Apply_OR_ByteMaskX64((IntPtr)(_P1_Buttons_Address + 1), 0x20);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_UP)
                 {
-                    Apply_AND_ByteMaskX64((IntPtr)(_Input_Struct_Address + P1_BTN_OFFSET + 1), 0xBF);
+                    Apply_AND_ByteMaskX64((IntPtr)(_P1_Buttons_Address + 1), 0xDF);
                 }
             }
             else if (Player == 2)
             {
                 //Write Axis
-                WriteBytesX64((IntPtr)(_Input_Struct_Address + P2_X_OFFSET), BitConverter.GetBytes(mouse.pTarget.X));
-                WriteBytesX64((IntPtr)(_Input_Struct_Address + P2_Y_OFFSET), BitConverter.GetBytes(mouse.pTarget.Y));
+                WriteBytesX64((IntPtr)(_P2_X_Address), BitConverter.GetBytes(mouse.pTarget.X));
+                WriteBytesX64((IntPtr)(_P2_Y_Address), BitConverter.GetBytes(mouse.pTarget.Y));
 
                 //Inputs
                 if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
-                    Apply_OR_ByteMaskX64((IntPtr)(_Input_Struct_Address + P2_BTN_OFFSET + 1), 0x20);
+                    Apply_OR_ByteMaskX64((IntPtr)(_P2_Buttons_Address + 1), 0x40);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_UP)
                 {
-                    Apply_AND_ByteMaskX64((IntPtr)(_Input_Struct_Address + P2_BTN_OFFSET + 1), 0xDF);
+                    Apply_AND_ByteMaskX64((IntPtr)(_P2_Buttons_Address + 1), 0xBF);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_DOWN)
                 {
-                    Apply_OR_ByteMaskX64((IntPtr)(_Input_Struct_Address + P2_BTN_OFFSET + 1), 0x40);
+                    Apply_OR_ByteMaskX64((IntPtr)(_P2_Buttons_Address + 1), 0x20);
                 }
                 else if (mouse.button == Win32.RI_MOUSE_MIDDLE_BUTTON_UP)
                 {
-                    Apply_AND_ByteMaskX64((IntPtr)(_Input_Struct_Address + P2_BTN_OFFSET + 1), 0xBF);
+                    Apply_AND_ByteMaskX64((IntPtr)(_P2_Buttons_Address + 1), 0xDF);
                 }
             }
         }

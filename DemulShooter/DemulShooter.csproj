@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ControllerDevice.cs" />
+    <Compile Include="Cxbx_Vcop3_2.cs" />
     <Compile Include="Game_ArtIsDead.cs" />
     <Compile Include="Game_BE.cs" />
     <Compile Include="Game_Bhapc.cs" />

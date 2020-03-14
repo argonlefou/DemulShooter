@@ -479,7 +479,6 @@ namespace DemulShooter
 
         #endregion
 
-
         #region XOutput
 
         protected virtual void InstallX360Gamepad(int Player)

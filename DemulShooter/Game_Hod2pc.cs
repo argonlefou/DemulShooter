@@ -11,19 +11,22 @@ namespace DemulShooter
 {
     class Game_Hod2pc : Game
     {
-        private const string FOLDER_GAMEDATA = @"MemoryData\windows";
+        private const string FOLDER_GAMEDATA = @"MemoryData\windows\hod2pc";
 
         /*** MEMORY ADDRESSES **/
-        protected int _P1_X_Offset;
-        protected int _P1_Y_Offset;
-        protected int _P2_X_Offset;
-        protected int _P2_Y_Offset;
+        private int _P1_X_Offset;
+        private int _P1_Y_Offset;
+        private int _P2_X_Offset;
+        private int _P2_Y_Offset;
+        private int _Credits_Offset;
+        private string _X_Nop_Offset = String.Empty;
+        private string _Y_Nop_Offset = String.Empty;
 
         //Keys
-        protected byte _P1_Trigger_VK = Win32.VK_RSHIFT;
-        protected byte _P1_Reload_VK = Win32.VK_RCONTROL;
-        protected byte _P2_Trigger_VK = Win32.VK_LSHIFT;
-        protected byte _P2_Reload_VK = Win32.VK_LCONTROL;
+        private byte _P1_Trigger_VK;
+        private byte _P1_Reload_VK;
+        private byte _P2_Trigger_VK;
+        private byte _P2_Reload_VK;
 
         //Play the "Coins" sound when adding coin
         SoundPlayer _SndPlayer;
@@ -42,8 +45,7 @@ namespace DemulShooter
             _Target_Process_Name = "hod2";
             _KnownMd5Prints.Add("hod2 SEGA Windows", "97c9e516a287aab33a455a396dadaa45");
             _KnownMd5Prints.Add("hod2 Cracked", "eb51d3856997581ed3aa8ecb7d6d8d07");
-
-            ReadGameData();
+            _KnownMd5Prints.Add("hod2 Unknown Release #1", "fd53bc12b72958c819cf6931787df3cb");            
 
             _tProcess = new Timer();
             _tProcess.Interval = 500;
@@ -76,6 +78,8 @@ namespace DemulShooter
                             WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             ChecExeMd5();
+                            ReadGameData();
+                            SetHack();
 
                             //Adding a "Coin" button 
                             ApplyKeyboardHook();
@@ -120,9 +124,11 @@ namespace DemulShooter
         /// </summary>
         protected override void ReadGameData()
         {
-            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + @"\" + FOLDER_GAMEDATA + @"\" + _RomName + ".cfg"))
+            String ConfigFile = AppDomain.CurrentDomain.BaseDirectory + FOLDER_GAMEDATA + @"\" + _TargetProcess_Md5Hash + ".cfg";
+            if (File.Exists(ConfigFile))
             {
-                using (StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + @"\" + FOLDER_GAMEDATA + @"\" + _RomName + ".cfg"))
+                WriteLog("Reading game memory setting from " + ConfigFile);
+                using (StreamReader sr = new StreamReader(ConfigFile))
                 {
                     string line;
                     line = sr.ReadLine();
@@ -147,6 +153,27 @@ namespace DemulShooter
                                     case "P2_Y_OFFSET":
                                         _P2_Y_Offset = int.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
                                         break;
+                                    case "CREDITS_OFFSET":
+                                        _Credits_Offset = int.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
+                                        break;
+                                    case "P1_TRIGGER_VKEY":
+                                        _P1_Trigger_VK = byte.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
+                                        break;
+                                    case "P1_RELOAD_VKEY":
+                                        _P1_Reload_VK = byte.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
+                                        break;
+                                    case "P2_TRIGGER_VKEY":
+                                        _P2_Trigger_VK = byte.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
+                                        break;
+                                    case "P2_RELOAD_VKEY":
+                                        _P2_Reload_VK = byte.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
+                                        break;
+                                    case "X_NOP_OFFSET" :
+                                        _X_Nop_Offset = buffer[1].Trim();
+                                        break;
+                                    case "Y_NOP_OFFSET":
+                                        _Y_Nop_Offset = buffer[1].Trim();
+                                        break;
                                     default: break;
                                 }
                             }
@@ -162,7 +189,7 @@ namespace DemulShooter
             }
             else
             {
-                WriteLog("File not found : " + AppDomain.CurrentDomain.BaseDirectory + @"\" + FOLDER_GAMEDATA + @"\" + _RomName + ".cfg");
+                WriteLog("File not found : " + ConfigFile);
             }
         }
 
@@ -222,21 +249,30 @@ namespace DemulShooter
                 {
                     if (s.scanCode == 0x06 /* [5] Key */)
                     {
-                        byte Credits = ReadByte((int)_TargetProcess_MemoryBaseAddress + 0x5C8E60);
+                        byte Credits = ReadByte((int)_TargetProcess_MemoryBaseAddress + _Credits_Offset);
                         Credits++;
-                        WriteByte((int)_TargetProcess_MemoryBaseAddress + 0x5C8E60, Credits);
+                        WriteByte((int)_TargetProcess_MemoryBaseAddress + _Credits_Offset, Credits);
                         if (_SndPlayer != null)
                             _SndPlayer.Play();
                     }
                 }               
             }
             return Win32.CallNextHookEx(_KeyboardHookID, nCode, wParam, lParam);
-        } 
+        }
+
+        /// <summary>
+        /// Simple Hack : NOPing Axis procedures
+        /// </summary>
+        private void SetHack()
+        {
+            SetNops((int)_TargetProcess_MemoryBaseAddress, _X_Nop_Offset);
+            SetNops((int)_TargetProcess_MemoryBaseAddress, _Y_Nop_Offset);
+        }
 
         public override void SendInput(MouseInfo mouse, int Player)
         {
-            byte[] bufferX = BitConverter.GetBytes((float)(mouse.pTarget.X));
-            byte[] bufferY = BitConverter.GetBytes((float)(mouse.pTarget.Y));
+            byte[] bufferX = BitConverter.GetBytes((Int16)mouse.pTarget.X);
+            byte[] bufferY = BitConverter.GetBytes((Int16)mouse.pTarget.Y);
             
             if (Player == 1)
             {

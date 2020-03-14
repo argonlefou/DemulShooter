@@ -205,7 +205,7 @@ namespace DemulShooter
                 _VerboseEnable = VerboseEnable;
 
                 WriteLog("");
-                WriteLog("-------------------- Program Start ----------------------");
+                WriteLog("---------------- Program Start -- DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString() + " ----------------");
 
                 foreach (ControllerDevice Device in _ControllerDevices)
                 {
@@ -441,7 +441,7 @@ namespace DemulShooter
                                 } break;
                             case "hotd4":
                                 {
-                                    _Game = new Game_LindberghHotd4(_Rom.ToLower(), _VerboseEnable);
+                                    _Game = new Game_LindberghHotd4RevC(_Rom.ToLower(), _VerboseEnable);
                                 } break;
                             case "lgj":
                                 {
@@ -536,7 +536,7 @@ namespace DemulShooter
                         {
                             case "vcop3":
                                 {
-                                    _Game = new Game_CxbxVcop3(_Rom.ToLower(), _VerboseEnable);
+                                    _Game = new Game_CxbxVcop3_2(_Rom.ToLower(), _VerboseEnable);
                                 }; break;
                         }
                     }

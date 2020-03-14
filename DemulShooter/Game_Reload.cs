@@ -11,7 +11,7 @@ namespace DemulShooter
 {
     class Game_Reload : Game
     {
-        private const string FOLDER_GAMEDATA = @"MemoryData\windows";
+        private const string FOLDER_GAMEDATA = @"MemoryData\windows\reload";
         private bool _HideCrosshair = false;
 
         /*** MEMORY ADDRESSES **/
@@ -65,8 +65,7 @@ namespace DemulShooter
             _ProcessHooked = false;
             _Target_Process_Name = "Reload";
             _KnownMd5Prints.Add("Reload IGG", "aaaf22c6671c12176d8317d4cc4b478d");
-
-            ReadGameData();
+            _KnownMd5Prints.Add("Reload Unknown1", "f3c4068a49f07aa99d2a92544d5c5748");            
 
             _tProcess = new Timer();
             _tProcess.Interval = 500;
@@ -106,6 +105,7 @@ namespace DemulShooter
                                     WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                     WriteLog("rld_game.dll Module Base Address = 0x " + _RldGameDll_ModuleBaseAddress.ToString("X8"));
                                     ChecExeMd5();
+                                    ReadGameData();
                                     SetHack();
 
                                     break;
@@ -141,9 +141,11 @@ namespace DemulShooter
         /// </summary>
         protected override void ReadGameData()
         {
-            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + @"\" + FOLDER_GAMEDATA + @"\" + _RomName + ".cfg"))
+            String ConfigFile = AppDomain.CurrentDomain.BaseDirectory + FOLDER_GAMEDATA + @"\" + _TargetProcess_Md5Hash + ".cfg";
+            if (File.Exists(ConfigFile))
             {
-                using (StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + @"\" + FOLDER_GAMEDATA + @"\" + _RomName + ".cfg"))
+                WriteLog("Reading game memory setting from " + ConfigFile);
+                using (StreamReader sr = new StreamReader(ConfigFile))
                 {
                     string line;
                     line = sr.ReadLine();
@@ -274,16 +276,33 @@ namespace DemulShooter
 
         #endregion
 
-        #region MemoryHack
-
+        /// <summary>
+        /// So far I ran into 2 versions of the game, both with different .exe and .dll files
+        /// Although the hack is the same, .dll files have slighty different asm codes so for some of them we need to rewrite
+        /// it all differently, because only changing offsets won't be enough
+        /// </summary>
         private void SetHack()
         {
+            //Common procedure
             SetHack_Data();
-            SetHack_P1X_Menu();
-            SetHack_P1Y_Menu();
-            SetHack_P1_Crosshair();
-            SetHack_P1_X_Shoot();
-            SetHack_P1_Y_Shoot();
+
+            if (_TargetProcess_Md5Hash == _KnownMd5Prints["Reload IGG"])
+            {
+                SetHack_P1X_Menu();
+                SetHack_P1Y_Menu();
+                SetHack_P1_Crosshair();
+                SetHack_P1_X_Shoot();
+                SetHack_P1_Y_Shoot();
+            }
+            else if (_TargetProcess_Md5Hash == _KnownMd5Prints["Reload Unknown1"])
+            {
+                SetHack_P1X_Menu_V2();
+                SetHack_P1Y_Menu_V2();
+                SetHack_P1_Crosshair_V2();
+                SetHack_P1_X_Shoot_V2();
+                SetHack_P1_Y_Shoot_V2();
+            }
+
             WriteLog("Memory Hack complete !");
             WriteLog("-");
         }
@@ -306,10 +325,13 @@ namespace DemulShooter
             WriteLog("Custom data will be stored at : 0x" + _P1_X_Menu_Address.ToString("X8"));
         }
 
+
+        #region MemoryHack_ExeV1
+
         /// <summary>
         /// All Axis codecave are the same :
         /// The game use some fstp [XXX] instruction, but we can't just NOP it as graphical glitches may appear.
-        /// So we just add another set of instructions instruction immediatelly after to change the register 
+        /// So we just add another set of instructions immediatelly after to change the register 
         /// to our own desired value
         /// </summary>
         private void SetHack_P1X_Menu()
@@ -386,14 +408,14 @@ namespace DemulShooter
             Buffer.Add(0x90);
             Buffer.Add(0x90);
             Win32.WriteProcessMemory((int)ProcessHandle, (int)_RldGameDll_ModuleBaseAddress + _P1_Y_Menu_Injection_Offset, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
-        
+
             //Cursor is not stable, so a little mod:
             Win32.WriteProcessMemory((int)ProcessHandle, (int)_RldGameDll_ModuleBaseAddress + _P1_Menu_Fix_Offset, new byte[] { 0xD9 }, 1, ref bytesWritten);
-        
+
         }
 
         /// <summary>
-        /// The gma eis using different procedures to handle mouse position in menu and in-game
+        /// The game is using different procedures to handle mouse position in menu and in-game
         /// Only one codecave for Menus handling as X and Y are 4 instructions next to each other
         /// </summary>
         private void SetHack_P1_Crosshair()
@@ -434,7 +456,7 @@ namespace DemulShooter
             Buffer.Add(0x90);
             Buffer.Add(0x90);
             Buffer.Add(0x90);
-            Win32.WriteProcessMemory((int)ProcessHandle, (int)_RldGameDll_ModuleBaseAddress + _P1_InGame_Crosshair_Injection_Offset, Buffer.ToArray(), Buffer.Count, ref bytesWritten);       
+            Win32.WriteProcessMemory((int)ProcessHandle, (int)_RldGameDll_ModuleBaseAddress + _P1_InGame_Crosshair_Injection_Offset, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
         }
 
         private void SetHack_P1_X_Shoot()
@@ -479,7 +501,7 @@ namespace DemulShooter
             Buffer.AddRange(BitConverter.GetBytes(jumpTo));
             Buffer.Add(0x90);
             Win32.WriteProcessMemory((int)ProcessHandle, (int)_RldGameDll_ModuleBaseAddress + _P1_InGame_X_Injection_Offset, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
-        
+
         }
 
         private void SetHack_P1_Y_Shoot()
@@ -525,6 +547,230 @@ namespace DemulShooter
             Win32.WriteProcessMemory((int)ProcessHandle, (int)_RldGameDll_ModuleBaseAddress + _P1_InGame_Y_Injection_Offset, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
         }
 
+        #endregion
+        
+        #region MemoryHack_ExeV2
+
+        /// <summary>
+        /// All Axis codecave are the same :
+        /// The game use some fstp [XXX] instruction, but we can't just NOP it as graphical glitches may appear.
+        /// So we just add another set of instructions immediatelly after to change the register 
+        /// to our own desired value
+        /// </summary>
+        private void SetHack_P1X_Menu_V2()
+        {
+            Memory CaveMemory = new Memory(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            List<Byte> Buffer = new List<Byte>();
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //mov eax, _P1_X_Address
+            CaveMemory.Write_StrBytes("B8");
+            byte[] b = BitConverter.GetBytes(_P1_X_Menu_Address);
+            CaveMemory.Write_Bytes(b);
+            //movss xmm1, [eax]
+            CaveMemory.Write_StrBytes("F3 0F 10 08");
+            //pop eax
+            CaveMemory.Write_StrBytes("58");
+            //movss [esp+4+arg0],xmm1
+            CaveMemory.Write_StrBytes("F3 0F 11 4C 24 08");
+            //return
+            CaveMemory.Write_jmp((int)_RldGameDll_ModuleBaseAddress + _P1_X_Menu_Injection_Return_Offset);
+
+            WriteLog("Adding P1_X CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            int bytesWritten = 0;
+            int jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((int)_RldGameDll_ModuleBaseAddress + _P1_X_Menu_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Win32.WriteProcessMemory((int)ProcessHandle, (int)_RldGameDll_ModuleBaseAddress + _P1_X_Menu_Injection_Offset, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
+        }
+
+        private void SetHack_P1Y_Menu_V2()
+        {
+            Memory CaveMemory = new Memory(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            List<Byte> Buffer = new List<Byte>();
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //mov eax, _P1_Y_Address
+            CaveMemory.Write_StrBytes("B8");
+            byte[] b = BitConverter.GetBytes(_P1_Y_Menu_Address);
+            CaveMemory.Write_Bytes(b);
+            //movss xmm0, [eax]
+            CaveMemory.Write_StrBytes("F3 0F 10 00");
+            //pop eax
+            CaveMemory.Write_StrBytes("58");
+            //movss [ecx+00000140],xmm0
+            CaveMemory.Write_StrBytes("F3 0F 11 81 40 01 00 00");
+            //return
+            CaveMemory.Write_jmp((int)_RldGameDll_ModuleBaseAddress + _P1_Y_Menu_Injection_Return_Offset);
+
+            WriteLog("Adding P1_X CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            int bytesWritten = 0;
+            int jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((int)_RldGameDll_ModuleBaseAddress + _P1_Y_Menu_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Win32.WriteProcessMemory((int)ProcessHandle, (int)_RldGameDll_ModuleBaseAddress + _P1_Y_Menu_Injection_Offset, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
+
+            //Cursor is not stable, so a little mod:
+            Win32.WriteProcessMemory((int)ProcessHandle, (int)_RldGameDll_ModuleBaseAddress + _P1_Menu_Fix_Offset, new byte[] { 0xD9 }, 1, ref bytesWritten);
+
+        }
+
+        /// <summary>
+        /// The game is using different procedures to handle mouse position in menu and in-game
+        /// Only one codecave for Menus handling as X and Y are 4 instructions next to each other
+        /// </summary>
+        private void SetHack_P1_Crosshair_V2()
+        {
+            Memory CaveMemory = new Memory(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            List<Byte> Buffer = new List<Byte>();
+            //fld dword ptr[_P1_X_Address]
+            CaveMemory.Write_StrBytes("D9 05");
+            byte[] b = BitConverter.GetBytes(_P1_X_Crosshair_Address);
+            CaveMemory.Write_Bytes(b);
+            //fstp dword ptr[edx+24]
+            CaveMemory.Write_StrBytes("D9 5A 24");
+            //fld dword ptr[_P1_Y_Address]
+            CaveMemory.Write_StrBytes("D9 05");
+            b = BitConverter.GetBytes(_P1_Y_Crosshair_Address);
+            CaveMemory.Write_Bytes(b);
+            //fstp dword ptr[edx+28]
+            CaveMemory.Write_StrBytes("D9 5A 28");
+            //return
+            CaveMemory.Write_jmp((int)_RldGameDll_ModuleBaseAddress + _P1_InGame_Crosshair_Injection_Return_Offset);
+
+            WriteLog("Adding P1_InGame_Crosshair CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            int bytesWritten = 0;
+            int jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((int)_RldGameDll_ModuleBaseAddress + _P1_InGame_Crosshair_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Win32.WriteProcessMemory((int)ProcessHandle, (int)_RldGameDll_ModuleBaseAddress + _P1_InGame_Crosshair_Injection_Offset, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
+        }
+
+        private void SetHack_P1_X_Shoot_V2()
+        {
+            Memory CaveMemory = new Memory(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            List<Byte> Buffer = new List<Byte>();
+            //mov eax [esp + 54h + arg_8]
+            CaveMemory.Write_StrBytes("8B 4C 24 60");
+            //fstp dword ptr[esi+48]
+            CaveMemory.Write_StrBytes("D9 5E 48");
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //mov eax, _P1_X_Shoot_Address
+            CaveMemory.Write_StrBytes("A1");
+            byte[] b = BitConverter.GetBytes(_P1_X_Shoot_Address);
+            CaveMemory.Write_Bytes(b);
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //fld dword ptr[esp]
+            CaveMemory.Write_StrBytes("D9 04 24");
+            //pop eax
+            CaveMemory.Write_StrBytes("58");
+            //fstp dword ptr[esi+48]
+            CaveMemory.Write_StrBytes("D9 5E 48");
+            //pop eax
+            CaveMemory.Write_StrBytes("58");
+            //return
+            CaveMemory.Write_jmp((int)_RldGameDll_ModuleBaseAddress + _P1_InGame_X_Injection_Return_Offset);
+
+            WriteLog("Adding P1_InGame_X CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            int bytesWritten = 0;
+            int jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((int)_RldGameDll_ModuleBaseAddress + _P1_InGame_X_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Win32.WriteProcessMemory((int)ProcessHandle, (int)_RldGameDll_ModuleBaseAddress + _P1_InGame_X_Injection_Offset, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
+
+        }
+
+        private void SetHack_P1_Y_Shoot_V2()
+        {
+            Memory CaveMemory = new Memory(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            List<Byte> Buffer = new List<Byte>();
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //mov eax, _P1_Y_Shoot_Address
+            CaveMemory.Write_StrBytes("A1");
+            byte[] b = BitConverter.GetBytes(_P1_Y_Shoot_Address);
+            CaveMemory.Write_Bytes(b);
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //fld dword ptr[esp]
+            CaveMemory.Write_StrBytes("D9 04 24");
+            //pop eax
+            CaveMemory.Write_StrBytes("58");
+            //fstp dword ptr[esi+4C]
+            CaveMemory.Write_StrBytes("D9 5E 4C");
+            //pop eax
+            CaveMemory.Write_StrBytes("58");
+            //cmp byte ptr [esi+000000CC],00
+            CaveMemory.Write_StrBytes("80 BE CC 00 00 00 00");
+            //return
+            CaveMemory.Write_jmp((int)_RldGameDll_ModuleBaseAddress + _P1_InGame_Y_Injection_Return_Offset);
+
+            WriteLog("Adding P1_InGame_Y CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            int bytesWritten = 0;
+            int jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((int)_RldGameDll_ModuleBaseAddress + _P1_InGame_Y_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Win32.WriteProcessMemory((int)ProcessHandle, (int)_RldGameDll_ModuleBaseAddress + _P1_InGame_Y_Injection_Offset, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
+        }
+
+#endregion
+        
         public override void SendInput(MouseInfo mouse, int Player)
         {
             if (Player == 1)
@@ -558,6 +804,6 @@ namespace DemulShooter
             }
         }
         
-        #endregion
+     
     }
 }

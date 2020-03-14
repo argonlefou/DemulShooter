@@ -171,7 +171,8 @@ namespace DemulShooter
             SetHack_GetP2InputPtr();
             SetHack_GunInit();
 
-            SetHackEnableP2();
+            //Not needed anymore, TeknoParrot fixed it
+            //SetHackEnableP2();
 
             SetNops(0, AXIS_X_NOP_ADDRESS);
             SetNops(0, AXIS_Y_NOP_ADDRESS);
@@ -280,7 +281,7 @@ namespace DemulShooter
             Win32.WriteProcessMemory((int)ProcessHandle, P2_INPUTSTRUCT_INJECTION_ADDRESS, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
         }
 
-        // CgunMgr::Init() => 0x081C95F4 ~ 0x081C9619
+        // CgunMgr::Init() => 0x081C9EC8 ~ 0x081C9EEE
         // Init Axis and buttons values to 0
         // Not called that often (maybe after START or CONTINUE or new level), maybe not necessary to block them
         private void SetHack_GunInit()
@@ -305,15 +306,7 @@ namespace DemulShooter
             //Reload
             SetNops(0, "0x08152B6C|3");
             SetNops(0, "0x08152F00|7");
-        }
-
-        // amCreditIsEnough() => 0x0831D800 ~~ 0x0831D895
-        // Even though Freeplay is forced by TeknoParrot, this procedure always find "NO CREDITS" for P2
-        // Replacing conditionnal Jump by single Jump force OK (for both players)
-        private void SetHackEnableP2()
-        {
-            WriteByte(0x831d827, 0xEB);
-        }
+        }        
 
         public override void SendInput(MouseInfo mouse, int Player)
         {

@@ -12,21 +12,37 @@ namespace DemulShooter
     class Game_CxbxVcop3 : Game
     {
         /*** MEMORY ADDRESSES **/
-        protected int _P1_X_Offset = 0x3578F4;
-        protected int _P1_Y_Offset = 0x3578F8;
-        protected int _P2_X_Offset = 0x3579CC;
-        protected int _P2_Y_Offset = 0x3579D0;
-        protected int _Buttons_Injection_Offset_P1 = 0x6C9B0;
-        protected int _Buttons_Injection_Return_Offset_P1 = 0x6C9B8;
-        protected int _P1_ButtonsStatus = 0;
-        protected int _P1_BulletTimeStatus = 0;
-        protected int _P2_ButtonsStatus = 0;
-        protected int _P2_BulletTimeStatus = 0;
 
+        private int _P1_X_Offset = 0x3578F4;
+        private int _P1_Y_Offset = 0x3578F8;
+        private int _P2_X_Offset = 0x3579CC;
+        private int _P2_Y_Offset = 0x3579D0;
+        private int _Buttons_Injection_Offset_P1 = 0x6C9B0;
+        private int _Buttons_Injection_Return_Offset_P1 = 0x6C9B8;
+        private int _P1_ButtonsStatus = 0;
+        private int _P1_BulletTimeStatus = 0;
+        private int _P2_ButtonsStatus = 0;
+        private int _P2_BulletTimeStatus = 0;
+
+        //Offset to NOP axis instructions
+        private const int _X1_OFFSET = 0x0006A3D8;
+        private const int _X2_OFFSET = 0x0006A403;
+        private const int _Y1_OFFSET = 0x0006A41E;
+        private const int _Y2_OFFSET = 0x0006A3F2;
+        private const String _X1_NOP_OFFSET = "0x0006A3D8|3";
+        private const String _X2_NOP_OFFSET = "0x0006A403|3";
+        private const String _Y1_NOP_OFFSET = "0x0006A41E|3";
+        private const String _Y2_NOP_OFFSET = "0x0006A3F2|3";
+        
         protected byte _P1_Start_Key = 0x02; //1
         protected byte _P2_Start_Key = 0x03; //2
 
-        private Process _CodeProcess;
+        //Cxbx emulation is done with 2 Processes :
+        //- The first one with a MainWindowHandle that will be used to translate coordinates thanks to WIN32 API, 
+        // but with no code loaded for the rom (Axis, buttons). This will be the new _WindowProcess;
+        //- The second one with the rom loaded inside, but without Window to translate, 
+        // this will be our usual to hook and inject data
+        private Process _WindowProcess;
 
         /// <summary>
         /// Constructor
@@ -48,7 +64,7 @@ namespace DemulShooter
             _tProcess.Enabled = true;
             _tProcess.Start();
 
-            WriteLog("Waiting for Global VR " + _RomName + " game to hook.....");
+            WriteLog("Waiting for Chihiro " + _RomName + " game to hook.....");
         }
 
         [DllImport("user32.dll", EntryPoint = "EnumDesktopWindows", ExactSpelling = false, CharSet = CharSet.Auto, SetLastError = true)]
@@ -94,25 +110,18 @@ namespace DemulShooter
                                 string FullPath2 = sb2.ToString(0, capacity2);
                                 if (FullPath2.ToLower().Contains("cxbx.exe"))
                                 {
-                                    _TargetProcess = pr;
+                                    _WindowProcess = pr;
                                 }
                             }
                             return true;
                         };
 
                         EnumDesktopWindows(IntPtr.Zero, filter, IntPtr.Zero);
-                        if (_TargetProcess != null)
+                        if (_WindowProcess != null)
                         {
-                            _ProcessHandle = _TargetProcess.Handle;
-                            _TargetProcess_MemoryBaseAddress = _TargetProcess.MainModule.BaseAddress;
-                            if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
-                            {
-                                _ProcessHooked = true;
-                                WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
-                                WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                                WriteLog("MainWindowHandle = " + _TargetProcess.MainWindowHandle.ToString());
-                                SetHack();
-                            }
+                            WriteLog("Attached to Window Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _WindowProcess.Handle.ToString());
+                            WriteLog("MainWindowHandle = " + _WindowProcess.MainWindowHandle.ToString());
+                            SetHack();
                         }
                     }
                 }
@@ -150,21 +159,33 @@ namespace DemulShooter
             _screenHeight = DesktopRect.Bottom;
         }
 
+        /// <summary>
+        /// Convert screen location of pointer to Client area location
+        /// </summary>
+        public override bool ClientScale(MouseInfo mouse)
+        {
+            if (_TargetProcess != null)
+                //Convert Screen location to Client location
+                return Win32.ScreenToClient(_WindowProcess.MainWindowHandle, ref mouse.pTarget);
+            else
+                return false;
+        }
+
         public override bool GameScale(MouseInfo Mouse, int Player)
         {
-            if (_ProcessHandle != IntPtr.Zero)
+            if (_WindowProcess.Handle != IntPtr.Zero)
             {
                 try
                 {
                     //Window size
                     Win32.Rect TotalRes = new Win32.Rect();
-                    Win32.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
+                    Win32.GetClientRect(_WindowProcess.MainWindowHandle, ref TotalRes);
                     double TotalResX = TotalRes.Right - TotalRes.Left;
                     double TotalResY = TotalRes.Bottom - TotalRes.Top;
 
                     WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
-                    Win32.GetWindowRect(_TargetProcess.MainWindowHandle, ref TotalRes);
+                    Win32.GetWindowRect(_WindowProcess.MainWindowHandle, ref TotalRes);
                     WriteLog("Game client window location (Px) = [ " + TotalRes.Left + " ; " + TotalRes.Top + " ]");
 
                     //X => [-320 ; +320] = 640
@@ -199,32 +220,30 @@ namespace DemulShooter
 
         private void SetHack()
         {
-            byte[] bTest = new byte[] { 0x89, 0x6E, 0x0C };
-            byte[] bNop = new byte[] { 0x90, 0x90, 0x90 };
+            //This is HEX code for the instrution we're testing to see which process is the good one to hook
+            byte[] bTest = new byte[] { 0x8B, 0xE8 };
 
             Process[] proc = Process.GetProcessesByName(_Target_Process_Name);
             int i = 0;
             foreach (Process p in proc)
-            {
-                int x1 = (int)p.MainModule.BaseAddress + 0x6A3D8;
-                int x2 = (int)p.MainModule.BaseAddress + 0x6A403;
-                int y1 = (int)p.MainModule.BaseAddress + 0x6A41E;
-                int y2 = (int)p.MainModule.BaseAddress + 0x6A3F2;
+            {                
                 _ProcessHandle = p.Handle;
-
                 WriteLog("Testing process #" + i.ToString());
                 WriteLog("Process ID = " + p.Id);
-                byte[] b = ReadBytes(x1, 3);
-                WriteLog("bTest = 0x" + bTest[0].ToString("X2") + ", 0x" + bTest[1].ToString("X2") + ", 0x" + bTest[2].ToString("X2"));
-                WriteLog("b = 0x" + b[0].ToString("X2") + ", 0x" + b[1].ToString("X2") + ", 0x" + b[2].ToString("X2"));
-                if (b[0] == bTest[0] && b[1] == bTest[1] && b[2] == bTest[2])
+                WriteLog("Testing instruction at 0x" + ((int)p.MainModule.BaseAddress + _X1_OFFSET - 2).ToString("X8"));
+                byte[] b = ReadBytes((int)p.MainModule.BaseAddress + _X1_OFFSET - 2, 2);
+                WriteLog("Waiting for : 0x" + bTest[0].ToString("X2") + ", 0x" + bTest[1].ToString("X2"));
+                WriteLog("Read values : 0x" + b[0].ToString("X2") + ", 0x" + b[1].ToString("X2"));
+                if (b[0] == bTest[0] && b[1] == bTest[1])
                 {
-                    WriteLog("Correct process !!");
-                    _CodeProcess = p;
+                    WriteLog("Correct process for code injection");
+                    _TargetProcess = p;
+                    _TargetProcess_MemoryBaseAddress = p.MainModule.BaseAddress;
+                    WriteLog("WindowHandle (should be 0) = " + p.MainWindowHandle.ToString());
 
                     //Creating data bank
                     //Codecave :
-                    Memory CaveMemoryInput = new Memory(p, p.MainModule.BaseAddress);
+                    Memory CaveMemoryInput = new Memory(_TargetProcess, _TargetProcess_MemoryBaseAddress);
                     CaveMemoryInput.Open();
                     CaveMemoryInput.Alloc(0x800);
                     _P1_ButtonsStatus = CaveMemoryInput.CaveAddress;
@@ -241,7 +260,7 @@ namespace DemulShooter
                     //EDX + 0x24 ==> 0xFF (RELOAD)
                     //EDX + 0x29 ==> 0xFF (Bullet Time)
                     //[ESP + 0x10] (after our push) contains controller ID (0->4)
-                    Memory CaveMemory = new Memory(_CodeProcess, _CodeProcess.MainModule.BaseAddress);
+                    Memory CaveMemory = new Memory(_TargetProcess, _TargetProcess_MemoryBaseAddress);
                     CaveMemory.Open();
                     CaveMemory.Alloc(0x800);                    
                     //mov edx, [esp+04]
@@ -288,39 +307,41 @@ namespace DemulShooter
                     //mov cx, [edx+0x21]
                     CaveMemory.Write_StrBytes("66 8B 4A 21");
                     //return
-                    CaveMemory.Write_jmp((int)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Return_Offset_P1);
+                    CaveMemory.Write_jmp((int)_TargetProcess_MemoryBaseAddress + _Buttons_Injection_Return_Offset_P1);
 
                     WriteLog("Adding Trigger CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
 
                     //Code injection
-                    IntPtr ProcessHandle = _CodeProcess.Handle;
+                    IntPtr ProcessHandle = _TargetProcess.Handle;
                     int bytesWritten = 0;
                     int jumpTo = 0;
-                    jumpTo = CaveMemory.CaveAddress - ((int)_CodeProcess.MainModule.BaseAddress + _Buttons_Injection_Offset_P1) - 5;
+                    jumpTo = CaveMemory.CaveAddress - ((int)_TargetProcess_MemoryBaseAddress + _Buttons_Injection_Offset_P1) - 5;
                     List<byte> Buffer = new List<byte>();
                     Buffer.Add(0xE9);                    
                     Buffer.AddRange(BitConverter.GetBytes(jumpTo));
                     Buffer.Add(0x90);
                     Buffer.Add(0x90);
                     Buffer.Add(0x90);
-                    Win32.WriteProcessMemory((int)ProcessHandle, (int)_CodeProcess.MainModule.BaseAddress + _Buttons_Injection_Offset_P1, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
+                    Win32.WriteProcessMemory((int)ProcessHandle, (int)_TargetProcess_MemoryBaseAddress + _Buttons_Injection_Offset_P1, Buffer.ToArray(), Buffer.Count, ref bytesWritten);
 
                     //Noping Axis procedures
-                    WriteBytes(x1, bNop);
-                    WriteBytes(x2, bNop);
-                    WriteBytes(y1, bNop);
-                    WriteBytes(y2, bNop);
+                    SetNops((int)_TargetProcess_MemoryBaseAddress, _X1_NOP_OFFSET);
+                    SetNops((int)_TargetProcess_MemoryBaseAddress, _X2_NOP_OFFSET);
+                    SetNops((int)_TargetProcess_MemoryBaseAddress, _Y1_NOP_OFFSET);
+                    SetNops((int)_TargetProcess_MemoryBaseAddress, _Y2_NOP_OFFSET);
 
                     ApplyKeyboardHook();
 
-                    break;
+                    _ProcessHooked = true;
                 }
                 else
                 {
-                    WriteLog("Not the good one...");
+                    WriteLog("Windows Process, not good for code injection");
+                    WriteLog("WindowHandle = " + p.MainWindowHandle.ToString());
                 }
                 i++;
             }
+            _ProcessHandle = _TargetProcess.Handle;
         }
         // Keyboard callback used for pedal-mode
         protected override IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
@@ -355,8 +376,8 @@ namespace DemulShooter
             if (Player == 1)
             {
                 //Write Axis
-                WriteBytes((int)_CodeProcess.MainModule.BaseAddress + _P1_X_Offset, bufferX);
-                WriteBytes((int)_CodeProcess.MainModule.BaseAddress + _P1_Y_Offset, bufferY);
+                WriteBytes((int)_TargetProcess_MemoryBaseAddress + _P1_X_Offset, bufferX);
+                WriteBytes((int)_TargetProcess_MemoryBaseAddress + _P1_Y_Offset, bufferY);
 
                 if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
@@ -385,8 +406,8 @@ namespace DemulShooter
             }
             else if (Player == 2)
             {
-                WriteBytes((int)_CodeProcess.MainModule.BaseAddress + _P2_X_Offset, bufferX);
-                WriteBytes((int)_CodeProcess.MainModule.BaseAddress + _P2_Y_Offset, bufferY);
+                WriteBytes((int)_TargetProcess_MemoryBaseAddress + _P2_X_Offset, bufferX);
+                WriteBytes((int)_TargetProcess_MemoryBaseAddress + _P2_Y_Offset, bufferY);
 
                 if (mouse.button == Win32.RI_MOUSE_LEFT_BUTTON_DOWN)
                 {

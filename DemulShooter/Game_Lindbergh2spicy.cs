@@ -131,16 +131,8 @@ namespace DemulShooter
                     double dMaxX = 236.0;
                     double dMaxY = 245.0;
 
-                    Mouse.pTarget.X = Convert.ToInt16(Math.Round(dMaxX * Mouse.pTarget.X / TotalResX) + 10);
-                    Mouse.pTarget.Y = Convert.ToInt16(Math.Round(dMaxY * Mouse.pTarget.Y / TotalResY) + 6);
-                    /*if (Mouse.pTarget.X < 10)
-                        Mouse.pTarget.X = 10;
-                    if (Mouse.pTarget.Y < 6)
-                        Mouse.pTarget.Y = 6;
-                    if (Mouse.pTarget.X > 245)
-                        Mouse.pTarget.X = 245;
-                    if (Mouse.pTarget.Y > 250)
-                        Mouse.pTarget.Y = 250;*/
+                    Mouse.pTarget.X = Convert.ToInt16(Math.Round(dMaxX * Mouse.pTarget.X / TotalResX) + 0x0A);
+                    Mouse.pTarget.Y = Convert.ToInt16(Math.Round(dMaxY * Mouse.pTarget.Y / TotalResY) + 0x06);                    
                     if (Mouse.pTarget.X < 10)
                         Mouse.pTarget.X = 0;
                     if (Mouse.pTarget.Y < 6)

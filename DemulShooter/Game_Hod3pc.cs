@@ -59,6 +59,8 @@ namespace DemulShooter
             _KnownMd5Prints.Add("hod3pc SEGA Windows", "4bf19dcb7f0182596d93f038189f2301");
             _KnownMd5Prints.Add("hod3pc RELOADED cracked", "3a4501d39bbb7271712421fb992ad37b");
             _KnownMd5Prints.Add("hod3pc REVELATION No-CD", "b8af47f16d5e43cddad8df0a6fdb46f5");
+            _KnownMd5Prints.Add("hod3pc MYTH Release", "0228818e9412fc218fcd24bfd829a5a0");
+            _KnownMd5Prints.Add("hod3pc Unknown Release #1", "51dd72f83c0de5b27c0358ad11e2a036");
 
             ReadGameData();
             ReadKeyConfig();
