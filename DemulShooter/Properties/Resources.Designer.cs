@@ -61,107 +61,12 @@ namespace DemulShooter.Properties {
         }
         
         /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap BEGame_Spark_70 {
-            get {
-                object obj = ResourceManager.GetObject("BEGame_Spark_70", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Byte[].
-        /// </summary>
-        internal static byte[] Crosshair {
-            get {
-                object obj = ResourceManager.GetObject("Crosshair", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Icon semblable à (Icône).
         /// </summary>
         internal static System.Drawing.Icon DemulShooter_Icon {
             get {
                 object obj = ResourceManager.GetObject("DemulShooter_Icon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Byte[].
-        /// </summary>
-        internal static byte[] dinput8_blocker {
-            get {
-                object obj = ResourceManager.GetObject("dinput8_blocker", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à [Wiimote1]
-        ///Device = DInput/0/Keyboard Mouse
-        ///Buttons/A = `Click 2`
-        ///Buttons/B = `Click 0`
-        ///Buttons/1 = 1
-        ///Buttons/2 = 2
-        ///Buttons/- = SUBTRACT
-        ///Buttons/+ = ADD
-        ///Buttons/Home = HOME
-        ///Shake/X = `Click 1`
-        ///Shake/Y = `Click 1`
-        ///Shake/Z = `Click 1`
-        ///Extension = Nunchuk
-        ///Nunchuk/Buttons/C = LCONTROL
-        ///Nunchuk/Buttons/Z = LSHIFT
-        ///Nunchuk/Stick/Up = W
-        ///Nunchuk/Stick/Down = S
-        ///Nunchuk/Stick/Left = A
-        ///Nunchuk/Stick/Right = D
-        ///D-Pad/Up = UP
-        ///D-Pad/Down = DOWN
-        ///D-Pad/Left = LEFT
-        ///D-Pad/Right = RIGHT
-        ///Source = 1
-        ///IR/Left [le reste de la chaîne a été tronqué]&quot;;.
-        /// </summary>
-        internal static string WiimoteNew_v4 {
-            get {
-                return ResourceManager.GetString("WiimoteNew_v4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à [Wiimote1]
-        ///Device = DInput/0/Keyboard Mouse
-        ///Buttons/A = `Click 2`
-        ///Buttons/B = `Click 0`
-        ///Buttons/1 = `1`
-        ///Buttons/2 = `2`
-        ///Buttons/- = `3`
-        ///Buttons/+ = `4`
-        ///Buttons/Home = `5`
-        ///IR/Up = `Cursor Y-`
-        ///IR/Down = Cursor Y+
-        ///IR/Left = Cursor X-
-        ///IR/Right = Cursor X+
-        ///Shake/X = `Click 1`
-        ///Shake/Y = `Click 1`
-        ///Shake/Z = `Click 1`
-        ///Extension = Nunchuk
-        ///Nunchuk/Buttons/C = LCONTROL
-        ///Nunchuk/Buttons/Z = LSHIFT
-        ///Nunchuk/Stick/Up = W
-        ///Nunchuk/Stick/Down = S
-        ///Nunchuk/Stick/Left = A
-        ///Nunchuk/Stick/Right = D
-        ///D-Pad/Up = [le reste de la chaîne a été tronqué]&quot;;.
-        /// </summary>
-        internal static string WiimoteNew_v5 {
-            get {
-                return ResourceManager.GetString("WiimoteNew_v5", resourceCulture);
             }
         }
         
@@ -216,16 +121,6 @@ namespace DemulShooter.Properties {
         internal static string x360kb_hfirea2p {
             get {
                 return ResourceManager.GetString("x360kb_hfirea2p", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Byte[].
-        /// </summary>
-        internal static byte[] xinput1_3 {
-            get {
-                object obj = ResourceManager.GetObject("xinput1_3", resourceCulture);
-                return ((byte[])(obj));
             }
         }
     }

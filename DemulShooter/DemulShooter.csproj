@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{20DE55D0-833D-45CA-96C8-DF3BEDB394A8}</ProjectGuid>
+    <ProjectGuid>{D99B7B7F-8B86-4AA0-A6F8-62A81F603599}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DemulShooter</RootNamespace>
@@ -38,169 +38,101 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>1463438149_Hunting_2.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <ApplicationIcon>DemulShooter_Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ControllerDevice.cs" />
-    <Compile Include="Cxbx_Vcop3_2.cs" />
-    <Compile Include="Game_ArtIsDead.cs" />
-    <Compile Include="Game_BE.cs" />
-    <Compile Include="Game_Bhapc.cs" />
-    <Compile Include="Game_CxBxVcop3.cs" />
-    <Compile Include="Game_BE_OLD.cs" />
-    <Compile Include="Game_DemulAtomiswave.cs" />
-    <Compile Include="Game_DemulManicpnc.cs" />
-    <Compile Include="Game_Dolphin5.cs" />
-    <Compile Include="Game_Dolphin4.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="Game_Es3Lla.cs" />
-    <Compile Include="Game_GvrAliens.cs" />
-    <Compile Include="Game_GvrAliensHasp.cs" />
-    <Compile Include="Game_DemulHikaru.cs" />
-    <Compile Include="Game_GvrFarCry.cs" />
-    <Compile Include="Game_GvrFarCryV2.cs" />
-    <Compile Include="Game_GvrFearLand.cs" />
-    <Compile Include="Game_HeavyFire3Pc.cs" />
-    <Compile Include="Game_HeavyFire3Pc_ScpVbus.cs" />
-    <Compile Include="Game_HeavyFire4Pc.cs" />
-    <Compile Include="Game_Hod2pc.cs" />
-    <Compile Include="Game_Hod3pc.cs" />
-    <Compile Include="Game_HotdoPc.cs" />
-    <Compile Include="Game_Lindbergh2spicy.cs" />
-    <Compile Include="Game_LindberghHotd4.cs" />
-    <Compile Include="Game_LindberghHotd4RevC.cs" />
-    <Compile Include="Game_LindberghLgj.cs" />
-    <Compile Include="Game_LindberghRambo.cs" />
-    <Compile Include="Game_Reload.cs" />
-    <Compile Include="Game_RwLGI3D.cs" />
-    <Compile Include="Game_NuLuigiMansion.cs" />
-    <Compile Include="Game_RwOpGhost.cs" />
-    <Compile Include="Game_RwSGGv2.cs" />
-    <Compile Include="Game_RwLGI.cs" />
-    <Compile Include="Game_RwSDR.cs" />
-    <Compile Include="Game_RwSGGv1.cs" />
-    <Compile Include="Game_RwTransformers.cs" />
-    <Compile Include="Game_TtxEadp.cs" />
-    <Compile Include="Game_TtxGaiaAttack4.cs" />
-    <Compile Include="Game_TtxGundam.cs" />
-    <Compile Include="Game_TtxGungun2.cs" />
-    <Compile Include="Game_TtxHauntedMuseum2.cs" />
-    <Compile Include="Game_Wartran.cs" />
-    <Compile Include="Memory.cs" />
-    <Compile Include="DataStructures.cs" />
-    <Compile Include="Game_Demul.cs" />
-    <Compile Include="Enumerations.cs" />
-    <Compile Include="Game_Model2.cs" />
-    <Compile Include="MemoryX64.cs" />
-    <Compile Include="MouseInfo.cs" />
-    <Compile Include="Game_DemulJvs.cs" />
-    <Compile Include="Game_DemulNaomi.cs" />
+    <Compile Include="Games\Game_LindberghLgjsp.cs" />
+    <Compile Include="Games\Game_Friction.cs" />
+    <Compile Include="Games\Game_Model2Vcop.cs" />
+    <Compile Include="Games\Game_Model2Hotd.cs" />
+    <Compile Include="Games\Game_Model2Gunblade.cs" />
+    <Compile Include="Games\Game_Model2Vcop2.cs" />
+    <Compile Include="Games\Game_Model2Bel.cs" />
+    <Compile Include="Games\Game_Model2Rchase2.cs" />
+    <Compile Include="Games\Game.cs" />
+    <Compile Include="Games\Game_ArtIsDead.cs" />
+    <Compile Include="Games\Game_BE.cs" />
+    <Compile Include="Games\Game_BE_OLD.cs" />
+    <Compile Include="Games\Game_CxbxVcop3.cs" />
+    <Compile Include="Games\Game_CxBxVcop3_Old.cs" />
+    <Compile Include="Games\Game_Demul.cs" />
+    <Compile Include="Games\Game_DemulAtomiswave.cs" />
+    <Compile Include="Games\Game_DemulHikaru.cs" />
+    <Compile Include="Games\Game_DemulJvs.cs" />
+    <Compile Include="Games\Game_DemulManicpnc.cs" />
+    <Compile Include="Games\Game_DemulNaomi.cs" />
+    <Compile Include="Games\Game_Dolphin4.cs" />
+    <Compile Include="Games\Game_Dolphin5.cs" />
+    <Compile Include="Games\Game_GvrAliens.cs" />
+    <Compile Include="Games\Game_GvrAliensHasp.cs" />
+    <Compile Include="Games\Game_GvrFarCry.cs" />
+    <Compile Include="Games\Game_GvrFarCryV2.cs" />
+    <Compile Include="Games\Game_GvrFearLand.cs" />
+    <Compile Include="Games\Game_HeavyFire3Pc.cs" />
+    <Compile Include="Games\Game_HeavyFire3Pc_ScpVbus.cs" />
+    <Compile Include="Games\Game_HeavyFire4Pc.cs" />
+    <Compile Include="Games\Game_Hod2pc.cs" />
+    <Compile Include="Games\Game_Hod3pc.cs" />
+    <Compile Include="Games\Game_HotdoPc.cs" />
+    <Compile Include="Games\Game_Lindbergh2spicy.cs" />
+    <Compile Include="Games\Game_LindberghHotd4.cs" />
+    <Compile Include="Games\Game_LindberghLgj.cs" />
+    <Compile Include="Games\Game_LindberghRambo.cs" />
+    <Compile Include="Games\Game_Reload.cs" />
+    <Compile Include="Games\Game_RwLGI.cs" />
+    <Compile Include="Games\Game_RwLGI3D.cs" />
+    <Compile Include="Games\Game_RwOpGhost.cs" />
+    <Compile Include="Games\Game_RwSDR.cs" />
+    <Compile Include="Games\Game_RwSGG.cs" />
+    <Compile Include="Games\Game_RwTransformers.cs" />
+    <Compile Include="Games\Game_TtxEadp.cs" />
+    <Compile Include="Games\Game_TtxGaiaAttack4.cs" />
+    <Compile Include="Games\Game_TtxGundam.cs" />
+    <Compile Include="Games\Game_TtxGungun2.cs" />
+    <Compile Include="Games\Game_TtxHauntedMuseum.cs" />
+    <Compile Include="Games\Game_TtxHauntedMuseum2.cs" />
+    <Compile Include="Games\Game_TtxSha.cs" />
+    <Compile Include="Games\Game_Wartran.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Game_TtxSha.cs" />
-    <Compile Include="Game_TtxHauntedMuseum.cs" />
-    <Compile Include="Uc_GUI_PlayerDevice.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Uc_GUI_PlayerDevice.Designer.cs">
-      <DependentUpon>Uc_GUI_PlayerDevice.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WndParam.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WndParam.Designer.cs">
-      <DependentUpon>WndParam.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Win32.cs" />
-    <Compile Include="XInput.cs" />
-    <Compile Include="XOutput.cs" />
-    <EmbeddedResource Include="Uc_GUI_PlayerDevice.resx">
-      <DependentUpon>Uc_GUI_PlayerDevice.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WndParam.resx">
-      <DependentUpon>WndParam.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="DemulShooterWindow.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DsCore\DsCore.csproj">
+      <Project>{BD88CC4D-2944-43F8-85C3-A274A45487AF}</Project>
+      <Name>DsCore</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DemulShooter_Icon.ico" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <None Include="Resources\WiimoteNew_v4.ini" />
-    <None Include="Resources\WiimoteNew_v5.ini" />
     <None Include="Resources\x360kb_hfirea1p.ini" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <Content Include="1463438149_Hunting_2.ico" />
-    <None Include="Resources\xinput1_3.dll" />
-    <None Include="Resources\dinput8.dll" />
     <None Include="Resources\x360kb_hfirea2p.ini" />
-    <None Include="bin\Release\m2emulator\artwork\crosshairs\sharps2.png" />
-    <None Include="bin\Release\m2emulator\artwork\crosshairs\sharps1.png" />
-    <None Include="Resources\s70.png" />
-    <None Include="Resources\Crosshair.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

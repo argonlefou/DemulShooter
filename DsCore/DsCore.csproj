@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BD88CC4D-2944-43F8-85C3-A274A45487AF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DsCore</RootNamespace>
+    <AssemblyName>DsCore</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Config\Configurator.cs" />
+    <Compile Include="Config\PlayerSettings.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="MameOutput\AsyncGameOutput.cs" />
+    <Compile Include="MameOutput\BlinkGameOutput.cs" />
+    <Compile Include="MameOutput\SyncBlinkingGameOutput.cs" />
+    <Compile Include="MameOutput\OutputId.cs" />
+    <Compile Include="MameOutput\GameOutput.cs" />
+    <Compile Include="MameOutput\MameOutputHelper.cs" />
+    <Compile Include="MameOutput\OutputClient.cs" />
+    <Compile Include="MameOutput\OutputDataStruct.cs" />
+    <Compile Include="MameOutput\OutputDescription.cs" />
+    <Compile Include="MemoryX64\NopStruct.cs" />
+    <Compile Include="Memory\Codecave.cs" />
+    <Compile Include="MemoryX64\Codecave.cs" />
+    <Compile Include="Memory\NopStruct.cs" />
+    <Compile Include="RawInput\Hid\HidPButtonCaps.cs" />
+    <Compile Include="RawInput\Hid\HidPCaps.cs" />
+    <Compile Include="RawInput\Hid\HidPReportType.cs" />
+    <Compile Include="RawInput\Hid\HidPValueCaps.cs" />
+    <Compile Include="RawInput\Hid\HidUsage.cs" />
+    <Compile Include="RawInput\Hid\HidUsageAndPage.cs" />
+    <Compile Include="RawInput\Hid\HidUsagePage.cs" />
+    <Compile Include="RawInput\Hid\NtStatus.cs" />
+    <Compile Include="RawInput\RawInputController.cs" />
+    <Compile Include="RawInput\RawInputHelper.cs" />
+    <Compile Include="Win32\CopyDataStruct.cs" />
+    <Compile Include="Win32\Point.cs" />
+    <Compile Include="RawInput\User32\RawHid.cs" />
+    <Compile Include="RawInput\User32\RawInputDataKeyboard.cs" />
+    <Compile Include="RawInput\User32\RawInputDataMouse.cs" />
+    <Compile Include="RawInput\User32\RawInputDevice.cs" />
+    <Compile Include="RawInput\User32\RawInputDeviceFlag.cs" />
+    <Compile Include="RawInput\User32\RawInputDeviceInfo.cs" />
+    <Compile Include="RawInput\User32\RawInputDeviceList.cs" />
+    <Compile Include="RawInput\User32\RawInputDeviceType.cs" />
+    <Compile Include="RawInput\User32\RawInputHeader.cs" />
+    <Compile Include="RawInput\User32\RawInputUiCommand.cs" />
+    <Compile Include="Win32\MemoryAllocType.cs" />
+    <Compile Include="Win32\HardwareScanCode.cs" />
+    <Compile Include="Win32\MemoryPageProtect.cs" />
+    <Compile Include="Win32\MemoryFreeType.cs" />
+    <Compile Include="Win32\Input.cs" />
+    <Compile Include="Win32\MsLlHookStruct.cs" />
+    <Compile Include="Win32\Rect.cs" />
+    <Compile Include="Win32\SystemMetricsIndex.cs" />
+    <Compile Include="Win32\VirtualKeyCode.cs" />
+    <Compile Include="Win32\VirtualKeyMapType.cs" />
+    <Compile Include="Win32\Win32Define.cs" />
+    <Compile Include="Win32\KbdLlHookStruct.cs" />
+    <Compile Include="Win32\Win32Api.cs" />
+    <Compile Include="Win32\WndClassEx.cs" />
+    <Compile Include="XInput\XinputButtonFlags.cs" />
+    <Compile Include="XInput\XInputHandler.cs" />
+    <Compile Include="XInput\XInputBatteryInformation.cs" />
+    <Compile Include="XInput\XInputCapabilities.cs" />
+    <Compile Include="XInput\XInputDeviceSubtype.cs" />
+    <Compile Include="XInput\XInputGamepad.cs" />
+    <Compile Include="XInput\XInputState.cs" />
+    <Compile Include="XInput\XInputVibration.cs" />
+    <Compile Include="XOutput\XOutput.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

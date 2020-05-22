@@ -1,0 +1,19 @@
+﻿using System;
+
+namespace DsCore.XInput
+{
+    [Flags]
+    public enum XInputDeviceSubtype
+    {
+        XINPUT_DEVSUBTYPE_UNKNOWN = 0x00,
+        XINPUT_DEVSUBTYPE_WHEEL = 0x02,
+        XINPUT_DEVSUBTYPE_ARCADE_STICK = 0x03,
+        XINPUT_DEVSUBTYPE_FLIGHT_STICK = 0x04,
+        XINPUT_DEVSUBTYPE_DANCE_PAD = 0x05,
+        XINPUT_DEVSUBTYPE_GUITAR = 0x06,
+        XINPUT_DEVSUBTYPE_GUITAR_ALTERNATE = 0x07,
+        XINPUT_DEVSUBTYPE_DRUM_KIT = 0x08,
+        XINPUT_DEVSUBTYPE_GUITAR_BASS = 0x0B,
+        XINPUT_DEVSUBTYPE_ARCADE_PAD = 0x13
+    };
+}

@@ -1,47 +1,50 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace DemulShooter
-{    
-    static class Program
+{
+    class Program
     {
-        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll")]
         static extern bool AttachConsole(int dwProcessId);
-        [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
-        internal static extern bool FreeConsole();
-        /*[System.Runtime.InteropServices.DllImport("User32.Dll", EntryPoint = "PostMessageA")]
-        internal static extern bool PostMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
-        internal const int VK_RETURN = 0x0D;
-        internal const int WM_KEYDOWN = 0x100;*/
-        private const int ATTACH_PARENT_PROCESS = -1;
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool FreeConsole();
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();        
+        [DllImport("user32.dll")]
+        static extern int SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+        
+        const uint  WM_CHAR                 = 0x0102;
+        const int   VK_ENTER                = 0x0D;
+        const int   ATTACH_PARENT_PROCESS   = -1;
 
-        /// <summary>
-        /// Application entry point
-        /// </summary>
-        [STAThread]
+        static IntPtr ConsoleHwnd = IntPtr.Zero;
+
+        static String strTarget = string.Empty;
+        static String strRom = string.Empty;
+
         static void Main(string[] args)
         {
-            bool isVerbose = false;
-            string _target = string.Empty;
+            // Attach to the parent process via AttachConsole SDK call
+            AttachConsole(ATTACH_PARENT_PROCESS);
+            ConsoleHwnd = GetConsoleWindow();
 
-            string[] _Targets = new string[] { "chihiro", "demul057", "demul058", "demul07a", "dolphin4", "dolphin5", "globalvr", "lindbergh", "model2", "model2m", "ringwide", "seganu", "ttx", "windows", "wip" };
-            string[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "manicpnc", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
-            string[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
-            string[] _WindowsRoms = new string[] { "artdead", "hfa", "hfa2p", "hfa_s", "hfa2p_s", "hfss", "hfss2p", "hfss_s", "hfss2p_s", "hod2pc", "hod3pc", "hodo", "reload" };
-            string[] _TTXRoms = new string[] { "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
-            string[] _GlobalVrRoms = new string[] { "aliens", "alienshasp", "farcry", "fearland" };
-            string[] _LindberghRoms = new string[] { "2spicy", "hotd4", "lgj", "rambo" };
-            string[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr", "tha" };
-            string[] _SegaNuRoms = new string[] { "lma" };
-            string[] _ChihiroRoms = new string[] { "vcop3" };
-            string[] _WipRoms = new string[] { "bestate", "wartran", "bhapc", "lla"};
-        
+            bool isVerbose = false;
+
+            String[] _Targets = new string[] { "chihiro", "demul057", "demul058", "demul07a", "dolphin5", "globalvr", "lindbergh", "model2", "ringwide", "ttx", "windows", "wip" };
+            String[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "manicpnc", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
+            String[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
+            String[] _WindowsRoms = new string[] { "artdead", "friction", "hfa", "hfa2p", "hfa2p", "hfss", "hfss2p", "hod2pc", "hod3pc", "hodo", "reload" };
+            String[] _TTXRoms = new string[] { "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
+            String[] _GlobalVrRoms = new string[] { "aliens", "farcry", "fearland" };
+            String[] _LindberghRoms = new string[] { "2spicy", "hotd4", "lgj", "lgjsp", "rambo" };
+            String[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr", "tha" };
+            String[] _ChihiroRoms = new string[] { "vcop3" };
+            String[] _WipRoms = new string[] { "bestate", "wartran", "bhapc" };
+
             if (args.Length > 0)
-            {
-                // Do command line/silent logic here...
-                // Attach to the parent process via AttachConsole SDK call
-                AttachConsole(ATTACH_PARENT_PROCESS);
-                
+            {      
                 for (int i = 0; i < args.Length; i++)
                 {
                     if (args[i].ToLower().Equals("-h") || args[i].ToLower().Equals("--help") || args[i].ToLower().Equals("-?"))
@@ -49,23 +52,20 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : March, 13th 2020");
+                        Console.WriteLine("Build date : May, 19th 2020");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [target] :");
-                        Console.WriteLine("chihiro\t\tCxbx-Reloaded 001100eaf (30 Oct 2018)");
+                        Console.WriteLine("chihiro\t\tCxbx-Reloaded");
                         Console.WriteLine("demul057\tDemul v0.57");
                         Console.WriteLine("demul058\tDemul v0.582");
                         Console.WriteLine("demul07a\tDemul v0.7a 180428");
-                        Console.WriteLine("dolphin4\tDolphin v4.0.2");
                         Console.WriteLine("dolphin5\tDolphin v5.0");
                         Console.WriteLine("globalvr\tGlobal VR");
-                        Console.WriteLine("model2\t\tNebula Model2Emulator (emulator.exe) v1.1a");
-                        Console.WriteLine("model2m\t\tNebula Model2Emulator (emulator_multicpu.exe) v1.1a");
-                        Console.WriteLine("ringwide\tTeknoParrot Loader");
-                        Console.WriteLine("seganu\tTeknoParrot Loader");
                         Console.WriteLine("lindbergh\tTeknoParrot Loader");
+                        Console.WriteLine("model2\t\tNebula Model2Emulator v1.1a");
+                        Console.WriteLine("ringwide\tTeknoParrot Loader");
                         Console.WriteLine("ttx\t\tTaito Type X");
                         Console.WriteLine("windows\t\tWindows games");
                         Console.WriteLine("");
@@ -98,7 +98,6 @@ namespace DemulShooter
                         Console.WriteLine(" - Parameter not used - ");
                         Console.WriteLine("");
                         Console.WriteLine("Global VR Games :");
-                        Console.WriteLine(" alienshasp\tAliens Extermination (1st dump, x86 only)");
                         Console.WriteLine(" aliens\t\tAliens Extermination Dehasped (2nd dump, x86 and x64, no need for VM)");
                         Console.WriteLine(" fearland\tFright Fear Land");
                         Console.WriteLine("");
@@ -106,6 +105,7 @@ namespace DemulShooter
                         Console.WriteLine(" 2spicy\t\tToo Spicy");
                         Console.WriteLine(" hotd4\t\tHouse of The Dead 4");
                         Console.WriteLine(" lgj\t\tLet's Go Jungle");
+                        Console.WriteLine(" lgjsp\t\tLet's Go Jungle Special");
                         Console.WriteLine(" rambo\t\tRambo Arcade");
                         Console.WriteLine("");
                         Console.WriteLine("Model2 roms :");
@@ -115,9 +115,6 @@ namespace DemulShooter
                         Console.WriteLine(" rchase2\tRail Chase 2");
                         Console.WriteLine(" vcop\t\tVirtua Cop");
                         Console.WriteLine(" vcop2\t\tVirtua Cop 2");
-                        Console.WriteLine("");
-                        Console.WriteLine("SEGA Nu roms :");
-                        Console.WriteLine(" lma\t\tLuigi's Mansion Arcade");
                         Console.WriteLine("");
                         Console.WriteLine("Ringwide roms :");
                         Console.WriteLine(" sgg\t\tSega Golden Gun");
@@ -142,12 +139,8 @@ namespace DemulShooter
                         //Console.WriteLine(" bestate\tBlue Estate");
                         Console.WriteLine(" hfa\t\tHeavy Fire Afghanistan");
                         Console.WriteLine(" hfa2p\t\tHeavy Fire Afghanistan (Dual player)");
-                        Console.WriteLine(" hfa_s\t\tHeavy Fire Afghanistan [STEAM]");
-                        Console.WriteLine(" hfa2p_s\tHeavy Fire Afghanistan (Dual player) [STEAM]");
                         Console.WriteLine(" hfss\t\tHeavy Fire Shattered Spear");
                         Console.WriteLine(" hfss2p\t\tHeavy Fire Shattered Spear (Dual player)");
-                        Console.WriteLine(" hfss_s\t\tHeavy Fire Shattered Spear [STEAM]");
-                        Console.WriteLine(" hfss2p_s\tHeavy Fire Shattered Spear (Dual player) [STEAM]");
                         Console.WriteLine(" hod2pc\t\tHouse of the Dead 2");
                         Console.WriteLine(" hod3pc\t\tHouse of the Dead 3");
                         Console.WriteLine(" hodo\t\tHouse of the Dead Overkill");
@@ -158,152 +151,137 @@ namespace DemulShooter
                         Console.WriteLine(" \t\tNote : Demul GUI will not respond anymore to clicks");
                         Console.WriteLine(" -widescreen \tDemul Widescreen hack");
                         Console.WriteLine(" -ddinumber \tDolphin's DirectInput number for P2 device");
+                        Console.WriteLine(" -noautofire \tDisable in-game autofire for SEGA Golden Gun");
                         Console.WriteLine(" -noautoreload \tDisable ingame automatic reload for hod3pc");
                         Console.WriteLine(" -noguns \tRemove guns on screen for hod3pc (like real arcade machine)");
-                        Console.WriteLine(" -nocrosshair \tHide in-game crosshair (Only for \"Reload\" game from MASTIFF");
+                        Console.WriteLine(" -nocrosshair \tHide in-game crosshair (Only for \"Reload\" on Windows and \"Rambo\" on Lindbergh");
                         Console.WriteLine(" -hardffl \tAlternative gameplay for Fright Fear Land / Haunted Museum 2(see README.TXT)");
-                        Console.WriteLine(" -parrotloader \tTemporary hack for parrot loader (see README.TXT)");
 
                         Console.WriteLine(" -? -h --help\tShow this help");
                         Console.WriteLine(" -v --verbose\tEnable output to log file");
-                        
 
-                        FreeConsole();
-                        //Dangerous : send ENTER to active window
-                        System.Windows.Forms.SendKeys.SendWait("{ENTER}");
-                        Environment.Exit(0);
+                        ExitConsole();
                     }
                     else if (args[i].ToLower().Equals("-v") || args[i].ToLower().Equals("--verbose"))
                     {
                         isVerbose = true;
                     }
-           
+
                     else if (args[i].ToLower().StartsWith("-target"))
                     {
-                        _target = (args[i].ToLower().Split('='))[1].Trim();
-                        if (!CheckParameter(_target, _Targets))
+                        strTarget = (args[i].ToLower().Split('='))[1].Trim();
+                        if (!CheckParameter(strTarget, _Targets))
                         {
-                            Console.WriteLine("\nUnsupported [target] parameter : \"" + _target + "\". See help for supported targets");
-                            //Dangerous : send ENTER to active window
-                            System.Windows.Forms.SendKeys.SendWait("{ENTER}");
-                            Environment.Exit(0);
+                            Console.WriteLine("\n\n\tUnsupported [target] parameter : \"" + strTarget + "\". See help for supported targets");
+                            ExitConsole();
                         }
                     }
                 }
+
+                if (strTarget == String.Empty)
+                {
+                    Console.WriteLine("\n\n\tNo [target] parameter specified. See help for supported targets");
+                    ExitConsole();
+                }
+
                 for (int i = 0; i < args.Length; i++)
                 {
                     if (args[i].ToLower().StartsWith("-rom"))
                     {
-                        string rom = (args[i].ToLower().Split('='))[1].Trim();
-                        if (_target.StartsWith("chihiro"))
+                        strRom = (args[i].ToLower().Split('='))[1].Trim();
+                        if (strTarget.StartsWith("chihiro"))
                         {
-                            if (!CheckParameter(rom, _ChihiroRoms))
+                            if (!CheckParameter(strRom, _ChihiroRoms))
                             {
-                                Console.WriteLine("Unsupported Chihiro rom parameter : \"" + rom + "\". See help for supported roms list");
-                                //Dangerous : send ENTER to active window
-                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
-                                Environment.Exit(0);
+                                Console.WriteLine("\n\n\tUnsupported Chihiro rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
                             }
                         }
-                        else if (_target.StartsWith("demul"))
+                        else if (strTarget.StartsWith("demul"))
                         {
-                            if (!CheckParameter(rom, _DemulRoms))
+                            if (!CheckParameter(strRom, _DemulRoms))
                             {
-                                Console.WriteLine("Unsupported Demul rom parameter : \"" + rom + "\". See help for supported roms list");
-                                //Dangerous : send ENTER to active window
-                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
-                                Environment.Exit(0);
+                                Console.WriteLine("Unsupported Demul rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
                             }
                         }
-                        else if (_target.StartsWith("lindbergh"))
+                        else if (strTarget.Equals("globalvr"))
                         {
-                            if (!CheckParameter(rom, _LindberghRoms))
+                            if (!CheckParameter(strRom, _GlobalVrRoms))
                             {
-                                Console.WriteLine("Unsupported Lindbergh rom parameter : \"" + rom + "\". See help for supported roms list");
-                                //Dangerous : send ENTER to active window
-                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
-                                Environment.Exit(0);
+                                Console.WriteLine("Unsupported GlobalVR rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
                             }
                         }
-                        else if (_target.StartsWith("model2"))
+                        else if (strTarget.StartsWith("lindbergh"))
                         {
-                            if (!CheckParameter(rom, _Model2Roms))
+                            if (!CheckParameter(strRom, _LindberghRoms))
                             {
-                                Console.WriteLine("Unsupported Model2 rom parameter : \"" + rom + "\". See help for supported roms list");
-                                //Dangerous : send ENTER to active window
-                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
-                                Environment.Exit(0);
+                                Console.WriteLine("Unsupported Lindbergh rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
                             }
                         }
-                        else if (_target.Equals("windows"))
+                        else if (strTarget.Equals("model2"))
                         {
-                            if (!CheckParameter(rom, _WindowsRoms))                            
+                            if (!CheckParameter(strRom, _Model2Roms))
                             {
-                                Console.WriteLine("Unsupported Windows rom parameter : \"" + rom + "\". See help for supported roms list");
-                                //Dangerous : send ENTER to active window
-                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
-                                Environment.Exit(0);
+                                Console.WriteLine("Unsupported Model2 rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
                             }
                         }
-                        else if (_target.Equals("ttx"))
+                        else if (strTarget.Equals("ringwide"))
                         {
-                            if (!CheckParameter(rom, _TTXRoms))
+                            if (!CheckParameter(strRom, _RingWideRoms))
                             {
-                                Console.WriteLine("Unsupported Taito Type X rom parameter : \"" + rom + "\". See help for supported roms list");
-                                //Dangerous : send ENTER to active window
-                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
-                                Environment.Exit(0);
+                                Console.WriteLine("Unsupported RingWide rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
                             }
                         }
-                        else if (_target.Equals("globalvr"))
+                        else if (strTarget.Equals("ttx"))
                         {
-                            if (!CheckParameter(rom, _GlobalVrRoms))
+                            if (!CheckParameter(strRom, _TTXRoms))
                             {
-                                Console.WriteLine("Unsupported GlobalVR rom parameter : \"" + rom + "\". See help for supported roms list");
-                                //Dangerous : send ENTER to active window
-                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
-                                Environment.Exit(0);
+                                Console.WriteLine("Unsupported Taito Type X rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
                             }
                         }
-                        else if (_target.Equals("ringwide"))
+                        else if (strTarget.Equals("windows"))
                         {
-                            if (!CheckParameter(rom, _RingWideRoms))
+                            if (!CheckParameter(strRom, _WindowsRoms))
                             {
-                                Console.WriteLine("Unsupported RingWide rom parameter : \"" + rom + "\". See help for supported roms list");
-                                //Dangerous : send ENTER to active window
-                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
-                                Environment.Exit(0);
+                                Console.WriteLine("Unsupported Windows rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
                             }
                         }
-                        else if (_target.Equals("seganu"))
+                        else if (strTarget.Equals("wip"))
                         {
-                            if (!CheckParameter(rom, _SegaNuRoms))
+                            if (!CheckParameter(strRom, _WipRoms))
                             {
-                                Console.WriteLine("Unsupported Saga Nu rom parameter : \"" + rom + "\". See help for supported roms list");
-                                //Dangerous : send ENTER to active window
-                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
-                                Environment.Exit(0);
-                            }
-                        }
-                        else if (_target.Equals("wip"))
-                        {
-                            if (!CheckParameter(rom, _WipRoms))
-                            {
-                                Console.WriteLine("Unsupported W.I.P rom parameter : \"" + rom + "\". See help for supported roms list");
-                                //Dangerous : send ENTER to active window
-                                System.Windows.Forms.SendKeys.SendWait("{ENTER}");
-                                Environment.Exit(0);
+                                Console.WriteLine("Unsupported W.I.P rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
                             }
                         }
                     }
                 }
+
+                if (strRom == String.Empty && strTarget != "dolphin5")
+                {
+                    Console.WriteLine("\n\n\tNo [Rom] parameter specified. See help for supported targets");
+                    ExitConsole();
+                }
+
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new DemulShooterWindow(args, isVerbose));
             }
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);                       
-            Application.Run(new WndParam(isVerbose));
+            else
+            {
+                Console.WriteLine("\n\n\tMissing parameter!\n\tSee help with DemulShooter.exe -h for correct usage.");
+                ExitConsole();
+            }            
         }
 
-        static bool CheckParameter(string param, string[] list)
+        static bool CheckParameter(String param, string[] list)
         {
             for (int i = 0; i < list.Length; i++)
             {
@@ -313,6 +291,12 @@ namespace DemulShooter
             return false;
         }
 
-        
+        static void ExitConsole()
+        {
+            FreeConsole();
+            //Send a {ENTER} key message to the attached console to show prompt
+            SendMessage(ConsoleHwnd, WM_CHAR, (IntPtr)VK_ENTER, IntPtr.Zero);
+            Environment.Exit(0);
+        }
     }
 }
