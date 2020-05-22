@@ -81,7 +81,8 @@ namespace DemulShooterX64
                     _Target = (Args[i].Split('='))[1].Trim();
                 }                
             }
-            _TrayIcon.Text += "[" + _Target + "] [" + _Rom + "]";
+            if (_TrayIcon != null)
+                _TrayIcon.Text += "[" + _Target + "] [" + _Rom + "]";
 
             //Finding plugged devices
             _AvailableControllers = RawInputHelper.GetRawInputDevices();
@@ -419,8 +420,11 @@ namespace DemulShooterX64
                 _OutputHelper.Stop();
 
             //Cleanup so that the icon will be removed when the application is closed
-            _TrayIcon.Visible = false;
-            _TrayIcon.Dispose();
+            if (_TrayIcon != null)
+            {
+                _TrayIcon.Visible = false;
+                _TrayIcon.Dispose();
+            }
         }
 
         /// <summary>

@@ -364,7 +364,6 @@ namespace DemulShooter
                 _P2_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Life_Offset);
                 _P2_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Ammo_Offset);
 
-
                 //Custom Recoil
                 if (_P2_Ammo < _P2_LastAmmo)
                     SetOutputValue(OutputId.P2_CtmRecoil, 1);

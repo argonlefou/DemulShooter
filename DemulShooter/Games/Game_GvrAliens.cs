@@ -215,8 +215,7 @@ namespace DemulShooter
         }
 
         #endregion
-
-
+        
         #region Outputs
 
         /// <summary>
@@ -231,6 +230,8 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LedAmmo2, OutputId.P1_LedAmmo2));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LedAmmo1, OutputId.P2_LedAmmo1));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LedAmmo2, OutputId.P2_LedAmmo2));
+            _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P1_CtmLmpStart, OutputId.P1_CtmLmpStart, 500));
+            _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P2_CtmLmpStart, OutputId.P2_CtmLmpStart, 500));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
@@ -280,6 +281,9 @@ namespace DemulShooter
 
                 if (P1_Status == 4)
                 {
+                    //Force Start Lamp to Off
+                    SetOutputValue(OutputId.P1_CtmLmpStart, 0);
+
                     _P1_Life = (int)(100 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x0556C884, 4), 0));
 
                     //Can't use original digits for Ammo because the game use it to display continue countdown                
@@ -297,9 +301,17 @@ namespace DemulShooter
                     if (_P1_Life < _P1_LastLife)
                         SetOutputValue(OutputId.P1_Damaged, 1);
                 }
+                else
+                {
+                    //Enable Start Lamp Blinking
+                    SetOutputValue(OutputId.P1_CtmLmpStart, -1);
+                }
 
                 if (P2_Status == 4)
                 {
+                    //Force Start Lamp to Off
+                    SetOutputValue(OutputId.P2_CtmLmpStart, 0);
+
                     _P2_Life = (int)(100 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x0556CC18, 4), 0));
                 
                     //Can't use original digits for Ammo because the game use it to display continue countdown                
@@ -316,6 +328,11 @@ namespace DemulShooter
                     //[Damaged] custom Output                
                     if (_P2_Life < _P2_LastLife)
                         SetOutputValue(OutputId.P2_Damaged, 1);
+                }
+                else
+                {
+                    //Enable Start Lamp Blinking
+                    SetOutputValue(OutputId.P2_CtmLmpStart, -1);
                 }
             }
             
