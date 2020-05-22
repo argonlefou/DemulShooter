@@ -446,8 +446,8 @@ namespace DemulShooter
         protected override void CreateOutputList()
         {
             _Outputs = new List<GameOutput>();
-            _Outputs.Add(new BlinkGameOutput(OutputDesciption.P1_CtmLmpStart, OutputId.P1_CtmLmpStart, 500));
-            _Outputs.Add(new BlinkGameOutput(OutputDesciption.P2_CtmLmpStart, OutputId.P2_CtmLmpStart, 500));
+            _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P1_CtmLmpStart, OutputId.P1_CtmLmpStart, 500));
+            _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P2_CtmLmpStart, OutputId.P2_CtmLmpStart, 500));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
@@ -475,77 +475,76 @@ namespace DemulShooter
             // We will use these values to compute ourselve Recoil and P1/P2 Start Button Lights
             UInt32 P1_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B8038);
             UInt32 P2_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B8264);
-            _P1_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B8044);
-            _P1_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B8090);
-            _P2_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B8270);
-            _P2_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B82BC);
-
+            _P1_Life = 0;
+            _P2_Life = 0;
+            _P1_Ammo = 0;
+            _P2_Ammo = 0;
+            int P1_Clip = 0;
+            int P2_Clip = 0;
+           
             if (P1_Status == 5)
             {
+                //Force Start Lamp to Off
                 SetOutputValue(OutputId.P1_CtmLmpStart, 0);
 
+                _P1_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B8044);
+                _P1_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B8090);
+            
                 //Custom Recoil
                 if (_P1_Ammo < _P1_LastAmmo)
                     SetOutputValue(OutputId.P1_CtmRecoil, 1);
 
                 //[Clip Empty] custom Output
-                if (_P1_Ammo <= 0)
-                    SetOutputValue(OutputId.P1_Clip, 0);
-                else
-                    SetOutputValue(OutputId.P1_Clip, 1);
+                if (_P1_Ammo > 0)
+                    P1_Clip = 1;
 
                 //[Damaged] custom Output                
                 if (_P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);
-
-                _P1_LastAmmo = _P1_Ammo;
-                _P1_LastLife = _P1_Life;
             }
             else
             {
-                SetOutputValue(OutputId.P1_Clip, 0);
-                _P1_Ammo = 0;
-                _P1_LastAmmo = 0;
-                _P1_Life = 0;
-                _P1_LastLife = 0;
-                SetOutputValue(OutputId.P1_CtmLmpStart, 1);
+                //Enable Start Lamp Blinking
+                SetOutputValue(OutputId.P1_CtmLmpStart, -1);
             }
 
             if (P2_Status == 5)
             {
+                //Force Start Lamp to Off
                 SetOutputValue(OutputId.P2_CtmLmpStart, 0);
+
+                _P2_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B8270);
+                _P2_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B82BC);
 
                 //Custom Recoil
                 if (_P2_Ammo < _P2_LastAmmo)
                     SetOutputValue(OutputId.P2_CtmRecoil, 1);
 
                 //[Clip Empty] custom Output
-                if (_P2_Ammo <= 0)
-                    SetOutputValue(OutputId.P2_Clip, 0);
-                else
-                    SetOutputValue(OutputId.P2_Clip, 1);
+                if (_P2_Ammo > 0)
+                    P2_Clip = 1;
 
                 //[Damaged] custom Output                
                 if (_P2_Life < _P2_LastLife)
                     SetOutputValue(OutputId.P2_Damaged, 1);
-
-                _P2_LastAmmo = _P2_Ammo;
-                _P2_LastLife = _P2_Life;
             }
             else
             {
-                SetOutputValue(OutputId.P2_Clip, 0);
-                _P2_Ammo = 0;
-                _P2_LastAmmo = 0;
-                _P2_Life = 0;
-                _P2_LastLife = 0;
-                SetOutputValue(OutputId.P1_CtmLmpStart, 1);
+                //Enable Start Lamp Blinking
+                SetOutputValue(OutputId.P2_CtmLmpStart, -1);
             }
+
+            _P1_LastAmmo = _P1_Ammo;
+            _P2_LastAmmo = _P2_Ammo;
+            _P1_LastLife = _P1_Life;
+            _P2_LastLife = _P2_Life;
 
             SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
             SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
-            SetOutputValue(OutputId.P1_Life,_P1_Life);
-            SetOutputValue(OutputId.P2_Life,_P2_Life);
+            SetOutputValue(OutputId.P1_Clip, P1_Clip);
+            SetOutputValue(OutputId.P2_Clip, P2_Clip);
+            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P2_Life, _P2_Life);
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset));
         }
 
