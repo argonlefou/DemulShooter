@@ -47,6 +47,8 @@ namespace DemulShooter_GUI
             }
             Cbox_HID_XAxis.SelectedItem = Cbox_HID_XAxis.Items[indexX];
             Cbox_HID_YAxis.SelectedItem = Cbox_HID_YAxis.Items[indexY];
+            Chk_InvertX.Checked = _PlayerData.InvertAxis_X;
+            Chk_InvertY.Checked = _PlayerData.InvertAxis_Y;
 
             int indexBtnAction = 0;            
             int indexBtnOnScreen = 0;
@@ -113,6 +115,16 @@ namespace DemulShooter_GUI
                 _PlayerData.RIController.Selected_AxisY = 0;
         }
 
+        private void Chk_InvertX_CheckedChanged(object sender, EventArgs e)
+        {
+            _PlayerData.InvertAxis_X = Chk_InvertX.Checked;
+        }
+
+        private void Chk_InvertY_CheckedChanged(object sender, EventArgs e)
+        {
+            _PlayerData.InvertAxis_Y = Chk_InvertY.Checked;
+        }
+
         #region GUI Animation
 
         public void UpdateGui()
@@ -145,6 +157,11 @@ namespace DemulShooter_GUI
 
                 X = Convert.ToInt32(Math.Round((double)_PlayerData.RIController.Computed_X / Xratio));
                 Y = Convert.ToInt32(Math.Round((double)_PlayerData.RIController.Computed_Y / Yratio));
+
+                if (_PlayerData.InvertAxis_X)
+                    X = Pnl_AxisViewer.Width - X;
+                if (_PlayerData.InvertAxis_Y)
+                    Y = Pnl_AxisViewer.Width - Y;
             }
             catch { }
 
@@ -159,5 +176,6 @@ namespace DemulShooter_GUI
         }
 
         #endregion
+               
     }
 }

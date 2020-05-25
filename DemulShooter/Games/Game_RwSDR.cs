@@ -314,17 +314,21 @@ namespace DemulShooter
             //Custom Outputs
             int P1_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Status_Offset);
             int P2_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Status_Offset);
-            _P1_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Life_Offset);
-            _P2_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Life_Offset);
+            _P1_Life = 0;
+            _P2_Life = 0;
 
             if (P1_Status == 1)
             {
+                _P1_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Life_Offset);
+           
                 //[Damaged] custom Output                
                 if (_P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);
             }
             if (P2_Status == 1)
             {
+                _P2_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Life_Offset);
+            
                 //[Damaged] custom Output                
                 if (_P2_Life < _P2_LastLife)
                     SetOutputValue(OutputId.P2_Damaged, 1);

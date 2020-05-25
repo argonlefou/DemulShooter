@@ -80,8 +80,8 @@ namespace DsCore.RawInput
 
         public override string ToString()
         {
-            return string.Format("Usage: {0}, UsagePage: {1}, InputReportByteLength: {2}, NumberInputButtonCaps: {3}, NumberInputValueCaps: {4}",
-                                         Usage, UsagePage, InputReportByteLength, NumberInputButtonCaps, NumberInputValueCaps);
+            return string.Format("Usage: {0}, UsagePage: {1}, InputReportByteLength: {2}, OutputReportByteLength: {3}, FeatureReportByteLength: {4}, NumberInputButtonCaps: {5}, NumberInputValueCaps: {6}, NumberOutputButtonCaps: {7}, NumberOutputValueCaps: {8}, NumberOutputDataIndices: {9}",
+                                         Usage, UsagePage, InputReportByteLength, OutputReportByteLength, FeatureReportByteLength, NumberInputButtonCaps, NumberInputValueCaps, NumberOutputButtonCaps, NumberOutputValueCaps, NumberOutputDataIndices);
            
         }
     }

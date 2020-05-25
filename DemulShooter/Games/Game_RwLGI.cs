@@ -328,21 +328,25 @@ namespace DemulShooter
             P2_Strutc_Address = ReadPtr(P2_Strutc_Address + 0x14);
             int P1_Status = ReadByte(P1_Strutc_Address + 0x30);
             int P2_Status = ReadByte(P2_Strutc_Address + 0x30);
-            _P1_Life = (int)BitConverter.ToSingle(ReadBytes(P1_Strutc_Address + 0x18, 4), 0);
-            _P2_Life = (int)BitConverter.ToSingle(ReadBytes(P2_Strutc_Address + 0x18, 4), 0);
-            if (_P1_Life < 0)
-                _P1_Life = 0;
-            if (_P2_Life < 0)
-                _P2_Life = 0;
+            _P1_Life = 0;
+            _P2_Life = 0;
 
             if (P1_Status == 1)
             {
+                _P1_Life = (int)BitConverter.ToSingle(ReadBytes(P1_Strutc_Address + 0x18, 4), 0);
+                if (_P1_Life < 0)
+                    _P1_Life = 0;
+            
                 //[Damaged] custom Output                
                 if (_P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);
             }
             if (P2_Status == 1)
             {
+                _P2_Life = (int)BitConverter.ToSingle(ReadBytes(P2_Strutc_Address + 0x18, 4), 0);
+                if (_P2_Life < 0)
+                    _P2_Life = 0;
+
                 //[Damaged] custom Output                
                 if (_P2_Life < _P2_LastLife)
                     SetOutputValue(OutputId.P2_Damaged, 1);

@@ -52,7 +52,7 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : May, 19th 2020");
+                        Console.WriteLine("Build date : May, 25th 2020");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");

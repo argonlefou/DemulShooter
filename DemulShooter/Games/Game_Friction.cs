@@ -7,6 +7,7 @@ using DsCore.Config;
 using DsCore.Memory;
 using DsCore.RawInput;
 using DsCore.Win32;
+using DsCore.MameOutput;
 
 namespace DemulShooter
 {
@@ -45,6 +46,12 @@ namespace DemulShooter
         private UInt32 _P2_Reload_CaveAddress = 0;
 
         private IntPtr _VsIOBoard_Module_BaseAddress = IntPtr.Zero;
+
+        //Custom Outputs
+        private int[] _LastLife = new int[] { 0, 0 };
+        private int[] _LastAmmo = new int[] { 0, 0 };
+        private int[] _Life = new int[] { 0, 0 };
+        private int[] _Ammo = new int[] { 0, 0 };
 
         /// <summary>
         /// Constructor
@@ -755,6 +762,108 @@ namespace DemulShooter
                         WriteBytes(_P2_Reload_CaveAddress, new byte[] { 0x00, 0x00 });
                 }
             }
+        }
+
+        #endregion
+
+        #region Outputs
+
+        /// <summary>
+        /// Create the Output list that we will be looking for and forward to MameHooker
+        /// </summary>
+        protected override void CreateOutputList()
+        {
+            _Outputs = new List<GameOutput>();
+            _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P1_CtmLmpStart, OutputId.P1_CtmLmpStart, 500));
+            _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P2_CtmLmpStart, OutputId.P2_CtmLmpStart, 500));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay));
+            _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
+        }
+
+        /// <summary>
+        /// Update all Outputs values before sending them to MameHooker
+        /// </summary>
+        public override void UpdateOutputValues()
+        {
+            UInt32 _GameDataPtr = ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + 0x00145088);            
+            //In this game, the engine is swapping P1/P2 data according to the 1st Player to be started
+            //To know which data is corresponding to which player, we need to process a little bit...
+            //When players are uninitialized, both values are set to [-1]
+            //When a player starts a game, PlayerA get a value of [0] if it's Player1, or [1] if it's player 2. This is used later by the game
+            //to add an offset to determine which player is playing for accessing data.
+            //When a second player is entering the game, PlayerB gets [0] if it's player1, [1] if it's player2
+            byte[] Players_Offset = new byte[] { 0x00, 0x00 };
+            Players_Offset[0] = ReadByte(_GameDataPtr + 0x28 + 0x45C);
+            Players_Offset[1] = ReadByte(_GameDataPtr + 0x28 + 0x460);
+
+            Array.Clear(_Life, 0, _Life.Length);
+            Array.Clear(_Ammo, 0, _Ammo.Length);
+            int[] Clip = new int[] {0, 0};
+            int[] StartLmp = new int[] {-1, -1};
+
+            for (uint i = 0; i < Players_Offset.Length; i++)
+            {
+                if (Players_Offset[i] != 0xFF)
+                {
+                    //We can now look at the "InGame" flag for the player
+                    //1 = OnGame, 0 = Not Playing (GameOver or Continue)
+                    if (ReadByte(_GameDataPtr + 0x28 + 0x439 + i) == 1)
+                    {
+                        //Force Start Lamp to Off
+                        StartLmp[Players_Offset[i]] = 0;
+
+                        _Life[Players_Offset[i]] = ReadByte(_GameDataPtr + 0x28 + 0x44C + (i * 4));
+                        _Ammo[Players_Offset[i]] = ReadByte(ReadPtr(_GameDataPtr + 0x28 + 0x560 + (i * 4)) + 8);
+
+                        //Custom Recoil
+                        if (_Ammo[Players_Offset[i]] < _LastAmmo[Players_Offset[i]])
+                        {
+                            if (i == 0)
+                                SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                            else if (i == 1)
+                                SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                        }
+
+                        //[Clip Empty] custom Output
+                        if (_Ammo[Players_Offset[i]] > 0)
+                            Clip[Players_Offset[i]] = 1;
+
+                        //[Damaged] custom Output                
+                        if (_Life[Players_Offset[i]] < _LastLife[Players_Offset[i]])
+                        {
+                            if (i == 0)
+                                SetOutputValue(OutputId.P1_Damaged, 1);
+                            else if (i == 1)
+                                SetOutputValue(OutputId.P2_Damaged, 1);
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                _LastAmmo[i] = _Ammo[i];
+                _LastLife[i] = _Life[i];
+            }
+
+            SetOutputValue(OutputId.P1_CtmLmpStart, StartLmp[0]);
+            SetOutputValue(OutputId.P2_CtmLmpStart, StartLmp[1]);
+            SetOutputValue(OutputId.P1_Ammo, _Ammo[0]);
+            SetOutputValue(OutputId.P2_Ammo, _Ammo[1]);
+            SetOutputValue(OutputId.P1_Clip, Clip[0]);
+            SetOutputValue(OutputId.P2_Clip, Clip[1]);
+            SetOutputValue(OutputId.P1_Life, _Life[0]);
+            SetOutputValue(OutputId.P2_Life, _Life[1]);
+            SetOutputValue(OutputId.Credits, ReadByte(ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + 0x001450C4)));
         }
 
         #endregion

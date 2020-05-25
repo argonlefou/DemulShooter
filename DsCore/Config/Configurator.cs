@@ -444,7 +444,9 @@ namespace DsCore.Config
                             if (PlayerData.RIController.DeviceType == RawInput.RawInputDeviceType.RIM_TYPEHID)
                             {
                                 sr.WriteLine("P" + PlayerData.ID + "HidAxisX = 0x" + PlayerData.RIController.Selected_AxisX.ToString("x2"));
+                                sr.WriteLine("P" + PlayerData.ID + "InvertAxisX = " + PlayerData.InvertAxis_X);                                
                                 sr.WriteLine("P" + PlayerData.ID + "HidAxisY = 0x" + PlayerData.RIController.Selected_AxisY.ToString("x2"));
+                                sr.WriteLine("P" + PlayerData.ID + "InvertAxisY = " + PlayerData.InvertAxis_Y); 
                                 sr.WriteLine("P" + PlayerData.ID + "HidBtnOnscreenTrigger = " + PlayerData.RIController.Selected_OnScreenTriggerButton.ToString());
                                 sr.WriteLine("P" + PlayerData.ID + "HidBtnAction = " + PlayerData.RIController.Selected_ActionButton.ToString());
                                 sr.WriteLine("P" + PlayerData.ID + "HidBtnOffscreenTrigger = " + PlayerData.RIController.Selected_OffScreenTriggerButton.ToString());

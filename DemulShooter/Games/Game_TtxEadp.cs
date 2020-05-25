@@ -434,20 +434,31 @@ namespace DemulShooter
             //Ammo + Life
             UInt32 PlayersStatusPtr_Offset = 0x00212CD4;
             UInt32 iTemp = ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + PlayersStatusPtr_Offset);
+            int P1_Life = 0;
+            int P2_Life = 0;
+            int P1_Ammo = 0;
+            int P2_Ammo = 0;
+
             if (iTemp != 0)
             {
-                SetOutputValue(OutputId.P1_Ammo, ReadByte(ReadPtr(iTemp + 0x54) + 0x150));
-                SetOutputValue(OutputId.P1_Life, ReadByte(ReadPtr(iTemp + 0x4C) + 0x150));
-                SetOutputValue(OutputId.P2_Ammo, ReadByte(ReadPtr(iTemp + 0x58) + 0x150));
-                SetOutputValue(OutputId.P2_Life, ReadByte(ReadPtr(iTemp + 0x50) + 0x150));
+                //Status Byte, 0x01 if playing, else 0x00
+                if (ReadByte(ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + 0x210A80) + 0x1794C) != 0)
+                {
+                    P1_Ammo = ReadByte(ReadPtr(iTemp + 0x54) + 0x150);
+                    P1_Life = ReadByte(ReadPtr(iTemp + 0x4C) + 0x150);
+                }
+
+                if (ReadByte(ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + 0x210A80) + 0x17A38) != 0)
+                {
+                    P2_Ammo = ReadByte(ReadPtr(iTemp + 0x58) + 0x150);
+                    P2_Life = ReadByte(ReadPtr(iTemp + 0x50) + 0x150);
+                }
             }
-            else
-            {
-                SetOutputValue(OutputId.P1_Ammo, 0);
-                SetOutputValue(OutputId.P1_Life, 0);
-                SetOutputValue(OutputId.P2_Ammo, 0);
-                SetOutputValue(OutputId.P2_Life, 0);
-            }
+
+            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
+            SetOutputValue(OutputId.P1_Life, P1_Life);
+            SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
+            SetOutputValue(OutputId.P2_Life, P2_Life); 
         }
 
         #endregion

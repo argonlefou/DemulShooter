@@ -668,6 +668,11 @@ namespace DemulShooter
 
                                 Player.RIController.Computed_X = _Game.ScreenScale(Player.RIController.Computed_X, Player.RIController.Axis_X_Min, Player.RIController.Axis_X_Max, 0, _Game.ScreenWidth);
                                 Player.RIController.Computed_Y = _Game.ScreenScale(Player.RIController.Computed_Y, Player.RIController.Axis_Y_Min, Player.RIController.Axis_Y_Max, 0, _Game.ScreenHeight);
+                                if (Player.InvertAxis_X)
+                                    Player.RIController.Computed_X = _Game.ScreenWidth - Player.RIController.Computed_X;
+                                if (Player.InvertAxis_Y)
+                                    Player.RIController.Computed_Y = _Game.ScreenHeight - Player.RIController.Computed_Y;
+                                
                                 Logger.WriteLog("OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
 
                                 if (_Configurator.Act_Labs_Offset_Enable)

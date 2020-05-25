@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using DsCore.Config;
 using DsCore.RawInput;
+using DsCore;
 
 namespace DemulShooter_GUI
 {
@@ -16,36 +17,48 @@ namespace DemulShooter_GUI
         
         public GUI_Player(PlayerSettings PlayerData, RawInputController[] AvailableControllers)
         {
-            InitializeComponent();
-            _PlayerData = PlayerData;
-            _AvailableControllers = AvailableControllers;
-
-            _RimData = new GUI_RawInputMouse();
-            _RihData = new GUI_RawInputHID();
-            _RimData.Visible = false;
-            _RihData.Visible = false;
-            Pnl_Options.Controls.Add(_RimData);
-            Pnl_Options.Controls.Add(_RihData);
-
-            Lbl_Player.Text = "P" + _PlayerData.ID.ToString() + " Device :";
-
-            //GUI init
-            AddDevice("");
-            foreach (RawInputController Controller in AvailableControllers)
+            try
             {
-                AddDevice(Controller.DeviceName);
-            }
+                InitializeComponent();
+                _PlayerData = PlayerData;
+                _AvailableControllers = AvailableControllers;
 
-            if (_PlayerData.DeviceName.Length > 0)
-            {
-                for (int i = 0; i < Cbo_Device.Items.Count; i++)
+                _RimData = new GUI_RawInputMouse();
+                _RihData = new GUI_RawInputHID();
+                _RimData.Visible = false;
+                _RihData.Visible = false;
+                Pnl_Options.Controls.Add(_RimData);
+                Pnl_Options.Controls.Add(_RihData);
+
+                Logger.WriteLog("Initializing Player" + _PlayerData.ID.ToString() + " devices:");
+                Lbl_Player.Text = "P" + _PlayerData.ID.ToString() + " Device :";
+
+                //GUI init
+                AddDevice("");
+                foreach (RawInputController Controller in AvailableControllers)
                 {
-                    if (_PlayerData.DeviceName == Cbo_Device.Items[i].ToString())
+                    Logger.WriteLog("Adding " + Controller.DeviceName);
+                    AddDevice(Controller.DeviceName);
+                }
+
+                if (_PlayerData.DeviceName.Length > 0)
+                {
+                    Logger.WriteLog("Current selected device : " + _PlayerData.DeviceName);
+                    for (int i = 0; i < Cbo_Device.Items.Count; i++)
                     {
-                        Cbo_Device.SelectedItem = Cbo_Device.Items[i];
-                        SelectRawInputController(Cbo_Device.Text);
+                        if (_PlayerData.DeviceName == Cbo_Device.Items[i].ToString())
+                        {
+                            Cbo_Device.SelectedItem = Cbo_Device.Items[i];
+                            SelectRawInputController(Cbo_Device.Text);
+                        }
                     }
                 }
+                else
+                    Logger.WriteLog("Current selected device : [None]");
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLog("ERROR : " + ex.Message.ToString());
             }
         }
 

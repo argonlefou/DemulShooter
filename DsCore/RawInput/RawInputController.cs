@@ -173,6 +173,7 @@ namespace DsCore.RawInput
         private HidPCaps _Caps;
         private HidPButtonCaps[] _pButtonCaps;
         private HidPValueCaps[] _pValueCaps;
+        private HidPValueCaps[] _pOutputValueCaps;
         #region Accessors
 
         public HidPCaps HID_Capabilities
@@ -188,6 +189,11 @@ namespace DsCore.RawInput
         public HidPValueCaps[] HID_ValueCapabilitiesArray
         {
             get { return _pValueCaps; }
+        }
+
+        public HidPValueCaps[] HID_OutputValueCapabilitiesArray
+        {
+            get { return _pOutputValueCaps; }
         }
 
         #endregion
@@ -309,8 +315,14 @@ namespace DsCore.RawInput
                     {
                         Logger.WriteLog("Error: Impossible to get Value Capabilities for device " + _DeviceName);
                         return;
-                    }   
- 
+                    }
+
+                    if (!GetOutputValueCapabilities(_pPreparsedData, _Caps, out _pOutputValueCaps))
+                    {
+                        Logger.WriteLog("Error: Impossible to get Output Value Capabilities for device " + _DeviceName);
+                        return;
+                    }
+
                     //Number of absolute axis
                     for (int i = 0; i < _pValueCaps.Length; i++)
                     {
@@ -682,6 +694,16 @@ namespace DsCore.RawInput
             ushort capsLength = Caps.NumberInputValueCaps;
             pValueCaps = new HidPValueCaps[capsLength];
             if (Win32API.HidP_GetValueCaps(HidPReportType.Input, pValueCaps, ref capsLength, pPreparsedData) != NtStatus.Success)
+            {
+                return false;
+            }
+            return true;
+        }
+        private bool GetOutputValueCapabilities(IntPtr pPreparsedData, HidPCaps Caps, out HidPValueCaps[] pValueCaps)
+        {
+            ushort capsLength = Caps.NumberOutputValueCaps;
+            pValueCaps = new HidPValueCaps[capsLength];
+            if (Win32API.HidP_GetValueCaps(HidPReportType.Output, pValueCaps, ref capsLength, pPreparsedData) != NtStatus.Success)
             {
                 return false;
             }

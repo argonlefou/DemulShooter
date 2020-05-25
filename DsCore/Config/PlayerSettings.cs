@@ -39,6 +39,8 @@ namespace DsCore.Config
         private RawInputController _RIController;
         private byte _HidAxis_X = 0x30;
         private byte _HidAxis_Y = 0x31;
+        private bool _InvertAxis_X = false;
+        private bool _InvertAxis_Y = false;
         private int _HidButton_OnScreenTrigger = 1;
         private int _HidButton_OffScreenTrigger = 2;
         private int _HidButton_Action = 3;
@@ -70,6 +72,16 @@ namespace DsCore.Config
         public byte HidAxisY
         {
             get { return _HidAxis_Y; }
+        }
+        public bool InvertAxis_X
+        {
+            get { return _InvertAxis_X; }
+            set { _InvertAxis_X = value; }
+        }
+        public bool InvertAxis_Y
+        {
+            get { return _InvertAxis_Y; }
+            set { _InvertAxis_Y = value; }
         }
         public int HidButton_OnScreenTrigger
         {
@@ -198,6 +210,16 @@ namespace DsCore.Config
                     _HidAxis_Y = Convert.ToByte(StrValue, 16);
                 }
                 catch { return false; }
+            }
+            else if (StrKey.Equals("invertaxisx"))
+            {
+                if (!bool.TryParse(StrValue, out _InvertAxis_X))
+                    return false;
+            }
+            else if (StrKey.Equals("invertaxisy"))
+            {
+                if (!bool.TryParse(StrValue, out _InvertAxis_Y))
+                    return false;
             }
             else if (StrKey.Equals("hidbtnonscreentrigger"))
             {

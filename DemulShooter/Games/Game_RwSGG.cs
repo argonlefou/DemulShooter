@@ -123,17 +123,6 @@ namespace DemulShooter
         #region Screen
 
         /// <summary>
-        /// Convert screen location of pointer to Client area location
-        /// This game does not return a MainWindow Handle
-        /// This game does not work in windowed mode
-        /// So we keep screen resolution data
-        /// </summary>
-        public override bool ClientScale(PlayerSettings PlayerData)
-        {
-            return true;
-        }
-
-        /// <summary>
         /// Convert client area pointer location to Game speciffic data for memory injection
         /// </summary>
         public override bool GameScale(PlayerSettings PlayerData)

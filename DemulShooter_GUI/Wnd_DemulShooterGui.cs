@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Windows.Forms;
+using DsCore;
 using DsCore.Config;
 using DsCore.RawInput;
 using DsCore.Win32;
@@ -40,22 +41,27 @@ namespace DemulShooter_GUI
         /// <summary>
         /// Construcor
         /// </summary>
-        public Wnd_DemulShooterGui()
+        public Wnd_DemulShooterGui(bool IsVerbose)
         {           
             InitializeComponent();
-            DsCore.Logger.IsEnabled = false;
+            Logger.IsEnabled = IsVerbose;
 
             _This = this;
-            this.Text = "DemulShooter GUI " + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString();
+            this.Text = "DemulShooter_GUI " + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString();
+
+            Logger.WriteLog("");
+            Logger.WriteLog("---------------- Program Start -- DemulShooter_GUI v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString() + " ----------------");
 
             //Finding plugged devices
             _AvailableControllers = RawInputHelper.GetRawInputDevices();
+            Logger.WriteLog("Found " + _AvailableControllers.Length + " available RawInput devices");
 
             //Reading config file to get parameters
             _Configurator = new Configurator();
-            _Configurator.ReadDsConfig(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME);
+            _Configurator.ReadDsConfig(AppDomain.CurrentDomain.BaseDirectory + CONF_FILENAME);
             _Configurator.Read_Sha_Conf();
 
+            Logger.WriteLog("Initializing GUI [Players] pages...");
             int TabPageIndex = 0;
             _GUI_Players = new List<GUI_Player>();
             foreach (PlayerSettings PlayerData in _Configurator.PlayersSettings)
@@ -64,7 +70,9 @@ namespace DemulShooter_GUI
                 {
                     //For each player, create a tab on the GUI
                     GUI_Player gPlayer = new GUI_Player(PlayerData, _AvailableControllers);
+                    Logger.WriteLog("Adding PlayerData to the list...");
                     _GUI_Players.Add(gPlayer);
+                    Logger.WriteLog("Adding Player tab to the GUI...");
                     tabControl1.TabPages[TabPageIndex].Controls.Add(gPlayer);
                     TabPageIndex++;
                 }
@@ -75,6 +83,7 @@ namespace DemulShooter_GUI
             }
 
             //Fill ActLabs tab
+            Logger.WriteLog("Initializing GUI [Act Lab] page...");
             Cb_ActLabsOffset.Checked = _Configurator.Act_Labs_Offset_Enable;
             Chk_DspCorrectedCrosshair.Checked = _Configurator.Act_Labs_Display_Crosshair;
             Txt_ActLabs_X1.Text = _Configurator.GetPlayerSettings(1).Act_Labs_Offset_X.ToString();
@@ -87,6 +96,7 @@ namespace DemulShooter_GUI
             Txt_ActLabs_Y4.Text = _Configurator.GetPlayerSettings(4).Act_Labs_Offset_Y.ToString();            
 
             //Fill Silent Hill tab
+            Logger.WriteLog("Initializing GUI [Silent Hill] pages...");
             TXT_P1_S.Text = _Configurator.DIK_Sha_P1_Start.ToString();
             TXT_P1_T.Text = _Configurator.DIK_Sha_P1_Trigger.ToString();
             TXT_P2_S.Text = _Configurator.DIK_Sha_P2_Start.ToString();
@@ -96,26 +106,31 @@ namespace DemulShooter_GUI
             TXT_TEST.Text = _Configurator.DIK_Sha_Test.ToString();
 
             //Fill Gundam tab
+            Logger.WriteLog("Initializing GUI [Gundam] pages...");
             Chk_GundamP1Pedal.Checked = _Configurator.Gsoz_Pedal_P1_Enabled;
             Chk_GundamP2Pedal.Checked = _Configurator.Gsoz_Pedal_P2_Enabled;
             TXT_GSOZ_PEDAL_1.Text = _Configurator.DIK_Gsoz_Pedal_P1.ToString();
             TXT_GSOZ_PEDAL_2.Text = _Configurator.DIK_Gsoz_Pedal_P2.ToString();
 
             //Fill Heavy Fire Afghanistan tab
+            Logger.WriteLog("Initializing GUI [Heavy Fire Afghanistan] pages...");
             Txt_HF3_Browse.Text = _Configurator.HF3_Path;
             TrackBar_HF3_Cover.Value = _Configurator.HF3_CoverSensibility;
 
             //Fill Heavy Fire Shattered Spear tab
+            Logger.WriteLog("Initializing GUI [Heavy Fire S.S] pages...");
             Txt_HF4_Browse.Text = _Configurator.HF4_Path;
             TrackBar_HF4_Cover.Value = _Configurator.HF4_CoverSensibility;
 
             //Fill Output Tab
+            Logger.WriteLog("Initializing GUI [Output] pages...");
             Cbox_Outputs.Checked = _Configurator.OutputEnabled;
             Txt_OutputDelay.Text = _Configurator.OutputPollingDelay.ToString();
             Txt_OutputRecoil.Text = _Configurator.OutputCustomRecoilDelay.ToString();
             Txt_OutputDamaged.Text = _Configurator.OutputCustomDamagedDelay.ToString();
 
             // Register to rawinput
+            Logger.WriteLog("Registering to RawInput service...");
             RawInputDevice[] rid = new RawInputDevice[3];
             rid[0].UsagePage = HidUsagePage.GENERIC;
             rid[0].Usage = HidUsage.Joystick;
@@ -138,6 +153,7 @@ namespace DemulShooter_GUI
             }
 
             //Install Low Level keyboard hook
+            Logger.WriteLog("Installing Low-Level Keyboard Hook...");
             ApplyKeyboardHook();                               
             
             Cbo_PageSettings.SelectedIndex = 0;
@@ -161,7 +177,6 @@ namespace DemulShooter_GUI
                         {
                             Controller.ProcessRawInputData(RawInputHandle);
                             _GUI_Players[Player.ID - 1].UpdateGui();
-
                         }  
                     }
                 }

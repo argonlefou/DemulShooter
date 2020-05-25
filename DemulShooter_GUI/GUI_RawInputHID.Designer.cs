@@ -42,12 +42,16 @@
             this.Pnl_AxisViewer = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Pnl_ButtonsViewer = new System.Windows.Forms.FlowLayoutPanel();
+            this.Chk_InvertX = new System.Windows.Forms.CheckBox();
+            this.Chk_InvertY = new System.Windows.Forms.CheckBox();
             this.Gbox_HIDOptions.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // Gbox_HIDOptions
             // 
+            this.Gbox_HIDOptions.Controls.Add(this.Chk_InvertY);
+            this.Gbox_HIDOptions.Controls.Add(this.Chk_InvertX);
             this.Gbox_HIDOptions.Controls.Add(this.label1);
             this.Gbox_HIDOptions.Controls.Add(this.Cbox_HID_YAxis);
             this.Gbox_HIDOptions.Controls.Add(this.label29);
@@ -81,9 +85,9 @@
             this.Cbox_HID_YAxis.Items.AddRange(new object[] {
             "Left Stick",
             "Right Stick"});
-            this.Cbox_HID_YAxis.Location = new System.Drawing.Point(109, 153);
+            this.Cbox_HID_YAxis.Location = new System.Drawing.Point(54, 153);
             this.Cbox_HID_YAxis.Name = "Cbox_HID_YAxis";
-            this.Cbox_HID_YAxis.Size = new System.Drawing.Size(101, 21);
+            this.Cbox_HID_YAxis.Size = new System.Drawing.Size(57, 21);
             this.Cbox_HID_YAxis.TabIndex = 13;
             this.Cbox_HID_YAxis.SelectionChangeCommitted += new System.EventHandler(this.Cbox_HID_YAxis_SelectionChangeCommitted);
             // 
@@ -103,9 +107,9 @@
             this.Cbox_HID_XAxis.Items.AddRange(new object[] {
             "Left Stick",
             "Right Stick"});
-            this.Cbox_HID_XAxis.Location = new System.Drawing.Point(109, 126);
+            this.Cbox_HID_XAxis.Location = new System.Drawing.Point(54, 126);
             this.Cbox_HID_XAxis.Name = "Cbox_HID_XAxis";
-            this.Cbox_HID_XAxis.Size = new System.Drawing.Size(101, 21);
+            this.Cbox_HID_XAxis.Size = new System.Drawing.Size(57, 21);
             this.Cbox_HID_XAxis.TabIndex = 6;
             this.Cbox_HID_XAxis.SelectionChangeCommitted += new System.EventHandler(this.Cbox_HID_XAxis_SelectionChangeCommitted);
             // 
@@ -220,6 +224,28 @@
             this.Pnl_ButtonsViewer.Size = new System.Drawing.Size(166, 142);
             this.Pnl_ButtonsViewer.TabIndex = 46;
             // 
+            // Chk_InvertX
+            // 
+            this.Chk_InvertX.AutoSize = true;
+            this.Chk_InvertX.Location = new System.Drawing.Point(135, 130);
+            this.Chk_InvertX.Name = "Chk_InvertX";
+            this.Chk_InvertX.Size = new System.Drawing.Size(75, 17);
+            this.Chk_InvertX.TabIndex = 47;
+            this.Chk_InvertX.Text = "Invert Axis";
+            this.Chk_InvertX.UseVisualStyleBackColor = true;
+            this.Chk_InvertX.CheckedChanged += new System.EventHandler(this.Chk_InvertX_CheckedChanged);
+            // 
+            // Chk_InvertY
+            // 
+            this.Chk_InvertY.AutoSize = true;
+            this.Chk_InvertY.Location = new System.Drawing.Point(135, 156);
+            this.Chk_InvertY.Name = "Chk_InvertY";
+            this.Chk_InvertY.Size = new System.Drawing.Size(75, 17);
+            this.Chk_InvertY.TabIndex = 48;
+            this.Chk_InvertY.Text = "Invert Axis";
+            this.Chk_InvertY.UseVisualStyleBackColor = true;
+            this.Chk_InvertY.CheckedChanged += new System.EventHandler(this.Chk_InvertY_CheckedChanged);
+            // 
             // GUI_RawInputHID
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -251,5 +277,7 @@
         private System.Windows.Forms.Panel Pnl_AxisViewer;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.FlowLayoutPanel Pnl_ButtonsViewer;
+        private System.Windows.Forms.CheckBox Chk_InvertX;
+        private System.Windows.Forms.CheckBox Chk_InvertY;
     }
 }

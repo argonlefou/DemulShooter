@@ -6,6 +6,7 @@ namespace DsCore.MameOutput
     public class AsyncGameOutput : GameOutput
     {
         private Timer _AsyncResetTimer;
+        private bool _IsTimerRunning = false;
 
         public override int OutputValue
         {
@@ -15,8 +16,12 @@ namespace DsCore.MameOutput
             }
             set
             {
-                _OutputValue = value;
-                _AsyncResetTimer.Start();
+                if (!_IsTimerRunning)
+                {
+                    _IsTimerRunning = true;
+                    _OutputValue = value;
+                    _AsyncResetTimer.Start();                    
+                }
             }
         }
 
@@ -30,8 +35,9 @@ namespace DsCore.MameOutput
 
         private void AsyncResetTimer_Elapsed(Object sender, EventArgs e)
         {
+            _IsTimerRunning = false;
             _OutputValue = 0;
-            _AsyncResetTimer.Stop();
+            _AsyncResetTimer.Stop();            
         }
     }
 }

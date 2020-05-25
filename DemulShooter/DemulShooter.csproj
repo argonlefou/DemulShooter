@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Games\Game_Lindbergh2spicy.cs" />
     <Compile Include="Games\Game_LindberghLgjsp.cs" />
     <Compile Include="Games\Game_Friction.cs" />
     <Compile Include="Games\Game_Model2Vcop.cs" />
@@ -80,7 +81,7 @@
     <Compile Include="Games\Game_Hod2pc.cs" />
     <Compile Include="Games\Game_Hod3pc.cs" />
     <Compile Include="Games\Game_HotdoPc.cs" />
-    <Compile Include="Games\Game_Lindbergh2spicy.cs" />
+    <Compile Include="Games\Game_Lindbergh2spicy_old.cs" />
     <Compile Include="Games\Game_LindberghHotd4.cs" />
     <Compile Include="Games\Game_LindberghLgj.cs" />
     <Compile Include="Games\Game_LindberghRambo.cs" />

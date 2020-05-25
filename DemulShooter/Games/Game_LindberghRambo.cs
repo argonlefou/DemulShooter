@@ -396,42 +396,57 @@ namespace DemulShooter
             UInt32 PlayersPtr_BaseAddress = ReadPtr(_PlayerStructPtr_Address);
             int P1_Ammo = 0;
             int P2_Ammo = 0;
+            _P1_Life = 0;
+            _P2_Life = 0;
+            int P1_Clip = 0;
+            int P2_Clip = 0;
+
             if (PlayersPtr_BaseAddress != 0)
             {
                 UInt32 P1_StructAddress = ReadPtr(PlayersPtr_BaseAddress + 0x34);
                 UInt32 P2_StructAddress = ReadPtr(PlayersPtr_BaseAddress + 0x38);
-                _P1_Life = ReadByte(P1_StructAddress + 0x3C);
-                _P2_Life = ReadByte(P2_StructAddress + 0x3C);
-                P1_Ammo = ReadByte(P1_StructAddress + 0x400);
-                P2_Ammo = ReadByte(P2_StructAddress + 0x400);
+                //PlayerMode:
+                //0: Standby
+                //3: Game
+                //4: Hold
+                //A, C: Continue
+                int P1_Status = ReadByte(P1_StructAddress + 0x38);
+                int P2_Status = ReadByte(P2_StructAddress + 0x38);
+                if (P1_Status == 3 || P1_Status == 4)
+                {
+                    _P1_Life = ReadByte(P1_StructAddress + 0x3C);
+                    P1_Ammo = ReadByte(P1_StructAddress + 0x400);
+                    
+                    //[Damaged] custom Output                
+                    if (_P1_Life < _P1_LastLife)
+                        SetOutputValue(OutputId.P1_Damaged, 1);
+                    
+                    //[Clip] custom Output   
+                    if (P1_Ammo > 0)
+                        P1_Clip = 1;
+                }
 
-                //[Damaged] custom Output                
-                if (_P1_Life < _P1_LastLife)
-                    SetOutputValue(OutputId.P1_Damaged, 1);
-                if (_P2_Life < _P2_LastLife)
-                    SetOutputValue(OutputId.P2_Damaged, 1);
+                if (P2_Status == 3 || P2_Status == 4)
+                {
+                    _P2_Life = ReadByte(P2_StructAddress + 0x3C);
+                    P2_Ammo = ReadByte(P2_StructAddress + 0x400);
 
-                //[Clip] custom Output   
-                if (P1_Ammo <= 0)
-                    SetOutputValue(OutputId.P1_Clip, 0);
-                else
-                    SetOutputValue(OutputId.P1_Clip, 1);
-                if (P2_Ammo <= 0)
-                    SetOutputValue(OutputId.P2_Clip, 0);
-                else
-                    SetOutputValue(OutputId.P2_Clip, 1);                
-            }
-            else
-            {
-                _P1_Life = 0;
-                _P2_Life = 0;           
-            }
+                    //[Damaged] custom Output                
+                    if (_P2_Life < _P2_LastLife)
+                        SetOutputValue(OutputId.P2_Damaged, 1);
 
+                    //[Clip] custom Output   
+                    if (P2_Ammo > 0)
+                        P2_Clip = 1;
+                }
+            }            
             _P1_LastLife = _P1_Life;
             _P2_LastLife = _P2_Life;
 
             SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
             SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
+            SetOutputValue(OutputId.P1_Clip, P1_Clip);
+            SetOutputValue(OutputId.P2_Clip, P2_Clip);
             //Custom recoil will be recoil just like the original one
             SetOutputValue(OutputId.P1_CtmRecoil, ReadByte(_Outputs_Address) >> 2 & 0x01);
             SetOutputValue(OutputId.P2_CtmRecoil, ReadByte(_Outputs_Address) >> 3 & 0x01);

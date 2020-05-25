@@ -11,7 +11,7 @@ using DsCore.Win32;
 
 namespace DemulShooter
 {
-    class Game_Lindbergh2spicy : Game
+    class Game_Lindbergh2spicy_old : Game
     {
         //Address to find InputStruct values (read at instruction 0x82EFC63)
         private UInt32 _InputStruct_Address = 0x0C8B2430;
@@ -26,9 +26,10 @@ namespace DemulShooter
         private NopStruct _Nop_Axix_Y_1 = new NopStruct(0x082F0153, 7);
         private NopStruct _Nop_Axix_Y_2 = new NopStruct(0x082EFF13, 7);
 
-        private UInt32 _Buttons_CaveAddress = 0;
-        private UInt32 _Buttons_Injection_Address = 0x082F005F;
-        private UInt32 _Buttons_Injection_Return_Address = 0x082F0064;
+        private UInt32 _Custom_Buttons_Bank_Ptr = 0;
+        private UInt32 _Trigger_Injection_Address = 0x080820B9;
+        private UInt32 _Trigger_Injection_Return_Address = 0x080820C0;
+        private UInt32 _Reload_Injection_Address = 0x080820F3;
 
         //Check instruction for game loaded
         private UInt32 _RomLoaded_Check_Instruction = 0x082EFC63;
@@ -37,20 +38,12 @@ namespace DemulShooter
         private UInt32 _OutputsPtr_Address = 0x0A89F944;
         private UInt32 _Outputs_Address;
         private UInt32 _Credits_Address = 0x0C8C0240;
-        private UInt32 _PlayerStructPtr_Address = 0x0867B10C;
-        private UInt32 _AmmoPtr_Address = 0x0888F8F8;
-
-        private UInt32 _GameModePtr_Address = 0x0A6F27A8;
-        private int _P1_LastLife = 0;
-        private int _P1_Life = 0;
-        private int _P1_LastAmmo = 0;
-        private int _P1_Ammo = 0;
 
         /// <summary>
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_Lindbergh2spicy(String RomName, double _ForcedXratio, bool Verbose)
+        public Game_Lindbergh2spicy_old(String RomName, double _ForcedXratio, bool Verbose)
             : base(RomName, "BudgieLoader", _ForcedXratio, Verbose)
         {
             _tProcess.Start();
@@ -161,8 +154,9 @@ namespace DemulShooter
 
         private void SetHack()
         {
-            Create_DataBank();
-            SetHack_Buttons();
+            SetHack_DataBank();
+            SetHack_OverwriteTrigger();
+            SetHack_OverwriteReload();
 
             SetNops(0, _Nop_Axix_X_1);
             SetNops(0, _Nop_Axix_X_2);
@@ -176,40 +170,36 @@ namespace DemulShooter
         /// <summary>
         /// Creating a custom memory bank to store our Buttons data
         /// </summary>
-        private void Create_DataBank()
+        private void SetHack_DataBank()
         {
             //1st Codecave : storing P1 and P2 input structure data, read from register in main program code
             Codecave DataCaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             DataCaveMemory.Open();
             DataCaveMemory.Alloc(0x800);
 
-            _Buttons_CaveAddress = DataCaveMemory.CaveAddress;
+            _Custom_Buttons_Bank_Ptr = DataCaveMemory.CaveAddress;
 
-            Logger.WriteLog("Custom data will be stored at : 0x" + DataCaveMemory.CaveAddress.ToString("X8"));
+            Logger.WriteLog("Custom data will be stored at : 0x" + _Custom_Buttons_Bank_Ptr.ToString("X8"));
         }
 
-        /// <summary>
-        /// All butons are set on the same Byte, so we need to filter and block
-        /// updates only on wanted bits to block Trigger/Reload from the game and let others (Start, Service, etc...)
-        /// working as they should.
-        /// </summary>
-        private void SetHack_Buttons()
+        private void SetHack_OverwriteTrigger()
         {
             List<Byte> Buffer = new List<Byte>();
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
 
-            //movzx edx, [esp+24]
-            CaveMemory.Write_StrBytes("0F B6 54 24 24");
-            //and edx, 0xFFFFFFFC
-            CaveMemory.Write_StrBytes("81 E2 FC FF FF FF");
-            //or edx, [_Buttons_CaveAddress]  
-            CaveMemory.Write_StrBytes("0B 15");
-            Buffer.AddRange(BitConverter.GetBytes(_Buttons_CaveAddress));
+            //movzx edx, [_Custom_Buttons_Bank_Ptr]
+            CaveMemory.Write_StrBytes("0F B6 15");
+            Buffer.AddRange(BitConverter.GetBytes(_Custom_Buttons_Bank_Ptr));
             CaveMemory.Write_Bytes(Buffer.ToArray());
-            //jmp back
-            CaveMemory.Write_jmp(_Buttons_Injection_Return_Address);
+            //and [_Custom_Buttons_Bank_Ptr], 0xFFFFFFFD
+            CaveMemory.Write_StrBytes("80 25");
+            Buffer.Clear();
+            Buffer.AddRange(BitConverter.GetBytes(_Custom_Buttons_Bank_Ptr));
+            CaveMemory.Write_Bytes(Buffer.ToArray());
+            CaveMemory.Write_StrBytes("FD");
+            CaveMemory.Write_jmp(_Trigger_Injection_Address);
 
             Logger.WriteLog("Adding Trigger Codecave_1 at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
 
@@ -217,11 +207,23 @@ namespace DemulShooter
             IntPtr ProcessHandle = _TargetProcess.Handle;
             UInt32 bytesWritten = 0;
             UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - (_Buttons_Injection_Address) - 5;
+            jumpTo = CaveMemory.CaveAddress - (_Reload_Injection_Address) - 5;
             Buffer = new List<byte>();
             Buffer.Add(0xE9);
             Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Win32API.WriteProcessMemory(ProcessHandle, _Buttons_Injection_Address, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemory(ProcessHandle, _Trigger_Injection_Return_Address, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+        private void SetHack_OverwriteReload()
+        {
+            List<byte> Buffer = new List<byte>();
+            Buffer.Add(0x0F);
+            Buffer.Add(0xB6);
+            Buffer.Add(0x15);
+            Buffer.AddRange(BitConverter.GetBytes(_Custom_Buttons_Bank_Ptr));
+            WriteBytes(_Reload_Injection_Address, Buffer.ToArray());
         }        
 
         #endregion
@@ -236,14 +238,14 @@ namespace DemulShooter
                 WriteByte(_InputStruct_Address + _Input_Y_Offset, (byte)PlayerData.RIController.Computed_Y);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
-                    Apply_OR_ByteMask(_Buttons_CaveAddress, 0x02);
+                    Apply_OR_ByteMask(_Custom_Buttons_Bank_Ptr, 0x02);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
-                    Apply_AND_ByteMask(_Buttons_CaveAddress, 0xFD);
+                    Apply_AND_ByteMask(_Custom_Buttons_Bank_Ptr, 0xFD);
                 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
-                    Apply_OR_ByteMask(_Buttons_CaveAddress, 0x01);
+                    Apply_OR_ByteMask(_Custom_Buttons_Bank_Ptr, 0x01);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
-                    Apply_AND_ByteMask(_Buttons_CaveAddress, 0xFE);
+                    Apply_AND_ByteMask(_Custom_Buttons_Bank_Ptr, 0xFE);
             }
         }
 
@@ -267,11 +269,6 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.Lmp5, OutputId.Lmp5));
             _Outputs.Add(new GameOutput(OutputDesciption.Lmp6, OutputId.Lmp6));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_GunRecoil, OutputId.P1_GunRecoil));
-            _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
-            _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
-            _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -280,9 +277,7 @@ namespace DemulShooter
         /// </summary>
         public override void UpdateOutputValues()
         {
-            //Original Outputs
             _Outputs_Address = BitConverter.ToUInt32(ReadBytes(_OutputsPtr_Address, 4), 0);
-            int RecoilStatus = ReadByte(_Outputs_Address) >> 6 & 0x01;            
             SetOutputValue(OutputId.P1_LmpStart, ReadByte(_Outputs_Address) >> 7 & 0x01);
             SetOutputValue(OutputId.LmpPanel, ReadByte(_Outputs_Address + 1) >> 7 & 0x01);
             SetOutputValue(OutputId.Lmp1, ReadByte(_Outputs_Address + 1) >> 1 & 0x01);
@@ -291,36 +286,7 @@ namespace DemulShooter
             SetOutputValue(OutputId.Lmp4, ReadByte(_Outputs_Address + 1) >> 4 & 0x01);
             SetOutputValue(OutputId.Lmp5, ReadByte(_Outputs_Address + 1) >> 5 & 0x01);
             SetOutputValue(OutputId.Lmp6, ReadByte(_Outputs_Address + 1) >> 6 & 0x01);
-            SetOutputValue(OutputId.P1_GunRecoil, RecoilStatus);
-
-            //Custom Outputs
-            _P1_Life = 0;
-            _P1_Ammo = 0;
-            int P1_Clip = 0;
-
-            //Filter InGame and not in attract Demo
-            if (ReadByte(ReadPtr(_PlayerStructPtr_Address) + 0x27) == 1 && ReadByte(ReadPtr(_PlayerStructPtr_Address) + 0x2D) == 1)
-            {
-                _P1_Life = ReadByte(ReadPtr(_PlayerStructPtr_Address) + 0x78);
-                _P1_Ammo = ReadByte(ReadPtr(_AmmoPtr_Address) + 0x04);
-
-                //[Damaged] custom Output  
-                if (_P1_Life < _P1_LastLife)
-                    SetOutputValue(OutputId.P1_Damaged, 1);
-
-                //[Clip] custom Output  
-                if (_P1_Ammo > 0)
-                    P1_Clip = 1;
-            }
-
-            _P1_LastLife = _P1_Life;
-            _P1_LastAmmo = _P1_Ammo;
-
-            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
-            SetOutputValue(OutputId.P1_Clip, P1_Clip);
-            //Custom Recoil will be ctivated just ike the original one
-            SetOutputValue(OutputId.P1_CtmRecoil, RecoilStatus); 
-            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P1_GunRecoil, ReadByte(_Outputs_Address) >> 6 & 0x01);
             SetOutputValue(OutputId.Credits, ReadByte(_Credits_Address));
         }
 

@@ -206,6 +206,12 @@ namespace DsDiag
                     {
                         sw.WriteLine("+ [" + i.ToString("D2") + "]\n    + " + c.HID_ValueCapabilitiesArray[i].ToString().Replace(", ", "\n    + "));
                     }
+                    sw.WriteLine("");
+                    sw.WriteLine("Values Capabilities :");
+                    for (int i = 0; i < c.HID_OutputValueCapabilitiesArray.Length; i++)
+                    {
+                        sw.WriteLine("+ [" + i.ToString("D2") + "]\n    + " + c.HID_OutputValueCapabilitiesArray[i].ToString().Replace(", ", "\n    + "));
+                    }
                 }
             }
             catch (Exception ex)
