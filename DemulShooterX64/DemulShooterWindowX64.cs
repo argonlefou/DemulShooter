@@ -85,7 +85,19 @@ namespace DemulShooterX64
                 _TrayIcon.Text += "[" + _Target + "] [" + _Rom + "]";
 
             //Finding plugged devices
-            _AvailableControllers = RawInputHelper.GetRawInputDevices();
+            _AvailableControllers = RawInputHelper.GetRawInputDevices(new RawInputDeviceType[] { RawInputDeviceType.RIM_TYPEHID, RawInputDeviceType.RIM_TYPEMOUSE });
+            Logger.WriteLog("Found " + _AvailableControllers.Length + " available RawInput devices :");
+            foreach (RawInputController c in _AvailableControllers)
+            {
+                try
+                {
+                    Logger.WriteLog(" + [" + c.DeviceType.ToString() + "] " + c.DeviceName);
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLog("ERROR : " + ex.Message.ToString());
+                }
+            }  
 
             //Reading config file to get parameters
             _Configurator = new Configurator();

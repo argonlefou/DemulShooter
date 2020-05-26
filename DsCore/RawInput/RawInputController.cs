@@ -152,16 +152,7 @@ namespace DsCore.RawInput
 
         public Int32 Axis_Y_Max
         {
-            get
-            {
-                //Special case for Sony Dual SHock 3 or WiiMotes with XInput driver :
-                //The driver is returning 0xFFFFFFFF as LogicalMax (which is -1 for a signed long)
-                //whereas real data are between 0x0000 and 0xFFFF                
-                if (_Hid_Axis_Y_Max == -1)
-                    return 0x0000FFFF;
-                else
-                    return _Hid_Axis_Y_Max;
-            }
+            get { return _Hid_Axis_Y_Max; }
         }
 
         #endregion

@@ -17,49 +17,49 @@ namespace DemulShooter_GUI
         
         public GUI_Player(PlayerSettings PlayerData, RawInputController[] AvailableControllers)
         {
-            try
+            InitializeComponent();
+            _PlayerData = PlayerData;
+            _AvailableControllers = AvailableControllers;
+
+            _RimData = new GUI_RawInputMouse();
+            _RihData = new GUI_RawInputHID();
+            _RimData.Visible = false;
+            _RihData.Visible = false;
+            Pnl_Options.Controls.Add(_RimData);
+            Pnl_Options.Controls.Add(_RihData);
+
+            Logger.WriteLog("Initializing Player" + _PlayerData.ID.ToString() + " devices:");
+            Lbl_Player.Text = "P" + _PlayerData.ID.ToString() + " Device :";
+
+            //GUI init
+            AddDevice("");
+            foreach (RawInputController Controller in AvailableControllers)
             {
-                InitializeComponent();
-                _PlayerData = PlayerData;
-                _AvailableControllers = AvailableControllers;
-
-                _RimData = new GUI_RawInputMouse();
-                _RihData = new GUI_RawInputHID();
-                _RimData.Visible = false;
-                _RihData.Visible = false;
-                Pnl_Options.Controls.Add(_RimData);
-                Pnl_Options.Controls.Add(_RihData);
-
-                Logger.WriteLog("Initializing Player" + _PlayerData.ID.ToString() + " devices:");
-                Lbl_Player.Text = "P" + _PlayerData.ID.ToString() + " Device :";
-
-                //GUI init
-                AddDevice("");
-                foreach (RawInputController Controller in AvailableControllers)
+                try
                 {
                     Logger.WriteLog("Adding " + Controller.DeviceName);
                     AddDevice(Controller.DeviceName);
                 }
-
-                if (_PlayerData.DeviceName.Length > 0)
+                catch (Exception ex)
                 {
-                    Logger.WriteLog("Current selected device : " + _PlayerData.DeviceName);
-                    for (int i = 0; i < Cbo_Device.Items.Count; i++)
+                    Logger.WriteLog("GUI_Player() ERROR : " + ex.Message.ToString());
+                }
+            }
+
+            if (_PlayerData.DeviceName.Length > 0)
+            {
+                Logger.WriteLog("Current selected device : " + _PlayerData.DeviceName);
+                for (int i = 0; i < Cbo_Device.Items.Count; i++)
+                {
+                    if (_PlayerData.DeviceName == Cbo_Device.Items[i].ToString())
                     {
-                        if (_PlayerData.DeviceName == Cbo_Device.Items[i].ToString())
-                        {
-                            Cbo_Device.SelectedItem = Cbo_Device.Items[i];
-                            SelectRawInputController(Cbo_Device.Text);
-                        }
+                        Cbo_Device.SelectedItem = Cbo_Device.Items[i];
+                        SelectRawInputController(Cbo_Device.Text);
                     }
                 }
-                else
-                    Logger.WriteLog("Current selected device : [None]");
             }
-            catch (Exception ex)
-            {
-                Logger.WriteLog("ERROR : " + ex.Message.ToString());
-            }
+            else
+                Logger.WriteLog("Current selected device : [None]");            
         }
 
         /// <summary>

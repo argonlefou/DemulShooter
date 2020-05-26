@@ -178,7 +178,6 @@ namespace DemulShooter
         /// </summary>
         private void Create_DataBank()
         {
-            //1st Codecave : storing P1 and P2 input structure data, read from register in main program code
             Codecave DataCaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             DataCaveMemory.Open();
             DataCaveMemory.Alloc(0x800);
@@ -256,7 +255,7 @@ namespace DemulShooter
         /// </summary>
         protected override void CreateOutputList()
         {
-            //Gun motor : Is activated permanently while trigger is pressed
+            //Gun recoil : Is activated for every bullet shot
             _Outputs = new List<GameOutput>();
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpStart, OutputId.P1_LmpStart));
             _Outputs.Add(new GameOutput(OutputDesciption.LmpPanel, OutputId.LmpPanel));

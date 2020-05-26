@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using DsCore.Win32;
+using System.Collections.Generic;
 
 namespace DsCore.RawInput
 {
@@ -24,14 +25,12 @@ namespace DsCore.RawInput
         {
             uint deviceCount = 0;
             var dwSize = (Marshal.SizeOf(typeof(RawInputDeviceList)));
-            RawInputController[] Result = null;
+            List<RawInputController> Result = new List<RawInputController>();
 
             if (Win32API.GetRawInputDeviceList(IntPtr.Zero, ref deviceCount, (uint)dwSize) == 0)
             {
                 IntPtr pRawInputDeviceList = Marshal.AllocHGlobal((int)(dwSize * deviceCount));
                 Win32API.GetRawInputDeviceList(pRawInputDeviceList, ref deviceCount, (uint)dwSize);
-
-                Result = new RawInputController[deviceCount];
 
                 for (int i = 0; i < deviceCount; i++)
                 {
@@ -44,14 +43,14 @@ namespace DsCore.RawInput
                     {
                         if (controller.DeviceType == Type)
                         {
-                            Result[i] = controller;
+                            Result.Add(controller);
                             break;
                         }
                     }
                 }
                 Marshal.FreeHGlobal(pRawInputDeviceList);
             }
-            return Result;
+            return Result.ToArray();
         }
     }
 }
