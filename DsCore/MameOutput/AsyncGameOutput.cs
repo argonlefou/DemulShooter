@@ -35,9 +35,9 @@ namespace DsCore.MameOutput
 
         private void AsyncResetTimer_Elapsed(Object sender, EventArgs e)
         {
-            _IsTimerRunning = false;
             _OutputValue = 0;
-            _AsyncResetTimer.Stop();            
+            _AsyncResetTimer.Stop();
+            _IsTimerRunning = false;            
         }
     }
 }

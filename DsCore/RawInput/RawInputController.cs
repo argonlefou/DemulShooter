@@ -311,7 +311,7 @@ namespace DsCore.RawInput
                     if (!GetOutputValueCapabilities(_pPreparsedData, _Caps, out _pOutputValueCaps))
                     {
                         Logger.WriteLog("Error: Impossible to get Output Value Capabilities for device " + _DeviceName);
-                        return;
+                        //return;
                     }
 
                     //Number of absolute axis
