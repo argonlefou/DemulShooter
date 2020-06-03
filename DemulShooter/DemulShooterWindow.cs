@@ -857,7 +857,12 @@ namespace DemulShooter
                     {
                         if (Player.isVirtualMouseButtonsEnabled)
                         {
-                            if (s.scanCode == Player.DIK_VirtualMouseButton_Middle)
+                            if (s.scanCode == Player.DIK_VirtualMouseButton_Left)
+                            {
+                                Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.OnScreenTriggerDown;
+                                _Game.SendInput(Player);
+                            }
+                            else if (s.scanCode == Player.DIK_VirtualMouseButton_Middle)
                             {
                                 Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.ActionDown;
                                 _Game.SendInput(Player);
@@ -877,7 +882,12 @@ namespace DemulShooter
                     {
                         if (Player.isVirtualMouseButtonsEnabled)
                         {
-                            if (s.scanCode == Player.DIK_VirtualMouseButton_Middle)
+                            if (s.scanCode == Player.DIK_VirtualMouseButton_Left)
+                            {
+                                Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.OnScreenTriggerUp;
+                                _Game.SendInput(Player);
+                            }
+                            else if (s.scanCode == Player.DIK_VirtualMouseButton_Middle)
                             {
                                 Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.ActionUp;
                                 _Game.SendInput(Player);

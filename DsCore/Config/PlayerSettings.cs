@@ -99,6 +99,7 @@ namespace DsCore.Config
 
         // Virtual Middle click
         private bool _VirtualMouseButtonsEnabled = false;
+        private HardwareScanCode _DIK_VirtualMouseButton_Left;
         private HardwareScanCode _DIK_VirtualMouseButton_Middle;
         private HardwareScanCode _DIK_VirtualMouseButton_Right;
         #region Accessors
@@ -106,6 +107,11 @@ namespace DsCore.Config
         {
             get { return _VirtualMouseButtonsEnabled; }
             set {_VirtualMouseButtonsEnabled = value;}
+        }
+        public HardwareScanCode DIK_VirtualMouseButton_Left
+        {
+            get { return _DIK_VirtualMouseButton_Left; }
+            set { _DIK_VirtualMouseButton_Left = value; }
         }
         public HardwareScanCode DIK_VirtualMouseButton_Middle
         {
@@ -162,21 +168,25 @@ namespace DsCore.Config
             _ID = PlayerID;
             if (_ID == 1)
             {
+                _DIK_VirtualMouseButton_Left = HardwareScanCode.DIK_T;
                 _DIK_VirtualMouseButton_Middle = HardwareScanCode.DIK_C;
                 _DIK_VirtualMouseButton_Right = HardwareScanCode.DIK_F;
             }
             else if (_ID == 2)
             {
+                _DIK_VirtualMouseButton_Left = HardwareScanCode.DIK_Y;
                 _DIK_VirtualMouseButton_Middle = HardwareScanCode.DIK_V;
                 _DIK_VirtualMouseButton_Right = HardwareScanCode.DIK_G;
             }
             else if (_ID == 3)
             {
+                _DIK_VirtualMouseButton_Left = HardwareScanCode.DIK_U;
                 _DIK_VirtualMouseButton_Middle = HardwareScanCode.DIK_B;
                 _DIK_VirtualMouseButton_Right = HardwareScanCode.DIK_H;
             }
             else if (_ID == 4)
             {
+                _DIK_VirtualMouseButton_Left = HardwareScanCode.DIK_I;
                 _DIK_VirtualMouseButton_Middle = HardwareScanCode.DIK_N;
                 _DIK_VirtualMouseButton_Right = HardwareScanCode.DIK_J;
             }
@@ -293,6 +303,14 @@ namespace DsCore.Config
             {
                 if (!bool.TryParse(StrValue, out _VirtualMouseButtonsEnabled))
                     return false; ;
+            }
+            else if (StrKey.Equals("virtualmousebuttonleft_key"))
+            {
+                try
+                {
+                    _DIK_VirtualMouseButton_Left = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                }
+                catch { return false; }
             }
             else if (StrKey.Equals("virtualmousebuttonmiddle_key"))
             {

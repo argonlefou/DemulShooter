@@ -129,20 +129,40 @@ namespace DemulShooter
 
                     //X => [0x0000 ; 0x4000] = 16384
                     //Y => [0x0000 ; 0x4000] = 16384
+                    double dMinX = 0.0;
                     double dMaxX = 16384.0;
+                    double dMinY = 0.0;
                     double dMaxY = 16384.0;
+                    double dRangeX = dMaxX - dMinX + 1;
+                    double dRangeY = dMaxY - dMinY + 1;
+                    
+                     //In case of forced scren ration
+                    if (_ForcedXratio > 0)
+                    {
+                        Logger.WriteLog("Forcing X Ratio to = " + _ForcedXratio.ToString());
+                        double ViewportHeight = TotalResY;
+                        double ViewportWidth = TotalResY * _ForcedXratio;
+                        double SideBarsWidth = (TotalResX - ViewportWidth) / 2;
+                        Logger.WriteLog("Game Viewport size (Px) = [ " + ViewportWidth + "x" + ViewportHeight + " ]");
+                        Logger.WriteLog("SideBars Width (px) = " + SideBarsWidth.ToString());
+                        double GameSideBars = dRangeX * SideBarsWidth / ViewportWidth;
+                        dRangeX = dRangeX + GameSideBars * 2;
+                        Logger.WriteLog("X Range = " + dRangeX.ToString());
+                        PlayerData.RIController.Computed_X = Convert.ToInt32(Math.Round(dRangeX * PlayerData.RIController.Computed_X / TotalResX) - GameSideBars);
+                    }
+                    else
+                        PlayerData.RIController.Computed_X = Convert.ToInt32(Math.Round(dRangeX * PlayerData.RIController.Computed_X / TotalResX));
 
-                    PlayerData.RIController.Computed_X = Convert.ToInt32(Math.Round(dMaxX * PlayerData.RIController.Computed_X / TotalResX));
-                    PlayerData.RIController.Computed_Y = Convert.ToInt32(Math.Round(dMaxY * PlayerData.RIController.Computed_Y / TotalResY));
-
-                    if (PlayerData.RIController.Computed_X < 0)
-                        PlayerData.RIController.Computed_X = 0;
-                    if (PlayerData.RIController.Computed_Y < 0)
-                        PlayerData.RIController.Computed_Y = 0;
-                    if (PlayerData.RIController.Computed_X > 16384)
-                        PlayerData.RIController.Computed_X = 16384;
-                    if (PlayerData.RIController.Computed_Y > 16384)
-                        PlayerData.RIController.Computed_Y = 16384;
+                    PlayerData.RIController.Computed_Y = Convert.ToInt32(Math.Round(dRangeY * PlayerData.RIController.Computed_Y / TotalResY));
+                    
+                    if (PlayerData.RIController.Computed_X < (int)dMinX)
+                        PlayerData.RIController.Computed_X = (int)dMinX;
+                    if (PlayerData.RIController.Computed_Y < (int)dMinY)
+                        PlayerData.RIController.Computed_Y = (int)dMinY;
+                    if (PlayerData.RIController.Computed_X > (int)dMaxX)
+                        PlayerData.RIController.Computed_X = (int)dMaxX;
+                    if (PlayerData.RIController.Computed_Y > (int)dMaxY)
+                        PlayerData.RIController.Computed_Y = (int)dMaxY; 
 
                     return true;
                 }

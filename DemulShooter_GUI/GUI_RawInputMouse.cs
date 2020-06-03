@@ -48,6 +48,7 @@ namespace DemulShooter_GUI
                 Pnl_ButtonsViewer.Controls.Add(_Buttons[i]);
             }
 
+            Txt_VirtualLeftBtn.Text = _PlayerData.DIK_VirtualMouseButton_Left.ToString();
             Txt_VirtualMiddleBtn.Text = _PlayerData.DIK_VirtualMouseButton_Middle.ToString();
             Txt_VirtualRightBtn.Text = _PlayerData.DIK_VirtualMouseButton_Right.ToString();
 
@@ -70,11 +71,13 @@ namespace DemulShooter_GUI
             _PlayerData.isVirtualMouseButtonsEnabled = Chk_VirtualMiddleBtn.Checked;
             if (!_PlayerData.isVirtualMouseButtonsEnabled)
             {
+                Txt_VirtualLeftBtn.Enabled = false;
                 Txt_VirtualMiddleBtn.Enabled = false;
                 Txt_VirtualRightBtn.Enabled = false;
             }
             else
             {
+                Txt_VirtualLeftBtn.Enabled = true;
                 Txt_VirtualMiddleBtn.Enabled = true;
                 Txt_VirtualRightBtn.Enabled = true;
             }
@@ -109,7 +112,9 @@ namespace DemulShooter_GUI
                         KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
                         _SelectedTextBox.Text = s.scanCode.ToString();
 
-                        if (_SelectedTextBox == Txt_VirtualMiddleBtn)
+                        if (_SelectedTextBox == Txt_VirtualLeftBtn)
+                            _PlayerData.DIK_VirtualMouseButton_Left = s.scanCode;
+                        else if (_SelectedTextBox == Txt_VirtualMiddleBtn)
                             _PlayerData.DIK_VirtualMouseButton_Middle = s.scanCode;
                         else if (_SelectedTextBox == Txt_VirtualRightBtn)
                             _PlayerData.DIK_VirtualMouseButton_Right = s.scanCode;
@@ -170,5 +175,6 @@ namespace DemulShooter_GUI
         }
 
         #endregion        
+
     }
 }

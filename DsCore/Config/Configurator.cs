@@ -459,6 +459,7 @@ namespace DsCore.Config
                     foreach (PlayerSettings PlayerData in _PlayersSettings)
                     {
                         sr.WriteLine("P" + PlayerData.ID + "VirtualMouseButtons_Enable = " + PlayerData.isVirtualMouseButtonsEnabled.ToString());
+                        sr.WriteLine("P" + PlayerData.ID + "VirtualMouseButtonLeft_Key = " + PlayerData.DIK_VirtualMouseButton_Left.ToString());
                         sr.WriteLine("P" + PlayerData.ID + "VirtualMouseButtonMiddle_Key = " + PlayerData.DIK_VirtualMouseButton_Middle.ToString());
                         sr.WriteLine("P" + PlayerData.ID + "VirtualMouseButtonRight_Key = " + PlayerData.DIK_VirtualMouseButton_Right.ToString());
                     }
