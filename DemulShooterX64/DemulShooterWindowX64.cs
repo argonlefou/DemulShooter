@@ -184,8 +184,18 @@ namespace DemulShooterX64
                 if (EnableXInputProc)
                     Bgw_XInput.RunWorkerAsync();
                 */
+                if (_Target.Equals("es3"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "tc5":
+                            {
+                                _Game = new Game_Es3Tc5(_Rom.ToLower(), isVerbose);
+                            }; break;
+                    }
+                }
 
-                if (_Target.Equals("seganu"))
+                else if (_Target.Equals("seganu"))
                 {
                     switch (_Rom.ToLower())
                     {

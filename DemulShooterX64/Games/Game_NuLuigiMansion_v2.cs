@@ -200,7 +200,7 @@ namespace DemulShooterX64
             CaveMemory.Write_StrBytes("44 89 58 38");
             CaveMemory.Write_jmp((UInt64)_TargetProcess_MemoryBaseAddress + _P1_Injection_Return_Offset);
 
-            Logger.WriteLog("Adding P1 Buttons Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+            Logger.WriteLog("Adding P1 Buttons Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X16"));
 
             //Code Injection
             List<Byte> Buffer = new List<Byte>();IntPtr ProcessHandle = _TargetProcess.Handle;

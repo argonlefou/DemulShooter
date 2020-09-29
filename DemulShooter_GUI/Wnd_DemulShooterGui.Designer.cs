@@ -62,13 +62,15 @@
             this.label15 = new System.Windows.Forms.Label();
             this.Tab_M2 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.Btn_M2Scripts = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.Cbox_M2_Flash = new System.Windows.Forms.CheckBox();
             this.label14 = new System.Windows.Forms.Label();
             this.TXT_CH_P1 = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.TXT_CH_P2 = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.TXT_CH_VIS = new System.Windows.Forms.TextBox();
+            this.Btn_M2Scripts = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.Tab_SHA = new System.Windows.Forms.TabPage();
             this.label35 = new System.Windows.Forms.Label();
@@ -548,6 +550,7 @@
             this.Tab_M2.BackColor = System.Drawing.SystemColors.Control;
             this.Tab_M2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Tab_M2.Controls.Add(this.groupBox2);
+            this.Tab_M2.Controls.Add(this.Btn_M2Scripts);
             this.Tab_M2.Controls.Add(this.label1);
             this.Tab_M2.Location = new System.Drawing.Point(4, 5);
             this.Tab_M2.Name = "Tab_M2";
@@ -558,30 +561,39 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.Btn_M2Scripts);
+            this.groupBox2.Controls.Add(this.panel1);
+            this.groupBox2.Controls.Add(this.Cbox_M2_Flash);
             this.groupBox2.Controls.Add(this.label14);
             this.groupBox2.Controls.Add(this.TXT_CH_P1);
             this.groupBox2.Controls.Add(this.label13);
             this.groupBox2.Controls.Add(this.TXT_CH_P2);
             this.groupBox2.Controls.Add(this.label11);
             this.groupBox2.Controls.Add(this.TXT_CH_VIS);
-            this.groupBox2.Location = new System.Drawing.Point(6, 156);
+            this.groupBox2.Location = new System.Drawing.Point(9, 105);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(568, 125);
+            this.groupBox2.Size = new System.Drawing.Size(568, 120);
             this.groupBox2.TabIndex = 59;
             this.groupBox2.TabStop = false;
             // 
-            // Btn_M2Scripts
+            // panel1
             // 
-            this.Btn_M2Scripts.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.Btn_M2Scripts.Location = new System.Drawing.Point(312, 39);
-            this.Btn_M2Scripts.Margin = new System.Windows.Forms.Padding(4);
-            this.Btn_M2Scripts.Name = "Btn_M2Scripts";
-            this.Btn_M2Scripts.Size = new System.Drawing.Size(202, 57);
-            this.Btn_M2Scripts.TabIndex = 52;
-            this.Btn_M2Scripts.Text = "Install m2emulator crosshair scripts";
-            this.Btn_M2Scripts.UseVisualStyleBackColor = true;
-            this.Btn_M2Scripts.Click += new System.EventHandler(this.Btn_M2Scripts_Click);
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Location = new System.Drawing.Point(282, 14);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(4, 100);
+            this.panel1.TabIndex = 60;
+            // 
+            // Cbox_M2_Flash
+            // 
+            this.Cbox_M2_Flash.AutoSize = true;
+            this.Cbox_M2_Flash.Checked = true;
+            this.Cbox_M2_Flash.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.Cbox_M2_Flash.Location = new System.Drawing.Point(333, 59);
+            this.Cbox_M2_Flash.Name = "Cbox_M2_Flash";
+            this.Cbox_M2_Flash.Size = new System.Drawing.Size(192, 20);
+            this.Cbox_M2_Flash.TabIndex = 59;
+            this.Cbox_M2_Flash.Text = "Disable white flash on shoot";
+            this.Cbox_M2_Flash.UseVisualStyleBackColor = true;
             // 
             // label14
             // 
@@ -601,7 +613,7 @@
             this.TXT_CH_P1.ReadOnly = true;
             this.TXT_CH_P1.Size = new System.Drawing.Size(100, 22);
             this.TXT_CH_P1.TabIndex = 53;
-            this.TXT_CH_P1.Text = "D7";
+            this.TXT_CH_P1.Text = "7";
             this.TXT_CH_P1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.TXT_CH_P1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
             // 
@@ -623,7 +635,7 @@
             this.TXT_CH_P2.ReadOnly = true;
             this.TXT_CH_P2.Size = new System.Drawing.Size(100, 22);
             this.TXT_CH_P2.TabIndex = 54;
-            this.TXT_CH_P2.Text = "D8";
+            this.TXT_CH_P2.Text = "8";
             this.TXT_CH_P2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.TXT_CH_P2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
             // 
@@ -645,9 +657,21 @@
             this.TXT_CH_VIS.ReadOnly = true;
             this.TXT_CH_VIS.Size = new System.Drawing.Size(100, 22);
             this.TXT_CH_VIS.TabIndex = 55;
-            this.TXT_CH_VIS.Text = "D9";
+            this.TXT_CH_VIS.Text = "9";
             this.TXT_CH_VIS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.TXT_CH_VIS.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Btn_M2Scripts
+            // 
+            this.Btn_M2Scripts.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Btn_M2Scripts.Location = new System.Drawing.Point(191, 249);
+            this.Btn_M2Scripts.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_M2Scripts.Name = "Btn_M2Scripts";
+            this.Btn_M2Scripts.Size = new System.Drawing.Size(202, 57);
+            this.Btn_M2Scripts.TabIndex = 52;
+            this.Btn_M2Scripts.Text = "Install m2emulator crosshair scripts";
+            this.Btn_M2Scripts.UseVisualStyleBackColor = true;
+            this.Btn_M2Scripts.Click += new System.EventHandler(this.Btn_M2Scripts_Click);
             // 
             // label1
             // 
@@ -1678,6 +1702,8 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox Cbox_M2_Flash;
     }
 }
 

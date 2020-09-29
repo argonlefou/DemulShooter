@@ -48,9 +48,9 @@ namespace DemulShooter_GUI
                 Pnl_ButtonsViewer.Controls.Add(_Buttons[i]);
             }
 
-            Txt_VirtualLeftBtn.Text = _PlayerData.DIK_VirtualMouseButton_Left.ToString();
-            Txt_VirtualMiddleBtn.Text = _PlayerData.DIK_VirtualMouseButton_Middle.ToString();
-            Txt_VirtualRightBtn.Text = _PlayerData.DIK_VirtualMouseButton_Right.ToString();
+            Txt_VirtualLeftBtn.Text = GetKeyStringFromScanCode((int)_PlayerData.DIK_VirtualMouseButton_Left);
+            Txt_VirtualMiddleBtn.Text = GetKeyStringFromScanCode((int)_PlayerData.DIK_VirtualMouseButton_Middle);
+            Txt_VirtualRightBtn.Text = GetKeyStringFromScanCode((int)_PlayerData.DIK_VirtualMouseButton_Right);
 
             if (!_PlayerData.isVirtualMouseButtonsEnabled)
             {
@@ -110,7 +110,8 @@ namespace DemulShooter_GUI
                     if (_Start_KeyRecord)
                     {
                         KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
-                        _SelectedTextBox.Text = s.scanCode.ToString();
+                        //_SelectedTextBox.Text = s.scanCode.ToString();
+                        _SelectedTextBox.Text = GetKeyStringFromVkCode(s.vkCode);
 
                         if (_SelectedTextBox == Txt_VirtualLeftBtn)
                             _PlayerData.DIK_VirtualMouseButton_Left = s.scanCode;
@@ -126,6 +127,18 @@ namespace DemulShooter_GUI
                 }
             }
             return Win32API.CallNextHookEx(_KeyboardHookID, nCode, wParam, lParam);
+        }
+
+        private String GetKeyStringFromScanCode(int ScanCode)
+        {
+            uint Vk = Win32API.MapVirtualKey((uint)ScanCode, VirtualKeyMapType.MAPVK_VSC_TO_VK);
+            return GetKeyStringFromVkCode((int)Vk);
+        }
+
+        private String GetKeyStringFromVkCode(int vkCode)
+        {
+            KeysConverter kc = new KeysConverter();
+            return kc.ConvertToString((Keys)vkCode);
         }
 
         #region GUI Animation

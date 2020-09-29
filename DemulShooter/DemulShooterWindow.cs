@@ -672,7 +672,7 @@ namespace DemulShooter
                             {
                                 Controller.ProcessRawInputData(RawInputHandle);
 
-                                Logger.WriteLog("RawData event for Player #" + Player.ID.ToString() + ":");
+                                Logger.WriteLog("RawData event+- for Player #" + Player.ID.ToString() + ":");
                                 Logger.WriteLog("Device rawinput data (Hex) = [ " + Player.RIController.Computed_X.ToString("X8") + ", " + Player.RIController.Computed_Y.ToString("X8") + " ]");
 
                                 _Game.GetScreenResolution();
