@@ -36,7 +36,7 @@ namespace DemulShooter
             String[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "manicpnc", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
             String[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
             String[] _WindowsRoms = new string[] { "artdead", "friction", "hfa", "hfa2p", "hfa2p", "hfss", "hfss2p", "hod2pc", "hod3pc", "hodo", "reload" };
-            String[] _TTXRoms = new string[] { "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
+            String[] _TTXRoms = new string[] { "bkbs", "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
             String[] _GlobalVrRoms = new string[] { "aliens", "farcry", "fearland" };
             String[] _LindberghRoms = new string[] { "2spicy", "hotd4", "lgj", "lgjsp", "rambo" };
             String[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr", "tha" };
@@ -52,7 +52,7 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : September, 29th 2020");
+                        Console.WriteLine("Build date : April, 23rd 2021");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
@@ -125,6 +125,7 @@ namespace DemulShooter
                         Console.WriteLine(" tha\t\tTransformers Human Alliance");
                         Console.WriteLine("");
                         Console.WriteLine("Taito Type X Games :");
+                        Console.WriteLine(" bkbs\t\tBlock King Ball Shooter");
                         Console.WriteLine(" eadp\t\tElevator Action Death Parade");
                         Console.WriteLine(" sha\t\tSilent Hill the Arcade");
                         Console.WriteLine(" gattack4\tGaia Attack 4");

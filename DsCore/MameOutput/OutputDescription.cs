@@ -39,6 +39,10 @@ namespace DsCore.MameOutput
         public static readonly String LmpUpBtn = "LmpUpBtn";        //
         public static readonly String LmpDownBtn = "LmpDownBtn";    //Elevator Action Death Parade
         public static readonly String LmpCloseBtn = "LmpCloseBtn";  //
+        public static readonly String LmpCannonBtn = "LmpCannonBtn";    //
+        public static readonly String LmpCannon_R = "LmpCannon_R";      //
+        public static readonly String LmpCannon_G = "LmpCannon_G";      //Block King Ball Shooter
+        public static readonly String LmpCannon_B = "LmpCannon_B";      //
         
         public static readonly String P1_LmpGun = "P1_LmpGun";
         public static readonly String P2_LmpGun = "P2_LmpGun";

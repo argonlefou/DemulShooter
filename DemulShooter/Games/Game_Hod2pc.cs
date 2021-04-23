@@ -155,7 +155,7 @@ namespace DemulShooter
                     double dRangeX = dMaxX - dMinX + 1;
                     double dRangeY = dMaxY - dMinY + 1;
 
-                    //In case of forced scren ration (4/3)
+                    //In case of forced screen ration (4/3)
                     if (_ForcedXratio > 0)
                     {
                         Logger.WriteLog("Forcing X Ratio to = " + _ForcedXratio.ToString());

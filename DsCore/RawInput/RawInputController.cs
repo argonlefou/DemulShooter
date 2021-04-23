@@ -113,7 +113,9 @@ namespace DsCore.RawInput
                 if (_dwType == RawInputDeviceType.RIM_TYPEHID)
                     b = _Hid_NumberofButtons;
                 else if (_dwType == RawInputDeviceType.RIM_TYPEMOUSE)
+                {
                     b = _DeviceInfo.mouse.dwNumberOfButtons;
+                }
                 else if (_dwType == RawInputDeviceType.RIM_TYPEKEYBOARD)
                     b = _DeviceInfo.keyboard.dwNumberOfKeysTotal;
                 return b;
@@ -328,7 +330,7 @@ namespace DsCore.RawInput
             else if (_dwType == RawInputDeviceType.RIM_TYPEMOUSE)
             {
                 //A mouse only have 1 set of axis : X,Y
-                _Hid_Buttons = new bool[_DeviceInfo.mouse.dwNumberOfButtons];
+                _Hid_Buttons = new bool[_DeviceInfo.mouse.dwNumberOfButtons];                    
             }
         }
 
@@ -500,34 +502,46 @@ namespace DsCore.RawInput
                 if (_RawInputDataMouse.data.usButtonFlags == RawMouseButtonFlags.RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
                     _ControllerData.Buttons |= RawInputcontrollerButtonEvent.OnScreenTriggerDown;
-                    _Hid_Buttons[0] = true;
+                    Set_Hid_Button_Value(0, true);
                 }
                 else if (_RawInputDataMouse.data.usButtonFlags == RawMouseButtonFlags.RI_MOUSE_MIDDLE_BUTTON_DOWN)
                 {
                     _ControllerData.Buttons |= RawInputcontrollerButtonEvent.ActionDown;
-                    _Hid_Buttons[1] = true;
+                    Set_Hid_Button_Value(1, true);
                 }
                 else if (_RawInputDataMouse.data.usButtonFlags == RawMouseButtonFlags.RI_MOUSE_RIGHT_BUTTON_DOWN)
                 {
                     _ControllerData.Buttons |= RawInputcontrollerButtonEvent.OffScreenTriggerDown;
-                    _Hid_Buttons[2] = true;
+                    Set_Hid_Button_Value(2, true);
                 }
                 else if (_RawInputDataMouse.data.usButtonFlags == RawMouseButtonFlags.RI_MOUSE_LEFT_BUTTON_UP)
                 {
                     _ControllerData.Buttons |= RawInputcontrollerButtonEvent.OnScreenTriggerUp;
-                    _Hid_Buttons[0] = false;
+                    Set_Hid_Button_Value(0, false);
                 }
                 else if (_RawInputDataMouse.data.usButtonFlags == RawMouseButtonFlags.RI_MOUSE_MIDDLE_BUTTON_UP)
                 {
                     _ControllerData.Buttons |= RawInputcontrollerButtonEvent.ActionUp;
-                    _Hid_Buttons[1] = false;
+                    Set_Hid_Button_Value(1, false);
                 }
                 else if (_RawInputDataMouse.data.usButtonFlags == RawMouseButtonFlags.RI_MOUSE_RIGHT_BUTTON_UP)
                 {
                     _ControllerData.Buttons |= RawInputcontrollerButtonEvent.OffScreenTriggerUp;
-                    _Hid_Buttons[2] = false;
+                    Set_Hid_Button_Value(2, false);
                 }
             }
+        }
+
+        /// <summary>
+        /// Github issue #30 fix (https://github.com/argonlefou/DemulShooter/issues/30)
+        /// Old ActLabs gun driver only outputs support for 2 mouse buttons.
+        /// By default, RightClick is hardcoded on the 3rd value of _Hid_Buttons array, but the array length will only be 2 (= error)
+        /// Hence this verification
+        /// </summary>
+        private void Set_Hid_Button_Value(int ButtonNumber, bool ButtonState)
+        {
+            if (_Hid_Buttons.Length > ButtonNumber)
+                _Hid_Buttons[ButtonNumber] = ButtonState;
         }
 
         /// <summary>

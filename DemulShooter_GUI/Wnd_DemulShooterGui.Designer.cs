@@ -38,6 +38,8 @@
             this.Btn_Save_P3 = new System.Windows.Forms.Button();
             this.Tab_P4 = new System.Windows.Forms.TabPage();
             this.Btn_Save_P4 = new System.Windows.Forms.Button();
+            this.Tab_AnalogCalib = new System.Windows.Forms.TabPage();
+            this.Btn_SaveAnalog = new System.Windows.Forms.Button();
             this.Tab_ActLAbs = new System.Windows.Forms.TabPage();
             this.Btn_ActLabs_Save = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -148,11 +150,13 @@
             this.Bgw_XInput = new System.ComponentModel.BackgroundWorker();
             this.Cbo_PageSettings = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
+            this.TableLayout_Calib = new System.Windows.Forms.TableLayoutPanel();
             this.tabControl1.SuspendLayout();
             this.Tab_P1.SuspendLayout();
             this.Tab_P2.SuspendLayout();
             this.Tab_P3.SuspendLayout();
             this.Tab_P4.SuspendLayout();
+            this.Tab_AnalogCalib.SuspendLayout();
             this.Tab_ActLAbs.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.Tab_M2.SuspendLayout();
@@ -193,6 +197,7 @@
             this.tabControl1.Controls.Add(this.Tab_P2);
             this.tabControl1.Controls.Add(this.Tab_P3);
             this.tabControl1.Controls.Add(this.Tab_P4);
+            this.tabControl1.Controls.Add(this.Tab_AnalogCalib);
             this.tabControl1.Controls.Add(this.Tab_ActLAbs);
             this.tabControl1.Controls.Add(this.Tab_M2);
             this.tabControl1.Controls.Add(this.Tab_SHA);
@@ -298,6 +303,31 @@
             this.Btn_Save_P4.Text = "Save Config";
             this.Btn_Save_P4.UseVisualStyleBackColor = true;
             this.Btn_Save_P4.Click += new System.EventHandler(this.Btn_Save_Cfg_Click);
+            // 
+            // Tab_AnalogCalib
+            // 
+            this.Tab_AnalogCalib.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_AnalogCalib.Controls.Add(this.TableLayout_Calib);
+            this.Tab_AnalogCalib.Controls.Add(this.Btn_SaveAnalog);
+            this.Tab_AnalogCalib.Location = new System.Drawing.Point(4, 5);
+            this.Tab_AnalogCalib.Name = "Tab_AnalogCalib";
+            this.Tab_AnalogCalib.Size = new System.Drawing.Size(581, 334);
+            this.Tab_AnalogCalib.TabIndex = 14;
+            this.Tab_AnalogCalib.Text = "Analog device calibration";
+            this.Tab_AnalogCalib.UseVisualStyleBackColor = true;
+            this.Tab_AnalogCalib.Click += new System.EventHandler(this.Tab_AnalogCalib_Click);
+            // 
+            // Btn_SaveAnalog
+            // 
+            this.Btn_SaveAnalog.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Btn_SaveAnalog.Location = new System.Drawing.Point(217, 284);
+            this.Btn_SaveAnalog.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_SaveAnalog.Name = "Btn_SaveAnalog";
+            this.Btn_SaveAnalog.Size = new System.Drawing.Size(145, 37);
+            this.Btn_SaveAnalog.TabIndex = 33;
+            this.Btn_SaveAnalog.Text = "Save Config";
+            this.Btn_SaveAnalog.UseVisualStyleBackColor = true;
+            this.Btn_SaveAnalog.Click += new System.EventHandler(this.Btn_SaveAnalog_Click);
             // 
             // Tab_ActLAbs
             // 
@@ -1498,6 +1528,7 @@
             "P2 Configuration",
             "P3 Configuration",
             "P4 Configuration",
+            "Calibration (Analog devices)",
             "Calibration (Act Labs lightguns)",
             "m2Emulator",
             "Silent Hill : The Arcade",
@@ -1521,6 +1552,19 @@
             this.label39.TabIndex = 40;
             this.label39.Text = "Page selection :";
             // 
+            // TableLayout_Calib
+            // 
+            this.TableLayout_Calib.ColumnCount = 2;
+            this.TableLayout_Calib.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.TableLayout_Calib.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.TableLayout_Calib.Location = new System.Drawing.Point(5, 3);
+            this.TableLayout_Calib.Name = "TableLayout_Calib";
+            this.TableLayout_Calib.RowCount = 2;
+            this.TableLayout_Calib.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.TableLayout_Calib.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.TableLayout_Calib.Size = new System.Drawing.Size(569, 274);
+            this.TableLayout_Calib.TabIndex = 34;
+            // 
             // Wnd_DemulShooterGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1543,6 +1587,7 @@
             this.Tab_P2.ResumeLayout(false);
             this.Tab_P3.ResumeLayout(false);
             this.Tab_P4.ResumeLayout(false);
+            this.Tab_AnalogCalib.ResumeLayout(false);
             this.Tab_ActLAbs.ResumeLayout(false);
             this.Tab_ActLAbs.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -1704,6 +1749,9 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.CheckBox Cbox_M2_Flash;
+        private System.Windows.Forms.TabPage Tab_AnalogCalib;
+        private System.Windows.Forms.Button Btn_SaveAnalog;
+        private System.Windows.Forms.TableLayoutPanel TableLayout_Calib;
     }
 }
 

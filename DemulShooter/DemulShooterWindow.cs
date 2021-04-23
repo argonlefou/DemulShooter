@@ -453,6 +453,10 @@ namespace DemulShooter
                 {
                     switch (_Rom.ToLower())
                     {
+                        case "bkbs":
+                            {
+                                _Game = new Game_TtxBlockKingBallShooter(_Rom.ToLower(), _ForceXratio, isVerbose);
+                            } break;
                         case "eadp":
                             {
                                 _Game = new Game_TtxEadp(_Rom.ToLower(), _ForceXratio, isVerbose);
@@ -672,14 +676,26 @@ namespace DemulShooter
                             {
                                 Controller.ProcessRawInputData(RawInputHandle);
 
-                                Logger.WriteLog("RawData event+- for Player #" + Player.ID.ToString() + ":");
+                                Logger.WriteLog("RawData event for Player #" + Player.ID.ToString() + ":");
                                 Logger.WriteLog("Device rawinput data (Hex) = [ " + Player.RIController.Computed_X.ToString("X8") + ", " + Player.RIController.Computed_Y.ToString("X8") + " ]");
 
                                 _Game.GetScreenResolution();
                                 Logger.WriteLog("PrimaryScreen Size (Px) = [ " + _Game.ScreenWidth + "x" + _Game.ScreenHeight + " ]");
 
-                                Player.RIController.Computed_X = _Game.ScreenScale(Player.RIController.Computed_X, Player.RIController.Axis_X_Min, Player.RIController.Axis_X_Max, 0, _Game.ScreenWidth);
-                                Player.RIController.Computed_Y = _Game.ScreenScale(Player.RIController.Computed_Y, Player.RIController.Axis_Y_Min, Player.RIController.Axis_Y_Max, 0, _Game.ScreenHeight);
+                                //If manual calibration override for analog guns
+                                if (Player.RIController.DeviceType == RawInputDeviceType.RIM_TYPEHID && Player.AnalogAxisRangeOverride)
+                                {
+                                    Logger.WriteLog("Overriding player axis range values : X => [ " + Player.AnalogManual_Xmin.ToString() + ", " + Player.AnalogManual_Xmax.ToString() + " ], Y => [ " + Player.AnalogManual_Ymin.ToString() + ", " + Player.AnalogManual_Ymax.ToString() + " ]");
+                                    Player.RIController.Computed_X = _Game.ScreenScale(Player.RIController.Computed_X, Player.AnalogManual_Xmin, Player.AnalogManual_Xmax, 0, _Game.ScreenWidth);
+                                    Player.RIController.Computed_Y = _Game.ScreenScale(Player.RIController.Computed_Y, Player.AnalogManual_Ymin, Player.AnalogManual_Ymax, 0, _Game.ScreenHeight);                                
+                                }                                
+                                else
+                                {
+                                    Player.RIController.Computed_X = _Game.ScreenScale(Player.RIController.Computed_X, Player.RIController.Axis_X_Min, Player.RIController.Axis_X_Max, 0, _Game.ScreenWidth);
+                                    Player.RIController.Computed_Y = _Game.ScreenScale(Player.RIController.Computed_Y, Player.RIController.Axis_Y_Min, Player.RIController.Axis_Y_Max, 0, _Game.ScreenHeight);
+                                }
+                                
+                                //Optionnal invert axis
                                 if (Player.InvertAxis_X)
                                     Player.RIController.Computed_X = _Game.ScreenWidth - Player.RIController.Computed_X;
                                 if (Player.InvertAxis_Y)

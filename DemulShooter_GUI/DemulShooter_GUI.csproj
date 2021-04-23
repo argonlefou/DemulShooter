@@ -88,6 +88,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GUI_AnalogCalibration.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI_AnalogCalibration.Designer.cs">
+      <DependentUpon>GUI_AnalogCalibration.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI_Button.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -125,6 +131,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GUI_AnalogCalibration.resx">
+      <DependentUpon>GUI_AnalogCalibration.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI_Button.resx">
       <DependentUpon>GUI_Button.cs</DependentUpon>
     </EmbeddedResource>

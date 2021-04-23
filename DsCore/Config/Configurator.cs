@@ -483,6 +483,16 @@ namespace DsCore.Config
                         sr.WriteLine("P" + PlayerData.ID + "Act_Labs_Offset_X = " + PlayerData.Act_Labs_Offset_X.ToString());
                         sr.WriteLine("P" + PlayerData.ID + "Act_Labs_Offset_Y = " + PlayerData.Act_Labs_Offset_Y.ToString());
                     }
+                    sr.WriteLine("");
+                    sr.WriteLine(";Manual calibration for Analog devices");       
+                    foreach (PlayerSettings PlayerData in _PlayersSettings)
+                    {
+                        sr.WriteLine("P" + PlayerData.ID + "Analog_Calibration_Override = " + PlayerData.AnalogAxisRangeOverride.ToString());
+                        sr.WriteLine("P" + PlayerData.ID + "Analog_Manual_Xmin = " + PlayerData.AnalogManual_Xmin.ToString());
+                        sr.WriteLine("P" + PlayerData.ID + "Analog_Manual_Xmax = " + PlayerData.AnalogManual_Xmax.ToString());
+                        sr.WriteLine("P" + PlayerData.ID + "Analog_Manual_Ymin = " + PlayerData.AnalogManual_Ymin.ToString());
+                        sr.WriteLine("P" + PlayerData.ID + "Analog_Manual_Ymax = " + PlayerData.AnalogManual_Ymax.ToString());
+                    }
                     sr.WriteLine("");                    
                     sr.WriteLine(";Heavy Fire Afghanistan settings");
                     sr.WriteLine("HF3_Path = " + _HF3_Path);

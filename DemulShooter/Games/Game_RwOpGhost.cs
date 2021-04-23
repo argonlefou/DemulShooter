@@ -16,10 +16,20 @@ namespace DemulShooter
         private const string GAMEDATA_FOLDER = @"MemoryData\ringwide\og";
 
         /*** MEMORY ADDRESSES **/
+        private UInt32 _JvsEnabled_Offset = 0x23D2E7;
+        private UInt32 _P1_X_CaveAddress;
+        private UInt32 _P1_Y_CaveAddress;
+        
+        //JVS emulation mode
+        private UInt32 _P2_X_CaveAddress;
+        private UInt32 _P2_Y_CaveAddress;
+        private NopStruct _Nop_JvsAxis = new NopStruct(0x00198dc8, 3);
+        private UInt32 _JvsAxis_Injection_Offset = 0x000AF10C;
+        private UInt32 _JvsAxis_Injection_Return_Offset = 0x000AF118;
+
+        //DirectInput mode (no JVS emulation)
         private UInt32 _Axis_Address_Ptr_Offset = 0x0265C20C;
-        private UInt32 _P1_X_Address;
         private UInt32 _P2_X_Address;
-        private UInt32 _P1_Y_Address;
         private UInt32 _P2_Y_Address;
         private NopStruct _Nop_Axis_X = new NopStruct(0x0009E0A4, 3);
         private NopStruct _Nop_Axis_Y = new NopStruct(0x0009E082, 3);
@@ -40,7 +50,7 @@ namespace DemulShooter
         private int _P1_Life = 0;
         private int _P2_Life = 0;
         
-        //Keys
+        //Keys (no JVS emulation)
         //START_P2 = NumPad +
         //START_P1 = ENTER
         //Service = Y
@@ -50,7 +60,10 @@ namespace DemulShooter
         private VirtualKeyCode _P2_Action_VK = VirtualKeyCode.VK_SUBSTRACT;
 
         // Test
-        private bool P2OutOfScreen = false;
+        private bool _P2OutOfScreen = false;
+
+        //JVS emulation detection
+        private bool _IsJvsEnabled = false;
 
         /// <summary>
         /// Constructor
@@ -83,25 +96,40 @@ namespace DemulShooter
 
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
-                            byte[] buffer = ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Axis_Address_Ptr_Offset, 4);
-                            UInt32 Calc_Addr = BitConverter.ToUInt32(buffer, 0);
-
-                            if (Calc_Addr != 0)
+                            if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _JvsEnabled_Offset) == 1)
                             {
-                                _P2_X_Address = Calc_Addr + 0x28;
-                                _P2_Y_Address = Calc_Addr + 0x2C;
-
+                                _IsJvsEnabled = true;
+                                
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                                //Logger.WriteLog("P1_X adddress =  0x" + _P1_X_Address.ToString("X8"));
-                                //Logger.WriteLog("P1_Y adddress =  0x" + _P1_Y_Address.ToString("X8"));
-                                Logger.WriteLog("P2_X adddress =  0x" + _P2_X_Address.ToString("X8"));
-                                Logger.WriteLog("P2_Y adddress =  0x" + _P2_Y_Address.ToString("X8"));
+                                Logger.WriteLog("JVS emulation detected");
+                                
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                SetHack();                                
+                                SetHack_Jvs();
                                 _ProcessHooked = true;
-                                
+                            }
+                            else
+                            {
+                                byte[] buffer = ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Axis_Address_Ptr_Offset, 4);
+                                UInt32 Calc_Addr = BitConverter.ToUInt32(buffer, 0);
+
+                                if (Calc_Addr != 0)
+                                {
+                                    _P2_X_Address = Calc_Addr + 0x28;
+                                    _P2_Y_Address = Calc_Addr + 0x2C;
+
+                                    Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
+                                    Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
+                                    //Logger.WriteLog("P1_X adddress =  0x" + _P1_X_Address.ToString("X8"));
+                                    //Logger.WriteLog("P1_Y adddress =  0x" + _P1_Y_Address.ToString("X8"));
+                                    Logger.WriteLog("P2_X adddress =  0x" + _P2_X_Address.ToString("X8"));
+                                    Logger.WriteLog("P2_Y adddress =  0x" + _P2_Y_Address.ToString("X8"));
+                                    CheckExeMd5();
+                                    ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
+                                    SetHack();
+                                    _ProcessHooked = true;
+                                }
                             }
                         }
                     }
@@ -149,6 +177,13 @@ namespace DemulShooter
                     double dMaxX = 1024.0;
                     double dMaxY = 600.0;
 
+                    //JVS mode => Axis range = [0-255]
+                    if (_IsJvsEnabled)
+                    {
+                        dMaxX = 256.0;
+                        dMaxY = 256.0;
+                    }
+
                     PlayerData.RIController.Computed_X = Convert.ToInt32(Math.Round(dMaxX * PlayerData.RIController.Computed_X / TotalResX));
                     PlayerData.RIController.Computed_Y = Convert.ToInt32(Math.Round(dMaxY * PlayerData.RIController.Computed_Y / TotalResY));
                     if (PlayerData.RIController.Computed_X < 0)
@@ -176,7 +211,7 @@ namespace DemulShooter
 
         private void SetHack()
         {
-            CreateMemoryBank();
+            CreateDataBank();
             SetHack_Buttons();
             SetHack_Axis();
         }
@@ -186,7 +221,7 @@ namespace DemulShooter
         /// This memory will be read by the codecave to overwrite the GetKeystate API results
         /// And by the other codecave to overwrite mouse axis value
         /// </summary>
-        private void CreateMemoryBank()
+        private void CreateDataBank()
         {        
             Codecave InputMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             InputMemory.Open();
@@ -195,8 +230,8 @@ namespace DemulShooter
             _P1_Reload_CaveAddress = InputMemory.CaveAddress + 0x10;
             _P1_Change_CaveAddress = InputMemory.CaveAddress + 0x01;
             _P1_Action_CaveAddress = InputMemory.CaveAddress + 0x03;
-            _P1_X_Address = InputMemory.CaveAddress + 0x20;
-            _P1_Y_Address = InputMemory.CaveAddress + 0x24;
+            _P1_X_CaveAddress = InputMemory.CaveAddress + 0x20;
+            _P1_Y_CaveAddress = InputMemory.CaveAddress + 0x24;
             Logger.WriteLog("Custom Axis data will be stored at : 0x" + _P1_Trigger_CaveAddress.ToString("X8"));
         }
                 
@@ -261,11 +296,11 @@ namespace DemulShooter
             List<Byte> Buffer = new List<Byte>();
             //mov ecx, [_P1_X_Address]
             CaveMemory.Write_StrBytes("8B 0D");
-            byte[] b = BitConverter.GetBytes(_P1_X_Address);
+            byte[] b = BitConverter.GetBytes(_P1_X_CaveAddress);
             CaveMemory.Write_Bytes(b);
             //mov edx, [_P1_Y_Address]
             CaveMemory.Write_StrBytes("8B 15");
-            b = BitConverter.GetBytes(_P1_Y_Address);
+            b = BitConverter.GetBytes(_P1_Y_CaveAddress);
             CaveMemory.Write_Bytes(b);
             CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Axis_Injection_Return_Offset);
 
@@ -289,8 +324,8 @@ namespace DemulShooter
             //Center Crosshair at start
             byte[] bufferX = { 0x00, 0x02, 0, 0 };  //512
             byte[] bufferY = { 0x2C, 0x01, 0, 0 };  //300
-            WriteBytes(_P1_X_Address, bufferX);
-            WriteBytes(_P1_Y_Address, bufferY);
+            WriteBytes(_P1_X_CaveAddress, bufferX);
+            WriteBytes(_P1_Y_CaveAddress, bufferY);
             WriteBytes(_P2_X_Address, bufferX);
             WriteBytes(_P2_Y_Address, bufferY);
 
@@ -298,6 +333,69 @@ namespace DemulShooter
             Logger.WriteLog("-");
 
             //Win32.keybd_event(Win32.VK_NUMLOCK, 0x45, Win32.KEYEVENTF_EXTENDEDKEY | 0, 0);
+        }
+
+        #endregion
+
+        #region Memory Hack for JVS
+
+        private void SetHack_Jvs()
+        {
+            CreateDataBank_Jvs();
+            SetHack_Axis_Jvs();
+        }
+
+        /// <summary>
+        /// 1st Memory created to store custom axis data
+        /// This memory will be read by the codecave to overwrite the original data read from EAX
+        /// </summary>
+        private void CreateDataBank_Jvs()
+        {
+            Codecave InputMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            InputMemory.Open();
+            InputMemory.Alloc(0x800);
+            _P1_X_CaveAddress = InputMemory.CaveAddress;
+            _P1_Y_CaveAddress = InputMemory.CaveAddress + 0x02;
+            _P2_X_CaveAddress = InputMemory.CaveAddress + 0x04;
+            _P2_Y_CaveAddress = InputMemory.CaveAddress + 0x06;
+            Logger.WriteLog("Custom JVS Axis data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));
+        }
+
+        /// <summary>
+        /// With JVS emulation ON, previous hack won't work.
+        /// Touching JVS data source in memory makes the game crash (JVS I/O error)
+        /// We will replace data later in the process, when it's read
+        /// </summary>
+        private void SetHack_Axis_Jvs()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            List<Byte> Buffer = new List<Byte>();
+            //mov eax, [_P1_X_CaveAddress]
+            CaveMemory.Write_StrBytes("A1");
+            byte[] b = BitConverter.GetBytes(_P1_X_CaveAddress);
+            CaveMemory.Write_Bytes(b);
+            //mov [esi + 8E], eax
+            CaveMemory.Write_StrBytes("89 86 8E 00 00 00");
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _JvsAxis_Injection_Return_Offset);
+
+            Logger.WriteLog("Adding JVS Axis CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _JvsAxis_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _JvsAxis_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+
+            //Must add that :
+            SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_JvsAxis);        
         }
 
         #endregion
@@ -313,80 +411,95 @@ namespace DemulShooter
             byte[] bufferY = BitConverter.GetBytes((UInt16)PlayerData.RIController.Computed_Y);
 
             if (PlayerData.ID == 1)
-            {
-                WriteBytes(_P1_X_Address, bufferX);
-                WriteBytes(_P1_Y_Address, bufferY);
-
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
-                    WriteByte(_P1_Trigger_CaveAddress, 0x80);
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
-                    WriteByte(_P1_Trigger_CaveAddress, 0x00);
-                
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
-                    WriteByte(_P1_Change_CaveAddress, 0x80);
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
-                    WriteByte(_P1_Change_CaveAddress, 0x00);
-               
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
+            {                
+                if (_IsJvsEnabled)
                 {
-                    WriteByte(_P1_Action_CaveAddress, 0x80);
-                    PlayerData.RIController.Computed_X = 2000;
-                    byte[] bufferX_R = { (byte)(PlayerData.RIController.Computed_X & 0xFF), (byte)(PlayerData.RIController.Computed_X >> 8), 0, 0 };
-                    WriteBytes(_P1_X_Address, bufferX_R);
-                    System.Threading.Thread.Sleep(20);
-                }
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
-                    WriteByte(_P1_Action_CaveAddress, 0x00);
-            }
-            else if (PlayerData.ID == 2)
-            {
-                WriteBytes(_P2_X_Address, bufferX);
-                WriteBytes(_P2_Y_Address, bufferY);
-
-                //P2 uses keyboard so no autoreload when out of screen, so we add:
-                if (PlayerData.RIController.Computed_X <= 1 ||PlayerData.RIController.Computed_X >= 1022 || PlayerData.RIController.Computed_Y <= 1 || PlayerData.RIController.Computed_Y >= 596)
-                {
-                    if (!P2OutOfScreen)
-                    {
-                        Send_VK_KeyDown(_P2_Reload_VK);
-                        P2OutOfScreen = true;
-                    }
+                    WriteByte(_P1_X_CaveAddress + 1, bufferX[0]);
+                    WriteByte(_P1_Y_CaveAddress + 1, bufferY[0]);
                 }
                 else
                 {
-                    if (P2OutOfScreen)
+                    WriteBytes(_P1_X_CaveAddress, bufferX);
+                    WriteBytes(_P1_Y_CaveAddress, bufferY);
+
+                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
+                        WriteByte(_P1_Trigger_CaveAddress, 0x80);
+                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
+                        WriteByte(_P1_Trigger_CaveAddress, 0x00);
+
+                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
+                        WriteByte(_P1_Change_CaveAddress, 0x80);
+                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
+                        WriteByte(_P1_Change_CaveAddress, 0x00);
+
+                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
+                    {
+                        WriteByte(_P1_Action_CaveAddress, 0x80);
+                        PlayerData.RIController.Computed_X = 2000;
+                        byte[] bufferX_R = { (byte)(PlayerData.RIController.Computed_X & 0xFF), (byte)(PlayerData.RIController.Computed_X >> 8), 0, 0 };
+                        WriteBytes(_P1_X_CaveAddress, bufferX_R);
+                        System.Threading.Thread.Sleep(20);
+                    }
+                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
+                        WriteByte(_P1_Action_CaveAddress, 0x00);
+                }                
+            }
+            else if (PlayerData.ID == 2)
+            {
+                if (_IsJvsEnabled)
+                {
+                    WriteByte(_P2_X_CaveAddress + 1, bufferX[0]);
+                    WriteByte(_P2_Y_CaveAddress + 1, bufferY[0]);
+                }
+                else
+                {
+                    WriteBytes(_P2_X_Address, bufferX);
+                    WriteBytes(_P2_Y_Address, bufferY);
+
+                    //P2 uses keyboard so no autoreload when out of screen, so we add:
+                    if (PlayerData.RIController.Computed_X <= 1 || PlayerData.RIController.Computed_X >= 1022 || PlayerData.RIController.Computed_Y <= 1 || PlayerData.RIController.Computed_Y >= 596)
+                    {
+                        if (!_P2OutOfScreen)
+                        {
+                            Send_VK_KeyDown(_P2_Reload_VK);
+                            _P2OutOfScreen = true;
+                        }
+                    }
+                    else
+                    {
+                        if (_P2OutOfScreen)
+                        {
+                            Send_VK_KeyUp(_P2_Reload_VK);
+                            _P2OutOfScreen = false;
+                        }
+                    }
+
+                    //Inputs
+                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
+                        Send_VK_KeyDown(_P2_Trigger_VK);
+                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
+                        Send_VK_KeyUp(_P2_Trigger_VK);
+
+                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
+                        Send_VK_KeyDown(_P2_Change_VK);
+                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
+                        Send_VK_KeyUp(_P2_Change_VK);
+
+                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
+                    {
+                        Send_VK_KeyDown(_P2_Reload_VK);
+                        Send_VK_KeyDown(_P2_Action_VK);
+                    }
+                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                     {
                         Send_VK_KeyUp(_P2_Reload_VK);
-                        P2OutOfScreen = false;
+                        Send_VK_KeyUp(_P2_Action_VK);
                     }
-                }                    
-
-                //Inputs
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
-                    Send_VK_KeyDown(_P2_Trigger_VK);
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
-                    Send_VK_KeyUp(_P2_Trigger_VK);
-                
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
-                    Send_VK_KeyDown(_P2_Change_VK);
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
-                    Send_VK_KeyUp(_P2_Change_VK);
-                
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
-                {
-                    Send_VK_KeyDown(_P2_Reload_VK);
-                    Send_VK_KeyDown(_P2_Action_VK);
-                }
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
-                {
-                    Send_VK_KeyUp(_P2_Reload_VK);
-                    Send_VK_KeyUp(_P2_Action_VK);
                 }
             }
         }
 
         #endregion
-
 
         #region Outputs
 

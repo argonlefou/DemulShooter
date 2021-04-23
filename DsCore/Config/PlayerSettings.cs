@@ -158,6 +158,40 @@ namespace DsCore.Config
         }
         #endregion
 
+        //Analog Gun axis calibration
+        private bool _AnalogAxisRangeOverride = false;
+        private int _AnalogManual_Xmin = 0;
+        private int _AnalogManual_Xmax = 0;
+        private int _AnalogManual_Ymin = 0;
+        private int _AnalogManual_Ymax = 0;
+        #region Accessors
+        public bool AnalogAxisRangeOverride
+        {
+            get { return _AnalogAxisRangeOverride; }
+            set { _AnalogAxisRangeOverride = value; }
+        }
+        public int AnalogManual_Xmin
+        {
+            get { return _AnalogManual_Xmin; }
+            set { _AnalogManual_Xmin = value; }
+        }
+        public int AnalogManual_Xmax
+        {
+            get { return _AnalogManual_Xmax; }
+            set { _AnalogManual_Xmax = value; }
+        }
+        public int AnalogManual_Ymin
+        {
+            get { return _AnalogManual_Ymin; }
+            set { _AnalogManual_Ymin = value; }
+        }
+        public int AnalogManual_Ymax
+        {
+            get { return _AnalogManual_Ymax; }
+            set { _AnalogManual_Ymax = value; }
+        }
+        #endregion
+
         /// <summary>
         /// Constructors, Setting default values. 
         /// This will be of use if no .INI file is found at launch
@@ -297,6 +331,31 @@ namespace DsCore.Config
             else if (StrKey.Equals("act_labs_offset_y"))
             {
                 if (!int.TryParse(StrValue, out _Act_Labs_OffsetY))
+                    return false;
+            }
+            else if (StrKey.Equals("analog_calibration_override"))
+            {
+                if (!bool.TryParse(StrValue, out _AnalogAxisRangeOverride))
+                    return false; ;
+            }
+            else if (StrKey.Equals("analog_manual_xmin"))
+            {
+                if (!int.TryParse(StrValue, out _AnalogManual_Xmin))
+                    return false;
+            }
+            else if (StrKey.Equals("analog_manual_xmax"))
+            {
+                if (!int.TryParse(StrValue, out _AnalogManual_Xmax))
+                    return false;
+            }
+            else if (StrKey.Equals("analog_manual_ymin"))
+            {
+                if (!int.TryParse(StrValue, out _AnalogManual_Ymin))
+                    return false;
+            }
+            else if (StrKey.Equals("analog_manual_ymax"))
+            {
+                if (!int.TryParse(StrValue, out _AnalogManual_Ymax))
                     return false;
             }
             else if (StrKey.Equals("virtualmousebuttons_enable"))

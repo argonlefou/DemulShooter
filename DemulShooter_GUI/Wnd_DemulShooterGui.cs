@@ -37,6 +37,7 @@ namespace DemulShooter_GUI
 
         /*** Controllers ***/
         private List<GUI_Player> _GUI_Players;
+        private List<GUI_AnalogCalibration> _GUI_AnalogCalibrations;
 
         /// <summary>
         /// Construcor
@@ -92,6 +93,16 @@ namespace DemulShooter_GUI
                     //Logger.WriteLog("P" + Player.ID + " Gamepad ID = " + Player.GamepadID);
                 }
             }
+
+            //Fill Analog calibration Tab
+            Logger.WriteLog("Initializing GUI [Analog calibration] page...");
+            _GUI_AnalogCalibrations = new List<GUI_AnalogCalibration>();
+            for (int i = 1; i <= 4; i++)
+            {
+                GUI_AnalogCalibration Calib = new GUI_AnalogCalibration(i, _Configurator.GetPlayerSettings(i));
+                TableLayout_Calib.Controls.Add(Calib);
+                _GUI_AnalogCalibrations.Add(Calib);
+            }            
 
             //Fill ActLabs tab
             Logger.WriteLog("Initializing GUI [Act Lab] page...");
@@ -193,6 +204,7 @@ namespace DemulShooter_GUI
                         {
                             Controller.ProcessRawInputData(RawInputHandle);
                             _GUI_Players[Player.ID - 1].UpdateGui();
+                            _GUI_AnalogCalibrations[Player.ID - 1].UpdateValues();                           
                         }  
                     }
                 }
@@ -208,6 +220,31 @@ namespace DemulShooter_GUI
         {
             tabControl1.SelectTab(Cbo_PageSettings.SelectedIndex);
         }
+
+        #region Analog Calibration
+
+        private void UpdateCalibration(int Player, int CurrentX, int CurrentY)
+        {
+            if (CurrentX > _Configurator.PlayersSettings[Player - 1].AnalogManual_Xmax)
+                _Configurator.PlayersSettings[Player - 1].AnalogManual_Xmax = CurrentX;
+            if (CurrentX < _Configurator.PlayersSettings[Player - 1].AnalogManual_Xmin)
+                _Configurator.PlayersSettings[Player - 1].AnalogManual_Xmin = CurrentX;
+            if (CurrentY > _Configurator.PlayersSettings[Player - 1].AnalogManual_Ymax)
+                _Configurator.PlayersSettings[Player - 1].AnalogManual_Ymax = CurrentY;
+            if (CurrentY < _Configurator.PlayersSettings[Player - 1].AnalogManual_Ymin)
+                _Configurator.PlayersSettings[Player - 1].AnalogManual_Ymin = CurrentY;
+
+        }
+
+        private void Btn_SaveAnalog_Click(object sender, EventArgs e)
+        {            
+            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+                MessageBox.Show("Configuration saved !");
+            else
+                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        #endregion
 
         #region ActLabs Offset tab
 
@@ -340,15 +377,7 @@ namespace DemulShooter_GUI
                 MessageBox.Show(Txt_ActLabs_Y4.Text + " is not a valid Y offset value. Please enter a non-decimal number");
                 Txt_ActLabs_Y4.Text = _Configurator.PlayersSettings[3].Act_Labs_Offset_Y.ToString();
             }
-        } 
-        private void Btn_Save_Cfg_Click(object sender, EventArgs e)
-        {
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
-                MessageBox.Show("Configuration saved !");
-            else
-                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
-          
-        }
+        }         
         private void Btn_ActLabs_Save_Click(object sender, EventArgs e)
         {
             if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
@@ -825,6 +854,14 @@ namespace DemulShooter_GUI
             }
         }
 
+        private void Btn_Save_Cfg_Click(object sender, EventArgs e)
+        {
+            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+                MessageBox.Show("Configuration saved !");
+            else
+                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         #endregion
 
         #region Keyboard Handling
@@ -944,6 +981,11 @@ namespace DemulShooter_GUI
         }
 
         #endregion  
+
+        private void Tab_AnalogCalib_Click(object sender, EventArgs e)
+        {
+
+        }
                                         
     }        
 }
