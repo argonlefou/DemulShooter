@@ -40,7 +40,6 @@ namespace DemulShooter
         private UInt32 _PlayerStructPtr_Address = 0x0867B10C;
         private UInt32 _AmmoPtr_Address = 0x0888F8F8;
 
-        private UInt32 _GameModePtr_Address = 0x0A6F27A8;
         private int _P1_LastLife = 0;
         private int _P1_Life = 0;
         private int _P1_LastAmmo = 0;

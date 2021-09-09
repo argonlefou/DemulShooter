@@ -53,6 +53,9 @@ namespace DsCore.MameOutput
         }
         #endregion
 
+        private List<GameOutput> _OutputsBefore;
+        private bool _FirstOutputs = true;
+
         public MameOutputHelper(IntPtr MainWindowHandle, int RecoilDelay, int DamagedDelay)
         {
             _hWnd = MainWindowHandle;
@@ -155,13 +158,31 @@ namespace DsCore.MameOutput
 
         /// <summary>
         /// Send updated values to all registered clients
+        /// A small "filtering" method was added, to send output message to MameHooker only on changed state of a value
         /// </summary>
         /// <param name="Outputs">List of values to send</param>
         public void SendValues(List<GameOutput> Outputs)
         {
-            foreach (GameOutput o in Outputs)
+            if (_FirstOutputs)
             {
-                SendValue(o.Id, o.OutputValue);
+                //Cloning the output list without references to the GameOutput object
+                _OutputsBefore = Outputs.ConvertAll(x => new GameOutput(x));
+                for (int i = 0; i < Outputs.Count; i++)
+                {
+                    SendValue(Outputs[i].Id, Outputs[i].OutputValue);                    
+                }
+                _FirstOutputs = false;
+            }
+            else
+            {
+                for (int i = 0; i < Outputs.Count; i++)
+                {
+                    if (Outputs[i].OutputValue != _OutputsBefore[i].OutputValue)
+                    {
+                        SendValue(Outputs[i].Id, Outputs[i].OutputValue);
+                        _OutputsBefore[i].OutputValue = Outputs[i].OutputValue;
+                    }
+                }
             }
         }
 

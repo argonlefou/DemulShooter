@@ -54,7 +54,7 @@ namespace DemulShooter
         private bool _HideGameCrosshair = false;
         private bool _HardFfl = false;
         private double _ForceXratio = 0.0;
-        private bool _UseSingleMouse = true;
+        //private bool _UseSingleMouse = true;
         
         public DemulShooterWindow(string[] Args, bool isVerbose)
         {

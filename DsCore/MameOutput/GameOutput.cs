@@ -28,6 +28,13 @@ namespace DsCore.MameOutput
             _Name = Name;
             _Id = (UInt32)Id;
             _OutputValue = 0;
-        } 
+        }
+
+        public GameOutput(GameOutput Output)
+        {
+            _Name = Output.Name;
+            _Id = Output.Id;
+            _OutputValue = Output.OutputValue;
+        }
     }
 }
