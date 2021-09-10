@@ -77,7 +77,7 @@ namespace DemulShooter
         //JVS emulation detection
         private bool _IsJvsEnabled = false;
 
-        //Credits settings
+        //Credits settings (these are defaults values)
         private UInt32 _Credits_Freeplay = 0;   //0 or 1
         private UInt32 _Credits_CreditsToStart = 2;
         private UInt32 _Credits_CreditsToContinue = 1;
