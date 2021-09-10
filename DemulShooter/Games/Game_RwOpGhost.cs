@@ -78,7 +78,7 @@ namespace DemulShooter
         private bool _IsJvsEnabled = false;
 
         //Credits settings
-        private UInt32 _Credits_Freeplay = 1;   //0 or 1
+        private UInt32 _Credits_Freeplay = 0;   //0 or 1
         private UInt32 _Credits_CreditsToStart = 2;
         private UInt32 _Credits_CreditsToContinue = 1;
         private UInt32 _Credits_CoinsByCredits = 2;
