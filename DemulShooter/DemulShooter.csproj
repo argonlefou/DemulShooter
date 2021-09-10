@@ -89,6 +89,7 @@
     <Compile Include="Games\Game_RwLGI.cs" />
     <Compile Include="Games\Game_RwLGI3D.cs" />
     <Compile Include="Games\Game_RwOpGhost.cs" />
+    <Compile Include="Games\Game_RwOpGhost_v2.cs" />
     <Compile Include="Games\Game_RwSDR.cs" />
     <Compile Include="Games\Game_RwSGG.cs" />
     <Compile Include="Games\Game_RwTransformers.cs" />
