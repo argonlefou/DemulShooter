@@ -18,16 +18,14 @@ namespace DemulShooter
 
         /*** MEMORY ADDRESSES **/
         private UInt32 _JvsEnabled_Offset = 0x23D2E7;
-        private UInt32 _P1_X_CaveAddress;
-        private UInt32 _P1_Y_CaveAddress;
-        
+        private UInt32 _AmLibData_Ptr_Offset = 0x026662C0;
+        private UInt32 _AmLibData_BaseAddress = 0;
+                
         //JVS emulation mode (TEKNOPARROT + Jconfig)
-        //JVS checksum @5992D7 = SUM(64681F:64683E) -> LowNibble in 64683F
-        private UInt32 _Buttons_CaveAddress;
-
-        //JVS emulation mode (Jconfig only)
+        //JVS checksum @5992D7 = SUM(64681F:64683E) -> LowNibble in 64683F     
         //Buttons injection will be made at the source of JVS data and need to remove checksum
         //Axis injection will be made after in-game calculation, as we can't access/save calibration from test menu
+        private UInt32 _Buttons_CaveAddress;
         private UInt32 _JvsRemoveChecksum_Offset = 0x001992F2;
         private UInt32 _Jvs_ButtonsInjection_Offset = 0x001AF1E0;
         private NopStruct _Nop_Axix_X_1 = new NopStruct(0x0009DE8F, 3);
@@ -45,6 +43,8 @@ namespace DemulShooter
         private NopStruct _Nop_Axix_Y_3 = new NopStruct(0x0009DF4A, 3);
 
         //DirectInput mode (no JVS emulation)
+        private UInt32 _P1_X_CaveAddress;
+        private UInt32 _P1_Y_CaveAddress;
         private UInt32 _Axis_Address_Ptr_Offset = 0x0265C20C;
         private UInt32 _P2_X_Address;
         private UInt32 _P2_Y_Address;
@@ -61,11 +61,6 @@ namespace DemulShooter
 
         //Outputs
         private UInt32 _Outputs_Offset = 0x00246428;
-        /*private UInt32 _Credits_Offset = 0x002416C0;
-        private int _P1_LastLife = 0;
-        private int _P2_LastLife = 0;
-        private int _P1_Life = 0;
-        private int _P2_Life = 0;*/
         
         //Keys (no JVS emulation)
         //START_P2 = NumPad +
@@ -81,6 +76,12 @@ namespace DemulShooter
 
         //JVS emulation detection
         private bool _IsJvsEnabled = false;
+
+        //Credits settings
+        private UInt32 _Credits_Freeplay = 1;   //0 or 1
+        private UInt32 _Credits_CreditsToStart = 2;
+        private UInt32 _Credits_CreditsToContinue = 1;
+        private UInt32 _Credits_CoinsByCredits = 2;
 
         /// <summary>
         /// Constructor
@@ -110,8 +111,14 @@ namespace DemulShooter
                         _TargetProcess = processes[0];
                         _ProcessHandle = _TargetProcess.Handle;
                         _TargetProcess_MemoryBaseAddress = _TargetProcess.MainModule.BaseAddress;
+                        _AmLibData_BaseAddress = ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + _AmLibData_Ptr_Offset);
+                        //Modifying Credits parameters :
+                        WriteBytes(_AmLibData_BaseAddress + 0x1C8, BitConverter.GetBytes(_Credits_Freeplay));
+                        WriteBytes(_AmLibData_BaseAddress + 0x1CC, BitConverter.GetBytes(_Credits_CreditsToStart));
+                        WriteBytes(_AmLibData_BaseAddress + 0x1D0, BitConverter.GetBytes(_Credits_CreditsToContinue));
+                        WriteBytes(_AmLibData_BaseAddress + 0x1D4, BitConverter.GetBytes(_Credits_CoinsByCredits));
 
-                        if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
+                        if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero && _AmLibData_BaseAddress != 0)
                         {
                             if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _JvsEnabled_Offset) == 1)
                             {
@@ -121,6 +128,7 @@ namespace DemulShooter
                                 {
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
+                                    Logger.WriteLog("AmLib data base address = 0x" + _AmLibData_BaseAddress.ToString("X8"));
                                     Logger.WriteLog("JVS emulation detected");
                                     Logger.WriteLog("JVS axis data pointer base address = 0x" + _Jvs_Data_BaseAddress.ToString("X8"));
                                     CheckExeMd5();
@@ -140,6 +148,7 @@ namespace DemulShooter
 
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
+                                    Logger.WriteLog("AmLib data base address = 0x" + _AmLibData_BaseAddress.ToString("X8"));
                                     //Logger.WriteLog("P1_X adddress =  0x" + _P1_X_Address.ToString("X8"));
                                     //Logger.WriteLog("P1_Y adddress =  0x" + _P1_Y_Address.ToString("X8"));
                                     Logger.WriteLog("P2_X adddress =  0x" + _P2_X_Address.ToString("X8"));
@@ -194,15 +203,6 @@ namespace DemulShooter
                     //Y => [0-600]
                     double dMaxX = 1024.0;
                     double dMaxY = 600.0;
-
-                    /*
-                    //JVS mode => Axis range = [0-254]
-                    if (_IsJvsEnabled)
-                    {
-                        dMaxX = 255.0;
-                        dMaxY = 255.0;
-                    }
-                    */
 
                     PlayerData.RIController.Computed_X = Convert.ToInt32(Math.Round(dMaxX * PlayerData.RIController.Computed_X / TotalResX));
                     PlayerData.RIController.Computed_Y = Convert.ToInt32(Math.Round(dMaxY * PlayerData.RIController.Computed_Y / TotalResY));
@@ -636,10 +636,6 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunRecoil, OutputId.P2_GunRecoil));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
-            /*_Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
-            _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay));*/
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -648,10 +644,6 @@ namespace DemulShooter
         /// </summary>
         public override void UpdateOutputValues()
         {
-            /*byte[] buffer = ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _OOffset, 4);
-            byte OutputData1 = ReadByte(BitConverter.ToUInt32(buffer, 0) + 0x44);
-            byte OutputData2 = ReadByte(BitConverter.ToUInt32(buffer, 0) + 0x45);*/
-
             byte bOutput = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset);
             SetOutputValue(OutputId.P1_LmpStart, bOutput >> 7 & 0x01);
             SetOutputValue(OutputId.P2_LmpStart, bOutput >> 4 & 0x01);
@@ -661,52 +653,19 @@ namespace DemulShooter
             SetOutputValue(OutputId.P1_GunRecoil, bOutput >> 6 & 0x01);
             SetOutputValue(OutputId.P2_GunRecoil, bOutput >> 3 & 0x01);
             
-            //Custom Outputs
-            /*UInt32 iTemp = ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + _PlayersStructPtr_Offset);
-            UInt32 P1_Strutc_Address = ReadPtr(iTemp + 0x08);
-            UInt32 P2_Strutc_Address = ReadPtr(iTemp + 0x0C);
-            P1_Strutc_Address = ReadPtr(P1_Strutc_Address + 0x14);
-            P2_Strutc_Address = ReadPtr(P2_Strutc_Address + 0x14);
-            int P1_Status = ReadByte(P1_Strutc_Address + 0x38);
-            int P2_Status = ReadByte(P2_Strutc_Address + 0x38);
-            _P1_Life = (int)BitConverter.ToSingle(ReadBytes(P1_Strutc_Address + 0x20, 4), 0);
-            _P2_Life = (int)BitConverter.ToSingle(ReadBytes(P2_Strutc_Address + 0x20, 4), 0);
-            if (_P1_Life < 0)
-                _P1_Life = 0;
-            if (_P2_Life < 0)
-                _P2_Life = 0;
-
-            if (P1_Status == 1)
-            {
-                //[Damaged] custom Output                
-                if (_P1_Life < _P1_LastLife)
-                    SetOutputValue(OutputId.P1_Damaged, 1);
-            }
-            if (P2_Status == 1)
-            {
-                //[Damaged] custom Output                
-                if (_P2_Life < _P2_LastLife)
-                    SetOutputValue(OutputId.P2_Damaged, 1);
-            }
-            _P1_LastLife = _P1_Life;
-            _P2_LastLife = _P2_Life;
-
-            SetOutputValue(OutputId.P1_Life, _P1_Life);
-            SetOutputValue(OutputId.P2_Life, _P2_Life);*/
-
             //Custom recoil will be enabled just like original recoil
             SetOutputValue(OutputId.P1_CtmRecoil, bOutput >> 6 & 0x01);
             SetOutputValue(OutputId.P2_CtmRecoil, bOutput >> 3 & 0x01);
 
-            //At this offset we can find the string display of credits, like "2 1/2"                
+            //Credits will be calculated by using the formula  : Credits = Coins / CoinsByCredits
+            //Warning : Need to handle "Divide by 0" error if game is closed brutally ! 
             int Credits = 0;
-            string StrCredits = System.Text.Encoding.ASCII.GetString(new byte[]{ ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x02666A7C)});
-            int.TryParse(StrCredits, out Credits);
-            SetOutputValue(OutputId.Credits, Credits);
-                
-            //OLD
-            //SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset));
-          
+            try
+            {
+                Credits = ReadByte((UInt32)_AmLibData_BaseAddress + 0x1E0) / ReadByte((UInt32)_AmLibData_BaseAddress + 0x1D4);
+            }
+            catch { }
+            SetOutputValue(OutputId.Credits, Credits);          
         }
 
         #endregion
