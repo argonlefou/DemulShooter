@@ -106,6 +106,7 @@ namespace DemulShooter
                             ReadKeyConfig();
                             SetHack();
                             _ProcessHooked = true;
+                            RaiseGameHookedEvent();
 
                             //Try to load the "coin" sound
                             try
@@ -227,13 +228,13 @@ namespace DemulShooter
                     double TotalResY = TotalRes.Bottom - TotalRes.Top;
 
                     Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
-                    
-                    //X => [-296 ; +296] => 592
-                    //Y => [-216; +216] => 432
-                    double dMinX = -296.0;
-                    double dMaxX = 296.0;
-                    double dMinY = -216.0;
-                    double dMaxY = 216.0;
+
+                    //X => [-320 ; +320] => 640
+                    //Y => [-240; +240] => 480
+                    double dMinX = -320.0;
+                    double dMaxX = 320.0;
+                    double dMinY = -240.0;
+                    double dMaxY = 240.0;
                     double dRangeX = dMaxX - dMinX + 1;
                     double dRangeY = dMaxY - dMinY + 1;
 
@@ -452,12 +453,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 

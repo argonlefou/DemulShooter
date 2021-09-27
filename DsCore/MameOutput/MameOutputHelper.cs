@@ -40,12 +40,17 @@ namespace DsCore.MameOutput
 
         #endregion
 
-        private static int _CustomRecoilDelay = 200;
+        private static int _CustomRecoilOnDelay = 50;
+        private static int _CustomRecoilOffDelay = 50;
         private static int _CustomDamageDelay = 200;
         #region Accessors
-        public static int CustomRecoilDelay
+        public static int CustomRecoilOnDelay
         { 
-            get { return _CustomRecoilDelay; } 
+            get { return _CustomRecoilOnDelay; } 
+        }
+        public static int CustomRecoilOffDelay
+        {
+            get { return _CustomRecoilOffDelay; }
         }
         public static int CustomDamageDelay
         {
@@ -56,7 +61,7 @@ namespace DsCore.MameOutput
         private List<GameOutput> _OutputsBefore;
         private bool _FirstOutputs = true;
 
-        public MameOutputHelper(IntPtr MainWindowHandle, int RecoilDelay, int DamagedDelay)
+        public MameOutputHelper(IntPtr MainWindowHandle, int RecoilOnDelay, int RecoilOffDelay, int DamagedDelay)
         {
             _hWnd = MainWindowHandle;
             _RegisteredClients = new List<OutputClient>();
@@ -68,7 +73,8 @@ namespace DsCore.MameOutput
             _Mame_UnregisterClientMsg = RegisterMameOutputMessage(MAME_UNREGISTER_STRING);
             _Mame_GetIdStringMsg = RegisterMameOutputMessage(MAME_GETID_STRING);
 
-            _CustomRecoilDelay = RecoilDelay;
+            _CustomRecoilOnDelay = RecoilOnDelay;
+            _CustomRecoilOffDelay = RecoilOffDelay;
             _CustomDamageDelay = DamagedDelay;
         }
 
@@ -169,7 +175,9 @@ namespace DsCore.MameOutput
                 _OutputsBefore = Outputs.ConvertAll(x => new GameOutput(x));
                 for (int i = 0; i < Outputs.Count; i++)
                 {
-                    SendValue(Outputs[i].Id, Outputs[i].OutputValue);                    
+                    SendValue(Outputs[i].Id, Outputs[i].OutputValue);
+                    //DEBUG Only :
+                    //Logger.WriteLog("MAME Output sent : " + Outputs[i].Name + " [Value=" + Outputs[i].OutputValue.ToString() + "]");
                 }
                 _FirstOutputs = false;
             }
@@ -177,9 +185,13 @@ namespace DsCore.MameOutput
             {
                 for (int i = 0; i < Outputs.Count; i++)
                 {
+                    //DEBUG only :
+                    //Logger.WriteLog(Outputs[i].Name + " : Before=" + _OutputsBefore[i].OutputValue + ", Current=" + Outputs[i].OutputValue); 
                     if (Outputs[i].OutputValue != _OutputsBefore[i].OutputValue)
                     {
                         SendValue(Outputs[i].Id, Outputs[i].OutputValue);
+                        //DEBUG only :
+                        //Logger.WriteLog("MAME Output sent : " + Outputs[i].Name + " [Value=" + Outputs[i].OutputValue.ToString() + "]");
                         _OutputsBefore[i].OutputValue = Outputs[i].OutputValue;
                     }
                 }

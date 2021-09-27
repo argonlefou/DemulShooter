@@ -76,7 +76,7 @@ namespace DemulShooter
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 SetHack();
                                 _ProcessHooked = true;
-                                
+                                RaiseGameHookedEvent();                                
                             }
                             else
                             {

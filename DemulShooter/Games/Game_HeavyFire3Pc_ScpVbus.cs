@@ -123,7 +123,7 @@ namespace DemulShooter
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
                             SetHack();
                             _ProcessHooked = true;
-                            
+                            RaiseGameHookedEvent();                            
                         }
                     }
                 }

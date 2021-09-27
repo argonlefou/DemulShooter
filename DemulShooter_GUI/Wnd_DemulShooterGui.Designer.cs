@@ -39,6 +39,7 @@
             this.Tab_P4 = new System.Windows.Forms.TabPage();
             this.Btn_Save_P4 = new System.Windows.Forms.Button();
             this.Tab_AnalogCalib = new System.Windows.Forms.TabPage();
+            this.TableLayout_Calib = new System.Windows.Forms.TableLayoutPanel();
             this.Btn_SaveAnalog = new System.Windows.Forms.Button();
             this.Tab_ActLAbs = new System.Windows.Forms.TabPage();
             this.Btn_ActLabs_Save = new System.Windows.Forms.Button();
@@ -135,12 +136,15 @@
             this.Tab_Outputs = new System.Windows.Forms.TabPage();
             this.Btn_SaveOutput = new System.Windows.Forms.Button();
             this.Grp_Outputs = new System.Windows.Forms.GroupBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.Txt_OutputRecoilOff = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.Cbox_Outputs = new System.Windows.Forms.CheckBox();
             this.label22 = new System.Windows.Forms.Label();
-            this.Txt_OutputRecoil = new System.Windows.Forms.TextBox();
+            this.Txt_OutputRecoilOn = new System.Windows.Forms.TextBox();
             this.label25 = new System.Windows.Forms.Label();
             this.Txt_OutputDamaged = new System.Windows.Forms.TextBox();
             this.label26 = new System.Windows.Forms.Label();
@@ -150,7 +154,6 @@
             this.Bgw_XInput = new System.ComponentModel.BackgroundWorker();
             this.Cbo_PageSettings = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
-            this.TableLayout_Calib = new System.Windows.Forms.TableLayoutPanel();
             this.tabControl1.SuspendLayout();
             this.Tab_P1.SuspendLayout();
             this.Tab_P2.SuspendLayout();
@@ -316,6 +319,19 @@
             this.Tab_AnalogCalib.Text = "Analog device calibration";
             this.Tab_AnalogCalib.UseVisualStyleBackColor = true;
             this.Tab_AnalogCalib.Click += new System.EventHandler(this.Tab_AnalogCalib_Click);
+            // 
+            // TableLayout_Calib
+            // 
+            this.TableLayout_Calib.ColumnCount = 2;
+            this.TableLayout_Calib.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.TableLayout_Calib.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.TableLayout_Calib.Location = new System.Drawing.Point(5, 3);
+            this.TableLayout_Calib.Name = "TableLayout_Calib";
+            this.TableLayout_Calib.RowCount = 2;
+            this.TableLayout_Calib.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.TableLayout_Calib.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.TableLayout_Calib.Size = new System.Drawing.Size(569, 274);
+            this.TableLayout_Calib.TabIndex = 34;
             // 
             // Btn_SaveAnalog
             // 
@@ -1392,12 +1408,15 @@
             // 
             // Grp_Outputs
             // 
+            this.Grp_Outputs.Controls.Add(this.label21);
+            this.Grp_Outputs.Controls.Add(this.label24);
+            this.Grp_Outputs.Controls.Add(this.Txt_OutputRecoilOff);
             this.Grp_Outputs.Controls.Add(this.label23);
             this.Grp_Outputs.Controls.Add(this.label20);
             this.Grp_Outputs.Controls.Add(this.label10);
             this.Grp_Outputs.Controls.Add(this.Cbox_Outputs);
             this.Grp_Outputs.Controls.Add(this.label22);
-            this.Grp_Outputs.Controls.Add(this.Txt_OutputRecoil);
+            this.Grp_Outputs.Controls.Add(this.Txt_OutputRecoilOn);
             this.Grp_Outputs.Controls.Add(this.label25);
             this.Grp_Outputs.Controls.Add(this.Txt_OutputDamaged);
             this.Grp_Outputs.Controls.Add(this.label26);
@@ -1409,10 +1428,39 @@
             this.Grp_Outputs.TabStop = false;
             this.Grp_Outputs.Text = "                                          ";
             // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(396, 130);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(83, 16);
+            this.label21.TabIndex = 69;
+            this.label21.Text = "Milliseconds";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(10, 130);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(323, 16);
+            this.label24.TabIndex = 68;
+            this.label24.Text = "Length of custom [recoil] generated output OFF state :\r\n";
+            // 
+            // Txt_OutputRecoilOff
+            // 
+            this.Txt_OutputRecoilOff.Enabled = false;
+            this.Txt_OutputRecoilOff.Location = new System.Drawing.Point(334, 127);
+            this.Txt_OutputRecoilOff.Name = "Txt_OutputRecoilOff";
+            this.Txt_OutputRecoilOff.Size = new System.Drawing.Size(56, 22);
+            this.Txt_OutputRecoilOff.TabIndex = 67;
+            this.Txt_OutputRecoilOff.Text = "50";
+            this.Txt_OutputRecoilOff.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.Txt_OutputRecoilOff.TextChanged += new System.EventHandler(this.Txt_OutputRecoilOff_TextChanged);
+            // 
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(372, 99);
+            this.label23.Location = new System.Drawing.Point(372, 62);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(83, 16);
             this.label23.TabIndex = 66;
@@ -1421,7 +1469,7 @@
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(10, 99);
+            this.label20.Location = new System.Drawing.Point(10, 62);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(288, 16);
             this.label20.TabIndex = 65;
@@ -1430,7 +1478,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(372, 71);
+            this.label10.Location = new System.Drawing.Point(396, 102);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(83, 16);
             this.label10.TabIndex = 64;
@@ -1450,27 +1498,27 @@
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(11, 71);
+            this.label22.Location = new System.Drawing.Point(11, 102);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(262, 16);
+            this.label22.Size = new System.Drawing.Size(317, 16);
             this.label22.TabIndex = 61;
-            this.label22.Text = "Length of custom [recoil] generated output :";
+            this.label22.Text = "Length of custom [recoil] generated output ON state :";
             // 
-            // Txt_OutputRecoil
+            // Txt_OutputRecoilOn
             // 
-            this.Txt_OutputRecoil.Enabled = false;
-            this.Txt_OutputRecoil.Location = new System.Drawing.Point(310, 68);
-            this.Txt_OutputRecoil.Name = "Txt_OutputRecoil";
-            this.Txt_OutputRecoil.Size = new System.Drawing.Size(56, 22);
-            this.Txt_OutputRecoil.TabIndex = 3;
-            this.Txt_OutputRecoil.Text = "200";
-            this.Txt_OutputRecoil.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.Txt_OutputRecoil.TextChanged += new System.EventHandler(this.Txt_OutputRecoil_TextChanged);
+            this.Txt_OutputRecoilOn.Enabled = false;
+            this.Txt_OutputRecoilOn.Location = new System.Drawing.Point(334, 99);
+            this.Txt_OutputRecoilOn.Name = "Txt_OutputRecoilOn";
+            this.Txt_OutputRecoilOn.Size = new System.Drawing.Size(56, 22);
+            this.Txt_OutputRecoilOn.TabIndex = 3;
+            this.Txt_OutputRecoilOn.Text = "50";
+            this.Txt_OutputRecoilOn.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.Txt_OutputRecoilOn.TextChanged += new System.EventHandler(this.Txt_OutputRecoilOn_TextChanged);
             // 
             // label25
             // 
             this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(372, 43);
+            this.label25.Location = new System.Drawing.Point(372, 34);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(83, 16);
             this.label25.TabIndex = 4;
@@ -1479,7 +1527,7 @@
             // Txt_OutputDamaged
             // 
             this.Txt_OutputDamaged.Enabled = false;
-            this.Txt_OutputDamaged.Location = new System.Drawing.Point(310, 96);
+            this.Txt_OutputDamaged.Location = new System.Drawing.Point(310, 59);
             this.Txt_OutputDamaged.Name = "Txt_OutputDamaged";
             this.Txt_OutputDamaged.Size = new System.Drawing.Size(56, 22);
             this.Txt_OutputDamaged.TabIndex = 4;
@@ -1490,7 +1538,7 @@
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(11, 43);
+            this.label26.Location = new System.Drawing.Point(11, 34);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(187, 16);
             this.label26.TabIndex = 2;
@@ -1499,7 +1547,7 @@
             // Txt_OutputDelay
             // 
             this.Txt_OutputDelay.Enabled = false;
-            this.Txt_OutputDelay.Location = new System.Drawing.Point(310, 40);
+            this.Txt_OutputDelay.Location = new System.Drawing.Point(310, 31);
             this.Txt_OutputDelay.Name = "Txt_OutputDelay";
             this.Txt_OutputDelay.Size = new System.Drawing.Size(56, 22);
             this.Txt_OutputDelay.TabIndex = 2;
@@ -1551,19 +1599,6 @@
             this.label39.Size = new System.Drawing.Size(104, 16);
             this.label39.TabIndex = 40;
             this.label39.Text = "Page selection :";
-            // 
-            // TableLayout_Calib
-            // 
-            this.TableLayout_Calib.ColumnCount = 2;
-            this.TableLayout_Calib.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.TableLayout_Calib.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.TableLayout_Calib.Location = new System.Drawing.Point(5, 3);
-            this.TableLayout_Calib.Name = "TableLayout_Calib";
-            this.TableLayout_Calib.RowCount = 2;
-            this.TableLayout_Calib.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.TableLayout_Calib.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.TableLayout_Calib.Size = new System.Drawing.Size(569, 274);
-            this.TableLayout_Calib.TabIndex = 34;
             // 
             // Wnd_DemulShooterGui
             // 
@@ -1738,7 +1773,7 @@
         private System.Windows.Forms.Button Btn_SaveOutput;
         private System.Windows.Forms.GroupBox Grp_Outputs;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.TextBox Txt_OutputRecoil;
+        private System.Windows.Forms.TextBox Txt_OutputRecoilOn;
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.TextBox Txt_OutputDamaged;
         private System.Windows.Forms.Label label26;
@@ -1752,6 +1787,9 @@
         private System.Windows.Forms.TabPage Tab_AnalogCalib;
         private System.Windows.Forms.Button Btn_SaveAnalog;
         private System.Windows.Forms.TableLayoutPanel TableLayout_Calib;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.TextBox Txt_OutputRecoilOff;
     }
 }
 

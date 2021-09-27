@@ -251,7 +251,7 @@ namespace DemulShooter
             if (_Configurator.OutputEnabled)
             {
                 Logger.WriteLog("Starting Output daemon...");
-                _OutputHelper = new MameOutputHelper(_RawMessageWnd_hWnd, _Configurator.OutputCustomRecoilDelay, _Configurator.OutputCustomDamagedDelay);
+                _OutputHelper = new MameOutputHelper(_RawMessageWnd_hWnd, _Configurator.OutputCustomRecoilOnDelay, _Configurator.OutputCustomRecoilOffDelay, _Configurator.OutputCustomDamagedDelay);
                 _OutputHelper.Start();
                 _OutputUpdateLoop = new Thread(new ThreadStart(ReadAndSendOutput_Thread));
                 _OutputUpdateLoop.Start();
@@ -325,7 +325,7 @@ namespace DemulShooter
                 //Dolphin
                 else if (_Target.Equals("dolphin5"))
                 {
-                    _Game = new Game_Dolphin5(_Rom.ToLower(), _Ddinumber, _ForceXratio, isVerbose);
+                    _Game = new Game_Dolphin5(_Rom.ToLower(), _Ddinumber, _Configurator.DIK_Dolphin_P2_LClick, _Configurator.DIK_Dolphin_P2_MClick, _Configurator.DIK_Dolphin_P2_RClick, _ForceXratio, isVerbose);
                 }
 
                 //GlobalVR game
@@ -433,7 +433,7 @@ namespace DemulShooter
                             } break;
                         case "og":
                             {
-                                _Game = new Game_RwOpGhost(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_RwOpGhost(_Rom.ToLower(), _Configurator.OpGhost_EnableFreeplay, _Configurator.OpGhost_CreditsToStart, _Configurator.OpGhost_CreditsToContinue, _Configurator.OpGhost_CoinsByCredits, _ForceXratio, isVerbose);
                             } break;
                         case "sdr":
                             {
@@ -551,8 +551,10 @@ namespace DemulShooter
                             } break;
                     }
                 }
+
+                _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);
             }
-        }
+        }       
 
         /// <summary>
         /// Create a messageLoop-only Window (invsible) to treat WM_* messages
@@ -767,7 +769,7 @@ namespace DemulShooter
             {
                 _TrayIcon = new NotifyIcon();
                 _TrayIcon.Text = "DemulShooter";
-                _TrayIcon.Icon = DemulShooter.Properties.Resources.DemulShooter_Icon;
+                _TrayIcon.Icon = DemulShooter.Properties.Resources.DemulShooter_UnHooked_Icon;
                 _TrayIconMenu = new ContextMenu();
                 _TrayIconMenu.MenuItems.Add("Exit", OnTrayExitSelected);
                 _TrayIcon.ContextMenu = _TrayIconMenu;
@@ -781,6 +783,12 @@ namespace DemulShooter
         private void OnTrayExitSelected(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void OnGameHooked(object sender, EventArgs e)
+        {
+            _TrayIcon.Icon = DemulShooter.Properties.Resources.DemulShooter_Hooked_Icon;
+            _TrayIcon.Text += "[Hooked]";
         }
 
         /// <summary>

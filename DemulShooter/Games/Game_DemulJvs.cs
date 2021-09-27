@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DsCore;
 using DsCore.Config;
+using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
 using DsCore.Win32;
@@ -341,6 +342,56 @@ namespace DemulShooter
                     Apply_AND_ByteMask((UInt32)_PadDemul_ModuleBaseAddress + _Paddemul_P2_Buttons_Offset, 0xCF);
                 }
             }
+        }
+
+        #endregion
+
+        #region Outputs
+
+        /// <summary>
+        /// Create the Output list that we will be looking for and forward to MameHooker
+        /// </summary>
+        protected override void CreateOutputList()
+        {
+            _Outputs = new List<GameOutput>();
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpStart, OutputId.P1_LmpStart));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpStart, OutputId.P2_LmpStart));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_GunRecoil, OutputId.P1_GunRecoil));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_GunRecoil, OutputId.P2_GunRecoil));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
+        }
+
+        /// <summary>
+        /// Update all Outputs values before sending them to MameHooker
+        /// </summary>
+        public override void UpdateOutputValues()
+        {
+            UInt32 Outputs_Address = (UInt32)_TargetProcess_MemoryBaseAddress + 0x00300364;
+            UInt32 Credits_Address = 0x2C480D8C;
+            //Genuine Outputs
+            SetOutputValue(OutputId.P1_LmpStart, ReadByte(Outputs_Address) >> 6 & 0x01);
+            SetOutputValue(OutputId.P2_LmpStart, ReadByte(Outputs_Address) >> 4 & 0x01);
+            SetOutputValue(OutputId.P1_GunRecoil, ReadByte(Outputs_Address) >> 7 & 0x01);
+            SetOutputValue(OutputId.P2_GunRecoil, ReadByte(Outputs_Address) >> 5 & 0x01);
+
+            //Custom recoil will be activated just like original one
+            SetOutputValue(OutputId.P1_CtmRecoil, ReadByte(Outputs_Address) >> 7 & 0x01);
+            SetOutputValue(OutputId.P2_CtmRecoil, ReadByte(Outputs_Address) >> 5 & 0x01);
+
+            //Credits
+            if (_RomName.Equals("ninjasltj"))
+                Credits_Address = 0x2C3D9D90;
+            SetOutputValue(OutputId.Credits, ReadByte(Credits_Address));
         }
 
         #endregion

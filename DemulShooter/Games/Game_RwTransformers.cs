@@ -26,14 +26,26 @@ namespace DemulShooter
         private UInt32 _Buttons_Injection_Return_Offset = 0x00419FE0;
         private NopStruct _Nop_Axis_1 = new NopStruct(0x0041A059, 3);
         private NopStruct _Nop_Axis_2 = new NopStruct(0x0041A05F, 4);
-        private UInt32 _P1_XMin_Offset = 0x009BB890;
-        private UInt32 _P1_XMax_Offset = 0x009BB891;
-        private UInt32 _P1_YMin_Offset = 0x009BB892;
-        private UInt32 _P1_YMax_Offset = 0x009BB893;
-        private UInt32 _P2_XMin_Offset = 0x009BB898;
-        private UInt32 _P2_XMax_Offset = 0x009BB899;
-        private UInt32 _P2_YMin_Offset = 0x009BB89A;
-        private UInt32 _P2_YMax_Offset = 0x009BB89B;
+        private UInt32 _GameTestMenuSettings_Offsets = 0x009BB838;
+        
+        //For custom recoil output
+        private UInt32 _P1_RecoilState_Address = 0;
+        private UInt32 _P2_RecoilState_Address = 0;
+        private UInt32 _P1_Recoil_Injection_Offset = 0x0002D518;
+        private UInt32 _P1_Recoil_Injection_Return_Offset = 0x0002D51D;
+        private UInt32 _P2_Recoil_Injection_Offset = 0x0002D548;
+        private UInt32 _P2_Recoil_Injection_Return_Offset = 0x0002D54D;
+
+        //Those 3 are used to store :
+        // - The number of credit added since the game has started,
+        // - The max value of credits we can add in a game
+        // - The max value of credits at a given time during the game
+        //These settings are hardcoded (MemoryBaseAddress + 0x000602E9, MemoryBaseAddress + 0x000602EB)
+        //and can be changed by hex-editing the binary.
+        //In order to let binaries as untouched as possible, DemulShooter will use one of the Codecave to reset the value stored in memory
+        private UInt32 _HardcodedNumberOfCredits_SinceBeginning_Offset = 0x009650FB;
+        //private UInt32 _HardcoredMaxNumberOfCreditsToAdd = 0x009650F5;
+        private UInt32 _HardcodedMaxNumberOfCredits = 0x009650F4;
 
         //Outputs
         private UInt32 _OutputsPtr_Offset = 0x1A3CBA0;
@@ -44,15 +56,6 @@ namespace DemulShooter
         private int _P2_LastLife = 0;
         private int _P1_Life = 0;
         private int _P2_Life = 0;
-        
-        int _P1_XMin = 0;
-        int _P1_XMax = 0;
-        int _P1_YMin = 0;
-        int _P1_YMax = 0;
-        int _P2_XMin = 0;
-        int _P2_XMax = 0;
-        int _P2_YMin = 0;
-        int _P2_YMax = 0;
 
         /// <summary>
         /// Constructor
@@ -85,30 +88,21 @@ namespace DemulShooter
 
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
-                            byte[] bTampon = ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_X_Offset, 2);
-                            int P1_X = BitConverter.ToInt16(bTampon,0);
-
-                            if (P1_X != 0)
+                            //Wait for game to load settings
+                            if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets) != 0)
                             {
-                                //Reading player 1 and 2 axis boundaries
-                                _P1_XMin = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_XMin_Offset);
-                                _P1_XMax = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_XMax_Offset);
-                                _P1_YMin = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_YMin_Offset);
-                                _P1_YMax = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_YMax_Offset);
-                                _P2_XMin = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_XMin_Offset);
-                                _P2_XMax = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_XMax_Offset);
-                                _P2_YMin = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_YMin_Offset);
-                                _P2_YMax = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_YMax_Offset);                                
-                                
-                                Logger.WriteLog("P1 Axis boundaries : X=" + _P1_XMin.ToString() + "-" + _P1_XMax.ToString() + "; Y=" + _P1_YMin.ToString() + "-" + _P1_YMax.ToString());
-                                Logger.WriteLog("P2 Axis boundaries : X=" + _P2_XMin.ToString() + "-" + _P2_XMax.ToString() + "; Y=" + _P2_YMin.ToString() + "-" + _P2_YMax.ToString());
+                                //Force Calibration values
+                                WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets + 0x58, new byte[] { 0x00, 0xFF, 0x00, 0xFF });
+                                WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets + 0x60, new byte[] { 0x00, 0xFF, 0x00, 0xFF });
+
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
                                 SetHack();
                                 _ProcessHooked = true;
-                            }
+                                RaiseGameHookedEvent();
+                            } 
                         }
                     }
                 }
@@ -150,50 +144,23 @@ namespace DemulShooter
 
                     Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
-                    //Player 1 and 2 axis limits are different
-                    //We can't access the TEST menu so it may be a different calibration for each one so we have to adapt:
-                    int dMinX = 0;
-                    int dMaxX = 0;
-                    int dMinY = 0;
-                    int dMaxY = 0;
-                    double DeltaX = 0.0;
-                    double DeltaY = 0.0;                    
+                    //Player 1 and 2 axis limits are different, and we can't access the TEST menu to do calibration
+                    //Choosen solution is to force Calibration Values for Min-Max axis to [0x00-0xFF] when we write axis values in memory
+                    //So we can safely use full range of values now :
+                    double dMaxX = 255.0;
+                    double dMaxY = 255.0;                   
 
-                    if (PlayerData.ID == 1)
-                    {
-                        //X => [76-215] = 140
-                        //Y => [99-202] = 104
-                        //Inverted Axis : 0 = Bottom Right   
-                        dMinX = _P1_XMin;
-                        dMaxX = _P1_XMax;
-                        dMinY = _P1_YMin;
-                        dMaxY = _P1_YMax;
-                        DeltaX = _P1_XMax - _P1_XMin + 1;
-                        DeltaY = _P1_YMax - _P1_YMin + 1;
-                    }
-                    else if (PlayerData.ID == 2)
-                    {
-                        //X => [55-197] = 143
-                        //Y => [96-205] = 110
-                        //Inverted Axis : 0 = Bottom Right   
-                        dMinX = _P2_XMin;
-                        dMaxX = _P2_XMax;
-                        dMinY = _P2_YMin;
-                        dMaxY = _P2_YMax;
-                        DeltaX = _P2_XMax - _P2_XMin + 1;
-                        DeltaY = _P2_YMax - _P2_YMin + 1;
-                    }
-
-                    PlayerData.RIController.Computed_X = Convert.ToInt32(DeltaX - Math.Round(DeltaX * PlayerData.RIController.Computed_X / TotalResX)) + dMinX;
-                    PlayerData.RIController.Computed_Y = Convert.ToInt32(DeltaY - Math.Round(DeltaY * PlayerData.RIController.Computed_Y / TotalResY)) + dMinY;
-                    if (PlayerData.RIController.Computed_X < dMinX)
-                        PlayerData.RIController.Computed_X = dMinX;
-                    if (PlayerData.RIController.Computed_Y < dMinY)
-                        PlayerData.RIController.Computed_Y = dMinY;
-                    if (PlayerData.RIController.Computed_X > dMaxX)
-                        PlayerData.RIController.Computed_X = dMaxX;
-                    if (PlayerData.RIController.Computed_Y > dMaxY)
-                        PlayerData.RIController.Computed_Y = dMaxY;
+                    //Inverted Axis : 0 = bottom right
+                    PlayerData.RIController.Computed_X = Convert.ToInt32(dMaxX - Math.Round(dMaxX * PlayerData.RIController.Computed_X / TotalResX));
+                    PlayerData.RIController.Computed_Y = Convert.ToInt32(dMaxY - Math.Round(dMaxY * PlayerData.RIController.Computed_Y / TotalResY));
+                    if (PlayerData.RIController.Computed_X < 0)
+                        PlayerData.RIController.Computed_X = 0;
+                    if (PlayerData.RIController.Computed_Y < 0)
+                        PlayerData.RIController.Computed_Y = 0;
+                    if (PlayerData.RIController.Computed_X > (int)dMaxX)
+                        PlayerData.RIController.Computed_X = (int)dMaxX;
+                    if (PlayerData.RIController.Computed_Y > (int)dMaxY)
+                        PlayerData.RIController.Computed_Y = (int)dMaxY;
 
                     return true;
                 }
@@ -217,24 +184,54 @@ namespace DemulShooter
             //NOPing axis proc
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Axis_1);
             SetHackInput();
+            CreateDataBank();
+            SetHack_RecoilP1();
+            SetHack_RecoilP2();
                         
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
         }
 
-        //Hacking buttons proc : 
-        //Same byte is used for both triggers, start and service (for each player)
-        //0b10000000 is start
-        //0b01000000 is Px Service
-        //0b00000001 is TriggerL
-        //0b00000010 is TriggerR
-        //So we need to make a mask to accept Start button moodification and block other so we can inject            
+        /// <summary>
+        /// This will be used to store custom recoil values, updated by the program code each time it will check for rumble (for each bullet fired)
+        /// </summary>
+        private void CreateDataBank()
+        {
+            Codecave InputMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            InputMemory.Open();
+            InputMemory.Alloc(0x800);
+            _P1_RecoilState_Address = InputMemory.CaveAddress;
+            _P2_RecoilState_Address = InputMemory.CaveAddress + 0x04;
+            Logger.WriteLog("Custom OutputRecoil data will be stored at : 0x" + _P1_RecoilState_Address.ToString("X8"));
+        }
+
+        /// <summary>
+        ///Hacking buttons proc : 
+        ///Same byte is used for both triggers, start and service (for each player)
+        ///0b10000000 is start
+        ///0b01000000 is Px Service
+        ///0b00000001 is TriggerL
+        ///0b00000010 is TriggerR
+        ///So we need to make a mask to accept Start button moodification and block other so we can inject   
+        /// </summary>>
         private void SetHackInput()
         {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
             List<Byte> Buffer = new List<Byte>();
+
+            //This is not related to input hack, this is to remove the credits limitation :
+            //mov byte ptr[_HardcodedNumberOfCredits_SinceBeginning], 0
+            CaveMemory.Write_StrBytes("C6 05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes((UInt32)_TargetProcess_MemoryBaseAddress + _HardcodedNumberOfCredits_SinceBeginning_Offset));
+            CaveMemory.Write_StrBytes("00");
+            //mov byte ptr[_HardcodedMaxNumberOfCredits], 0
+            CaveMemory.Write_StrBytes("C6 05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes((UInt32)_TargetProcess_MemoryBaseAddress + _HardcodedMaxNumberOfCredits));
+            CaveMemory.Write_StrBytes("FF");
+
+            //Start of input hack :
             //push eax
             CaveMemory.Write_StrBytes("50");
             //mov al,[ecx-01]
@@ -265,6 +262,72 @@ namespace DemulShooter
             Buffer.Add(0xE9);
             Buffer.AddRange(BitConverter.GetBytes(jumpTo));
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+        /// <summary>
+        /// The game is checking if Recoil is enabled for each bullet fired.
+        /// Using this request call, we can generate the start of our own CustomRecoil output event
+        /// </summary>
+        private void SetHack_RecoilP1()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //mov byte ptr[_P1_RecoilState_Address], 1
+            CaveMemory.Write_StrBytes("C6 05");
+            byte[] b = BitConverter.GetBytes(_P1_RecoilState_Address);
+            CaveMemory.Write_Bytes(b);
+            CaveMemory.Write_StrBytes("01");
+            //mov eax,[ecx+34]
+            CaveMemory.Write_StrBytes("8B 41 34");
+            //test eax, eax
+            CaveMemory.Write_StrBytes("85 C0");            
+            //Jump back
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _P1_Recoil_Injection_Return_Offset);
+
+            Logger.WriteLog("Adding P1_Recoil CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _P1_Recoil_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _P1_Recoil_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+       
+        }
+        private void SetHack_RecoilP2()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //mov byte ptr[_P2_RecoilState_Address], 1
+            CaveMemory.Write_StrBytes("C6 05");
+            byte[] b = BitConverter.GetBytes(_P2_RecoilState_Address);
+            CaveMemory.Write_Bytes(b);
+            CaveMemory.Write_StrBytes("01");
+            //mov eax,[ecx+38]
+            CaveMemory.Write_StrBytes("8B 41 38");
+            //test eax, eax
+            CaveMemory.Write_StrBytes("85 C0");
+            //Jump back
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _P2_Recoil_Injection_Return_Offset);
+
+            Logger.WriteLog("Adding P2_Recoil CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _P2_Recoil_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _P2_Recoil_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
         }
 
         #endregion
@@ -330,12 +393,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpBreak, OutputId.P2_LmpBreak));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_GunMotor, OutputId.P1_GunMotor));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunMotor, OutputId.P2_GunMotor));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -372,7 +435,6 @@ namespace DemulShooter
                 //15: Contnue
                 int P1_Status = ReadByte(P1_StructAddress + 0x5C);
                 int P2_Status = ReadByte(P1_StructAddress + 0x5C);
-
                 if (P1_Status == 3 || P1_Status == 4)
                 {
                     _P1_Life = ReadByte(P1_StructAddress + 0x60);
@@ -395,9 +457,17 @@ namespace DemulShooter
             _P1_LastLife = _P1_Life;
             _P2_LastLife = _P2_Life;
 
-            //Custom Recoil will simply be activated just like original Recoil
-            //SetOutputValue(OutputId.P1_CtmRecoil, ReadByte(_Outputs_Address) >> 6 & 0x01);
-            //SetOutputValue(OutputId.P2_CtmRecoil, ReadByte(_Outputs_Address) >> 3 & 0x01);
+            //Custom Recoil will simply be read on memory and reset
+            //the codecave injected will update it for the "ON" state
+            byte P1_RecoilState = ReadByte(_P1_RecoilState_Address);
+            SetOutputValue(OutputId.P1_CtmRecoil, P1_RecoilState);
+            if (P1_RecoilState == 1)
+                WriteByte(_P1_RecoilState_Address, 0x00);
+            byte P2_RecoilState = ReadByte(_P2_RecoilState_Address);
+            SetOutputValue(OutputId.P2_CtmRecoil, P2_RecoilState);
+            if (P2_RecoilState == 1)
+                WriteByte(_P2_RecoilState_Address, 0x00);  
+
             SetOutputValue(OutputId.P1_Life, _P1_Life);
             SetOutputValue(OutputId.P2_Life, _P2_Life);
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset));

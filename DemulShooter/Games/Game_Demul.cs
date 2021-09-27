@@ -37,7 +37,17 @@ namespace DemulShooter
 
         protected String _SystemName;
         protected String _DemulVersion;
-        
+
+        //Custom Outputs
+        protected int _P1_LastLife = 0;
+        protected int _P2_LastLife = 0;
+        protected int _P1_LastAmmo = 0;
+        protected int _P2_LastAmmo = 0;
+        protected int _P1_Life = 0;
+        protected int _P2_Life = 0;
+        protected int _P1_Ammo = 0;
+        protected int _P2_Ammo = 0;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -97,6 +107,7 @@ namespace DemulShooter
                                         SetHack_07();
 
                                     _ProcessHooked = true;
+                                    RaiseGameHookedEvent();
                                     break;
                                 }
                             }

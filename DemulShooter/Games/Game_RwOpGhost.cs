@@ -78,17 +78,22 @@ namespace DemulShooter
         private bool _IsJvsEnabled = false;
 
         //Credits settings (these are defaults values)
-        private UInt32 _Credits_Freeplay = 0;   //0 or 1
-        private UInt32 _Credits_CreditsToStart = 2;
-        private UInt32 _Credits_CreditsToContinue = 1;
-        private UInt32 _Credits_CoinsByCredits = 2;
+        private int _Credits_Freeplay = 0;   //0 or 1
+        private int _Credits_CreditsToStart = 2;
+        private int _Credits_CreditsToContinue = 1;
+        private int _Credits_CoinsByCredits = 2;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwOpGhost(String RomName, double _ForcedXratio, bool Verbose)
+        public Game_RwOpGhost(String RomName, bool EnableFreeplay, int StartCredits, int ContinueCredits, int CoinsCredit, double _ForcedXratio, bool Verbose)
             : base(RomName, "gs2", _ForcedXratio, Verbose)
         {
+            if (EnableFreeplay)
+                _Credits_Freeplay = 1;
+            _Credits_CreditsToStart = StartCredits;
+            _Credits_CreditsToContinue = ContinueCredits;
+            _Credits_CoinsByCredits = CoinsCredit;
             _KnownMd5Prints.Add("Operation Ghost - For TeknoParrot", "40f795933abc4f441c98acc778610aa2");
             _KnownMd5Prints.Add("Operation Ghost - For JConfig", "19a949581145ed8478637d286a4b85a0");
             _tProcess.Start();
@@ -134,6 +139,7 @@ namespace DemulShooter
                                     CheckExeMd5();
                                     SetHack_Jvs();
                                     _ProcessHooked = true;
+                                    RaiseGameHookedEvent();
                                 }
                             }
                             else
@@ -156,6 +162,7 @@ namespace DemulShooter
                                     CheckExeMd5();
                                     SetHack();
                                     _ProcessHooked = true;
+                                    RaiseGameHookedEvent();
                                 }
                             }
                         }
@@ -634,8 +641,8 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpHolder, OutputId.P2_LmpHolder));            
             _Outputs.Add(new GameOutput(OutputDesciption.P1_GunRecoil, OutputId.P1_GunRecoil));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunRecoil, OutputId.P2_GunRecoil));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 

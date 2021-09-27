@@ -45,6 +45,8 @@ namespace DemulShooter
         public Game_RwSDR(String RomName, double _ForcedXratio, bool Verbose)
             : base(RomName, "game", _ForcedXratio, Verbose)
         {
+            _KnownMd5Prints.Add("Sega Dream Raider - Unpatched Header", "abedceb2135ab50c1182dda31153667687f53469");
+            _KnownMd5Prints.Add("Sega Dream Raider - Patched Header", "ee96b126534355d96c12449291bdc44bb2d13e29");
             _KnownMd5Prints.Add("Sega Dream Raider - For TeknoParrot", "4264540b2a24f3359a3deb5f1e95e392");
             _KnownMd5Prints.Add("Sega Dream Raider - For JConfig", "da993b12f7572f828c578c9eb73b3111");
             _tProcess.Start();
@@ -80,7 +82,8 @@ namespace DemulShooter
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
                                 SetHack();
-                                _ProcessHooked = true;                                
+                                _ProcessHooked = true;
+                                RaiseGameHookedEvent();
                             }   
                         }
                     }
@@ -123,18 +126,22 @@ namespace DemulShooter
 
                     Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
-                    //X => [0-E1] = 225
-                    //Y => [0-E1] = 225
+                    //X => [30-C0] = 145
+                    //Y => [30-C0] = 145
                     //Axes inversés : 0 = Bas et Droite
-                    double dMaxX = 225.0;
-                    double dMaxY = 225.0;
+                    double dMinX = 48.0;
+                    double dMinY = 48.0;
+                    double dMaxX = 192.0;
+                    double dMaxY = 192.0;
+                    double DeltaX = dMaxX - dMinX;
+                    double DeltaY = dMaxY - dMinY;
 
-                    PlayerData.RIController.Computed_X = Convert.ToInt32(dMaxX - Math.Round(dMaxX * PlayerData.RIController.Computed_X / TotalResX));
-                    PlayerData.RIController.Computed_Y = Convert.ToInt32(dMaxY - Math.Round(dMaxY * PlayerData.RIController.Computed_Y / TotalResY));
-                    if (PlayerData.RIController.Computed_X < 0)
-                        PlayerData.RIController.Computed_X = 0;
-                    if (PlayerData.RIController.Computed_Y < 0)
-                        PlayerData.RIController.Computed_Y = 0;
+                    PlayerData.RIController.Computed_X = Convert.ToInt32(DeltaX - Math.Round(DeltaX * PlayerData.RIController.Computed_X / TotalResX) + dMinX);
+                    PlayerData.RIController.Computed_Y = Convert.ToInt32(DeltaY - Math.Round(DeltaY * PlayerData.RIController.Computed_Y / TotalResY) + dMinY);
+                    if (PlayerData.RIController.Computed_X < (int)dMinX)
+                        PlayerData.RIController.Computed_X = (int)dMinX;
+                    if (PlayerData.RIController.Computed_Y < (int)dMinY)
+                        PlayerData.RIController.Computed_Y = (int)dMinY;
                     if (PlayerData.RIController.Computed_X > (int)dMaxX)
                         PlayerData.RIController.Computed_X = (int)dMaxX;
                     if (PlayerData.RIController.Computed_Y > (int)dMaxY)
@@ -279,12 +286,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.Blower_Lvl, OutputId.Blower_Level));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_GunMotor, OutputId.P1_GunMotor));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunMotor, OutputId.P2_GunMotor));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay)); 
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0)); 
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -338,6 +345,10 @@ namespace DemulShooter
 
             SetOutputValue(OutputId.P1_Life, _P1_Life);
             SetOutputValue(OutputId.P2_Life, _P2_Life);
+
+            //Using constant "ON" value from motor to create asynch outputs for recoil
+            SetOutputValue(OutputId.P1_CtmRecoil, OutputData1 >> 6 & 0x01);
+            SetOutputValue(OutputId.P2_CtmRecoil, OutputData1 >> 3 & 0x01);
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00607FF0));
         }
 

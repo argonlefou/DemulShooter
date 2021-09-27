@@ -17,6 +17,9 @@ namespace DemulShooter
 {
     public class Game
     {
+        public delegate void GameHookedHandler(object sender, EventArgs e);
+        public event GameHookedHandler OnGameHooked;
+
         #region Process variables
 
         protected System.Timers.Timer _tProcess;
@@ -87,6 +90,17 @@ namespace DemulShooter
 
         protected virtual void tProcess_Elapsed(Object sender, EventArgs e)
         {}
+
+        /// <summary>
+        /// Raise custom event to main window (to change TrayIcon status)
+        /// </summary>
+        protected void RaiseGameHookedEvent()
+        {
+            // Make sure someone is listening to event
+            if (OnGameHooked == null) return;
+
+            OnGameHooked(this, new EventArgs());
+        }
 
         #region MD5 Verification
 

@@ -155,7 +155,7 @@ namespace DemulShooterX64
             if (_Configurator.OutputEnabled)
             {
                 Logger.WriteLog("Starting Output daemon...");
-                _OutputHelper = new MameOutputHelper(_RawMessageWnd_hWnd, _Configurator.OutputCustomRecoilDelay, _Configurator.OutputCustomDamagedDelay);
+                _OutputHelper = new MameOutputHelper(_RawMessageWnd_hWnd, _Configurator.OutputCustomRecoilOnDelay, _Configurator.OutputCustomRecoilOffDelay,  _Configurator.OutputCustomDamagedDelay);
                 _OutputHelper.Start();
                 _OutputUpdateLoop = new Thread(new ThreadStart(ReadAndSendOutput_Thread));
                 _OutputUpdateLoop.Start();

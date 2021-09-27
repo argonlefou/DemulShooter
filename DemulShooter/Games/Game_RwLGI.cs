@@ -27,6 +27,8 @@ namespace DemulShooter
         protected NopStruct _Nop_Axis = new NopStruct(0x002F0BEC, 3);
         protected UInt32 _Buttons_Injection_Offset = 0x002F0B72;
         protected UInt32 _Buttons_Injection_Return_Offset = 0x002F0B7A;
+        protected UInt32 _CalibrationValues_Injection_Offset = 0x00484427;
+        protected UInt32 _CalibrationValues_Injection_Return_Offset = 0x0048442D;
 
         //Outputs
         private UInt32 _OutputsPtr_Offset = 0x0063BF5C;
@@ -34,7 +36,7 @@ namespace DemulShooter
         private int _P1_LastLife = 0;
         private int _P2_LastLife = 0;
         private int _P1_Life = 0;
-        private int _P2_Life = 0;
+        private int _P2_Life = 0;        
 
         /// <summary>
         /// Constructor
@@ -81,8 +83,10 @@ namespace DemulShooter
                                     Logger.WriteLog("Data base adddress =  0x" + _Data_Base_Address.ToString("X8"));
                                     CheckExeMd5();
                                     ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
+
                                     SetHack();
-                                    _ProcessHooked = true;                                    
+                                    _ProcessHooked = true;
+                                    RaiseGameHookedEvent();
                                 }
                             }
                         }
@@ -125,9 +129,10 @@ namespace DemulShooter
                     double TotalResY = TotalRes.Bottom - TotalRes.Top;
 
                     Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
-
-                    //X => [0-FF] = 255
-                    //Y => [0-FF] = 255
+                    
+                    //We can't access the TEST menu to do calibration
+                    //Choosen solution is to force Calibration Values for Min-Max axis to [0x00-0xFF] when we write axis values in memory
+                    //So we can safely use full range of values now :
                     //Axes inversés : 0 = Bas et Droite
                     double dMaxX = 255.0;
                     double dMaxY = 255.0;
@@ -166,13 +171,24 @@ namespace DemulShooter
             //NOPing axis proc
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Axis);
 
-            //Hacking buttons proc : 
-            //Same byte is used for both triggers, start and service (for each player)
-            //0b10000000 is start
-            //0b01000000 is Px Service
-            //0b00000001 is TriggerL
-            //0b00000010 is TriggerR
-            //So we need to make a mask to accept Start button moodification and block other so we can inject
+            SetHack_Buttons();
+            SetHack_Calibration();            
+            
+            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
+        /// <summary>
+        ///Hacking buttons proc : 
+        ///Same byte is used for both triggers, start and service (for each player)
+        ///0b10000000 is start
+        ///0b01000000 is Px Service
+        ///0b00000001 is TriggerL
+        ///0b00000010 is TriggerR
+        ///So we need to make a mask to accept Start button moodification and block other so we can inject
+        /// </summary>
+        private void SetHack_Buttons()
+        {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
@@ -210,7 +226,7 @@ namespace DemulShooter
             //Jump back
             CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Return_Offset);
 
-            Logger.WriteLog("Adding CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+            Logger.WriteLog("Adding Buttons CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
 
             //Code injection
             IntPtr ProcessHandle = _TargetProcess.Handle;
@@ -223,10 +239,60 @@ namespace DemulShooter
             Buffer.Add(0x90);
             Buffer.Add(0x90);
             Buffer.Add(0x90);
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
-            
-            Logger.WriteLog("Memory Hack complete !");
-            Logger.WriteLog("-");
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);          
+        }
+
+        /// <summary>
+        ///To bypass the need of Calibration (calculated at each level entry), we can force the game to use max range (0x00-0xFF) for JVS data
+        ///The game uses these values as Min values (we can force them to 0):
+        ///00C17D29 (p1 min x)
+        ///00C17D2D (p1 min y)
+        ///00C17D31 (p2 min x)
+        ///00C17D35 (p2 min y)
+        ///For max value, the game is using complicated FloatingPoint/Double operations with a kind of ratio values.
+        ///Forcing the following values enable the use of 0x00-0xFF full range values to match with (0.0 - 1024.0) calculated values.                                         
+        /// </summary>
+        private void SetHack_Calibration()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //xor edi, edi
+            CaveMemory.Write_StrBytes("31 FF");            
+            //xor ebx,ebx
+            CaveMemory.Write_StrBytes("31 DB");
+            //xor ebp, ebp
+            CaveMemory.Write_StrBytes("31 ED");
+            //xor ecx, ecx
+            CaveMemory.Write_StrBytes("31 C9");
+            //mov [esp+10], 0x00000000
+            CaveMemory.Write_StrBytes("C7 44 24 10 00 00 00 00");
+            //mov [esp+14], 0x0000FF00
+            CaveMemory.Write_StrBytes("C7 44 24 14 00 FF 00 00");
+            //mov [esp+18], 0x0000FF00
+            CaveMemory.Write_StrBytes("C7 44 24 18 00 FF 00 00");
+            //mov [esp+1C], 0x0000FF00
+            CaveMemory.Write_StrBytes("C7 44 24 1C 00 FF 00 00");
+            //mov esi, 0x0000FF00
+            CaveMemory.Write_StrBytes("BE 00 FF 00 00");
+            //mov     dword_C17D28, edi
+            CaveMemory.Write_StrBytes("89 3D 28 7D C1 00");            
+            //Jump back
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _CalibrationValues_Injection_Return_Offset);
+
+            Logger.WriteLog("Adding Calibration CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _CalibrationValues_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _CalibrationValues_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);           
         }
 
         #endregion
@@ -294,12 +360,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P1_GunMotor, OutputId.P1_GunMotor));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunRecoil, OutputId.P2_GunRecoil));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunMotor, OutputId.P2_GunMotor));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay)); 
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0)); 
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -357,6 +423,10 @@ namespace DemulShooter
 
             SetOutputValue(OutputId.P1_Life, _P1_Life);
             SetOutputValue(OutputId.P2_Life, _P2_Life);
+
+            //Using constant "ON" value from motor to create asynch outputs for recoil
+            SetOutputValue(OutputId.P1_CtmRecoil, OutputData >> 6 & 0x01);
+            SetOutputValue(OutputId.P2_CtmRecoil, OutputData >> 3 & 0x01);
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0080CBE0)); //0x008200B8 also possible
         }
 

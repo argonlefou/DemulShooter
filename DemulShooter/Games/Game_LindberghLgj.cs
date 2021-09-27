@@ -98,7 +98,8 @@ namespace DemulShooter
                                     Logger.WriteLog("P2 InputStruct address = 0x" + _Player2_InputStruct_Address.ToString("X8"));
 
                                     SetHack();
-                                    _ProcessHooked = true;                                    
+                                    _ProcessHooked = true;
+                                    RaiseGameHookedEvent();                                    
                                 }
                             }
                             else
@@ -311,12 +312,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.LmpCoin, OutputId.LmpCoin));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_GunMotor, OutputId.P1_GunMotor));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunMotor, OutputId.P2_GunMotor));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay));            
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));            
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -367,6 +368,10 @@ namespace DemulShooter
             SetOutputValue(OutputId.P2_CtmRecoil, 0);
             SetOutputValue(OutputId.P1_Life, _P1_Life);
             SetOutputValue(OutputId.P2_Life, _P2_Life);
+
+            //Using constant "ON" value from motor to create asynch outputs for recoil
+            SetOutputValue(OutputId.P1_CtmRecoil, ReadByte(_Outputs_Address) >> 3 & 0x01);
+            SetOutputValue(OutputId.P2_CtmRecoil, ReadByte(_Outputs_Address) >> 6 & 0x01);
             SetOutputValue(OutputId.Credits, ReadByte(_Credits_Address));
         }
 

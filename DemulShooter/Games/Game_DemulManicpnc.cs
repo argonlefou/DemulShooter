@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
+using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
 using DsCore.Win32;
@@ -89,7 +90,8 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             SetHack();
-                            _ProcessHooked = true;                            
+                            _ProcessHooked = true;
+                            RaiseGameHookedEvent();                            
                         }                         
                     }
                 }
@@ -380,6 +382,45 @@ namespace DemulShooter
             _TimerHoldTrigger[1].Stop();
         }
 
+        #endregion
+
+        #region Outputs
+
+        /// <summary>
+        /// Create the Output list that we will be looking for and forward to MameHooker
+        /// </summary>
+        protected override void CreateOutputList()
+        {
+            _Outputs = new List<GameOutput>();
+            /*_Outputs.Add(new GameOutput(OutputDesciption.P1_Lmp_R, OutputId.P1_Lmp_R));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Lmp_B, OutputId.P1_Lmp_B));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Lmp_R, OutputId.P2_Lmp_R));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Lmp_B, OutputId.P2_Lmp_B));*/
+
+            _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
+        }
+
+        /// <summary>
+        /// Update all Outputs values before sending them to MameHooker
+        /// </summary>
+        public override void UpdateOutputValues()
+        {
+            UInt32 Output_Address = (ReadPtr((UInt32)((0x8C03D96C & 0x01FFFFFF) + 0x2C000000)) & 0x01FFFFFF) + 0x2C000000;
+
+            //[FF FF]
+            //P1 Red 0-F = Output Address
+            //P1 Blue 0-F = Output Address
+            //P2 Red 0-F = Output Address +1
+            //P2 Blue 0-F = Output Address +1
+            //Genuine Outputs -- Not used by the game (just working in TESt MODE)
+            /*SetOutputValue(OutputId.P1_Lmp_R, ReadByte(Output_Address) >> 4 & 0x0F);
+            SetOutputValue(OutputId.P1_Lmp_B, ReadByte(Output_Address) & 0x0F);
+            SetOutputValue(OutputId.P2_Lmp_R, ReadByte(Output_Address + 1) >> 4 & 0x0F);
+            SetOutputValue(OutputId.P2_Lmp_B, ReadByte(Output_Address + 1) & 0x0F);*/
+
+            SetOutputValue(OutputId.Credits, ReadByte(0x20200010));
+        }
+        
         #endregion
     }
 }

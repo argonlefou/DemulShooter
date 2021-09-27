@@ -27,9 +27,9 @@ namespace DemulShooter
         private const UInt32 ATRAK_Y_Offset = 0x48;
         private NopStruct _Nop_Atrak_Axis = new NopStruct(0x004E587C, 4);
 
-        private const HardwareScanCode DIK_KEY_LCLICK = HardwareScanCode.DIK_S;
-        private const HardwareScanCode DIK_KEY_MCLICK = HardwareScanCode.DIK_D;
-        private const HardwareScanCode DIK_KEY_RCLICK = HardwareScanCode.DIK_F;
+        private HardwareScanCode _DIK_P2_Key_LClick = HardwareScanCode.DIK_S;
+        private HardwareScanCode _DIK_P2_Key_MClick = HardwareScanCode.DIK_D;
+        private HardwareScanCode _DIK_P2_Key_RClick = HardwareScanCode.DIK_F;
 
         /*** Process variables **/
         private UInt32 _DinputNumber = 0;
@@ -40,10 +40,13 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Dolphin5(String RomName, UInt32 DinputNumber, double _ForcedXratio, bool Verbose)
+        public Game_Dolphin5(String RomName, UInt32 DinputNumber, HardwareScanCode DIK_P2_LClick, HardwareScanCode DIK_P2_MClick, HardwareScanCode DIK_P2_RClick, double _ForcedXratio, bool Verbose)
             : base(RomName, "Dolphin", _ForcedXratio,  Verbose)
         {
             _DinputNumber = DinputNumber;
+            _DIK_P2_Key_LClick = DIK_P2_LClick;
+            _DIK_P2_Key_MClick = DIK_P2_MClick;
+            _DIK_P2_Key_RClick = DIK_P2_RClick;
             _KnownMd5Prints.Add("Dolphin_x86 v5.0", "9660ec7cddf093a1807cb25fe0946b8e");
             _tProcess.Start();
             Logger.WriteLog("Waiting for Dolphin " + _RomName + " game to hook.....");
@@ -72,7 +75,8 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             System.Threading.Thread.Sleep(2000);
                             SetHack();
-                            _ProcessHooked = true;                            
+                            _ProcessHooked = true;
+                            RaiseGameHookedEvent();                            
                         }                        
                     }
                 }
@@ -261,19 +265,19 @@ namespace DemulShooter
                 WriteBytes(_ATRAK_BaseAddress + ATRAK_Y_Offset, bufferY);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0) 
-                    SendKeyDown(DIK_KEY_LCLICK);
+                    SendKeyDown(_DIK_P2_Key_LClick);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0) 
-                    SendKeyUp(DIK_KEY_LCLICK);
+                    SendKeyUp(_DIK_P2_Key_LClick);
                 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0) 
-                    SendKeyDown(DIK_KEY_MCLICK);
+                    SendKeyDown(_DIK_P2_Key_MClick);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0) 
-                    SendKeyUp(DIK_KEY_MCLICK);
+                    SendKeyUp(_DIK_P2_Key_MClick);
                 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0) 
-                    SendKeyDown(DIK_KEY_RCLICK);
+                    SendKeyDown(_DIK_P2_Key_RClick);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0) 
-                    SendKeyUp(DIK_KEY_RCLICK);
+                    SendKeyUp(_DIK_P2_Key_RClick);
             }
         }
 

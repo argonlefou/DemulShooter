@@ -56,7 +56,6 @@ namespace DemulShooter
 
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
-                            _ProcessHooked = true;
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
@@ -73,6 +72,9 @@ namespace DemulShooter
                             {
                                 Logger.WriteLog("Unable to find/open the coin002.aif file for Hotd3");
                             }
+
+                            _ProcessHooked = true;                            
+                            RaiseGameHookedEvent();
                         }
                     }
                 }
@@ -134,9 +136,9 @@ namespace DemulShooter
             _Outputs = new List<GameOutput>();
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 

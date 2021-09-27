@@ -76,6 +76,7 @@ namespace DemulShooter
                                 CheckExeMd5();
                                 SetHack();
                                 _ProcessHooked = true;
+                                RaiseGameHookedEvent();
                                 break;
                             }
                             
@@ -372,8 +373,8 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpCard_G, OutputId.P1_LmpCard_G));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpCard_R, OutputId.P2_LmpCard_R));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpCard_G, OutputId.P2_LmpCard_G));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_GunRecoil, MameOutputHelper.CustomRecoilDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_GunRecoil, MameOutputHelper.CustomRecoilDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_GunRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_GunRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 

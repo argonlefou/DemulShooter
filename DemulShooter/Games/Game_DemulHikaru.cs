@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DsCore;
 using DsCore.Config;
 using DsCore.Memory;
+using DsCore.MameOutput;
 using DsCore.RawInput;
 using DsCore.Win32;
 
@@ -164,6 +165,48 @@ namespace DemulShooter
             }
         }
         
+        #endregion
+
+        #region Outputs
+
+        /// <summary>
+        /// Create the Output list that we will be looking for and forward to MameHooker
+        /// </summary>
+        protected override void CreateOutputList()
+        {
+            _Outputs = new List<GameOutput>();
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpStart, OutputId.P1_LmpStart));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpStart, OutputId.P2_LmpStart));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpPanel, OutputId.P1_LmpPanel));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpPanel, OutputId.P2_LmpPanel));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_GunMotor, OutputId.P1_GunMotor));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_GunMotor, OutputId.P2_GunMotor));
+            
+            _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
+        }
+
+        /// <summary>
+        /// Update all Outputs values before sending them to MameHooker
+        /// </summary>
+        public override void UpdateOutputValues()
+        {
+            if (_RomName.Equals("braveff"))
+                Compute_Braveff_Outputs();
+        }
+
+        private void Compute_Braveff_Outputs()
+        { 
+            //Genuine Outputs
+            SetOutputValue(OutputId.P1_LmpStart, ReadByte(0x007000C4) >> 7 & 0x01);
+            SetOutputValue(OutputId.P2_LmpStart, ReadByte(0x007000C4) >> 4 & 0x01);
+            SetOutputValue(OutputId.P1_LmpPanel, ReadByte(0x007000C4) >> 5 & 0x01);
+            SetOutputValue(OutputId.P2_LmpPanel, ReadByte(0x007000C4) >> 2 & 0x01);
+            SetOutputValue(OutputId.P1_GunMotor, ReadByte(0x007000C4) >> 6 & 0x01);
+            SetOutputValue(OutputId.P2_GunMotor, ReadByte(0x007000C4) >> 3 & 0x01);
+            
+            SetOutputValue(OutputId.Credits, ReadByte(0x20C00068));
+        }
+
         #endregion
     }    
 }

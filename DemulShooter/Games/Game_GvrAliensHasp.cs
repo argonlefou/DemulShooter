@@ -62,6 +62,7 @@ namespace DemulShooter
                             CheckExeMd5();
                             SetHack();
                             _ProcessHooked = true;
+                            RaiseGameHookedEvent();
                         }
                     }
                 }

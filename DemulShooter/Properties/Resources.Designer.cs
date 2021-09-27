@@ -63,9 +63,29 @@ namespace DemulShooter.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Icon semblable à (Icône).
         /// </summary>
+        internal static System.Drawing.Icon DemulShooter_Hooked_Icon {
+            get {
+                object obj = ResourceManager.GetObject("DemulShooter_Hooked_Icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Icon semblable à (Icône).
+        /// </summary>
         internal static System.Drawing.Icon DemulShooter_Icon {
             get {
                 object obj = ResourceManager.GetObject("DemulShooter_Icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Icon semblable à (Icône).
+        /// </summary>
+        internal static System.Drawing.Icon DemulShooter_UnHooked_Icon {
+            get {
+                object obj = ResourceManager.GetObject("DemulShooter_UnHooked_Icon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

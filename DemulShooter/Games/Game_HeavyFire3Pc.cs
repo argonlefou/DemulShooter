@@ -147,7 +147,8 @@ namespace DemulShooter
                             CheckMd5(_ExecutableFilePath);
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);                                                   
                             SetHack();
-                            _ProcessHooked = true;                            
+                            _ProcessHooked = true;
+                            RaiseGameHookedEvent();                            
                         }
                     }
                 }

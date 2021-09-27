@@ -3,6 +3,13 @@ using System.Timers;
 
 namespace DsCore.MameOutput
 {
+    /// <summary>
+    /// This kind of output is used to get synchronised blinking outputs between players
+    /// Examples: Start buttons in pc game not supporting genuine outputs system
+    /// The synchronised-to-be outputs are created at the same time, and immediately blinking.
+    /// At the same time, we can set a fixed value.
+    /// Then, according to the what we want to read, we ask for the fixed value or the blinking one
+    /// </summary>
     public class SyncBlinkingGameOutput : GameOutput
     {
         private Timer _SyncBlinkingTimer;

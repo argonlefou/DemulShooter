@@ -153,7 +153,8 @@ namespace DemulShooter_GUI
             Logger.WriteLog("Initializing GUI [Output] pages...");
             Cbox_Outputs.Checked = _Configurator.OutputEnabled;
             Txt_OutputDelay.Text = _Configurator.OutputPollingDelay.ToString();
-            Txt_OutputRecoil.Text = _Configurator.OutputCustomRecoilDelay.ToString();
+            Txt_OutputRecoilOn.Text = _Configurator.OutputCustomRecoilOnDelay.ToString();
+            Txt_OutputRecoilOff.Text = _Configurator.OutputCustomRecoilOffDelay.ToString();
             Txt_OutputDamaged.Text = _Configurator.OutputCustomDamagedDelay.ToString();
 
             // Register to rawinput
@@ -810,7 +811,8 @@ namespace DemulShooter_GUI
         private void Cbox_Outputs_CheckedChanged(object sender, EventArgs e)
         {
             Txt_OutputDelay.Enabled = Cbox_Outputs.Checked;
-            Txt_OutputRecoil.Enabled = Cbox_Outputs.Checked;
+            Txt_OutputRecoilOn.Enabled = Cbox_Outputs.Checked;
+            Txt_OutputRecoilOff.Enabled = Cbox_Outputs.Checked;
             Txt_OutputDamaged.Enabled = Cbox_Outputs.Checked;
             _Configurator.OutputEnabled = Cbox_Outputs.Checked;
         }
@@ -828,16 +830,29 @@ namespace DemulShooter_GUI
             }
         }
 
-        private void Txt_OutputRecoil_TextChanged(object sender, EventArgs e)
+        private void Txt_OutputRecoilOn_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                _Configurator.OutputCustomRecoilDelay = Convert.ToInt32(Txt_OutputRecoil.Text);
+                _Configurator.OutputCustomRecoilOnDelay = Convert.ToInt32(Txt_OutputRecoilOn.Text);
             }
             catch
             {
-                MessageBox.Show(Txt_OutputRecoil.Text + " is not a valid delay. Please enter a non-decimal number");
-                Txt_OutputRecoil.Text = _Configurator.OutputCustomRecoilDelay.ToString();
+                MessageBox.Show(Txt_OutputRecoilOn.Text + " is not a valid delay. Please enter a non-decimal number");
+                Txt_OutputRecoilOn.Text = _Configurator.OutputCustomRecoilOnDelay.ToString();
+            }
+        }
+
+        private void Txt_OutputRecoilOff_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                _Configurator.OutputCustomRecoilOffDelay = Convert.ToInt32(Txt_OutputRecoilOff.Text);
+            }
+            catch
+            {
+                MessageBox.Show(Txt_OutputRecoilOff.Text + " is not a valid delay. Please enter a non-decimal number");
+                Txt_OutputRecoilOff.Text = _Configurator.OutputCustomRecoilOffDelay.ToString();
             }
         }
 

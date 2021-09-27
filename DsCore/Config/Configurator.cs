@@ -132,6 +132,28 @@ namespace DsCore.Config
         }
         #endregion
 
+        //Dolphin Data
+        private HardwareScanCode _DIK_Dolphin_P2_LClick = HardwareScanCode.DIK_S;
+        private HardwareScanCode _DIK_Dolphin_P2_MClick = HardwareScanCode.DIK_D;
+        private HardwareScanCode _DIK_Dolphin_P2_RClick = HardwareScanCode.DIK_F;
+        #region Accessors
+        public HardwareScanCode DIK_Dolphin_P2_LClick
+        {
+            get { return _DIK_Dolphin_P2_LClick; }
+            set { _DIK_Dolphin_P2_LClick = value; }
+        }
+        public HardwareScanCode DIK_Dolphin_P2_MClick
+        {
+            get { return _DIK_Dolphin_P2_MClick; }
+            set { _DIK_Dolphin_P2_MClick = value; }
+        }
+        public HardwareScanCode DIK_Dolphin_P2_RClick
+        {
+            get { return _DIK_Dolphin_P2_RClick; }
+            set { _DIK_Dolphin_P2_RClick = value; }
+        }
+        #endregion
+
         //HeavyFire games need to get Path and cover sensibility settings
         private String _HF3_Path = string.Empty;
         private int _HF3_CoverSensibility = 3;
@@ -160,11 +182,41 @@ namespace DsCore.Config
         }
         #endregion
 
+        //Specific setting for Operation Ghost CREDITS (the game is not using the E2PROM file at launch)
+        //And Game Test options are available in gs2.ini config file
+        private bool _OpGHost_EnableFreeplay = false;
+        private int _OpGhost_CreditsToStart = 2;
+        private int _OpGhost_CreditsToContinue = 1;
+        private int _OpGhost_CoinsByCredits = 2;
+        #region Accessors
+        public bool OpGhost_EnableFreeplay
+        {
+            get { return _OpGHost_EnableFreeplay; }
+            set { _OpGHost_EnableFreeplay = value; }
+        }
+        public int OpGhost_CreditsToStart
+        {
+            get { return _OpGhost_CreditsToStart; }
+            set { _OpGhost_CreditsToStart = value; }
+        }
+        public int OpGhost_CreditsToContinue
+        {
+            get { return _OpGhost_CreditsToContinue; }
+            set { _OpGhost_CreditsToContinue = value; }
+        }
+        public int OpGhost_CoinsByCredits
+        {
+            get { return _OpGhost_CoinsByCredits; }
+            set { _OpGhost_CoinsByCredits = value; }
+        }
+        #endregion
+
         //Outputs settings
         private bool _OutputEnabled = false;
         private int _OutputPollingDelay = 20;
         private int _OutputCustomDamagedDelay = 200;
-        private int _OutputCustomRecoilDelay = 200;
+        private int _OutputCustomRecoilOnDelay = 50;
+        private int _OutputCustomRecoilOffDelay = 50;
         #region Accessors
         public bool OutputEnabled
         { 
@@ -181,10 +233,15 @@ namespace DsCore.Config
             get { return _OutputCustomDamagedDelay; }
             set { _OutputCustomDamagedDelay = value; }
         }
-        public int OutputCustomRecoilDelay
+        public int OutputCustomRecoilOnDelay
         {
-            get { return _OutputCustomRecoilDelay; }
-            set { _OutputCustomRecoilDelay = value; }
+            get { return _OutputCustomRecoilOnDelay; }
+            set { _OutputCustomRecoilOnDelay = value; }
+        }
+        public int OutputCustomRecoilOffDelay
+        {
+            get { return _OutputCustomRecoilOffDelay; }
+            set { _OutputCustomRecoilOffDelay = value; }
         }
         #endregion
 
@@ -320,6 +377,30 @@ namespace DsCore.Config
                                     }
                                     catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
                                 }
+                                else if (StrKey.ToLower().Equals("dolphin_p2_lclick"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Dolphin_P2_LClick = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("dolphin_p2_mclick"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Dolphin_P2_MClick = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("dolphin_p2_rclick"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Dolphin_P2_RClick = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                } 
                                 else if (StrKey.ToLower().Equals("hf3_path"))
                                 {
                                     _HF3_Path = StrValue;
@@ -338,6 +419,26 @@ namespace DsCore.Config
                                     if (!int.TryParse(StrValue, out _HF4_CoverSensibility))
                                         Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
+                                else if (StrKey.ToLower().Equals("opghost_enablefreeplay"))
+                                {
+                                    if (!bool.TryParse(StrValue, out _OpGHost_EnableFreeplay))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
+                                else if (StrKey.ToLower().Equals("opghost_creditstostart"))
+                                {
+                                    if (!int.TryParse(StrValue, out _OpGhost_CreditsToStart))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
+                                else if (StrKey.ToLower().Equals("opghost_creditstocontinue"))
+                                {
+                                    if (!int.TryParse(StrValue, out _OpGhost_CreditsToContinue))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
+                                else if (StrKey.ToLower().Equals("opghost_coinsbycredits"))
+                                {
+                                    if (!int.TryParse(StrValue, out _OpGhost_CoinsByCredits))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
                                 else if (StrKey.ToLower().Equals("outputenabled"))
                                 {
                                     if (!bool.TryParse(StrValue, out _OutputEnabled))
@@ -353,9 +454,14 @@ namespace DsCore.Config
                                     if (!int.TryParse(StrValue, out _OutputCustomDamagedDelay))
                                         Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
-                                else if (StrKey.ToLower().Equals("outputcustomrecoildelay"))
+                                else if (StrKey.ToLower().Equals("outputcustomrecoilondelay"))
                                 {
-                                    if (!int.TryParse(StrValue, out _OutputCustomRecoilDelay))
+                                    if (!int.TryParse(StrValue, out _OutputCustomRecoilOnDelay))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
+                                else if (StrKey.ToLower().Equals("outputcustomrecoiloffdelay"))
+                                {
+                                    if (!int.TryParse(StrValue, out _OutputCustomRecoilOffDelay))
                                         Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
                             }
@@ -475,6 +581,11 @@ namespace DsCore.Config
                     sr.WriteLine("GSOZ_P2_PEDAL_ENABLE = " + _Gsoz_Pedal_P2_Enabled.ToString());
                     sr.WriteLine("GSOZ_P2_PEDAL_KEY = " + _DIK_Gsoz_Pedal_P2.ToString());
                     sr.WriteLine("");
+                    sr.WriteLine(";Dolphin Keyboard keys configuration for P2 buttons");
+                    sr.WriteLine("DOLPHIN_P2_LCLICK = " + _DIK_Dolphin_P2_LClick.ToString());
+                    sr.WriteLine("DOLPHIN_P2_MCLICK = " + _DIK_Dolphin_P2_MClick.ToString());
+                    sr.WriteLine("DOLPHIN_P2_RCLICK = " + _DIK_Dolphin_P2_RClick.ToString());
+                    sr.WriteLine("");
                     sr.WriteLine(";Offset for devices lacking calibration (Act Labs gun, etc...)");
                     sr.WriteLine("Act_Labs_Offset_Enable = " + _Act_Labs_Offset_Enable.ToString());
                     sr.WriteLine("Act_Labs_Display_Crosshair = " + _Act_Labs_Display_Crosshair.ToString());
@@ -502,11 +613,18 @@ namespace DsCore.Config
                     sr.WriteLine("HF4_Path = " + _HF4_Path);
                     sr.WriteLine("HF4_CoverSensibility = " + _HF4_CoverSensibility.ToString());
                     sr.WriteLine("");
+                    sr.WriteLine(";Operation G.H.O.S.T credits settings");
+                    sr.WriteLine("OpGhost_EnableFreeplay = " + _OpGHost_EnableFreeplay.ToString());
+                    sr.WriteLine("OpGhost_CreditsToStart = " + _OpGhost_CreditsToStart.ToString());
+                    sr.WriteLine("OpGhost_CreditsToContinue = " + _OpGhost_CreditsToContinue.ToString());
+                    sr.WriteLine("OpGhost_CoinsByCredits = " + _OpGhost_CoinsByCredits.ToString());
+                    sr.WriteLine("");   
                     sr.WriteLine(";Output Settings");
                     sr.WriteLine("OutputEnabled = " + _OutputEnabled.ToString());
                     sr.WriteLine("OutputPollingDelay = " + _OutputPollingDelay.ToString());
                     sr.WriteLine("OutputCustomDamagedDelay = " + _OutputCustomDamagedDelay.ToString());
-                    sr.WriteLine("OutputCustomRecoilDelay = " + _OutputCustomRecoilDelay.ToString());
+                    sr.WriteLine("OutputCustomRecoilOnDelay = " + _OutputCustomRecoilOnDelay.ToString());
+                    sr.WriteLine("OutputCustomRecoilOffDelay = " + _OutputCustomRecoilOffDelay.ToString());
                     sr.Close();
                 }
                 return true;

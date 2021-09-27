@@ -71,7 +71,8 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
                             SetHack();
-                            _ProcessHooked = true;                            
+                            _ProcessHooked = true;
+                            RaiseGameHookedEvent();                            
                         }
                     }
                 }
@@ -225,6 +226,7 @@ namespace DemulShooter
         {
             //Gun recoil : is handled by the game like it should (On/Off with every bullets)
             //Gun motor  : is activated when player gets hit
+            // **** Both genuine guns outputs are not activated UNLESS a real gun is detected on boot ***** //
             _Outputs = new List<GameOutput>();
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LedAmmo1, OutputId.P1_LedAmmo1));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LedAmmo2, OutputId.P1_LedAmmo2));
@@ -236,12 +238,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
