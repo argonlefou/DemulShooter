@@ -26,6 +26,10 @@ namespace DemulShooter
         private NopStruct _Nop_Btn_2 = new NopStruct(0x0002EE81, 6);
         private NopStruct _Nop_Btn_3 = new NopStruct(0x0002EE8D, 3);
         private NopStruct _Nop_Btn_4 = new NopStruct(0x00048825, 2);
+        private UInt32 _OutputRecoil_Injection_Offset = 0x00048D6C;
+        private UInt32 _OutputRecoil_Injection_Return_Offset = 0x00048D72;
+
+        private UInt32 _CtmRecoil_CaveAddress;
 
         //Custom Outputs
         private int _P1_LastLife = 0;
@@ -157,8 +161,58 @@ namespace DemulShooter
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Btn_3);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Btn_4);
 
+            CreateDataBank();
+            SetHack_CustomRecoilOutput();
+
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
+        }
+
+        /// <summary>
+        /// 1st Memory created to store custom Recoil data
+        /// This memory will be written by a codecave placed in the procedure changing output values in game
+        /// </summary>
+        private void CreateDataBank()
+        {
+            Codecave InputMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            InputMemory.Open();
+            InputMemory.Alloc(0x800);
+            _CtmRecoil_CaveAddress = InputMemory.CaveAddress;
+            Logger.WriteLog("Custom Recoil data will be stored at : 0x" + _CtmRecoil_CaveAddress.ToString("X8"));
+        }
+
+        /// <summary>
+        /// This codecave will intercept the game's procedure changing the output values
+        /// Genuine recoil is set by the game in memory (0x50909E0) with values 0x05 for P1 and 0x0A for P2.
+        /// But I have no clue how it is unset ("Px Gun Power" setting not used) to be sure it's long enough to work, so this method will ensure a custom recoil not missed
+        /// </summary>
+        private void SetHack_CustomRecoilOutput()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //or [_CtmRecoil_CaveAddress], eax
+            CaveMemory.Write_StrBytes("09 05");
+            byte[] b = BitConverter.GetBytes(_CtmRecoil_CaveAddress);
+            CaveMemory.Write_Bytes(b);
+            //mov ["aliens dehasped.exe"+4C909E0],ecx
+            CaveMemory.Write_StrBytes("89 0D E0 09 09 05");
+            //return
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _OutputRecoil_Injection_Return_Offset);
+
+            Logger.WriteLog("Adding Custom recoil output CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _OutputRecoil_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _OutputRecoil_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
         }
 
         #endregion
@@ -226,8 +280,9 @@ namespace DemulShooter
         {
             //Gun recoil : is handled by the game like it should (On/Off with every bullets)
             //Gun motor  : is activated when player gets hit
-            // **** Both genuine guns outputs are not activated UNLESS a real gun is detected on boot ***** //
             _Outputs = new List<GameOutput>();
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_GunRecoil, OutputId.P1_GunRecoil));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_GunRecoil, OutputId.P2_GunRecoil));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LedAmmo1, OutputId.P1_LedAmmo1));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LedAmmo2, OutputId.P1_LedAmmo2));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LedAmmo1, OutputId.P2_LedAmmo1));
@@ -257,6 +312,12 @@ namespace DemulShooter
             SetOutputValue(OutputId.P1_LedAmmo2, ReadByte(0x0527AEA0));
             SetOutputValue(OutputId.P2_LedAmmo1, ReadByte(0x0527AEA3));
             SetOutputValue(OutputId.P2_LedAmmo2, ReadByte(0x0527AEA2));
+            //Gun recoil : values are set when bullet is fired, but I have no clue when the game is setting it back to 0
+            //Gun recoil force adjustment doesn't seem to play here, mean time between ON and OFF state seems to be ~30 / ~35 ms
+            //Which may be too quick to work good with recoil...
+            //But the Enable/Disable kickback in TEST menu will work here
+            SetOutputValue(OutputId.P1_GunRecoil, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x04E7AEA4) >> 2 & 0x01);
+            SetOutputValue(OutputId.P2_GunRecoil, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x04E7AEA5) >> 2 & 0x01);
 
             //Custom Outputs
             _P1_Life = 0;
@@ -291,10 +352,6 @@ namespace DemulShooter
                     //Can't use original digits for Ammo because the game use it to display continue countdown                
                     _P1_Ammo = (int)BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x0556CB08, 4), 0);
 
-                    //Custom Recoil
-                    if (_P1_Ammo < _P1_LastAmmo)
-                        SetOutputValue(OutputId.P1_CtmRecoil, 1);
-
                     //[Clip Empty] custom Output
                     if (ReadByte(0x0527AEA1) == 0x0A && ReadByte(0x0527AEA0) == 0x0A)
                         P1_Clip = 0;
@@ -319,10 +376,6 @@ namespace DemulShooter
                     //Can't use original digits for Ammo because the game use it to display continue countdown                
                     _P2_Ammo = (int)BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00556CE9C, 4), 0);
 
-                    //Custom Recoil
-                    if (_P2_Ammo < _P2_LastAmmo)
-                        SetOutputValue(OutputId.P2_CtmRecoil, 1);
-
                     //[Clip Empty] custom Output
                     if (ReadByte(0x0527AEA3) == 0x0A && ReadByte(0x0527AEA2) == 0x0A)
                         P2_Clip = 0;
@@ -337,7 +390,21 @@ namespace DemulShooter
                     SetOutputValue(OutputId.P2_CtmLmpStart, -1);
                 }
             }
+
+            //Custom Gun Recoil output
+            //Based on genuine output but sure not to be missed because of too short pulse timing
+            if ((byte)(ReadByte(_CtmRecoil_CaveAddress) & 0x01) == 1)
+            {
+                SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                Apply_AND_ByteMask(_CtmRecoil_CaveAddress, 0x0A);
+            }
             
+            if ((byte)(ReadByte(_CtmRecoil_CaveAddress) >> 1 & 0x01) == 1)
+            {
+                SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                Apply_AND_ByteMask(_CtmRecoil_CaveAddress, 0x05);
+            }
+
             _P1_LastAmmo = _P1_Ammo;
             _P1_LastLife = _P1_Life;
             _P2_LastAmmo = _P2_Ammo;

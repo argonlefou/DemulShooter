@@ -61,7 +61,8 @@ namespace DemulShooter
             _KnownMd5Prints.Add("hod2.exe PC-ISOZONE - uncracked", "97c9e516a287aab33a455a396dadaa45");
             _KnownMd5Prints.Add("hod2.exe PC-ISOZONE - cracked", "eb51d3856997581ed3aa8ecb7d6d8d07");
             _KnownMd5Prints.Add("hod2 Unknown Release #1", "fd53bc12b72958c819cf6931787df3cb");
-            _KnownMd5Prints.Add("hod2 Unknown Release #2", "a54ec23a78d07a78653bbd31919db0b5");            
+            _KnownMd5Prints.Add("hod2 Unknown Release #2", "a54ec23a78d07a78653bbd31919db0b5");
+            _KnownMd5Prints.Add("hod2 Unknown Release #3", "258f350774317f785b430be32d2abe9a");
 
             _tProcess.Start();            
             Logger.WriteLog("Waiting for Windows Game " + _RomName + " game to hook.....");

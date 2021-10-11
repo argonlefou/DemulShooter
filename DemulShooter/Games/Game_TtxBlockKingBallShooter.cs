@@ -21,6 +21,10 @@ namespace DemulShooter
         private NopStruct _Nop_AxisY = new NopStruct(0x002597E9, 5);
         private NopStruct _Nop_BtnTriggerReset = new NopStruct(0x00259852, 6);
         //private NopStruct _Nop_BtnTrigger = new NopStruct(0x06368C806, 4);
+        private UInt32 _OutputDamage_Injection_Offset = 0x00241490;
+        private UInt32 _OutputDamage_Injection_Return_Offset = 0x00241497;
+
+        private UInt32 _CtmDamage_CaveAddress;
 
         /// <summary>
         /// Constructor
@@ -148,9 +152,60 @@ namespace DemulShooter
             //Blocking "Screen touched clear to 0" loop
             //SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_BtnTriggerReset);
 
+            CreateDataBank();
+            SetHack_CustomDamageOutput();
+
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
-        }        
+        }
+        
+        /// <summary>
+        /// 1st Memory created to store custom output data
+        /// </summary>
+        private void CreateDataBank()
+        {
+            Codecave InputMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            InputMemory.Open();
+            InputMemory.Alloc(0x800);
+            _CtmDamage_CaveAddress = InputMemory.CaveAddress;
+            Logger.WriteLog("Custom Output data will be stored at : 0x" + _CtmDamage_CaveAddress.ToString("X8"));
+        }
+
+        /// <summary>
+        /// This codecave will intercept the game's procedure to decrease timer due to a hit (= damaged)
+        /// </summary>
+        private void SetHack_CustomDamageOutput()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //mov [_CtmDamage_CaveAddress], 1
+            CaveMemory.Write_StrBytes("C7 05");
+            byte[] b = BitConverter.GetBytes(_CtmDamage_CaveAddress);
+            CaveMemory.Write_Bytes(b);
+            CaveMemory.Write_StrBytes("01 00 00 00");
+            //fld dword ptr [esp+04]
+            CaveMemory.Write_StrBytes("D9 44 24 04");
+            //fadd dword ptr [ecx+0C]
+            CaveMemory.Write_StrBytes("D8 41 0C");           
+            //return
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _OutputDamage_Injection_Return_Offset);
+
+            Logger.WriteLog("Adding Custom Damage output CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _OutputDamage_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _OutputDamage_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
 
         #endregion
 
@@ -190,10 +245,9 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.LmpCannon_R, OutputId.LmpCannon_R));
             _Outputs.Add(new GameOutput(OutputDesciption.LmpCannon_G, OutputId.LmpCannon_G));
             _Outputs.Add(new GameOutput(OutputDesciption.LmpCannon_B, OutputId.LmpCannon_B));
-            
-            /*
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));*/
+            //Need to separate Attract from game
+            //_Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            //_Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -203,36 +257,21 @@ namespace DemulShooter
         public override void UpdateOutputValues()
         {
             //Original Outputs
-            /*SetOutputValue(OutputId.P1_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00546A2B) >> 7 & 0x01);
-            SetOutputValue(OutputId.P2_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00546A31) >> 7 & 0x01);
-            SetOutputValue(OutputId.LmpCannonBtn, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00546A2D) >> 7 & 0x01);
-            SetOutputValue(OutputId.LmpCannon_R, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00546A33) >> 7 & 0x01);
-            SetOutputValue(OutputId.LmpCannon_G, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00546A2F) >> 7 & 0x01);
-            SetOutputValue(OutputId.LmpCannon_B, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00546A35) >> 7 & 0x01);*/
+            SetOutputValue(OutputId.P1_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00546B43));
+            SetOutputValue(OutputId.P2_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00546B49));
+            SetOutputValue(OutputId.LmpCannonBtn, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00546B45));
+            SetOutputValue(OutputId.LmpCannon_R, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00546B4B));
+            SetOutputValue(OutputId.LmpCannon_G, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00546B47));
+            SetOutputValue(OutputId.LmpCannon_B, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00546B4D));
             
-            /*
+            
             //Custom Outputs:
             //[Damaged] custom Output
-            if (ReadByte(_P1_DamageStatus_CaveAddress) == 1)
+            /*if (ReadByte(_CtmDamage_CaveAddress) == 1)
             {
                 SetOutputValue(OutputId.P1_Damaged, 1);
-                WriteByte(_P1_DamageStatus_CaveAddress, 0x00);
-            }
-            if (ReadByte(_P2_DamageStatus_CaveAddress) == 1)
-            {
                 SetOutputValue(OutputId.P2_Damaged, 1);
-                WriteByte(_P2_DamageStatus_CaveAddress, 0x00);
-            }
-            //[Recoil] custom Output
-            if (ReadByte(_P1_RecoilStatus_CaveAddress) == 1)
-            {
-                SetOutputValue(OutputId.P1_CtmRecoil, 1);
-                WriteByte(_P1_RecoilStatus_CaveAddress, 0x00);
-            }
-            if (ReadByte(_P2_RecoilStatus_CaveAddress) == 1)
-            {
-                SetOutputValue(OutputId.P2_CtmRecoil, 1);
-                WriteByte(_P2_RecoilStatus_CaveAddress, 0x00);
+                WriteByte(_CtmDamage_CaveAddress, 0x00);
             }*/
             
             //Credits
