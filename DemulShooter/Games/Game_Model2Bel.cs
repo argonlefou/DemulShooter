@@ -231,7 +231,7 @@ namespace DemulShooter
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
                     Apply_AND_ByteMask(_Buttons_CaveAddress, 0xDF);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
-                    Apply_OR_ByteMask(_Buttons_CaveAddress, 0x10);
+                    Apply_OR_ByteMask(_Buttons_CaveAddress, 0x20);
             }
         }
 

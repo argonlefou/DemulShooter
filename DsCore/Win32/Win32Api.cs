@@ -134,6 +134,9 @@ namespace DsCore.Win32
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr GetDesktopWindow();
 
+        [DllImport("gdi32.dll")]
+        public static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+
         [DllImport("kernel32.dll")]
         public static extern uint GetLastError();
 

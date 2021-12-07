@@ -66,9 +66,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 80);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(110, 13);
+            this.label2.Size = new System.Drawing.Size(97, 13);
             this.label2.TabIndex = 58;
-            this.label2.Text = "\"Middle Mouse\" Key :";
+            this.label2.Text = "\"Left Mouse\" Key :";
             // 
             // Txt_VirtualLeftBtn
             // 

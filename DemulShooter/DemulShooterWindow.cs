@@ -71,6 +71,7 @@ namespace DemulShooter
             InitializeComponent();
 
             Logger.IsEnabled = isVerbose;
+            Logger.InitLogFileName();
             Logger.WriteLog("");
             Logger.WriteLog("---------------- Program Start -- DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString() + " ----------------");
 
@@ -223,6 +224,20 @@ namespace DemulShooter
                 else
                     Logger.WriteLog("P" + Player.ID + " Gamepad ID = " + Player.GamepadID);
             }
+
+            //Info on Monitor (max resolution)
+            var scope = new System.Management.ManagementScope();
+            var q = new System.Management.ObjectQuery("SELECT * FROM CIM_VideoControllerResolution");
+            String Maxres = String.Empty;
+            using (var searcher = new System.Management.ManagementObjectSearcher(scope, q))
+            {
+                var results = searcher.Get();
+                foreach (var item in results)
+                {
+                    Maxres = item["Caption"].ToString();
+                }
+            }
+            Logger.WriteLog("Monitor maximum resolution = " + Maxres);
 
             CreateRawMessageWindow();
             //Register to RawInput thanks to the previously created window Handle
@@ -717,6 +732,12 @@ namespace DemulShooter
                                     Logger.WriteLog("Error converting screen location to client location");
                                     return;
                                 }
+                                if (_Game.IsWindowFullScreen)
+                                    Logger.WriteLog("ClientWindow Style = Fullscreen");
+                                else
+                                    Logger.WriteLog("ClientWindow Style = Windowed");
+                                Logger.WriteLog("ClientWindow Location (px) = [ " + _Game.clientWindowLocation.X.ToString() + ", " + _Game.clientWindowLocation.Y.ToString() + " ]");
+                                Logger.WriteLog("ClientWindow Size (px) = [ " + (_Game.clientWindowRect.Right - _Game.clientWindowRect.Left).ToString() + "x" + (_Game.clientWindowRect.Bottom - _Game.clientWindowRect.Top).ToString() + " ]");
                                 Logger.WriteLog("OnClient Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
 
                                 if (!_Game.GameScale(Player))
@@ -873,60 +894,91 @@ namespace DemulShooter
         {
             if (_Game != null && _Game.ProcessHooked)
             {
-                //First step : use the Hook to determine if a virtual Middle/Right button has been pushed
-                if ((UInt32)wParam == Win32Define.WM_KEYDOWN)
+                try
                 {
-                    KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
-                    foreach (PlayerSettings Player in _Configurator.PlayersSettings)
+                    Logger.WriteLog("KeyboardHook Event : wParam = 0x " + wParam.ToString("X8") + ", lParam = 0x" + lParam.ToString("X8"));
+                    //First step : use the Hook to determine if a virtual Middle/Right button has been pushed
+                    if ((UInt32)wParam == Win32Define.WM_KEYDOWN)
                     {
-                        if (Player.isVirtualMouseButtonsEnabled)
+                        Logger.WriteLog("KeyboardHook Event : WM_KEYDOWN event detected");
+                        KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
+                        Logger.WriteLog("KBDLLHOOKSTRUCT : " + s.ToString());
+                        foreach (PlayerSettings Player in _Configurator.PlayersSettings)
                         {
-                            if (s.scanCode == Player.DIK_VirtualMouseButton_Left)
+                            if (Player.isVirtualMouseButtonsEnabled)
                             {
-                                Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.OnScreenTriggerDown;
-                                _Game.SendInput(Player);
-                            }
-                            else if (s.scanCode == Player.DIK_VirtualMouseButton_Middle)
-                            {
-                                Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.ActionDown;
-                                _Game.SendInput(Player);
-                            }
-                            else if (s.scanCode == Player.DIK_VirtualMouseButton_Right)
-                            {
-                                Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.OffScreenTriggerDown;
-                                _Game.SendInput(Player);
-                            }
-                        }
-                    }
-                }
-                if ((UInt32)wParam == Win32Define.WM_KEYUP)
-                {
-                    KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
-                    foreach (PlayerSettings Player in _Configurator.PlayersSettings)
-                    {
-                        if (Player.isVirtualMouseButtonsEnabled)
-                        {
-                            if (s.scanCode == Player.DIK_VirtualMouseButton_Left)
-                            {
-                                Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.OnScreenTriggerUp;
-                                _Game.SendInput(Player);
-                            }
-                            else if (s.scanCode == Player.DIK_VirtualMouseButton_Middle)
-                            {
-                                Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.ActionUp;
-                                _Game.SendInput(Player);
-                            }
-                            else if (s.scanCode == Player.DIK_VirtualMouseButton_Right)
-                            {
-                                Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.OffScreenTriggerUp;
-                                _Game.SendInput(Player);
-                            }
-                        }
-                    }
-                }
+                                Logger.WriteLog("Player " + Player.ID + " VirtualButtons:");
+                                Logger.WriteLog("MouseLeft = 0x" + ((int)Player.DIK_VirtualMouseButton_Left).ToString("X8"));
+                                Logger.WriteLog("MouseMiddle = 0x" + ((int)Player.DIK_VirtualMouseButton_Middle).ToString("X8"));
+                                Logger.WriteLog("MouseRight = 0x" + ((int)Player.DIK_VirtualMouseButton_Right).ToString("X8"));
 
-                //Second step : forward the event to the Game
-                return _Game.KeyboardHookCallback(_MouseHookID, nCode, wParam, lParam);
+                                if (s.scanCode == Player.DIK_VirtualMouseButton_Left)
+                                {
+                                    Logger.WriteLog("Player " + Player.ID + "VirtualMouseButton_Left detected");
+                                    Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.OnScreenTriggerDown;
+                                    _Game.SendInput(Player);
+                                }
+                                else if (s.scanCode == Player.DIK_VirtualMouseButton_Middle)
+                                {
+                                    Logger.WriteLog("Player " + Player.ID + "VirtualMouseButton_Middle detected");
+                                    Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.ActionDown;
+                                    _Game.SendInput(Player);
+                                }
+                                else if (s.scanCode == Player.DIK_VirtualMouseButton_Right)
+                                {
+                                    Logger.WriteLog("Player " + Player.ID + "VirtualMouseButton_Right detected");
+                                    Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.OffScreenTriggerDown;
+                                    _Game.SendInput(Player);
+                                }
+                            }
+                        }
+                        Logger.WriteLog("-");
+                    }
+                    if ((UInt32)wParam == Win32Define.WM_KEYUP)
+                    {
+                        Logger.WriteLog("KeyboardHook Event : WM_KEYUP event detected");
+                        KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
+                        Logger.WriteLog("KBDLLHOOKSTRUCT : " + s.ToString());
+                        foreach (PlayerSettings Player in _Configurator.PlayersSettings)
+                        {
+                            if (Player.isVirtualMouseButtonsEnabled)
+                            {
+                                Logger.WriteLog("Player " + Player.ID + " VirtualButtons:");
+                                Logger.WriteLog("MouseLeft = 0x" + ((int)Player.DIK_VirtualMouseButton_Left).ToString("X8"));
+                                Logger.WriteLog("MouseMiddle = 0x" + ((int)Player.DIK_VirtualMouseButton_Middle).ToString("X8"));
+                                Logger.WriteLog("MouseRight = 0x" + ((int)Player.DIK_VirtualMouseButton_Right).ToString("X8"));
+
+                                if (s.scanCode == Player.DIK_VirtualMouseButton_Left)
+                                {
+                                    Logger.WriteLog("Player " + Player.ID + "VirtualMouseButton_Left detected");
+                                    Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.OnScreenTriggerUp;
+                                    _Game.SendInput(Player);
+                                }
+                                else if (s.scanCode == Player.DIK_VirtualMouseButton_Middle)
+                                {
+                                    Logger.WriteLog("Player " + Player.ID + "VirtualMouseButton_Middle detected");
+                                    Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.ActionUp;
+                                    _Game.SendInput(Player);
+                                }
+                                else if (s.scanCode == Player.DIK_VirtualMouseButton_Right)
+                                {
+                                    Logger.WriteLog("Player " + Player.ID + "VirtualMouseButton_Right detected");
+                                    Player.RIController.Computed_Buttons = RawInputcontrollerButtonEvent.OffScreenTriggerUp;
+                                    _Game.SendInput(Player);
+                                }
+                            }
+                        }
+                        Logger.WriteLog("-");
+                    }
+
+                    //Second step : forward the event to the Game
+                    return _Game.KeyboardHookCallback(_MouseHookID, nCode, wParam, lParam);
+                }
+                catch (Exception Ex)
+                {
+                    Logger.WriteLog("Error handling KeyboardHookCallback : " + Ex.Message.ToString());
+                    return _Game.KeyboardHookCallback(_MouseHookID, nCode, wParam, lParam);
+                }
             }            
             else
                 return Win32API.CallNextHookEx(_KeyboardHookID, nCode, wParam, lParam);

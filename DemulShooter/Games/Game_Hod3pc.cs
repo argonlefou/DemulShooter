@@ -19,32 +19,24 @@ namespace DemulShooter
         private const String GAMEDATA_FOLDER = @"MemoryData\windows\hod3pc";
 
         /*** MEMORY ADDRESSES **/
-        private UInt32 _P1_X_Address = 0x00767AA4;
-        private UInt32 _P1_Y_Address = 0x00767AA6;
-        private UInt32 _P2_X_Address= 0x00767AD8;
-        private UInt32 _P2_Y_Address = 0x00767ADA;
-        private UInt32 _Credits_Offset = 0x3B7DD0;
+        private UInt32 _P1_X_Offset = 0x00367AA4;
+        private UInt32 _P1_Y_Offset = 0x00367AA6;
+        private UInt32 _P2_X_Offset = 0x00367AD8;
+        private UInt32 _P2_Y_Offset = 0x00367ADA;
+        private UInt32 _P1_Buttons_Offset = 0x0003ECF88;
+        private UInt32 _P2_Buttons_Offset = 0x0003ED0F0;
+        private UInt32 _Credits_Offset = 0x003B7DD0;
+        private UInt32 _Buttons_Injection_Offset = 0x000B4BC1;
+        private UInt32 _Buttons_Injection_Return_Offset = 0x000B4BC6;
         private NopStruct _Nop_X = new NopStruct(0x0006BE70, 4);
         private NopStruct _Nop_Y = new NopStruct(0x0006BE7B, 4);
+        private NopStruct _Nop_Trigger_Button = new NopStruct(0x000B4C8C, 3);
+        private NopStruct _Nop_Reload_Button = new NopStruct(0x000B4CB1, 4);
+        private NopStruct _Nop_Left_Button = new NopStruct(0x000B4C54, 3);
+        private NopStruct _Nop_Right_Button = new NopStruct(0x00B4C0E, 3);
         private NopStruct _Nop_NoAutoReload_1 = new NopStruct(0x0008DEDB, 3);
         private NopStruct _Nop_NoAutoReload_2 = new NopStruct(0x0008DF1E, 3);
-        private NopStruct _Nop_Arcade_Mode_Display = new NopStruct(0x0008FD29, 2);
-
-        //Hardware Scancode Keys
-        //I usually prefer to send VirtualKeycodes (less troublesome when no physical Keyboard is plugged)
-        //But this game seems to only respond to DIK codes (read from it's Registry Key config)
-        private HardwareScanCode _P1_Trigger_DIK = HardwareScanCode.DIK_X;
-        private HardwareScanCode _P1_Reload_DIK = HardwareScanCode.DIK_Z;
-        private HardwareScanCode _P2_Trigger_DIK = HardwareScanCode.DIK_N;
-        private HardwareScanCode _P2_Reload_DIK = HardwareScanCode.DIK_B;
-        private HardwareScanCode _P1_Right_DIK = HardwareScanCode.DIK_G;
-        private HardwareScanCode _P1_Left_DIK = HardwareScanCode.DIK_D;
-        private HardwareScanCode _P2_Right_DIK = HardwareScanCode.DIK_L;
-        private HardwareScanCode _P2_Left_DIK = HardwareScanCode.DIK_J;
-
-        //For multi-route selection : midle click = left or write each time
-        private String P1_Next_Dir = "left";
-        private String P2_Next_Dir = "left";
+        private NopStruct _Nop_Arcade_Mode_Display = new NopStruct(0x0008FD29, 2);        
 
         private bool _NoAutoReload = false;
         private bool _ArcadeModeDisplay = false;
@@ -76,6 +68,7 @@ namespace DemulShooter
             _KnownMd5Prints.Add("hod3pc MYTH Release", "0228818e9412fc218fcd24bfd829a5a0");
             _KnownMd5Prints.Add("hod3pc TEST", "733da4e3cfe24b015e5f795811d481e6");
             _KnownMd5Prints.Add("hod3pc Unknown Release #1", "51dd72f83c0de5b27c0358ad11e2a036");
+            _KnownMd5Prints.Add("hod3pc Unknown Release #2", "e4819dcf2105b85a7e7bc9dc66159f5c");
 
             _tProcess.Start();            
             Logger.WriteLog("Waiting for Windows Game " + _RomName + " game to hook.....");
@@ -103,7 +96,6 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                            ReadKeyConfig();
                             SetHack();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
@@ -141,74 +133,7 @@ namespace DemulShooter
                     Application.Exit();
                 }
             }
-        }
-
-        #region Registry Config
-        
-        /// <summary>
-        /// Read input config for the game, stored in Registry
-        /// </summary>
-        private void ReadKeyConfig()
-        {
-            Logger.WriteLog("Reading Keyconfig...");
-
-            GetHOD3RegValue(ref _P1_Trigger_DIK, "Keyboard1pShoot");
-            GetHOD3RegValue(ref _P1_Reload_DIK, "Keyboard1pReload");
-            GetHOD3RegValue(ref _P1_Right_DIK, "Keyboard1pRight");
-            GetHOD3RegValue(ref _P1_Left_DIK, "Keyboard1pLeft");
-            GetHOD3RegValue(ref _P2_Trigger_DIK, "Keyboard2pShoot");
-            GetHOD3RegValue(ref _P2_Reload_DIK, "Keyboard2pReload");
-            GetHOD3RegValue(ref _P2_Right_DIK, "Keyboard2pRight");
-            GetHOD3RegValue(ref _P2_Left_DIK, "Keyboard2pLeft");
-
-            Logger.WriteLog("P1_Trigger keycode = " + _P1_Trigger_DIK.ToString());
-            Logger.WriteLog("P1_Reload keycode = " + _P1_Reload_DIK.ToString());
-            Logger.WriteLog("P1_Right keycode = " + _P1_Right_DIK.ToString());
-            Logger.WriteLog("P1_Left keycode = " + _P1_Left_DIK.ToString());
-            Logger.WriteLog("P2_Trigger keycode = " + _P2_Trigger_DIK.ToString());
-            Logger.WriteLog("P2_Reload keycode = " + _P2_Reload_DIK.ToString());
-            Logger.WriteLog("P2_Right keycode = " + _P2_Right_DIK.ToString());
-            Logger.WriteLog("P2_Left keycode = " + _P2_Left_DIK.ToString());
-        }
-        private void GetHOD3RegValue(ref HardwareScanCode DataToFill, String Value)
-        {
-            String Key1 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\SEGA\hod3\Settings";
-            String Key2 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\SEGA\hod3\Settings2";
-            if (Registry.GetValue(Key1, Value, null) != null)
-            {
-                try
-                {
-                    UInt16 uiTemp = Convert.ToUInt16((int)Registry.GetValue(Key1, Value, null));
-                    DataToFill = (HardwareScanCode)uiTemp;
-                }
-                catch
-                {
-                    Logger.WriteLog("Can't read registry value : " + Key1 + "\\" + Value);
-                }
-            }
-            else
-            {
-                Logger.WriteLog("Registry value : " + Key1 + "\\" + Value + " not found !");
-                if (Registry.GetValue(Key2, Value, null) != null)
-                {
-                    try
-                    {
-                        UInt16 uiTemp = Convert.ToUInt16((int)Registry.GetValue(Key2, Value, null));
-                        DataToFill = (HardwareScanCode)uiTemp;
-                    }
-                    catch
-                    {
-                        Logger.WriteLog("Can't read registry value : " + Key2 + "\\" + Value);
-                    }
-                }
-                else
-                {
-                    Logger.WriteLog("Registry value : " + Key2 + "\\" + Value + " not found !");
-                }
-            }
-        }
-
-        #endregion
+        }        
 
         #region Screen
 
@@ -282,9 +207,18 @@ namespace DemulShooter
 
         private void SetHack()
         {
+            //Block Axis
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_X);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Y);
 
+            //Block Buttons
+            SetHack_Buttons();
+            SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Trigger_Button);
+            SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Reload_Button);
+            SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Left_Button);
+            SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Right_Button);
+
+            //Cancel Auto-reload when bullets = 0
             if (_NoAutoReload)
             {
                 SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_NoAutoReload_1);
@@ -296,16 +230,42 @@ namespace DemulShooter
             if (_ArcadeModeDisplay)
             {
                 SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Arcade_Mode_Display);
+                Logger.WriteLog("NoGuns Hack done");
             }
 
             //Gun data Init              
-            WriteBytes(_P1_X_Address, new byte[] { 0x00, 0x00 });
-            WriteBytes(_P1_Y_Address, new byte[] { 0x00, 0x00 });
-            WriteBytes(_P2_X_Address, new byte[] { 0x00, 0x00 });
-            WriteBytes(_P2_Y_Address, new byte[] { 0x00, 0x00 });
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_X_Offset, new byte[] { 0x00, 0x00 });
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Y_Offset, new byte[] { 0x00, 0x00 });
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_X_Offset, new byte[] { 0x00, 0x00 });
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Y_Offset, new byte[] { 0x00, 0x00 });   
 
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
+        }
+
+        private void SetHack_Buttons()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<byte> Buffer;   
+            //mov ebp,ecx
+            CaveMemory.Write_StrBytes("8B E9");
+            //and [ebp+00], 0101000C
+            CaveMemory.Write_StrBytes("81 65 00 0C 00 01 01");
+            CaveMemory.Write_jmp((UInt32)_TargetProcess_MemoryBaseAddress + _Buttons_Injection_Return_Offset);
+
+            Logger.WriteLog("Adding Buttons Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess_MemoryBaseAddress + _Buttons_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess_MemoryBaseAddress + _Buttons_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);      
         }
 
         #endregion
@@ -319,78 +279,62 @@ namespace DemulShooter
         {
             byte[] bufferX = BitConverter.GetBytes((Int16)PlayerData.RIController.Computed_X);
             byte[] bufferY = BitConverter.GetBytes((Int16)PlayerData.RIController.Computed_Y);
-            
+
             if (PlayerData.ID == 1)
             {
-                WriteBytes(_P1_X_Address, bufferX);
-                WriteBytes(_P1_Y_Address, bufferY);
+                WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_X_Offset, bufferX);
+                WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Y_Offset, bufferY);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
-                    SendKeyDown(_P1_Trigger_DIK);
+                    Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset + 2, 0x01);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
-                    SendKeyUp(_P1_Trigger_DIK);
-
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0) 
-                {
-                    if (P1_Next_Dir.Equals("left"))
-                        SendKeyDown(_P1_Left_DIK);
-                    else
-                        SendKeyDown(_P1_Right_DIK);    
-                }
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0) 
-                {
-                    if (P1_Next_Dir.Equals("left"))
-                    {
-                        SendKeyUp(_P1_Left_DIK);
-                        P1_Next_Dir = "right";
-                    }
-                    else
-                    {
-                        SendKeyUp(_P1_Right_DIK);
-                        P1_Next_Dir = "left";
-                    }  
-                }
-
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0) 
-                    SendKeyDown(_P1_Reload_DIK);
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0) 
-                    SendKeyUp(_P1_Reload_DIK);
-            }
-            else if (PlayerData.ID == 2)
-            {
-                WriteBytes(_P2_X_Address, bufferX);
-                WriteBytes(_P2_Y_Address, bufferY);
-
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
-                    SendKeyDown(_P2_Trigger_DIK);
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
-                    SendKeyUp(_P2_Trigger_DIK);
+                    Apply_AND_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset + 2, 0x0E);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
                 {
-                    if (P2_Next_Dir.Equals("left"))
-                        SendKeyDown(_P2_Left_DIK);
+                    //Check aiming position to set the action of MiddleButton according to wich half of the screen the user is pointing
+                    if (PlayerData.RIController.Computed_X < 0)
+                        Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset, 0x04);
                     else
-                        SendKeyDown(_P2_Right_DIK);
+                        Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset, 0x08);
                 }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
                 {
-                    if (P2_Next_Dir.Equals("left"))
-                    {
-                        SendKeyUp(_P2_Left_DIK);
-                        P2_Next_Dir = "right";
-                    }
-                    else
-                    {
-                        SendKeyUp(_P2_Right_DIK);
-                        P2_Next_Dir = "left";
-                    }
+                    Apply_AND_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset, 0x03);
                 }
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
-                    SendKeyDown(_P2_Reload_DIK);
+                    Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset + 3, 0x01);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
-                    SendKeyUp(_P2_Reload_DIK);
+                    Apply_AND_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset + 3, 0x0E);
+            }
+            else if (PlayerData.ID == 2)
+            {
+                WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_X_Offset, bufferX);
+                WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Y_Offset, bufferY);
+
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
+                    Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Buttons_Offset + 2, 0x01);
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
+                    Apply_AND_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Buttons_Offset + 2, 0x0E);
+
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
+                {
+                    //Check aiming position to set the action of MiddleButton according to wich half of the screen the user is pointing
+                    if (PlayerData.RIController.Computed_X < 0)
+                        Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Buttons_Offset, 0x04);
+                    else
+                        Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Buttons_Offset, 0x08);
+                }
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
+                {
+                    Apply_AND_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Buttons_Offset, 0x03);
+                }
+
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
+                    Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Buttons_Offset + 3, 0x01);
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
+                    Apply_AND_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Buttons_Offset + 3, 0x0E);
             }
         }
 

@@ -29,5 +29,11 @@ namespace DsCore.Win32
         /// Additional information associated with the message.
         /// </summary>
         public UIntPtr dwExtraInfo;
+
+        public override string ToString()
+        {
+            return string.Format("vkCode=0x{0:X}, scanCode=0x{1:X}, flags={2}, time={3}, dwextrainfo={4:X}",
+                                                vkCode, scanCode, flags, time, dwExtraInfo);
+        }
     }
 }

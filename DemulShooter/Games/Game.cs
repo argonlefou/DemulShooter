@@ -61,6 +61,8 @@ namespace DemulShooter
         {
             _KnownMd5Prints = new Dictionary<String, String>();
             GetScreenResolution();
+            _clientWindowRect = new Rect();
+            _clientWindowLocation = new POINT(0, 0);
 
             _RomName = RomName;
             _VerboseEnable = Verbose;
@@ -185,6 +187,24 @@ namespace DemulShooter
             get { return _screenCursorPosY; }
             set { _screenCursorPosY = value; }
         }
+        protected Rect _clientWindowRect;
+        public Rect clientWindowRect
+        {
+            get { return _clientWindowRect; }
+            set { _clientWindowRect = value; }
+        }
+        protected POINT _clientWindowLocation;
+        public POINT clientWindowLocation
+        {
+            get { return _clientWindowLocation; }
+            set { _clientWindowLocation = value; }
+        }
+        protected bool _IsWindowFullScreen;
+        public bool IsWindowFullScreen
+        {
+            get { return _IsWindowFullScreen; }
+            set { _IsWindowFullScreen = value; }
+        }
 
         public virtual void GetScreenResolution()
         {
@@ -276,12 +296,15 @@ namespace DemulShooter
                 return toOffVal - (int)(toRange * frac);
             }
         }
-
+        
         /// <summary>
         /// Convert screen location of pointer to Client area location
         /// </summary>
         public virtual bool ClientScale(PlayerSettings PlayerData)
         {
+            //Retrieve info for debug/replay purpose
+            GetClientwindowInfo();
+
             //Convert Screen location to Client location
             if (_TargetProcess != null)
             {
@@ -298,6 +321,41 @@ namespace DemulShooter
             else
                 return false;
         }
+        protected void GetClientwindowInfo()
+        {
+            if (_TargetProcess != null)
+            {
+                if (Win32API.GetWindowRect(_TargetProcess.MainWindowHandle, ref _clientWindowRect))
+                {
+                    _clientWindowLocation.X = _clientWindowRect.Left;
+                    _clientWindowLocation.Y = _clientWindowRect.Top;
+
+                    IntPtr hDesktopWnd = Win32API.GetDesktopWindow();
+                    if (hDesktopWnd != IntPtr.Zero)
+                    {
+                        Rect r = new Rect();
+                        if (Win32API.GetWindowRect(hDesktopWnd, ref r))
+                        {
+                            if (r.Left == _clientWindowRect.Left && r.Top == _clientWindowRect.Top && r.Right == _clientWindowRect.Right && r.Bottom == _clientWindowRect.Bottom)
+                                _IsWindowFullScreen = true;
+                            else
+                                _IsWindowFullScreen = false;
+                        }
+                        else
+                            _IsWindowFullScreen = false;
+                    }
+                    else
+                        _IsWindowFullScreen = false;
+                }
+                else
+                {
+                    _clientWindowLocation.X = 0;
+                    _clientWindowLocation.Y = 0;
+                    _IsWindowFullScreen = false;
+                }
+            }
+        }
+
         
         /// <summary>
         /// Convert client area pointer location to Game speciffic data for memory injection
@@ -372,21 +430,25 @@ namespace DemulShooter
                                 {
                                     NopStruct n = new NopStruct(buffer[1].Trim());
                                     this.GetType().GetField(FieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase).SetValue(this, n);
+                                    Logger.WriteLog(FieldName + " successfully set to following value : 0x" + n.MemoryOffset.ToString("X8") + "|" + n.Length.ToString());
                                 }
                                 else if (buffer[0].Contains("DIK"))
                                 {
                                     HardwareScanCode sc = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), buffer[1].Trim());
                                     this.GetType().GetField(FieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase).SetValue(this, sc);
+                                    Logger.WriteLog(FieldName + " successfully set to following value :" + sc.ToString());
                                 }
                                 else if (buffer[0].Contains("VK"))
                                 {
                                     VirtualKeyCode vk = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), buffer[1].Trim());
                                     this.GetType().GetField(FieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase).SetValue(this, vk);
+                                    Logger.WriteLog(FieldName + " successfully set to following value :" + vk.ToString());
                                 }
                                 else
                                 {
                                     UInt32 v = UInt32.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
                                     this.GetType().GetField(FieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase).SetValue(this, v);
+                                    Logger.WriteLog(FieldName + " successfully set to following value : 0x" + v.ToString("X8"));
                                 }                                
                             }
                             catch (Exception ex)
