@@ -65,6 +65,7 @@ namespace DemulShooterX64
             InitializeComponent();
 
             Logger.IsEnabled = isVerbose;
+            Logger.InitLogFileName();
             Logger.WriteLog("");
             Logger.WriteLog("---------------- Program Start -- DemulShooterX64 v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString() + " ----------------");
 
@@ -218,6 +219,8 @@ namespace DemulShooterX64
                             } break;
                     }
                 }
+
+                _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);
             }
         }
 
@@ -430,7 +433,7 @@ namespace DemulShooterX64
             {
                 _TrayIcon = new NotifyIcon();
                 _TrayIcon.Text = "DemulShooter";
-                _TrayIcon.Icon = DemulShooterX64.Properties.Resources.DemulShooter_Icon;
+                _TrayIcon.Icon = DemulShooterX64.Properties.Resources.DemulShooter_UnHooked_Icon;
                 _TrayIconMenu = new ContextMenu();
                 _TrayIconMenu.MenuItems.Add("Exit", OnTrayExitSelected);
                 _TrayIcon.ContextMenu = _TrayIconMenu;
@@ -444,6 +447,12 @@ namespace DemulShooterX64
         private void OnTrayExitSelected(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void OnGameHooked(object sender, EventArgs e)
+        {
+            _TrayIcon.Icon = DemulShooterX64.Properties.Resources.DemulShooter_Hooked_Icon;
+            _TrayIcon.Text += "[Hooked]";
         }
 
         /// <summary>

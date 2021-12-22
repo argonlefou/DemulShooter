@@ -108,14 +108,35 @@ namespace DemulShooter
 
                     //X => [0 ; 0xFFFF] => 65536
                     //Y => [0 ; 0xFFFF] => 65536
+                    double dMinX = 0.0;
                     double dMaxX = 65535.0;
+                    double dMinY = 0.0;
                     double dMaxY = 65535.0;
+                    double dRangeX = dMaxX - dMinX + 1;
+                    double dRangeY = dMaxY - dMinY + 1;
 
-                    //In that game trim is needed before, for min/max values of UInt32
+                    //In that game trim is needed before, for min/max values of UInt32, so we use X,Y variable at first.
                     //Otherwise, in windowed mode, there are issues with negative or over 65535 values if cursor is out of window
                     //when we convert it to UInt32 in next step
-                    double X = Math.Round(dMaxX * PlayerData.RIController.Computed_X / TotalResX);
-                    double Y = Math.Round(dMaxY * PlayerData.RIController.Computed_Y / TotalResY);
+                    double X = 0.0;
+                    double Y = 0.0;
+
+                    if (_ForcedXratio != 0)
+                    {
+                        Logger.WriteLog("Forcing X Ratio to = " + _ForcedXratio.ToString());
+                        double ViewportHeight = TotalResY;
+                        double ViewportWidth = TotalResY * _ForcedXratio;
+                        double SideBarsWidth = (TotalResX - ViewportWidth) / 2;
+                        Logger.WriteLog("Game Viewport size (Px) = [ " + ((int)ViewportWidth).ToString() + "x" + ((int)ViewportHeight).ToString() + " ]");
+                        Logger.WriteLog("SideBars Width (px) = " + ((int)SideBarsWidth).ToString());
+                        dRangeX = dRangeX + (SideBarsWidth * dRangeX / TotalResX) * 2;
+                        //X = Math.Round(dRangeX * PlayerData.RIController.Computed_X / TotalResX) - (SideBarsWidth * dMaxX / TotalResX);
+                        X = Math.Round((dRangeX / TotalResX) * (PlayerData.RIController.Computed_X - SideBarsWidth));
+                    }
+                    else
+                        X = Math.Round(dRangeX * PlayerData.RIController.Computed_X / TotalResX);
+                    
+                    Y = Math.Round(dMaxY * PlayerData.RIController.Computed_Y / TotalResY);
                     if (X < 0)
                         X = 0;
                     if (Y < 0)
@@ -124,9 +145,10 @@ namespace DemulShooter
                         X = dMaxX;
                     if (Y > dMaxY)
                         Y = dMaxY;
-                    Logger.WriteLog("Raw Game Format  (Dec) = [ " + X.ToString() + " ; " + Y.ToString() + " ]");
 
-                    PlayerData.RIController.Computed_X = Convert.ToUInt16(X);
+                    //Now that we have trimmed 0x0000-0xFFFF values, we can convert to Int16
+                    Logger.WriteLog("Raw Game Format  (Dec) = [ " + X.ToString() + " ; " + Y.ToString() + " ]"); 
+                    PlayerData.RIController.Computed_X = Convert.ToUInt16(X); 
                     PlayerData.RIController.Computed_Y = Convert.ToUInt16(Y);
 
                     return true;

@@ -7,6 +7,7 @@ using DsCore.Config;
 using DsCore.MemoryX64;
 using DsCore.RawInput;
 using DsCore.Win32;
+using DsCore.MameOutput;
 
 namespace DemulShooterX64
 {
@@ -27,7 +28,17 @@ namespace DemulShooterX64
         private UInt64 _P2_Injection_Return_Offset = 0x00017F2D;
 
         //Check instruction for game loaded
-        private const UInt64 ROM_LOADED_CHECK_INSTRUCTION_OFFSET = 0x00017E6E;        
+        private const UInt64 ROM_LOADED_CHECK_INSTRUCTION_OFFSET = 0x00017E6E;
+
+        //Custom Outputs
+        private int _P1_LastLife = 0;
+        private int _P2_LastLife = 0;
+        private int _P1_LastAmmo = 0;
+        private int _P2_LastAmmo = 0;
+        private int _P1_Life = 0;
+        private int _P2_Life = 0;
+        private int _P1_Ammo = 0;
+        private int _P2_Ammo = 0;
 
         /// <summary>
         /// Constructor
@@ -36,6 +47,7 @@ namespace DemulShooterX64
         {
             _KnownMd5Prints.Add("VACUUM.EXE - Original Dump", "5120bbe464b35f4cc894238bd9f9e11b");
             _KnownMd5Prints.Add("VACUUM.EXE - 'SpeedFix'", "8ddfab1cd2140670d9437738c9c331c8");
+            _KnownMd5Prints.Add("VACUUM.EXE - For JConfig", "63c70cf8b080c1972e9e753f258e9507");
             _tProcess.Start();
             Logger.WriteLog("Waiting for SEGA Nu " + _RomName + " game to hook.....");
         }
@@ -80,6 +92,7 @@ namespace DemulShooterX64
                                     CheckExeMd5();
                                     SetHack();
                                     _ProcessHooked = true;
+                                    RaiseGameHookedEvent(); 
                                 }
                             }
                             else
@@ -161,6 +174,13 @@ namespace DemulShooterX64
         {
             SetHackP1();
             SetHackP2();
+
+            byte[] InitX = BitConverter.GetBytes((int)960);
+            byte[] InitY = BitConverter.GetBytes((int)540);
+            WriteBytes((IntPtr)(_Input_BaseAddress + P1_X_OFFSET), InitX);
+            WriteBytes((IntPtr)(_Input_BaseAddress + P1_Y_OFFSET), InitY);
+            WriteBytes((IntPtr)(_Input_BaseAddress + P1_X_OFFSET), InitX);
+            WriteBytes((IntPtr)(_Input_BaseAddress + P1_Y_OFFSET), InitY);
 
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
@@ -305,5 +325,174 @@ namespace DemulShooterX64
         }
 
         #endregion
+
+        #region Outputs
+
+        /// <summary>
+        /// Create the Output list that we will be looking for and forward to MameHooker
+        /// </summary>
+        protected override void CreateOutputList()
+        {
+            //Gun motor : Is activated for every bullet fired AND when player gets
+            _Outputs = new List<GameOutput>();
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpStart, OutputId.P1_LmpStart));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpStart, OutputId.P2_LmpStart));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Lmp_R, OutputId.P1_Lmp_R));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Lmp_G, OutputId.P1_Lmp_G));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Lmp_B, OutputId.P1_Lmp_B));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Lmp_R, OutputId.P2_Lmp_R));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Lmp_G, OutputId.P2_Lmp_G));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Lmp_B, OutputId.P2_Lmp_B));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpGun_R, OutputId.P1_LmpGun_R));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpGun_G, OutputId.P1_LmpGun_G));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpGun_B, OutputId.P1_LmpGun_B));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpGun_R, OutputId.P2_LmpGun_R));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpGun_G, OutputId.P2_LmpGun_G));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpGun_B, OutputId.P2_LmpGun_B));    
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpWindow_R, OutputId.P1_LmpWindow_R));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpWindow_G, OutputId.P1_LmpWindow_G));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpWindow_B, OutputId.P1_LmpWindow_B));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpWindow_R, OutputId.P2_LmpWindow_R));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpWindow_G, OutputId.P2_LmpWindow_G));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpWindow_B, OutputId.P2_LmpWindow_B));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_GunMotor, OutputId.P1_GunMotor));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_GunMotor, OutputId.P2_GunMotor));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_GunRecoil, OutputId.P1_GunRecoil));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_GunRecoil, OutputId.P2_GunRecoil));
+
+            _Outputs.Add(new GameOutput(OutputDesciption.P3_GunRecoil, OutputId.P3_GunRecoil));
+            _Outputs.Add(new GameOutput(OutputDesciption.P4_GunRecoil, OutputId.P4_GunRecoil));
+
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));           
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
+        }
+
+        /// <summary>
+        /// Update all Outputs values before sending them to MameHooker
+        /// </summary>
+        public override void UpdateOutputValues()
+        {
+            
+            UInt64 Ptr1 = ReadPtr((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x004F6C98));
+            Ptr1 = ReadPtr((IntPtr)Ptr1);            
+            UInt64 Ptr2 = ReadPtr((IntPtr)(Ptr1 + 0x18));
+
+            SetOutputValue(OutputId.P1_LmpStart, ReadByte((IntPtr)(Ptr2 + 0x4C)) & 0x01);
+            SetOutputValue(OutputId.P2_LmpStart, ReadByte((IntPtr)(Ptr2 + 0x50)) & 0x01);
+            SetOutputValue(OutputId.P1_Lmp_R, ReadByte((IntPtr)(Ptr1 + 0x101)));
+            SetOutputValue(OutputId.P1_Lmp_G, ReadByte((IntPtr)(Ptr1 + 0x102)));
+            SetOutputValue(OutputId.P1_Lmp_B, ReadByte((IntPtr)(Ptr1 + 0x103)));
+            SetOutputValue(OutputId.P2_Lmp_R, ReadByte((IntPtr)(Ptr1 + 0x105)));
+            SetOutputValue(OutputId.P2_Lmp_G, ReadByte((IntPtr)(Ptr1 + 0x106)));
+            SetOutputValue(OutputId.P2_Lmp_B, ReadByte((IntPtr)(Ptr1 + 0x107)));
+            SetOutputValue(OutputId.P1_LmpGun_R, ReadByte((IntPtr)(Ptr1 + 0x1AD)));
+            SetOutputValue(OutputId.P1_LmpGun_G, ReadByte((IntPtr)(Ptr1 + 0x1AE)));
+            SetOutputValue(OutputId.P1_LmpGun_B, ReadByte((IntPtr)(Ptr1 + 0x1AF)));
+            SetOutputValue(OutputId.P2_LmpGun_R, ReadByte((IntPtr)(Ptr1 + 0x1B1)));
+            SetOutputValue(OutputId.P2_LmpGun_G, ReadByte((IntPtr)(Ptr1 + 0x1B2)));
+            SetOutputValue(OutputId.P2_LmpGun_B, ReadByte((IntPtr)(Ptr1 + 0x1B3)));
+            SetOutputValue(OutputId.P1_LmpWindow_R, ReadByte((IntPtr)(Ptr1 + 0x16D)));
+            SetOutputValue(OutputId.P1_LmpWindow_G, ReadByte((IntPtr)(Ptr1 + 0x16E)));
+            SetOutputValue(OutputId.P1_LmpWindow_B, ReadByte((IntPtr)(Ptr1 + 0x16F)));
+            SetOutputValue(OutputId.P2_LmpWindow_R, ReadByte((IntPtr)(Ptr1 + 0x18D)));
+            SetOutputValue(OutputId.P2_LmpWindow_G, ReadByte((IntPtr)(Ptr1 + 0x18E)));
+            SetOutputValue(OutputId.P2_LmpWindow_B, ReadByte((IntPtr)(Ptr1 + 0x18F)));
+            SetOutputValue(OutputId.P1_GunMotor, ReadByte((IntPtr)(Ptr2 + 0x2C)));
+            SetOutputValue(OutputId.P2_GunMotor, ReadByte((IntPtr)(Ptr2 + 0x30)));
+
+            //For recoil, I found 2 bytes that are changed.
+            //The second one seems to be some kind of "duration" (3-2-1-0) of the recoil effect
+            //The recoil seems to fire each time a ghost is sucked in the controller
+            Byte Recoil1 = ReadByte((IntPtr)(Ptr2 + 0x44));
+            Byte Recoil2 = ReadByte((IntPtr)(Ptr2 + 0x48));
+            SetOutputValue(OutputId.P1_GunRecoil, Recoil1);
+            SetOutputValue(OutputId.P2_GunRecoil, Recoil2);
+            //Changing the real output value to a simple 0/1 recoil effect for the custom recoil output
+            if (Recoil1 != 0)
+                SetOutputValue(OutputId.P1_CtmRecoil, 1);
+            else
+                SetOutputValue(OutputId.P1_CtmRecoil, 0);
+
+            if (Recoil2 != 0)
+                SetOutputValue(OutputId.P2_CtmRecoil, 1);
+            else
+                SetOutputValue(OutputId.P2_CtmRecoil, 0);
+            
+            //In-game values are pointer affected only during a game (not valid in menus)
+            //Player status :
+            //[1] = Playing
+            //[0] = Not Playing
+            UInt32 P1_Status = 0;
+            UInt32 P2_Status = 0;
+            _P1_Life = 0;
+            _P2_Life = 0;
+            _P1_Ammo = 0;
+            _P2_Ammo = 0;
+            int P1_Clip = 0;
+            int P2_Clip = 0;
+
+            UInt64 Ptr3 = ReadPtr((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x004FB0C0));
+            if (Ptr3 != 0)    
+            {
+                Ptr3 = ReadPtr((IntPtr)(Ptr3 + 0x48));
+                if (Ptr3 != 0)
+                {
+                    P1_Status = ReadByte((IntPtr)(Ptr3 + 0x548));
+                    P2_Status = ReadByte((IntPtr)(Ptr3 + 0x560));
+                }     
+            }
+            if (P1_Status == 1)
+            {
+                _P1_Life = ReadByte((IntPtr)(Ptr3 + 0x550));
+                _P1_Ammo = ReadByte((IntPtr)(Ptr3 + 0x57C));
+                
+                //[Clip Empty] custom Output
+                if (_P1_Ammo > 0)
+                    P1_Clip = 1;
+
+                //[Damaged] custom Output                
+                if (_P1_Life < _P1_LastLife)
+                    SetOutputValue(OutputId.P1_Damaged, 1);
+            }
+            if (P2_Status == 1)
+            {
+                _P2_Life = ReadByte((IntPtr)(Ptr3 + 0x568));
+                _P2_Ammo = ReadByte((IntPtr)(Ptr3 + 0x588));
+
+                //[Clip Empty] custom Output
+                if (_P2_Ammo > 0)
+                    P2_Clip = 1;
+
+                //[Damaged] custom Output                
+                if (_P2_Life < _P2_LastLife)
+                    SetOutputValue(OutputId.P2_Damaged, 1);
+            }
+
+            _P1_LastAmmo = _P1_Ammo;
+            _P2_LastAmmo = _P2_Ammo;
+            _P1_LastLife = _P1_Life;
+            _P2_LastLife = _P2_Life;
+
+            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
+            SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
+            SetOutputValue(OutputId.P1_Clip, P1_Clip);
+            SetOutputValue(OutputId.P2_Clip, P2_Clip);
+            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P2_Life, _P2_Life);
+            
+            SetOutputValue(OutputId.Credits, ReadByte((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x004E19A8)));
+        }
+
+        #endregion
+    
     }
 }

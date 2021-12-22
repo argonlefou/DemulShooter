@@ -129,7 +129,7 @@ namespace DsCore.MameOutput
         /// <param name="Id">Client ID</param>
         public void UnregisterClient(IntPtr hWnd, UInt32 Id)
         {
-            for (int i = _RegisteredClients.Count; i >= 0; i--)
+            for (int i = _RegisteredClients.Count - 1; i >= 0; i--)
             {
                 if (_RegisteredClients[i].Id == Id)
                 {
@@ -153,7 +153,7 @@ namespace DsCore.MameOutput
             data.lpStr = lpStr;
             IntPtr buffer = IntPtrAlloc(data);
             CopyDataStruct copyData = new CopyDataStruct();
-            copyData.dwData = COPYDATA_MESSAGE_ID_STRING;
+            copyData.dwData = new IntPtr(COPYDATA_MESSAGE_ID_STRING);
             copyData.lpData = buffer;
             copyData.cbData = Marshal.SizeOf(data);
             IntPtr copyDataBuff = IntPtrAlloc(copyData);
@@ -161,6 +161,21 @@ namespace DsCore.MameOutput
             IntPtrFree(ref copyDataBuff);
             IntPtrFree(ref buffer);
         }
+
+        /*public void SendIdStringV2(IntPtr hWnd, String lpStr, UInt32 Id)
+        {
+            byte[] data = System.Text.Encoding.ASCII.GetBytes(lpStr);
+            int length = data.Length;
+
+            IntPtr ptr = Marshal.AllocHGlobal(IntPtr.Size * 3 + length);
+            Marshal.WriteIntPtr(ptr, 0, IntPtr.Zero);
+            Marshal.WriteIntPtr(ptr, IntPtr.Size, (IntPtr)length);
+            IntPtr dataPtr = new IntPtr(ptr.ToInt64() + IntPtr.Size * 3);
+            Marshal.WriteIntPtr(ptr, IntPtr.Size * 2, dataPtr);
+            Marshal.Copy(data, 0, dataPtr, length);
+            IntPtr result = Win32API.SendMessage(hWnd, Win32Define.WM_COPYDATA, _hWnd, ptr);
+            Marshal.FreeHGlobal(ptr);
+        }*/
 
         /// <summary>
         /// Send updated values to all registered clients

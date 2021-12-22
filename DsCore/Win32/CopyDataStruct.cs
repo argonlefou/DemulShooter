@@ -6,8 +6,8 @@ namespace DsCore.Win32
     [StructLayout(LayoutKind.Sequential)]
     class CopyDataStruct
     {
-        public uint dwData;
+        public IntPtr dwData;
         public int cbData;
         public IntPtr lpData;
-    }    
+    }
 }

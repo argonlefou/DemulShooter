@@ -37,7 +37,7 @@ namespace DemulShooter
         private VirtualKeyCode _P1_Trigger_VK = VirtualKeyCode.VK_RSHIFT;
         private VirtualKeyCode _P1_Reload_VK = VirtualKeyCode.VK_RCONTROL;
         private VirtualKeyCode _P2_Trigger_VK = VirtualKeyCode.VK_LSHIFT;
-        private VirtualKeyCode _P2_Reload_VK = VirtualKeyCode.VK_RCONTROL;
+        private VirtualKeyCode _P2_Reload_VK = VirtualKeyCode.VK_LCONTROL;
 
         //Play the "Coins" sound when adding coin
         SoundPlayer _SndPlayer;

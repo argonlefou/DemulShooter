@@ -15,6 +15,9 @@ namespace DemulShooterX64
 {
     public class Game
     {
+        public delegate void GameHookedHandler(object sender, EventArgs e);
+        public event GameHookedHandler OnGameHooked;
+
         #region Process variables
 
         protected System.Timers.Timer _tProcess;
@@ -82,6 +85,17 @@ namespace DemulShooterX64
 
         protected virtual void tProcess_Elapsed(Object sender, EventArgs e)
         {}
+
+        /// <summary>
+        /// Raise custom event to main window (to change TrayIcon status)
+        /// </summary>
+        protected void RaiseGameHookedEvent()
+        {
+            // Make sure someone is listening to event
+            if (OnGameHooked == null) return;
+
+            OnGameHooked(this, new EventArgs());
+        }
 
         #region MD5 Verification
 
@@ -348,6 +362,12 @@ namespace DemulShooterX64
                 Logger.WriteLog("Cannot read memory at address 0x" + Address.ToString("X16"));
             }
             return Buffer;
+        }
+
+        protected UInt64 ReadPtr(IntPtr PtrAddress)
+        {
+            byte[] Buffer = ReadBytes(PtrAddress, 8);
+            return BitConverter.ToUInt64(Buffer, 0);
         }
 
         protected bool WriteByte(IntPtr Address, byte Value)
