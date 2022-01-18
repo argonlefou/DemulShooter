@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
+using DsCore.MameOutput;
 using DsCore.MemoryX64;
 using DsCore.RawInput;
 using DsCore.Win32;
-using DsCore.MameOutput;
 
 namespace DemulShooterX64
 {

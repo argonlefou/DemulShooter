@@ -34,9 +34,7 @@ namespace DemulShooter
         private UInt32 _RomLoaded_CheckIntructionn_Offset = 0x0006A3D8;
 
         private UInt32 _P1_Buttons_CaveAddress = 0;
-        private UInt32 _P1_BulletTime_CaveAddress = 0;
         private UInt32 _P2_Buttons_CaveAddress = 0;
-        private UInt32 _P2_BulletTime_CaveAddress = 0;
 
         //Outputs
         private int _P1_LastLife = 0;
@@ -47,10 +45,7 @@ namespace DemulShooter
         private int _P2_Life = 0;
         private int _P1_Ammo = 0;
         private int _P2_Ammo = 0;
-
-        private const HardwareScanCode P1_START_KEY = HardwareScanCode.DIK_1;
-        private const HardwareScanCode P2_START_KEY = HardwareScanCode.DIK_2;
-        
+       
         /// <summary>
         /// Constructor
         /// </summary>
@@ -201,8 +196,6 @@ namespace DemulShooter
             CaveMemoryInput.Alloc(0x800);
             _P1_Buttons_CaveAddress = CaveMemoryInput.CaveAddress;
             _P2_Buttons_CaveAddress = CaveMemoryInput.CaveAddress + 0x08;
-            _P1_BulletTime_CaveAddress = CaveMemoryInput.CaveAddress + 0x10;
-            _P2_BulletTime_CaveAddress = CaveMemoryInput.CaveAddress + 0x18;
             Logger.WriteLog("Custom data will be stored at : 0x" + _P1_Buttons_CaveAddress.ToString("X8"));
 
             //For P1 :
@@ -211,8 +204,11 @@ namespace DemulShooter
             //EDX + 0x22 ==>
             //EDX + 0x23 ==> 0xFF (TRIGGER)
             //EDX + 0x24 ==> 0xFF (RELOAD)
+            //EDX + 0x25 ==> 0xFF (CHANGE WEAPON)
+            //EDX + 0x26 ==> 0xFF (PEDAL)
             //EDX + 0x29 ==> 0xFF (Bullet Time)
-            //[ESP + 0x10] (after our push) contains controller ID (0->4)
+            //[ESP + 0x18] (after our push) contains controller ID (0->4)
+            //We won't change any other input than Trigger, reload and Change
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
@@ -220,43 +216,62 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 54 24 04");
             //push eax
             CaveMemory.Write_StrBytes("50");
-            //cmp [esp+0x10], 0
-            CaveMemory.Write_StrBytes("83 7C 24 10 00");
+            //push ebx
+            CaveMemory.Write_StrBytes("53");
+            //push ecx
+            CaveMemory.Write_StrBytes("51");
+            //cmp [esp+0x18], 0
+            CaveMemory.Write_StrBytes("83 7C 24 18 00");
             //je Player1
             CaveMemory.Write_StrBytes("0F 84 10 00 00 00");
-            //cmp [esp + 0x10], 1
-            CaveMemory.Write_StrBytes("83 7C 24 10 01");
+            //cmp [esp + 0x18], 1
+            CaveMemory.Write_StrBytes("83 7C 24 18 01");
             //je Player2
-            CaveMemory.Write_StrBytes("0F 84 15 00 00 00");
-            //jmp originalcode
-            CaveMemory.Write_StrBytes("E9 1B 00 00 00");
+            CaveMemory.Write_StrBytes("0F 84 1B 00 00 00");
+            //jmp exit
+            CaveMemory.Write_StrBytes("E9 33 00 00 00");
             //Player1 :
             //mov eax, [_P1_Buttons_CaveAddress]
             byte[] b = BitConverter.GetBytes(_P1_Buttons_CaveAddress);
             CaveMemory.Write_StrBytes("A1");
             CaveMemory.Write_Bytes(b);
-            //mov ecx, [_P1_BulletTime_CaveAddress]
-            b = BitConverter.GetBytes(_P1_BulletTime_CaveAddress);
+            //mov ebx, [_P1_Buttons_CaveAddress + 4]
+            b = BitConverter.GetBytes(_P1_Buttons_CaveAddress + 4);
+            CaveMemory.Write_StrBytes("8B 1D");
+            CaveMemory.Write_Bytes(b);
+            //mov ecx, [_P1_Buttons_CaveAddress + 8]
+            b = BitConverter.GetBytes(_P1_Buttons_CaveAddress + 8);
             CaveMemory.Write_StrBytes("8B 0D");
             CaveMemory.Write_Bytes(b);
             //jmp originalcode
-            CaveMemory.Write_StrBytes("E9 0B 00 00 00");
+            CaveMemory.Write_StrBytes("E9 11 00 00 00");
             //Player2:
             //mov eax, [_P2_Buttons_CaveAddress]
             b = BitConverter.GetBytes(_P2_Buttons_CaveAddress);
             CaveMemory.Write_StrBytes("A1");
             CaveMemory.Write_Bytes(b);
-            //mov ecx, [_P2_BulletTime_CaveAddress]
-            b = BitConverter.GetBytes(_P2_BulletTime_CaveAddress);
+            //mov ebx, [_P2_Buttons_CaveAddress]
+            b = BitConverter.GetBytes(_P2_Buttons_CaveAddress + 4);
+            CaveMemory.Write_StrBytes("8B 1D");
+            CaveMemory.Write_Bytes(b);
+            //mov ecx, [_P2_Buttons_CaveAddress + 8]
+            b = BitConverter.GetBytes(_P2_Buttons_CaveAddress + 8);
             CaveMemory.Write_StrBytes("8B 0D");
             CaveMemory.Write_Bytes(b);
             //originalcode:
-            //mov [edx+0x21], eax
-            CaveMemory.Write_StrBytes("89 42 21");
+            //mov [edx+0x23], ax
+            CaveMemory.Write_StrBytes("66 89 42 23");
+            //mov [edx+0x24], bx
+            CaveMemory.Write_StrBytes("66 89 5A 24");
+            //mov [edx+0x25], cx
+            CaveMemory.Write_StrBytes("66 89 4A 25");
+            //exit:
+            //pop ecx
+            CaveMemory.Write_StrBytes("59");
+            //pop ebx
+            CaveMemory.Write_StrBytes("5B");
             //pop eax
             CaveMemory.Write_StrBytes("58");
-            //mov [edx+0x29], ecx
-            CaveMemory.Write_StrBytes("89 4A 29");
             //mov cx, [edx+0x21]
             CaveMemory.Write_StrBytes("66 8B 4A 21");
             //return
@@ -302,19 +317,19 @@ namespace DemulShooter
                 WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Y_Offset, bufferY);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
-                    Apply_OR_ByteMask(_P1_Buttons_CaveAddress + 2, 0xFF);
+                    Apply_OR_ByteMask(_P1_Buttons_CaveAddress, 0xFF);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
-                    Apply_AND_ByteMask(_P1_Buttons_CaveAddress + 2, 0x00);
+                    Apply_AND_ByteMask(_P1_Buttons_CaveAddress, 0x00);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
-                    Apply_OR_ByteMask(_P1_BulletTime_CaveAddress, 0xFF);
+                    Apply_OR_ByteMask(_P1_Buttons_CaveAddress + 8, 0xFF);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
-                    Apply_AND_ByteMask(_P1_BulletTime_CaveAddress, 0x00);
+                    Apply_AND_ByteMask(_P1_Buttons_CaveAddress + 8, 0x00);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
-                    Apply_OR_ByteMask(_P1_Buttons_CaveAddress + 3, 0xFF);
+                    Apply_OR_ByteMask(_P1_Buttons_CaveAddress + 4, 0xFF);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
-                    Apply_AND_ByteMask(_P1_Buttons_CaveAddress + 3, 0x00);
+                    Apply_AND_ByteMask(_P1_Buttons_CaveAddress + 4, 0x00);
             }
             else if (PlayerData.ID == 2)
             {
@@ -322,48 +337,21 @@ namespace DemulShooter
                 WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Y_OFfset, bufferY);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
-                    Apply_OR_ByteMask(_P2_Buttons_CaveAddress + 2, 0xFF);
+                    Apply_OR_ByteMask(_P2_Buttons_CaveAddress, 0xFF);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
-                    Apply_AND_ByteMask(_P2_Buttons_CaveAddress + 2, 0x00);
+                    Apply_AND_ByteMask(_P2_Buttons_CaveAddress, 0x00);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
-                    Apply_OR_ByteMask(_P2_BulletTime_CaveAddress, 0xFF);
+                    Apply_OR_ByteMask(_P1_Buttons_CaveAddress + 8, 0xFF);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
-                    Apply_AND_ByteMask(_P2_BulletTime_CaveAddress, 0x00);
+                    Apply_AND_ByteMask(_P1_Buttons_CaveAddress + 8, 0x00);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
-                    Apply_OR_ByteMask(_P2_Buttons_CaveAddress + 3, 0xFF);
+                    Apply_OR_ByteMask(_P2_Buttons_CaveAddress + 4, 0xFF);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
-                    Apply_AND_ByteMask(_P2_Buttons_CaveAddress + 3, 0x00);
+                    Apply_AND_ByteMask(_P2_Buttons_CaveAddress + 4, 0x00);
             }
-        }
-
-        /// <summary>
-        /// Low-level keyboard hook callback.
-        /// For Vcop 3 we are using this to send P1 and P2 Start
-        /// </summary>
-        public override IntPtr KeyboardHookCallback(IntPtr KeyboardHookID, int nCode, IntPtr wParam, IntPtr lParam)
-        {
-            if (nCode >= 0)
-            {
-                KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
-                if ((UInt32)wParam == Win32Define.WM_KEYDOWN)
-                {
-                    if (s.scanCode == P1_START_KEY)
-                        Apply_OR_ByteMask(_P1_Buttons_CaveAddress, 0x10);
-                    else if (s.scanCode == P2_START_KEY)
-                        Apply_OR_ByteMask(_P2_Buttons_CaveAddress, 0x10);
-                }
-                else if ((UInt32)wParam == Win32Define.WM_KEYUP)
-                {
-                    if (s.scanCode == P1_START_KEY)
-                        Apply_AND_ByteMask(_P1_Buttons_CaveAddress, 0x00);
-                    else if (s.scanCode == P2_START_KEY)
-                        Apply_AND_ByteMask(_P2_Buttons_CaveAddress, 0x00);
-                }
-            }
-            return Win32API.CallNextHookEx(KeyboardHookID, nCode, wParam, lParam);
-        }       
+        }     
 
         #endregion
 

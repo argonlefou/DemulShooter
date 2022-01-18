@@ -345,7 +345,6 @@ namespace DemulShooterX64
         {
             byte[] Buffer = { 0 };
             UIntPtr bytesRead = UIntPtr.Zero;
-            Logger.WriteLog(Address.ToString("X8"));
             if (!Win32API.ReadProcessMemoryX64((IntPtr)_ProcessHandle, Address, Buffer, (UIntPtr)1, out bytesRead))
             {
                 Logger.WriteLog("Cannot read memory at address 0x" + Address.ToString("X16"));
@@ -366,8 +365,39 @@ namespace DemulShooterX64
 
         protected UInt64 ReadPtr(IntPtr PtrAddress)
         {
-            byte[] Buffer = ReadBytes(PtrAddress, 8);
-            return BitConverter.ToUInt64(Buffer, 0);
+            if (PtrAddress != IntPtr.Zero)
+            {
+                byte[] Buffer = ReadBytes(PtrAddress, 8);
+                return BitConverter.ToUInt64(Buffer, 0);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        protected UInt64 ReadPtrChain(IntPtr BaseAddress, UInt64[] Offsets)
+        {
+            byte[] Buffer = ReadBytes(BaseAddress, 8);
+            UInt64 Ptr = BitConverter.ToUInt64(Buffer, 0);
+
+            if (Ptr == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                for (int i = 0; i < Offsets.Length; i++)
+                {
+                    Buffer = ReadBytes((IntPtr)(Ptr + Offsets[i]), 8);
+                    Ptr = BitConverter.ToUInt64(Buffer, 0);
+
+                    if (Ptr == 0)
+                        return 0;
+                }
+            }
+
+            return Ptr;
         }
 
         protected bool WriteByte(IntPtr Address, byte Value)

@@ -185,7 +185,18 @@ namespace DemulShooterX64
                 if (EnableXInputProc)
                     Bgw_XInput.RunWorkerAsync();
                 */
-                if (_Target.Equals("es3"))
+                if (_Target.Equals("alls"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "hodsd":
+                            {
+                                _Game = new Game_AllsHodSd(_Rom.ToLower(), isVerbose);
+                            }; break;
+                    }
+                }
+
+                else if (_Target.Equals("es3"))
                 {
                     switch (_Rom.ToLower())
                     {

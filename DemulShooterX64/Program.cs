@@ -32,10 +32,12 @@ namespace DemulShooterX64
 
             bool isVerbose = false;
 
-            String[] _Targets = new string[] { "es3", "seganu", "windows"};
+            String[] _Targets = new string[] { "alls", "es3", "seganu", "windows"};
             String[] _Es3Roms = new string[] { "tc5" };
+            String[] _AllsRoms = new string[] { "hodsd" };
             String[] _SegaNuRoms = new string[] { "lma" };
-            String[] _WindowsRoms = new string[] { "bhap" };
+            String[] _WindowsRoms = new string[] { "bhap" }; 
+            
             
             if (args.Length > 0)
             {
@@ -46,15 +48,19 @@ namespace DemulShooterX64
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooterX64 v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : December, 20th 2021");
+                        Console.WriteLine("Build date : January, 18th 2022");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooterX64.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [target] :");
+                        Console.WriteLine("alls\t\tSEGA Amusement Linkage Live System games");
                         Console.WriteLine("es3\t\tNamco ES3 Games");
-                        Console.WriteLine("seganu\t\tTeknoParrot Loader");
+                        Console.WriteLine("seganu\t\tSEGA Nu games");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [rom] :");
+                        Console.WriteLine("ALLS roms :");
+                        Console.WriteLine(" hodsd\t\tHouse of the Dead : Scarlet Dawn");
+                        Console.WriteLine("");
                         Console.WriteLine("ES3 roms :");
                         Console.WriteLine(" tc5\t\tTime Crisis 5");
                         Console.WriteLine("");
@@ -98,7 +104,15 @@ namespace DemulShooterX64
                     if (args[i].ToLower().StartsWith("-rom"))
                     {
                         strRom = (args[i].ToLower().Split('='))[1].Trim();
-                        if (strTarget.Equals("es3"))
+                        if (strTarget.Equals("alls"))
+                        {
+                            if (!CheckParameter(strRom, _AllsRoms))
+                            {
+                                Console.WriteLine("Unsupported SEGA ALLS rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
+                        else if (strTarget.Equals("es3"))
                         {
                             if (!CheckParameter(strRom, _Es3Roms))
                             {
