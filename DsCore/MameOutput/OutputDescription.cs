@@ -17,6 +17,7 @@ namespace DsCore.MameOutput
         public static readonly String LmpCoin = "LmpCoin";  //Let's Go Jungle
         public static readonly String LmpPanel = "LmpPanel";
         public static readonly String LmpBillboard = "LmpBillboard";
+        public static readonly String LmpSpeaker = "LmpSpeaker"; //Time Crisis 5
         
         
         public static readonly String Lmp1 = "Lmp1";    //

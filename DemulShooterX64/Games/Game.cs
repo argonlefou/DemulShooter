@@ -28,6 +28,7 @@ namespace DemulShooterX64
         protected IntPtr _ProcessHandle = IntPtr.Zero; 
         protected bool _VerboseEnable;
         protected bool _DisableWindow = false;
+        protected bool _DisableInputHack = false;
 
         //MD5 check of target binaries, may help to know if it's the wrong version or not compatible
         protected Dictionary<string, string> _KnownMd5Prints;
@@ -54,12 +55,13 @@ namespace DemulShooterX64
         /// <param name="RomName">DemumShooter [-rom] Parameter</param>
         /// <param name="TargetProcessName">Executable name to hook in process list</param>
         /// <param name="Verbose">Create a debug.txt file if TRUE</param>
-        public Game(String RomName, string TargetProcessName, bool Verbose)
+        public Game(String RomName, string TargetProcessName, bool DisableInputHack, bool Verbose)
         {
             _KnownMd5Prints = new Dictionary<string, string>();
             GetScreenResolution();
 
             _RomName = RomName;
+            _DisableInputHack = DisableInputHack;
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = TargetProcessName;

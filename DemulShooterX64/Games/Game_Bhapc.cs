@@ -36,7 +36,7 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Bhapc(String RomName, bool Verbose) : base(RomName, "Buck", Verbose)
+        public Game_Bhapc(String RomName, bool DisableInputHack, bool Verbose) : base(RomName, "Buck", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Big Buck Hunter Arcade v5.3.6 - PLAZA", "2a6f04726a2471adf68a27386898eabc");
             _tProcess.Start();
@@ -165,11 +165,15 @@ namespace DemulShooterX64
 
         private void SetHack()
         {
-            SetNops(_TargetProcess_MemoryBaseAddress, _Nop_P1_Axis_1);
-            SetNops(_TargetProcess_MemoryBaseAddress, _Nop_P1_Axis_2);            
+            if (!_DisableInputHack)
+            {
+                SetNops(_TargetProcess_MemoryBaseAddress, _Nop_P1_Axis_1);
+                SetNops(_TargetProcess_MemoryBaseAddress, _Nop_P1_Axis_2);
+            }
 
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
+           
         }
         
         public override void SendInput(PlayerSettings PlayerData)

@@ -195,7 +195,7 @@ namespace DemulShooter
             CaveMemoryInput.Open();
             CaveMemoryInput.Alloc(0x800);
             _P1_Buttons_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P2_Buttons_CaveAddress = CaveMemoryInput.CaveAddress + 0x08;
+            _P2_Buttons_CaveAddress = CaveMemoryInput.CaveAddress + 0x20;
             Logger.WriteLog("Custom data will be stored at : 0x" + _P1_Buttons_CaveAddress.ToString("X8"));
 
             //For P1 :
@@ -205,7 +205,7 @@ namespace DemulShooter
             //EDX + 0x23 ==> 0xFF (TRIGGER)
             //EDX + 0x24 ==> 0xFF (RELOAD)
             //EDX + 0x25 ==> 0xFF (CHANGE WEAPON)
-            //EDX + 0x26 ==> 0xFF (PEDAL)
+            //EDX + 0x26 ==> 0xFF (PEDAL) //Not doing anything
             //EDX + 0x29 ==> 0xFF (Bullet Time)
             //[ESP + 0x18] (after our push) contains controller ID (0->4)
             //We won't change any other input than Trigger, reload and Change
@@ -263,8 +263,8 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("66 89 42 23");
             //mov [edx+0x24], bx
             CaveMemory.Write_StrBytes("66 89 5A 24");
-            //mov [edx+0x25], cx
-            CaveMemory.Write_StrBytes("66 89 4A 25");
+            //mov [edx+0x29], cx
+            CaveMemory.Write_StrBytes("66 89 4A 29");
             //exit:
             //pop ecx
             CaveMemory.Write_StrBytes("59");
@@ -342,9 +342,9 @@ namespace DemulShooter
                     Apply_AND_ByteMask(_P2_Buttons_CaveAddress, 0x00);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
-                    Apply_OR_ByteMask(_P1_Buttons_CaveAddress + 8, 0xFF);
+                    Apply_OR_ByteMask(_P2_Buttons_CaveAddress + 8, 0xFF);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
-                    Apply_AND_ByteMask(_P1_Buttons_CaveAddress + 8, 0x00);
+                    Apply_AND_ByteMask(_P2_Buttons_CaveAddress + 8, 0x00);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                     Apply_OR_ByteMask(_P2_Buttons_CaveAddress + 4, 0xFF);

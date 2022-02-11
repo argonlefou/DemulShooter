@@ -15,6 +15,7 @@ namespace DsCore.MameOutput
         LmpCoin,
         LmpPanel,        
         LmpBillboard,
+        LmpSpeaker,
         Lmp1,
         Lmp2,
         Lmp3,

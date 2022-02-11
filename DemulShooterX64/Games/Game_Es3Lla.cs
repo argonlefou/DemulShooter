@@ -20,7 +20,7 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Es3Lla(string RomName, bool Verbose): base(RomName, "DomeShooterGame-Win64-Shipping", Verbose)
+        public Game_Es3Lla(string RomName, bool DisableInputHack, bool Verbose): base(RomName, "DomeShooterGame-Win64-Shipping", DisableInputHack, Verbose)
         {
             _tProcess.Start();
             Logger.WriteLog("Waiting for ES3 " + _RomName + " game to hook.....");
@@ -123,7 +123,10 @@ namespace DemulShooterX64
 
         private void SetHack()
         {
-            SetNops(_TargetProcess_MemoryBaseAddress, _Nop_Axis);
+            if (!_DisableInputHack)
+            {
+                SetNops(_TargetProcess_MemoryBaseAddress, _Nop_Axis);
+            }
 
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");

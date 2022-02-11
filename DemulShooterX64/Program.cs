@@ -48,7 +48,7 @@ namespace DemulShooterX64
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooterX64 v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : January, 18th 2022");
+                        Console.WriteLine("Build date : February, 11th 2022");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooterX64.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
@@ -71,7 +71,7 @@ namespace DemulShooterX64
                         //Console.WriteLine(" bhap\t\tBuck Hunt Arcade PC");
                         //Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
-                       
+                        Console.WriteLine(" -noinput \tDisable any input hack");
                         Console.WriteLine(" -? -h --help\tShow this help");
                         Console.WriteLine(" -v --verbose\tEnable output to log file");
 

@@ -905,13 +905,8 @@ namespace DemulShooter
                         Logger.WriteLog("KBDLLHOOKSTRUCT : " + s.ToString());
                         foreach (PlayerSettings Player in _Configurator.PlayersSettings)
                         {
-                            if (Player.isVirtualMouseButtonsEnabled)
+                            if (Player.isVirtualMouseButtonsEnabled && Player.RIController != null)
                             {
-                                Logger.WriteLog("Player " + Player.ID + " VirtualButtons:");
-                                Logger.WriteLog("MouseLeft = 0x" + ((int)Player.DIK_VirtualMouseButton_Left).ToString("X8"));
-                                Logger.WriteLog("MouseMiddle = 0x" + ((int)Player.DIK_VirtualMouseButton_Middle).ToString("X8"));
-                                Logger.WriteLog("MouseRight = 0x" + ((int)Player.DIK_VirtualMouseButton_Right).ToString("X8"));
-
                                 if (s.scanCode == Player.DIK_VirtualMouseButton_Left)
                                 {
                                     Logger.WriteLog("Player " + Player.ID + "VirtualMouseButton_Left detected");
@@ -941,13 +936,8 @@ namespace DemulShooter
                         Logger.WriteLog("KBDLLHOOKSTRUCT : " + s.ToString());
                         foreach (PlayerSettings Player in _Configurator.PlayersSettings)
                         {
-                            if (Player.isVirtualMouseButtonsEnabled)
+                            if (Player.isVirtualMouseButtonsEnabled && Player.RIController != null)
                             {
-                                Logger.WriteLog("Player " + Player.ID + " VirtualButtons:");
-                                Logger.WriteLog("MouseLeft = 0x" + ((int)Player.DIK_VirtualMouseButton_Left).ToString("X8"));
-                                Logger.WriteLog("MouseMiddle = 0x" + ((int)Player.DIK_VirtualMouseButton_Middle).ToString("X8"));
-                                Logger.WriteLog("MouseRight = 0x" + ((int)Player.DIK_VirtualMouseButton_Right).ToString("X8"));
-
                                 if (s.scanCode == Player.DIK_VirtualMouseButton_Left)
                                 {
                                     Logger.WriteLog("Player " + Player.ID + "VirtualMouseButton_Left detected");
