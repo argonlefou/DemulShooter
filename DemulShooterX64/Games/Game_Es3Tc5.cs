@@ -140,7 +140,10 @@ namespace DemulShooterX64
                                 Logger.WriteLog("IsStandalone = " + _IsStandalone.ToString());
 
                                 CheckExeMd5();
-                                SetHack();
+                                if (_DisableInputHack)
+                                    SetHack();
+                                else
+                                    Logger.WriteLog("Input Hack disabled");
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -243,30 +246,27 @@ namespace DemulShooterX64
 
         private void SetHack()
         {
-            if (!_DisableInputHack)
+            //Standalone (old) hack
+            if (_IsStandalone)
             {
-                //Standalone (old) hack
-                if (_IsStandalone)
-                {
-                    SetHackAxis();
+                SetHackAxis();
 
-                    UInt64 aTest = (UInt64)_TargetProcess_MemoryBaseAddress + GUN_MAX_X_OFFSET;
-                    byte[] buffer = ReadBytes((IntPtr)aTest, 4);
-                    WriteBytes((IntPtr)(_Standalone_Axis_CaveAddress + _STANDALONE_MAXX_OFFSET), buffer);
+                UInt64 aTest = (UInt64)_TargetProcess_MemoryBaseAddress + GUN_MAX_X_OFFSET;
+                byte[] buffer = ReadBytes((IntPtr)aTest, 4);
+                WriteBytes((IntPtr)(_Standalone_Axis_CaveAddress + _STANDALONE_MAXX_OFFSET), buffer);
 
-                    aTest = (UInt64)_TargetProcess_MemoryBaseAddress + GUN_MAX_Y_OFFSET;
-                    buffer = ReadBytes((IntPtr)aTest, 4);
-                    WriteBytes((IntPtr)(_Standalone_Axis_CaveAddress + _STANDALONE_MAXY_OFFSET), buffer);
-                }
-                else
-                {
-                    //JVS input memory hack
-                    Create_JVS_DataBank();
-                    SetHack_JVS_Trigger();
-                    SetHack_JVS_Weapon();
-                    SetHack_JVS_Axis();
-                    SetNops(_TargetProcess_MemoryBaseAddress, _Standalone_Nop_Trigger_On);  //JConfig does not disable mouse so we will to avoid conflict with lightgun handling
-                }
+                aTest = (UInt64)_TargetProcess_MemoryBaseAddress + GUN_MAX_Y_OFFSET;
+                buffer = ReadBytes((IntPtr)aTest, 4);
+                WriteBytes((IntPtr)(_Standalone_Axis_CaveAddress + _STANDALONE_MAXY_OFFSET), buffer);
+            }
+            else
+            {
+                //JVS input memory hack
+                Create_JVS_DataBank();
+                SetHack_JVS_Trigger();
+                SetHack_JVS_Weapon();
+                SetHack_JVS_Axis();
+                SetNops(_TargetProcess_MemoryBaseAddress, _Standalone_Nop_Trigger_On);  //JConfig does not disable mouse so we will to avoid conflict with lightgun handling
             }
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
@@ -767,9 +767,15 @@ namespace DemulShooterX64
             if (bRecoil != 0)
             {
                 if (_P1_LastRecoil == 0x40 && bRecoil == 0x80)
+                {
                     SetOutputValue(OutputId.P1_GunRecoil, 1);
+                    SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                }
                 else if (_P1_LastRecoil == 0x80 && bRecoil == 0x40)
+                {
                     SetOutputValue(OutputId.P1_GunRecoil, 1);
+                    SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                }
             }
 
             _P1_Life = 0;
@@ -791,6 +797,9 @@ namespace DemulShooterX64
                 _P1_Weapon = ReadByte((IntPtr)(PtrAmmoLife + 0x118));
                 _P1_Ammo = ReadByte((IntPtr)(PtrAmmoLife + 0x170));
                 
+                //Computing custom Recoil with the following way (= using Ammo count) will not work during STAGE 2 with unimited ammo weapon
+                //Instead we're computing it along with "Original" recoil (few lines up)
+                /*
                 if (_P1_Weapon == _P1_LastWeapon)
                 {  
                     //Custom Recoil
@@ -802,8 +811,8 @@ namespace DemulShooterX64
                     //[Clip Empty] custom Output
                     if (_P1_Ammo > 0)
                         P1_Clip = 1;
-                }
-
+                }*/
+                
                 //[Damaged] custom Output                
                 if (_P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);

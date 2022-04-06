@@ -11,8 +11,8 @@ namespace DemulShooter
 {
     class Game_DemulJvs : Game_Demul
     {
-        public Game_DemulJvs(String Rom, String DemulVersion, double ForcedXratio, bool Verbose, bool DisableWindow, bool WidescreenHack)
-            : base(Rom, "naomiJvs", DemulVersion, ForcedXratio, Verbose, DisableWindow, WidescreenHack)
+        public Game_DemulJvs(String Rom, String DemulVersion, double ForcedXratio, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
+            : base(Rom, "naomiJvs", DemulVersion, ForcedXratio, DisableInputHack, Verbose, DisableWindow, WidescreenHack)
         {}
 
         #region Memory Hack

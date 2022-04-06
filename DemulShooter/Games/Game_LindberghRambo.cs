@@ -71,8 +71,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_LindberghRambo(String RomName, bool HideCrosshair, double _ForcedXratio, bool Verbose)
-            : base(RomName, "BudgieLoader", _ForcedXratio, Verbose)
+        public Game_LindberghRambo(String RomName, bool HideCrosshair, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "BudgieLoader", _ForcedXratio, DisableInputHack, Verbose)
         {
             _HideCrosshair = HideCrosshair;
             _tProcess.Start();
@@ -103,7 +103,10 @@ namespace DemulShooter
                             {
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                                SetHack();
+                                if (_DisableInputHack)
+                                    SetHack();
+                                else
+                                    Logger.WriteLog("Input Hack disabled");
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();                                
                             }

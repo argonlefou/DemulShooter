@@ -38,8 +38,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxGungun2(String RomName, double _ForcedXratio, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, Verbose)
+        public Game_TtxGungun2(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Music Gun Gun 2 v1.01 JPN - Original", "590677da06b758728a1dd607cbf032de");
             _KnownMd5Prints.Add("Music Gun Gun 2 v1.01 JPN - For JConfig", "57fb4970df6ef979d7ffc044e6161e84");
@@ -70,7 +70,10 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }

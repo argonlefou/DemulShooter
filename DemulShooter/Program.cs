@@ -52,7 +52,7 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : February, 11th 2022");
+                        Console.WriteLine("Build date : April, 6thth 2022");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
@@ -148,6 +148,7 @@ namespace DemulShooter
                         Console.WriteLine(" reload\t\tReload");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
+                        Console.WriteLine(" -noinput \tDisable any input hack");
                         Console.WriteLine(" -noresize \tFix Demul exit fullscreen bug, when shooting upper left corner");
                         Console.WriteLine(" \t\tNote : Demul GUI will not respond anymore to clicks");
                         Console.WriteLine(" -widescreen \tDemul Widescreen hack");

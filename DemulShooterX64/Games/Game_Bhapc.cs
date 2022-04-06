@@ -76,7 +76,10 @@ namespace DemulShooterX64
                                 Logger.WriteLog("P1_StructAddress = 0x" + _P1_StructAddress.ToString("X16"));
                                 Logger.WriteLog("P1_MouseDeltaXAddress = 0x" + _P1_MouseDeltaX_Address.ToString("X16"));
                                 CheckExeMd5();
-                                SetHack();
+                                if (_DisableInputHack)
+                                    SetHack();
+                                else
+                                    Logger.WriteLog("Input Hack disabled");
                                 _ProcessHooked = true;                                
                             }
                         }
@@ -165,15 +168,10 @@ namespace DemulShooterX64
 
         private void SetHack()
         {
-            if (!_DisableInputHack)
-            {
-                SetNops(_TargetProcess_MemoryBaseAddress, _Nop_P1_Axis_1);
-                SetNops(_TargetProcess_MemoryBaseAddress, _Nop_P1_Axis_2);
-            }
-
+            SetNops(_TargetProcess_MemoryBaseAddress, _Nop_P1_Axis_1);
+            SetNops(_TargetProcess_MemoryBaseAddress, _Nop_P1_Axis_2);
             Logger.WriteLog("Memory Hack complete !");
-            Logger.WriteLog("-");
-           
+            Logger.WriteLog("-");           
         }
         
         public override void SendInput(PlayerSettings PlayerData)

@@ -13,7 +13,7 @@ using DsCore.Win32;
 
 namespace DemulShooter
 {
-    class Game_BE : Game
+    class Game_WndBE : Game
     {
         private const String GAMEDATA_FOLDER = @"MemoryData\windows\bestate";
 
@@ -51,8 +51,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_BE(String RomName, String GamePath, double ForcedXratio, bool Verbose)
-            : base(RomName, "BEGame", ForcedXratio, Verbose)
+        public Game_WndBE(String RomName, String GamePath, double ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "BEGame", ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Blue Estate CODEX - Cracked", "188605d4083377e4ee3552b4c89f52fb");
 

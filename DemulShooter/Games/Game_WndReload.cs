@@ -12,7 +12,7 @@ using DsCore.Win32;
 
 namespace DemulShooter
 {
-    class Game_Reload : Game
+    class Game_WndReload : Game
     {
         private const String GAMEDATA_FOLDER = @"MemoryData\windows\reload";
         private bool _HideCrosshair = false;
@@ -57,8 +57,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Reload(String RomName, bool HideCrosshair, bool Verbose) 
-            : base(RomName, "Reload", 00.0, Verbose)
+        public Game_WndReload(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose) 
+            : base(RomName, "Reload", 00.0, DisableInputHack, Verbose)
         {
             _HideCrosshair = HideCrosshair;
             _KnownMd5Prints.Add("Reload v1.0.0.1 - IGG", "aaaf22c6671c12176d8317d4cc4b478d");
@@ -98,7 +98,10 @@ namespace DemulShooter
                                     Logger.WriteLog("rld_game.dll Module Base Address = 0x " + _RldGameDll_ModuleBaseAddress.ToString("X8"));
                                     CheckExeMd5();
                                     ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                    SetHack();
+                                    if (_DisableInputHack)
+                                        SetHack();
+                                    else
+                                        Logger.WriteLog("Input Hack disabled");
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
 

@@ -42,8 +42,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxHauntedMuseum(String RomName, double _ForcedXratio, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, Verbose)
+        public Game_TtxHauntedMuseum(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Haunted Museum v1.00 - Original", "ea27e06f3f918697fe9f924e728f5e80");
             _KnownMd5Prints.Add("Haunted Museum v1.00 - For JConfig", "792b34d2451c7a6c1fd347a29aaf0b35");
@@ -73,7 +73,11 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
+                            SetHack_Outputs();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -182,15 +186,22 @@ namespace DemulShooter
         {
             CreateDataBank();
             SetHack_Axis();            
-            SetHack_Trigger();
+            SetHack_Trigger();    
 
-            //For custom outputs :
-            //The gun is vibrating on hit and on fire, so we the purpose is to generate
-            //a custom Flag for each of them separatly
+            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
+        //For custom outputs :
+        //The gun is vibrating on hit and on fire, so we the purpose is to generate
+        //a custom Flag for each of them separatly
+        private void SetHack_Outputs()
+        {
+            CreateDataBank_Outputs();
             SetHack_Damage();
             SetHack_Recoil();
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Outputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 
@@ -211,12 +222,21 @@ namespace DemulShooter
             _P2_Y_CaveAddress = CaveMemory.CaveAddress + 0x28;
             _P2_Trigger_CaveAddress = CaveMemory.CaveAddress + 0x30;
 
-            _P1_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x40;
-            _P2_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x44;
-            _P1_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x50;
-            _P2_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x54;
-
             Logger.WriteLog("Custom data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));
+        }
+
+        private void CreateDataBank_Outputs()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);           
+
+            _P1_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x00;
+            _P2_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x04;
+            _P1_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x00;
+            _P2_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x04;
+
+            Logger.WriteLog("Custom Outputs data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));
         }
 
         /// <summary>

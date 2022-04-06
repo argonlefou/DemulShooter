@@ -14,7 +14,7 @@ using Microsoft.Win32;
 
 namespace DemulShooter
 {
-    class Game_Hod3pc : Game
+    class Game_WndHod3pc : Game
     {
         private const String GAMEDATA_FOLDER = @"MemoryData\windows\hod3pc";
 
@@ -57,8 +57,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Hod3pc(String RomName, bool NoAutoReload, bool ArcadeModeDisplay, double ForcedXratio, bool Verbose) 
-            : base (RomName, "hod3pc", ForcedXratio, Verbose)
+        public Game_WndHod3pc(String RomName, bool NoAutoReload, bool ArcadeModeDisplay, double ForcedXratio, bool DisableInputHack, bool Verbose) 
+            : base (RomName, "hod3pc", ForcedXratio, DisableInputHack, Verbose)
         {
             _NoAutoReload = NoAutoReload;
             _ArcadeModeDisplay = ArcadeModeDisplay;
@@ -96,7 +96,11 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
+                            SetHack_Other();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
 
@@ -216,8 +220,20 @@ namespace DemulShooter
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Trigger_Button);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Reload_Button);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Left_Button);
-            SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Right_Button);
+            SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Right_Button);            
 
+            //Gun data Init              
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_X_Offset, new byte[] { 0x00, 0x00 });
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Y_Offset, new byte[] { 0x00, 0x00 });
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_X_Offset, new byte[] { 0x00, 0x00 });
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Y_Offset, new byte[] { 0x00, 0x00 });   
+
+            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
+        private void SetHack_Other()
+        {
             //Cancel Auto-reload when bullets = 0
             if (_NoAutoReload)
             {
@@ -232,15 +248,6 @@ namespace DemulShooter
                 SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Arcade_Mode_Display);
                 Logger.WriteLog("NoGuns Hack done");
             }
-
-            //Gun data Init              
-            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_X_Offset, new byte[] { 0x00, 0x00 });
-            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Y_Offset, new byte[] { 0x00, 0x00 });
-            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_X_Offset, new byte[] { 0x00, 0x00 });
-            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Y_Offset, new byte[] { 0x00, 0x00 });   
-
-            Logger.WriteLog("Memory Hack complete !");
-            Logger.WriteLog("-");
         }
 
         private void SetHack_Buttons()

@@ -13,8 +13,8 @@ using DsCore.Win32;
 
 namespace DemulShooter
 {
-    /*** HeavyFire4 => Heavy Fire Afghanistan ***/
-    class Game_HeavyFire3Pc_ScpVbus : Game
+    /*** Heavy Fire 3 => Heavy Fire Afghanistan ***/
+    class Game_WndHeavyFire3Pc : Game
     {
         private const String GAMEDATA_FOLDER = @"MemoryData\windows\hfa";
         private const String HFA_STEAM_FILENAME = "HeavyFire3_Final.exe";
@@ -26,35 +26,41 @@ namespace DemulShooter
         //Initialized with "Steam" version of the game, as I don't have the MD5 hash of the file to load it if needed
         private UInt32 _P1_X_CaveAddress;
         private UInt32 _P1_Y_CaveAddress;
-        private UInt32 _P1_Buttons_Offset = 0x0024B43C;
-        private NopStruct _Nop_P1_Buttons = new NopStruct(0x001164F2, 7);
+        private UInt32 _P1_Buttons_Offset = 0x0023BFF4;
+        private NopStruct _Nop_P1_Buttons = new NopStruct(0x00118702, 7);
         private UInt32 _P2_X_CaveAddress;
         private UInt32 _P2_Y_CaveAddress;
-        private UInt32 _P1_X_Injection_Offset = 0x0001E85F;
-        private UInt32 _P1_X_Injection_Return_Offset = 0x0001E866;
-        private UInt32 _P1_Y_Injection_Offset = 0x0001E87C;
-        private UInt32 _P1_Y_Injection_Return_Offset = 0x0001E883;
-        private UInt32 _P2_X_Injection_Offset = 0x0001F727;
-        private UInt32 _P2_X_Injection_Return_Offset = 0x0001F72E;
-        private UInt32 _P2_Y_Injection_Offset = 0x0001F740;
-        private UInt32 _P2_Y_Injection_Return_Offset = 0x0001F747;
+        private UInt32 _P1_X_Injection_Offset = 0x0001E36F;
+        private UInt32 _P1_X_Injection_Return_Offset = 0x0001E376;
+        private UInt32 _P1_Y_Injection_Offset = 0x0001E38C;
+        private UInt32 _P1_Y_Injection_Return_Offset = 0x0001E393;
+        private UInt32 _P2_X_Injection_Offset = 0x0001F277;
+        private UInt32 _P2_X_Injection_Return_Offset = 0x0001F27E;
+        private UInt32 _P2_Y_Injection_Offset = 0x0001F290;
+        private UInt32 _P2_Y_Injection_Return_Offset = 0x0001F297;
 
         //Keys to send
+        //For Player 1, hardcoded by the game :
         //Cover Left = A
         //Cover Bottom = S
         //Cover Right = D
         //QTE = Space
-        private const VirtualKeyCode _QTE_W_VK = VirtualKeyCode.VK_W;
-        private const VirtualKeyCode _CoverLeft_VK = VirtualKeyCode.VK_A;
-        private const VirtualKeyCode _CoverRight_VK = VirtualKeyCode.VK_D;
-        private const VirtualKeyCode _CoverBottom_VK = VirtualKeyCode.VK_S;
-        private const VirtualKeyCode _QTE_Space_VK = VirtualKeyCode.VK_SPACE;
+        private const VirtualKeyCode P1_QTE_W_VK = VirtualKeyCode.VK_W;
+        private const VirtualKeyCode P1_COVERLEFT_VK = VirtualKeyCode.VK_A;
+        private const VirtualKeyCode P1_COVERRIGHT_VK = VirtualKeyCode.VK_D;
+        private const VirtualKeyCode P1_COVERBOTTOM_VK = VirtualKeyCode.VK_S;
+        private const VirtualKeyCode P1_QTE_SPACE_VK = VirtualKeyCode.VK_SPACE;
+        //For player 2 if used, keys are choosed for x360kb.ini:
+        //I usually prefer to send VirtualKeycodes (less troublesome when no physical Keyboard is plugged)
+        //But with x360kb only DIK keycodes are working
+        private HardwareScanCode _P2_Trigger_DIK = HardwareScanCode.DIK_T;
+        private HardwareScanCode _P2_Reload_DIK = HardwareScanCode.DIK_U;
+        private HardwareScanCode _P2_CoverLeft_DIK = HardwareScanCode.DIK_I;
+        private HardwareScanCode _P2_CoverDown_DIK = HardwareScanCode.DIK_O;
+        private HardwareScanCode _P2_CoverRight_DIK = HardwareScanCode.DIK_P;
 
         //Keys to read
-        private const HardwareScanCode _P2_UpArrow_ScanCode = HardwareScanCode.DIK_NUMPAD8;
-        private const HardwareScanCode _P2_DownArrow_ScanCode = HardwareScanCode.DIK_NUMPAD2;
-        private const HardwareScanCode _P1_Grenade_ScanCode = HardwareScanCode.DIK_G;
-        private const HardwareScanCode _P2_Grenade_ScanCode = HardwareScanCode.DIK_H;
+        private const HardwareScanCode _P1_Grenade_DIK = HardwareScanCode.DIK_G;
 
         //Custom data to inject
         protected float _P1_X_Value;
@@ -74,28 +80,47 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_HeavyFire3Pc_ScpVbus(String RomName, String GamePath, int CoverSensibility, bool EnableP2, bool Verbose) : 
-            base (RomName, "HeavyFire3", 00.0, Verbose)
+        public Game_WndHeavyFire3Pc(String RomName, String GamePath, int CoverSensibility, bool EnableP2, bool DisableInputHack, bool Verbose) 
+            : base(RomName, "HeavyFire3", 00.0, DisableInputHack, Verbose)
         {
-            _EnableP2 = EnableP2;
-            if (EnableP2)
-            {
-                /*** Creating a virtual X360 gamepad for player 2 ***/
-                _XOutputManager = new XOutput();
-                InstallX360Gamepad(2);
-            }
+            _ExecutableFilePath = GamePath + @"\" + HFA_FILENAME;
 
             //Steam version of the game has a different .exe name
             if (File.Exists(GamePath + @"\" + HFA_STEAM_FILENAME))
             {
                 _Target_Process_Name = "HeavyFire3_Final";
-                _ExecutableFilePath = GamePath + @"\" + HFA_STEAM_FILENAME;
+                _ExecutableFilePath = GamePath + @"\" +  HFA_STEAM_FILENAME;
             }
 
             _KnownMd5Prints.Add("Heavy Fire 3 - MASTIFF", "3f49951ae8232817a91ef5503374d6b3");
-            _KnownMd5Prints.Add("Heavy Fire 3 - STEAM", "");
+            _KnownMd5Prints.Add("Heavy Fire 3 - STEAM", "1841e571286acb17a98546a439c08e57");
 
-            _tProcess.Start();            
+            _EnableP2 = EnableP2;
+            _CoverDelta = (float)CoverSensibility / 10.0f;
+            Logger.WriteLog("Setting Cover delta to screen border to " + _CoverDelta.ToString());
+
+            // To play as Player2 the game needs a Joypad
+            // The game is detecting each Aimtrack as additionnal Joypad but unfortunatelly, each detected Joypad HAS TO play.
+            // Copying the dinput8.dll file blocks Dinput so no more gamepads with Aimtrak
+            // And by using x360kb.ini and xinput1_3.dll in the game's folder, we can add a virtual X360 Joypad to act as player 2
+            // Again, to play solo we need to set the x360kb.ini accordingly so that no Joypad is emulated
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(GamePath + @"\x360kb.ini", false))
+                {
+                    if (_EnableP2)
+                        sw.Write(DemulShooter.Properties.Resources.x360kb_hfirea2p);
+                    else
+                        sw.Write(DemulShooter.Properties.Resources.x360kb_hfirea1p);
+                }
+                Logger.WriteLog("File \"" + GamePath + "\\x360kb.ini\" successfully written !");
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLog("Error trying to write file " + GamePath + "\\x360kb.ini\" :" + ex.Message.ToString());
+            }
+            _tProcess.Start();
+
             Logger.WriteLog("Waiting for Windows Game " + _RomName + " game to hook.....");
         }
 
@@ -119,9 +144,12 @@ namespace DemulShooter
                         {
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                            CheckExeMd5();
+                            CheckMd5(_ExecutableFilePath);
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();                            
                         }
@@ -147,60 +175,6 @@ namespace DemulShooter
             }
         }
 
-        /// <summary>
-        /// For P2 we need to plug a virtual Gamepad
-        /// </summary>
-        protected override void InstallX360Gamepad(int Player)
-        {
-            if (_XOutputManager != null)
-            {
-                if (_XOutputManager.isVBusExists())
-                {
-                    if (_XOutputManager.PlugIn(1))
-                    {
-                        if (Player == 2)
-                        {
-                            Logger.WriteLog("Plugged P2 virtual Gamepad to port 1");
-                            _Player2_X360_Gamepad_Port = 1;
-                        }
-                    }
-                    else
-                    {
-                        Logger.WriteLog("Failed to plug virtual GamePad to port 1. (Port already used ?)");
-                        if (_XOutputManager.UnplugAll(true))
-                        {
-                            Logger.WriteLog("Force Unpluged all gamepads.");
-                            System.Threading.Thread.Sleep(1000);
-                            if (_XOutputManager.PlugIn(1))
-                            {
-                                if (Player == 2)
-                                {
-                                    Logger.WriteLog("Plugged P2 virtual Gamepad to port 1");
-                                    _Player2_X360_Gamepad_Port = 1;
-                                }
-                            }
-                            else
-                            {
-                                Logger.WriteLog("Failed to plug virtual GamePad to port 1.");
-                            }
-                        }
-                        else
-                        {
-                            Logger.WriteLog("Failed to force Unplug virtual GamePad port 1.");
-                        }
-                    }
-                }
-                else
-                {
-                    Logger.WriteLog("ScpBus driver not found or not installed");
-                }
-            }
-            else
-            {
-                Logger.WriteLog("XOutputManager Creation Failed !");
-            }
-        }
-        
         #region Screen
 
         /// <summary>
@@ -260,7 +234,7 @@ namespace DemulShooter
         }
 
         #endregion
-        
+
         #region Memory Hack
 
         private void SetHack()
@@ -271,23 +245,25 @@ namespace DemulShooter
             SetHack_P2X();
             SetHack_P2Y();
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_P1_Buttons);
+            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("-");
         }
 
         /*** Creating a custom memory bank to store our data ***/
         private void CreateDataBank()
         {
             //1st Codecave : storing our Axis Data
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
+            Codecave DataCaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            DataCaveMemory.Open();
+            DataCaveMemory.Alloc(0x800);
 
-            _P1_X_CaveAddress = CaveMemory.CaveAddress;
-            _P1_Y_CaveAddress = CaveMemory.CaveAddress + 0x04;
+            _P1_X_CaveAddress = DataCaveMemory.CaveAddress;
+            _P1_Y_CaveAddress = DataCaveMemory.CaveAddress + 0x04;
 
-            _P2_X_CaveAddress = CaveMemory.CaveAddress + 0x20;
-            _P2_Y_CaveAddress = CaveMemory.CaveAddress + 0x24;
+            _P2_X_CaveAddress = DataCaveMemory.CaveAddress + 0x20;
+            _P2_Y_CaveAddress = DataCaveMemory.CaveAddress + 0x24;
 
-            Logger.WriteLog("Custom data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));            
+            Logger.WriteLog("Custom data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));
         }
 
         /// <summary>
@@ -297,7 +273,7 @@ namespace DemulShooter
         /// to our own desired value
         /// </summary>
         private void SetHack_P1X()
-        {   
+        {
             List<Byte> Buffer = new List<Byte>();
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
@@ -329,7 +305,7 @@ namespace DemulShooter
             Buffer.AddRange(BitConverter.GetBytes(jumpTo));
             Buffer.Add(0x90);
             Buffer.Add(0x90);
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _P1_X_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _P1_X_Injection_Offset, Buffer.ToArray(),(UInt32) Buffer.Count, ref bytesWritten);
         }
 
         private void SetHack_P1Y()
@@ -461,63 +437,70 @@ namespace DemulShooter
                     Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset, 0x01);
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
                     Apply_AND_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset, 0xFE);
-                    Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset, 0x01);
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
-                    Apply_AND_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset, 0xFE);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
                 {
+                    //If the player is aiming on the left side of the screen before pressing the button
+                    //=> Cover Left
                     if (_P1_X_Value < _Axis_X_Min + _CoverDelta)
                     {
-                        Send_VK_KeyDown(_CoverLeft_VK);
+                        Send_VK_KeyDown(P1_COVERLEFT_VK);
                         _CoverLeftEnabled = true;
                     }
+                    //If the player is aiming on the bottom side of the screen before pressing the button
+                    //=> Cover Down
                     else if (_P1_Y_Value > (1.0f - _CoverDelta))
                     {
-                        Send_VK_KeyDown(_CoverBottom_VK);
+                        Send_VK_KeyDown(P1_COVERBOTTOM_VK);
                         _CoverBottomEnabled = true;
                     }
+                    //If the player is aiming on the right side of the screen before pressing the button
+                    //=> Cover Right
                     else if (_P1_X_Value > _Axis_X_Max - _CoverDelta)
                     {
-                        Send_VK_KeyDown(_CoverRight_VK);
+                        Send_VK_KeyDown(P1_COVERRIGHT_VK);
                         _CoverRightEnabled = true;
                     }
+                    //If the player is aiming on the top side of the screen before pressing the button
+                    //=> W [QTE]
                     else if (_P1_Y_Value < (-1.0f + _CoverDelta))
                     {
-                        Send_VK_KeyDown(_QTE_W_VK);
+                        Send_VK_KeyDown(P1_QTE_W_VK);
                         _QTE_W_Enabled = true;
                     }
+                    //If nothing above
+                    //=> Spacebar [QTE]
                     else
                     {
-                        Send_VK_KeyDown(_QTE_Space_VK);
+                        Send_VK_KeyDown(P1_QTE_SPACE_VK);
                         _QTE_Spacebar_Enabled = true;
                     }
                 }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
-                {                    
+                {
                     if (_CoverLeftEnabled)
                     {
-                        Send_VK_KeyUp(_CoverLeft_VK);
+                        Send_VK_KeyUp(P1_COVERLEFT_VK);
                         _CoverLeftEnabled = false;
                     }
                     if (_CoverBottomEnabled)
                     {
-                        Send_VK_KeyUp(_CoverBottom_VK);
+                        Send_VK_KeyUp(P1_COVERBOTTOM_VK);
                         _CoverBottomEnabled = false;
                     }
                     if (_CoverRightEnabled)
                     {
-                        Send_VK_KeyUp(_CoverRight_VK);
+                        Send_VK_KeyUp(P1_COVERRIGHT_VK);
                         _CoverRightEnabled = false;
                     }
                     if (_QTE_W_Enabled)
                     {
-                        Send_VK_KeyUp(_QTE_W_VK);
+                        Send_VK_KeyUp(P1_QTE_W_VK);
                         _QTE_W_Enabled = false;
                     }
                     if (_QTE_Spacebar_Enabled)
                     {
-                        Send_VK_KeyUp(_QTE_Space_VK);
+                        Send_VK_KeyUp(P1_QTE_SPACE_VK);
                         _QTE_Spacebar_Enabled = false;
                     }
                 }
@@ -529,52 +512,51 @@ namespace DemulShooter
             }
             else if (PlayerData.ID == 2)
             {
-                // Make sure no NULL pointer exception if P2 gamepad is not existing
-                if (_EnableP2)
+                //Setting Values in memory for the Codecave to read it
+                byte[] buffer = BitConverter.GetBytes(_P2_X_Value);
+                WriteBytes(_P2_X_CaveAddress, buffer);
+                buffer = BitConverter.GetBytes(_P2_Y_Value);
+                WriteBytes(_P2_Y_CaveAddress, buffer);
+                
+                // Player 2 buttons are simulated by x360kb.ini so we just send needed Keyboard strokes
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
+                    SendKeyDown(_P2_Trigger_DIK);
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
+                    SendKeyUp(_P2_Trigger_DIK);
+
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
                 {
-                    //Setting Values in memory for the Codecave to read it
-                    byte[] buffer = BitConverter.GetBytes(_P2_X_Value);
-                    WriteBytes(_P2_X_CaveAddress, buffer);
-                    buffer = BitConverter.GetBytes(_P2_Y_Value);
-                    WriteBytes(_P2_Y_CaveAddress, buffer);
-
-                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
-                        _XOutputManager.SetButton_A(_Player2_X360_Gamepad_Port, true);
-                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
-                        _XOutputManager.SetButton_A(_Player2_X360_Gamepad_Port, false);
-
-                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
+                    if (_P2_X_Value < _Axis_X_Min + _CoverDelta)
                     {
-                        if (_P2_X_Value < _Axis_X_Min + _CoverDelta)
-                        {
-                            _XOutputManager.SetRAxis_X(_Player2_X360_Gamepad_Port, -32767);
-                        }
-                        else if (_P2_Y_Value > (1.0f - _CoverDelta))
-                        {
-                            _XOutputManager.SetRAxis_Y(_Player2_X360_Gamepad_Port, -32767);
-                        }
-                        else if (_P2_X_Value > _Axis_X_Max - _CoverDelta)
-                        {
-                            _XOutputManager.SetRAxis_X(_Player2_X360_Gamepad_Port, 32767);
-                        }
+                        SendKeyDown(_P2_CoverLeft_DIK);
                     }
-                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
+                    else if (_P2_Y_Value > (1.0f - _CoverDelta))
                     {
-                        _XOutputManager.SetRAxis_X(_Player2_X360_Gamepad_Port, 0);
-                        _XOutputManager.SetRAxis_Y(_Player2_X360_Gamepad_Port, 0);
+                        SendKeyDown(_P2_CoverDown_DIK);
                     }
-
-                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
-                        _XOutputManager.SetButton_B(_Player2_X360_Gamepad_Port, true);
-                    if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
-                        _XOutputManager.SetButton_B(_Player2_X360_Gamepad_Port, false);                    
+                    else if (_P2_X_Value > _Axis_X_Max - _CoverDelta)
+                    {
+                        SendKeyDown(_P2_CoverRight_DIK);
+                    }
                 }
-            }
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
+                {
+                    SendKeyUp(_P2_CoverLeft_DIK);
+                    SendKeyUp(_P2_CoverDown_DIK);
+                    SendKeyUp(_P2_CoverRight_DIK);
+                }
+
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
+                    SendKeyDown(_P2_Reload_DIK);
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
+                    SendKeyUp(_P2_Reload_DIK);
+            }            
         }
 
         /// <summary>
         /// Low-level Keyboard hook callback.
-        /// This will be used to use Grenade and simulate P2 direction for menus
+        /// This is used to allow the usage of Grenades
+        /// </summary>
         public override IntPtr KeyboardHookCallback(IntPtr KeyboardHookID, int nCode, IntPtr wParam, IntPtr lParam)
         {
             if (nCode >= 0)
@@ -584,24 +566,9 @@ namespace DemulShooter
                 {
                     switch (s.scanCode)
                     {
-                        case _P2_UpArrow_ScanCode:
-                            {
-                                if (_EnableP2)
-                                    _XOutputManager.SetDPad_Up(_Player2_X360_Gamepad_Port);
-                            } break;
-                        case _P2_DownArrow_ScanCode:
-                            {
-                                if (_EnableP2) 
-                                    _XOutputManager.SetDPad_Down(_Player2_X360_Gamepad_Port);
-                            } break;
-                        case _P1_Grenade_ScanCode:
+                        case _P1_Grenade_DIK:
                             {
                                 Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset, 0x04);
-                            } break;
-                        case _P2_Grenade_ScanCode:
-                            {
-                                if (_EnableP2) 
-                                    _XOutputManager.SetButton_L2(_Player2_X360_Gamepad_Port, 0xFF);
                             } break;
                         default:
                             break;
@@ -611,24 +578,9 @@ namespace DemulShooter
                 {
                     switch (s.scanCode)
                     {
-                        case _P2_UpArrow_ScanCode:
-                            {
-                                if (_EnableP2) 
-                                    _XOutputManager.SetDPad_Off(_Player2_X360_Gamepad_Port);
-                            } break;
-                        case _P2_DownArrow_ScanCode:
-                            {
-                                if (_EnableP2) 
-                                    _XOutputManager.SetDPad_Off(_Player2_X360_Gamepad_Port);
-                            } break;
-                        case _P1_Grenade_ScanCode:
+                        case _P1_Grenade_DIK:
                             {
                                 Apply_AND_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset, 0xFB);
-                            } break;
-                        case _P2_Grenade_ScanCode:
-                            {
-                                if (_EnableP2) 
-                                    _XOutputManager.SetButton_L2(_Player2_X360_Gamepad_Port, 0x00);
                             } break;
                         default:
                             break;

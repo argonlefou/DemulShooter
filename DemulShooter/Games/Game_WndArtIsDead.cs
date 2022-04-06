@@ -9,7 +9,7 @@ using DsCore.Win32;
 
 namespace DemulShooter
 {
-    public class Game_ArtIsDead : Game
+    public class Game_WndArtIsDead : Game
     {        
         /*** MEMORY ADDRESSES **/        
         private UInt32 _P1_X_CaveAddress;
@@ -22,8 +22,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_ArtIsDead(String RomName, double ForcedXratio, bool Verbose)
-            : base(RomName, "gungallery", ForcedXratio, Verbose)
+        public Game_WndArtIsDead(String RomName, double ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "gungallery", ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Art Is Dead", "4cc4e814647a1d9f315fa1be4ac3d92a");
 
@@ -52,7 +52,10 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();                            
                         }

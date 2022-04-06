@@ -40,8 +40,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxSha(String RomName, double ForcedXratio, bool Verbose) 
-            : base (RomName, "KSHG", ForcedXratio, Verbose)
+        public Game_TtxSha(String RomName, double ForcedXratio, bool DisableInputHack, bool Verbose) 
+            : base (RomName, "KSHG", ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Silent Hill Arcade - Original KSHG_no_cursor.exe", "0e58fd1c7bcb5e0cace0e4ee548ecd0c");
             _KnownMd5Prints.Add("Silent Hill Arcade - Original KSHG.exe", "2778219dcaf3d8e09fb197417b17dc1b");
@@ -74,7 +74,11 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
-                                SetHack();
+                                if (_DisableInputHack)
+                                    SetHack();
+                                else
+                                    Logger.WriteLog("Input Hack disabled");
+                                SetHack_Outputs();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                                 break;
@@ -175,8 +179,7 @@ namespace DemulShooter
         {
             CreateDataBank();
             SetHack_Triggers();
-            SetHack_Recoil();
-
+            
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_X);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Y);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_P1_Out);
@@ -189,6 +192,12 @@ namespace DemulShooter
             Logger.WriteLog("-");
         }
 
+        private void SetHack_Outputs()
+        {
+            CreateDataBank_Outputs();
+            SetHack_Recoil();
+        }
+
         /// <summary>
         /// Custom data storage
         /// </summary>
@@ -199,10 +208,20 @@ namespace DemulShooter
             CaveMemory.Alloc(0x800);
 
             _Triggers_CaveAddress = CaveMemory.CaveAddress;
+
+            Logger.WriteLog("Custom data will be stored at : 0x" + _Triggers_CaveAddress.ToString("X8"));
+        }
+
+        private void CreateDataBank_Outputs()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
             _P1_Recoil_CaveAddress = CaveMemory.CaveAddress + 0x10;
             _P2_Recoil_CaveAddress = CaveMemory.CaveAddress + 0x14;
 
-            Logger.WriteLog("Custom data will be stored at : 0x" + _Triggers_CaveAddress.ToString("X8"));
+            Logger.WriteLog("Custom Outputs data will be stored at : 0x" + _Triggers_CaveAddress.ToString("X8"));
         }
 
         /// <summary>

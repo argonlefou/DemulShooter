@@ -48,7 +48,7 @@ namespace DemulShooterX64
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooterX64 v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : February, 11th 2022");
+                        Console.WriteLine("Build date : April, 6th 2022");
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooterX64.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");

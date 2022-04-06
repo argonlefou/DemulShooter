@@ -13,7 +13,7 @@ using DsCore.Win32;
 namespace DemulShooter
 {
     /*** Heavy Fire 4 => Heavy Fire Shattered Spear ***/
-    class Game_HeavyFire4Pc : Game
+    class Game_WndHeavyFire4Pc : Game
     {
         private const String GAMEDATA_FOLDER = @"MemoryData\windows\hfss";
         private const String HFA_STEAM_FILENAME = "hf4.exe";
@@ -78,8 +78,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_HeavyFire4Pc(String RomName, String GamePath, int CoverSensibility, bool EnableP2, bool Verbose) 
-            : base(RomName, "HeavyFire4", 00.0, Verbose)
+        public Game_WndHeavyFire4Pc(String RomName, String GamePath, int CoverSensibility, bool EnableP2, bool DisableInputHack, bool Verbose) 
+            : base(RomName, "HeavyFire4", 00.0, DisableInputHack, Verbose)
         {
             _ExecutableFilePath = GamePath + @"\" + HFA_FILENAME;
 
@@ -144,7 +144,10 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();                            
                         }

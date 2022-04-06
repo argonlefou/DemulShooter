@@ -28,8 +28,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_GvrAliensHasp(string RomName, double _ForcedXratio, bool Verbose)
-            : base(RomName, "abhRelease", _ForcedXratio, Verbose)
+        public Game_GvrAliensHasp(string RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "abhRelease", _ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Aliens Extermination v1.03 US - Original", "755eea8c196592d63090bf56b4b0651b");
             

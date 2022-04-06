@@ -13,7 +13,7 @@ using DsCore.Win32;
 
 namespace DemulShooter
 {
-    class Game_Hod2pc : Game
+    class Game_WndHod2pc : Game
     {
         private const String GAMEDATA_FOLDER = @"MemoryData\windows\hod2pc";
 
@@ -55,8 +55,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Hod2pc(String RomName, double ForcedXratio, bool Verbose)
-            : base(RomName, "hod2", ForcedXratio, Verbose)
+        public Game_WndHod2pc(String RomName, double ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "hod2", ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("hod2.exe PC-ISOZONE - uncracked", "97c9e516a287aab33a455a396dadaa45");
             _KnownMd5Prints.Add("hod2.exe PC-ISOZONE - cracked", "eb51d3856997581ed3aa8ecb7d6d8d07");
@@ -90,7 +90,10 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();    
 

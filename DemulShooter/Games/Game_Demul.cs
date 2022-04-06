@@ -51,8 +51,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Demul(String RomName, String SystemName, String DemulVersion, double ForcedXratio, bool Verbose, bool DisableWindow, bool WidescreenHack)
-            : base(RomName, "demul", ForcedXratio, Verbose)
+        public Game_Demul(String RomName, String SystemName, String DemulVersion, double ForcedXratio, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
+            : base(RomName, "demul", ForcedXratio, DisableInputHack, Verbose)
         {
             _SystemName = SystemName;
             _DemulVersion = DemulVersion;
@@ -101,10 +101,15 @@ namespace DemulShooter
                                     CheckExeMd5();
                                     ReadGameData();
 
-                                    if (_DemulVersion.Equals("057") || _DemulVersion.Equals("058"))
-                                        SetHack_057();
-                                    else if (_DemulVersion.Equals("07a"))
-                                        SetHack_07();
+                                    if (!_DisableInputHack)
+                                    {
+                                        if (_DemulVersion.Equals("057") || _DemulVersion.Equals("058"))
+                                            SetHack_057();
+                                        else if (_DemulVersion.Equals("07a"))
+                                            SetHack_07();
+                                    }
+                                    else
+                                        Logger.WriteLog("Input Hack disabled");
 
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();

@@ -29,8 +29,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxBlockKingBallShooter(String RomName, double _ForcedXratio, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, Verbose)
+        public Game_TtxBlockKingBallShooter(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Block King Ball Shooter v1.05 - Original", "42b7ab17909d13ff096f2b08ece6bf2a");
             _KnownMd5Prints.Add("Block King Ball Shooter v1.05 - For JConfig", "7e2fae81627c05a836033918e01046c6");
@@ -60,7 +60,11 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
+                            SetHack_Outputs();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -174,13 +178,19 @@ namespace DemulShooter
             //Blocking "Screen touched clear to 0" loop
             //SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_BtnTriggerReset);
 
-            CreateDataBank();
-            SetHack_CustomDamageOutput();
-
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
         }
-        
+
+        private void SetHack_Outputs()
+        {
+            CreateDataBank();
+            SetHack_CustomDamageOutput();
+
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
         /// <summary>
         /// 1st Memory created to store custom output data
         /// </summary>

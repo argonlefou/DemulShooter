@@ -58,8 +58,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxGundam(String RomName, bool Pedal1_Enable, HardwareScanCode Pedal1_Key, bool Pedal2_Enable, HardwareScanCode Pedal2_Key, double _ForcedXratio, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, Verbose)
+        public Game_TtxGundam(String RomName, bool Pedal1_Enable, HardwareScanCode Pedal1_Key, bool Pedal2_Enable, HardwareScanCode Pedal2_Key, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
         {
             _Pedal1_Enable = Pedal1_Enable;
             _Pedal1_Key = Pedal1_Key;
@@ -93,7 +93,10 @@ namespace DemulShooter
                         {
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
                             CheckExeMd5();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();

@@ -10,7 +10,7 @@ using DsCore.Win32;
 
 namespace DemulShooter
 {
-    class Game_HotdoPc : Game
+    class Game_WndHotdoPc : Game
     {
 
         /*** MEMORY ADDRESSES **/
@@ -29,8 +29,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_HotdoPc(String RomName, bool Verbose) 
-            : base (RomName, "HOTD_NG",00.0, Verbose)
+        public Game_WndHotdoPc(String RomName, bool DisableInputHack, bool Verbose) 
+            : base (RomName, "HOTD_NG",00.0, DisableInputHack, Verbose)
         {                      
             _KnownMd5Prints.Add("Typing Of The Dead SEGA Windows", "da39156a426e3f3faca25d3c8cb2b401");
 

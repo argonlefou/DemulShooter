@@ -38,8 +38,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_GvrFearLand(String RomName, bool AlternativeGameplay, double _ForcedXratio,bool Verbose)
-            : base(RomName, "game", _ForcedXratio, Verbose)
+        public Game_GvrFearLand(String RomName, bool AlternativeGameplay, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
         {
             _AlternativeGameplay = AlternativeGameplay;
             _KnownMd5Prints.Add("Haunted Museum 2 v1.01 - Original", "0320d68acfb7ee7b4784ed43b113f0a0");
@@ -73,7 +73,10 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();                            
                         }

@@ -54,8 +54,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxGaiaAttack4(String RomName, double _ForcedXratio, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, Verbose)
+        public Game_TtxGaiaAttack4(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Gaia Attack 4 v1.02 - Original", "f2d8e8f7d3a9a29d4804ff7cb29aa8a2");
             _KnownMd5Prints.Add("Gaia Attack 4 v1.02 - For JConfig", "94fe4e73f6fd915ffb10885dc091d5cb");
@@ -85,7 +85,11 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
+                            SetHack_Outputs();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -174,16 +178,23 @@ namespace DemulShooter
         {
             CreateDataBank();
             SetHack_Axis();
-            SetHack_Trigger();
+            SetHack_Trigger(); 
 
-            //For custom outputs :
-            //The gun is vibrating on hit and on fire, so we the purpose is to generate
-            //a custom Flag for each of them separatly
+            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
+        //For custom outputs :
+        //The gun is vibrating on hit and on fire, so we the purpose is to generate
+        //a custom Flag for each of them separatly
+        private void SetHack_Outputs()
+        {
+            CreateDataBank_Outputs();
             SetHack_Damage(_CustomDamage_Injection_Offset_1, _CustomDamage_InjectionReturn_Offset_1);
             SetHack_Damage(_CustomDamage_Injection_Offset_2, _CustomDamage_InjectionReturn_Offset_2);
             SetHack_Recoil();
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Outputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 
@@ -208,16 +219,25 @@ namespace DemulShooter
             _P3_Trigger_CaveAddress = CaveMemory.CaveAddress + 0x30;
             _P4_Trigger_CaveAddress = CaveMemory.CaveAddress + 0x38;
 
-            _P1_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x40;
-            _P2_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x44;
-            _P3_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x48;
-            _P4_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x4C;
-            _P1_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x50;
-            _P2_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x54;            
-            _P3_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x58;
-            _P4_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x5C;
-
             Logger.WriteLog("Custom data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));
+        }
+
+        private void CreateDataBank_Outputs()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            _P1_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x00;
+            _P2_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x04;
+            _P3_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x08;
+            _P4_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x0C;
+            _P1_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x10;
+            _P2_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x14;
+            _P3_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x18;
+            _P4_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x1C;
+
+            Logger.WriteLog("Custom Outputs data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));
         }
 
         /// <summary>

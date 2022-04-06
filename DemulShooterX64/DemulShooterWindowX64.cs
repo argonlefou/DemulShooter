@@ -74,7 +74,7 @@ namespace DemulShooterX64
             for (int i = 0; i < Args.Length; i++)
             {
                 Logger.WriteLog("Cmdline arg " + i + " : " + Args[i]);
-                if (Args[i].ToLower().Equals("-nocrosshair"))
+                if (Args[i].ToLower().Equals("-noinput"))
                 {
                     _NoInput = true;
                 }

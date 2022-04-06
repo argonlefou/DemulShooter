@@ -44,8 +44,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_GvrAliens(String RomName, double _ForcedXratio, bool Verbose)
-            : base(RomName, "aliens dehasped", _ForcedXratio, Verbose)
+        public Game_GvrAliens(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "aliens dehasped", _ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Aliens Extermination v1.03 US - Dehasped + No StaticPath patched", "30c8725c19d07fbebb68903f8f068052");
             _KnownMd5Prints.Add("Aliens Extermination v1.03 US - Dehasped", "9ed286aafe474a16c07f7d62b5c06ecb");
@@ -74,7 +74,10 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();                            
                         }

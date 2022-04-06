@@ -52,8 +52,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxEadp(String RomName, double _ForcedXratio, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, Verbose)
+        public Game_TtxEadp(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Elevator Action Dead Parade - Original", "59dbaf264bb96323cb3127dee0f809ca");
             _KnownMd5Prints.Add("Elevator Action Dead Parade - For JConfig", "1bc36915ac4a4658feeca80ca1b6ca10");
@@ -83,7 +83,11 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
+                            SetHack_Outputs();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -211,6 +215,16 @@ namespace DemulShooter
             SetHack_Recoil();
 
             Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
+        private void SetHack_Outputs()
+        {
+            CreateDataBank();
+            SetHack_Damage();
+            SetHack_Recoil();
+
+            Logger.WriteLog("Outputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 

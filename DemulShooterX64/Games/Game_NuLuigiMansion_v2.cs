@@ -90,7 +90,10 @@ namespace DemulShooterX64
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X16"));
                                     CheckExeMd5();
-                                    SetHack();
+                                    if (_DisableInputHack)
+                                        SetHack();
+                                    else
+                                        Logger.WriteLog("Input Hack disabled");
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent(); 
                                 }
@@ -172,11 +175,8 @@ namespace DemulShooterX64
 
         private void SetHack()
         {
-            if (!_DisableInputHack)
-            {
-                SetHackP1();
-                SetHackP2();
-            }
+            SetHackP1();
+            SetHackP2();
 
             byte[] InitX = BitConverter.GetBytes((int)960);
             byte[] InitY = BitConverter.GetBytes((int)540);

@@ -60,8 +60,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_LindberghHotd4(String RomName, double _ForcedXratio, bool Verbose)
-            : base(RomName, "BudgieLoader", _ForcedXratio, Verbose)
+        public Game_LindberghHotd4(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "BudgieLoader", _ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("House of The Dead 4 - Rev.A", "7db931d8238dbd02325c0e0f8869a06d");
             _KnownMd5Prints.Add("House of The Dead 4 - Rev.C", "036408020b362255455b84028618352b");
@@ -98,7 +98,10 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                SetHack();
+                                if (_DisableInputHack)
+                                    SetHack();
+                                else
+                                    Logger.WriteLog("Input Hack disabled");
                                 _ProcessHooked = true;
                             }
                             else

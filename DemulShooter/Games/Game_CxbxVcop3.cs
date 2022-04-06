@@ -49,8 +49,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_CxbxVcop3(String RomName, double ForcedXratio, bool Verbose)
-            : base(RomName, "cxbx", ForcedXratio, Verbose)
+        public Game_CxbxVcop3(String RomName, double ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "cxbx", ForcedXratio, DisableInputHack, Verbose)
         {
             _tProcess.Start();
             Logger.WriteLog("Waiting for Chihiro " + _RomName + " game to hook.....");
@@ -87,7 +87,10 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog("WindowHandle = " + _TargetProcess.MainWindowHandle.ToString());
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                                SetHack();
+                                if (_DisableInputHack)
+                                    SetHack();
+                                else
+                                    Logger.WriteLog("Input Hack disabled");
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();  
                             }

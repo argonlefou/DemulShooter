@@ -26,8 +26,8 @@ namespace DemulShooter
         private int[] _TriggerPushed = new int[] { 0, 0 };
         private Timer[] _TimerHoldTrigger = new Timer[2];
 
-        public Game_DemulManicpnc(String RomName, double ForcedXratio, bool Verbose, bool DisableWindow, bool WidescreenHack)
-            : base(RomName, "demul", ForcedXratio, Verbose)
+        public Game_DemulManicpnc(String RomName, double ForcedXratio, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
+            : base(RomName, "demul", ForcedXratio, DisableInputHack, Verbose)
         {
             _DisableWindow = DisableWindow;
             _tProcess.Start();
@@ -89,7 +89,10 @@ namespace DemulShooter
                         {                            
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                            SetHack();
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled");
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();                            
                         }                         

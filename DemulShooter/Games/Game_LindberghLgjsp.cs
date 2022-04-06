@@ -54,8 +54,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_LindberghLgjsp(String RomName, double _ForcedXratio, bool Verbose)
-            : base(RomName, "BudgieLoader", _ForcedXratio, Verbose)
+        public Game_LindberghLgjsp(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "BudgieLoader", _ForcedXratio, DisableInputHack, Verbose)
         {
             _tProcess.Start();
             Logger.WriteLog("Waiting for Lindbergh " + _RomName + " game to hook.....");
@@ -97,7 +97,10 @@ namespace DemulShooter
                                     Logger.WriteLog("P1 InputStruct address = 0x" + _Player1_InputStruct_Address.ToString("X8"));
                                     Logger.WriteLog("P2 InputStruct address = 0x" + _Player2_InputStruct_Address.ToString("X8"));
 
-                                    SetHack();
+                                    if (_DisableInputHack)
+                                        SetHack();
+                                    else
+                                        Logger.WriteLog("Input Hack disabled");
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
                                 }

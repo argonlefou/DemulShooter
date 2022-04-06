@@ -23,8 +23,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_GvrFarCryV2(String RomName, double _ForcedXratio, bool Verbose)
-            : base(RomName, "FarCry_r", _ForcedXratio, Verbose)
+        public Game_GvrFarCryV2(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "FarCry_r", _ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Far Cry Paradise", "263325AC3F7685CBA12B280D8E927A5D");
             _KnownMd5Prints.Add("Far Cry Paradise by Mohkerz", "557d065632eaa3c8adb5764df1609976");
@@ -62,7 +62,10 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
-                                SetHack();
+                                if (_DisableInputHack)
+                                    SetHack();
+                                else
+                                    Logger.WriteLog("Input Hack disabled");
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();                                
                             }

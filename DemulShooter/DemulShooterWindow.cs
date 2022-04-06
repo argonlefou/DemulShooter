@@ -54,6 +54,7 @@ namespace DemulShooter
         private bool _HideGameCrosshair = false;
         private bool _HardFfl = false;
         private double _ForceXratio = 0.0;
+        private bool _NoInput = false;
         //private bool _UseSingleMouse = true;
         
         public DemulShooterWindow(string[] Args, bool isVerbose)
@@ -125,6 +126,10 @@ namespace DemulShooter
                 else if (Args[i].ToLower().Equals("-noautofire"))
                 {
                     _NoAutoFire = true;
+                }
+                if (Args[i].ToLower().Equals("-noinput"))
+                {
+                    _NoInput = true;
                 }
                 else if (Args[i].ToLower().Equals("-noguns"))
                 {
@@ -302,11 +307,7 @@ namespace DemulShooter
                     {
                         case "vcop3":
                             {
-                                _Game = new Game_CxbxVcop3(_Rom.ToLower(), _ForceXratio, isVerbose);
-                            }; break;
-                        case "vcop3_old":
-                            {
-                                _Game = new Game_CxbxVcop3_Old(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_CxbxVcop3(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             }; break;
                     }
                 }
@@ -317,30 +318,30 @@ namespace DemulShooter
                     if (_Rom.ToLower().Equals("confmiss") || _Rom.ToLower().Equals("deathcox") || _Rom.ToLower().StartsWith("hotd2")
                         || _Rom.ToLower().Equals("lupinsho") || _Rom.ToLower().Equals("mok"))
                     {
-                        _Game = new Game_DemulNaomi(_Rom.ToLower(), _DemulVersion, _ForceXratio, isVerbose, _DisableWindow, _WidescreenHack);
+                        _Game = new Game_DemulNaomi(_Rom.ToLower(), _DemulVersion, _ForceXratio, _NoInput, isVerbose, _DisableWindow, _WidescreenHack);
                     }
                     else if (_Rom.ToLower().StartsWith("ninjaslt"))
                     {
-                        _Game = new Game_DemulJvs(_Rom.ToLower(), _DemulVersion, _ForceXratio, isVerbose, _DisableWindow, _WidescreenHack);
+                        _Game = new Game_DemulJvs(_Rom.ToLower(), _DemulVersion, _ForceXratio, _NoInput, isVerbose, _DisableWindow, _WidescreenHack);
                     }
                     else if (_Rom.ToLower().Equals("braveff"))
                     {
-                        _Game = new Game_DemulHikaru(_Rom.ToLower(), _DemulVersion, _ForceXratio, isVerbose, _DisableWindow, _WidescreenHack);
+                        _Game = new Game_DemulHikaru(_Rom.ToLower(), _DemulVersion, _ForceXratio, _NoInput, isVerbose, _DisableWindow, _WidescreenHack);
                     }
                     else if (_Rom.ToLower().Equals("manicpnc") || _Rom.ToLower().Equals("pokasuka"))
                     {
-                        _Game = new Game_DemulManicpnc(_Rom.ToLower(), _ForceXratio, isVerbose, _DisableWindow, _WidescreenHack);
+                        _Game = new Game_DemulManicpnc(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose, _DisableWindow, _WidescreenHack);
                     }
                     else
                     {
-                        _Game = new Game_DemulAtomiswave(_Rom.ToLower(), _DemulVersion, _ForceXratio, isVerbose, _DisableWindow, _WidescreenHack);
+                        _Game = new Game_DemulAtomiswave(_Rom.ToLower(), _DemulVersion, _ForceXratio, _NoInput, isVerbose, _DisableWindow, _WidescreenHack);
                     }
                 }
     
                 //Dolphin
                 else if (_Target.Equals("dolphin5"))
                 {
-                    _Game = new Game_Dolphin5(_Rom.ToLower(), _Ddinumber, _Configurator.DIK_Dolphin_P2_LClick, _Configurator.DIK_Dolphin_P2_MClick, _Configurator.DIK_Dolphin_P2_RClick, _ForceXratio, isVerbose);
+                    _Game = new Game_Dolphin5(_Rom.ToLower(), _Ddinumber, _Configurator.DIK_Dolphin_P2_LClick, _Configurator.DIK_Dolphin_P2_MClick, _Configurator.DIK_Dolphin_P2_RClick, _ForceXratio, _NoInput, isVerbose);
                 }
 
                 //GlobalVR game
@@ -350,15 +351,15 @@ namespace DemulShooter
                     {
                         case "aliens":
                             {
-                                _Game = new Game_GvrAliens(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_GvrAliens(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "farcry":
                             {
-                                _Game = new Game_GvrFarCryV2(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_GvrFarCryV2(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "fearland":
                             {
-                                _Game = new Game_GvrFearLand(_Rom.ToLower(), _HardFfl, _ForceXratio, isVerbose);
+                                _Game = new Game_GvrFearLand(_Rom.ToLower(), _HardFfl, _ForceXratio, _NoInput, isVerbose);
                             } break;
                         default:
                             break;
@@ -372,23 +373,23 @@ namespace DemulShooter
                     {
                         case "2spicy":
                             {
-                                _Game = new Game_Lindbergh2spicy(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_Lindbergh2spicy(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "hotd4":
                             {
-                                _Game = new Game_LindberghHotd4(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_LindberghHotd4(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "lgj":
                             {
-                                _Game = new Game_LindberghLgj(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_LindberghLgj(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "lgjsp":
                             {
-                                _Game = new Game_LindberghLgjsp(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_LindberghLgjsp(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "rambo":
                             {
-                                _Game = new Game_LindberghRambo(_Rom.ToLower(), _HideGameCrosshair, _ForceXratio, isVerbose);
+                                _Game = new Game_LindberghRambo(_Rom.ToLower(), _HideGameCrosshair, _ForceXratio, _NoInput, isVerbose);
                             } break;
                         default:
                             break;
@@ -402,27 +403,27 @@ namespace DemulShooter
                     {
                         case "bel":
                             {
-                                _Game = new Game_Model2Bel(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_Model2Bel(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "gunblade":
                             {
-                                _Game = new Game_Model2Gunblade(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_Model2Gunblade(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "hotd":
                             {
-                                _Game = new Game_Model2Hotd(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_Model2Hotd(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "rchase2":
                             {
-                                _Game = new Game_Model2Rchase2(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_Model2Rchase2(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "vcop":
                             {
-                                _Game = new Game_Model2Vcop(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_Model2Vcop(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "vcop2":
                             {
-                                _Game = new Game_Model2Vcop2(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_Model2Vcop2(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             }break;
                         default:
                             break;
@@ -436,27 +437,27 @@ namespace DemulShooter
                     {
                         case "sgg":
                             {
-                                _Game = new Game_RwSGG(_Rom.ToLower(), _NoAutoFire, _ForceXratio, isVerbose);
+                                _Game = new Game_RwSGG(_Rom.ToLower(), _NoAutoFire, _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "lgi":
                             {
-                                _Game = new Game_RwLGI(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_RwLGI(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "lgi3d":
                             {
-                                _Game = new Game_RwLGI3D(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_RwLGI3D(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "og":
                             {
-                                _Game = new Game_RwOpGhost(_Rom.ToLower(), _Configurator.OpGhost_EnableFreeplay, _Configurator.OpGhost_CreditsToStart, _Configurator.OpGhost_CreditsToContinue, _Configurator.OpGhost_CoinsByCredits, _ForceXratio, isVerbose);
+                                _Game = new Game_RwOpGhost(_Rom.ToLower(), _Configurator.OpGhost_EnableFreeplay, _Configurator.OpGhost_CreditsToStart, _Configurator.OpGhost_CreditsToContinue, _Configurator.OpGhost_CoinsByCredits, _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "sdr":
                             {
-                                _Game = new Game_RwSDR(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_RwSDR(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             }; break;
                         case "tha":
                             {
-                                _Game = new Game_RwTransformers(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_RwTransformers(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             }; break;
                         default:
                             break;
@@ -470,39 +471,39 @@ namespace DemulShooter
                     {
                         case "bkbs":
                             {
-                                _Game = new Game_TtxBlockKingBallShooter(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_TtxBlockKingBallShooter(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "eadp":
                             {
-                                _Game = new Game_TtxEadp(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_TtxEadp(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "gattack4":
                             {
-                                _Game = new Game_TtxGaiaAttack4(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_TtxGaiaAttack4(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "gsoz":
                             {
-                                _Game = new Game_TtxGundam(_Rom.ToLower(), _Configurator.Gsoz_Pedal_P1_Enabled, _Configurator.DIK_Gsoz_Pedal_P1, _Configurator.Gsoz_Pedal_P2_Enabled, _Configurator.DIK_Gsoz_Pedal_P2, _ForceXratio, isVerbose);
+                                _Game = new Game_TtxGundam(_Rom.ToLower(), _Configurator.Gsoz_Pedal_P1_Enabled, _Configurator.DIK_Gsoz_Pedal_P1, _Configurator.Gsoz_Pedal_P2_Enabled, _Configurator.DIK_Gsoz_Pedal_P2, _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "gsoz2p":
                             {
-                                _Game = new Game_TtxGundam(_Rom.ToLower(), _Configurator.Gsoz_Pedal_P1_Enabled, _Configurator.DIK_Gsoz_Pedal_P1, _Configurator.Gsoz_Pedal_P2_Enabled, _Configurator.DIK_Gsoz_Pedal_P2, _ForceXratio, isVerbose);
+                                _Game = new Game_TtxGundam(_Rom.ToLower(), _Configurator.Gsoz_Pedal_P1_Enabled, _Configurator.DIK_Gsoz_Pedal_P1, _Configurator.Gsoz_Pedal_P2_Enabled, _Configurator.DIK_Gsoz_Pedal_P2, _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "hmuseum":
                             {
-                                _Game = new Game_TtxHauntedMuseum(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_TtxHauntedMuseum(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "hmuseum2":
                             {
-                                _Game = new Game_TtxHauntedMuseum2(_Rom.ToLower(), _HardFfl,_ForceXratio, isVerbose);
+                                _Game = new Game_TtxHauntedMuseum2(_Rom.ToLower(), _HardFfl, _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "mgungun2":
                             {
-                                _Game = new Game_TtxGungun2(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_TtxGungun2(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "sha":
                             {
-                                _Game = new Game_TtxSha(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_TtxSha(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;                        
                     }
                 }
@@ -514,43 +515,43 @@ namespace DemulShooter
                     {
                         case "artdead":
                             {
-                                _Game = new Game_ArtIsDead(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_WndArtIsDead(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                         case "friction":
                             {
-                                _Game = new Game_Friction(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_WndFriction(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             }break;
                         case "hfa":
                             {
-                                _Game = new Game_HeavyFire3Pc("hfa", _Configurator.HF3_Path, _Configurator.HF3_CoverSensibility, false, isVerbose);
+                                _Game = new Game_WndHeavyFire3Pc("hfa", _Configurator.HF3_Path, _Configurator.HF3_CoverSensibility, _NoInput, false, isVerbose);
                             }; break;
                         case "hfa2p":
                             {
-                                _Game = new Game_HeavyFire3Pc("hfa", _Configurator.HF3_Path, _Configurator.HF3_CoverSensibility, true, isVerbose);
+                                _Game = new Game_WndHeavyFire3Pc("hfa", _Configurator.HF3_Path, _Configurator.HF3_CoverSensibility, _NoInput, true, isVerbose);
                             }; break;
                         case "hfss":
                             {
-                                _Game = new Game_HeavyFire4Pc("hfss", _Configurator.HF4_Path, _Configurator.HF4_CoverSensibility, false, isVerbose);
+                                _Game = new Game_WndHeavyFire4Pc("hfss", _Configurator.HF4_Path, _Configurator.HF4_CoverSensibility, _NoInput, false, isVerbose);
                             }; break;
                         case "hfss2p":
                             {
-                                _Game = new Game_HeavyFire4Pc("hfss", _Configurator.HF4_Path, _Configurator.HF4_CoverSensibility, true, isVerbose);
+                                _Game = new Game_WndHeavyFire4Pc("hfss", _Configurator.HF4_Path, _Configurator.HF4_CoverSensibility, _NoInput, true, isVerbose);
                             }; break;
                         case "hod2pc":
                             {
-                                _Game = new Game_Hod2pc(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_WndHod2pc(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             }; break;
                         case "hod3pc":
                             {
-                                _Game = new Game_Hod3pc(_Rom.ToLower(), _NoAutoReload, _NoGuns,_ForceXratio, isVerbose);
+                                _Game = new Game_WndHod3pc(_Rom.ToLower(), _NoAutoReload, _NoGuns, _ForceXratio, _NoInput, isVerbose);
                             }; break;
                         case "hodo":
                             {
-                                _Game = new Game_HotdoPc(_Rom.ToLower(), isVerbose);
+                                _Game = new Game_WndHotdoPc(_Rom.ToLower(), _NoInput, isVerbose);
                             }; break;
                         case "reload":
                             {
-                                _Game = new Game_Reload(_Rom.ToLower(), _HideGameCrosshair, isVerbose);
+                                _Game = new Game_WndReload(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             }; break;
                     }
                 }
@@ -562,7 +563,7 @@ namespace DemulShooter
                     {
                         case "wartran":
                             {
-                                _Game = new Game_Wartran(_Rom.ToLower(), _ForceXratio, isVerbose);
+                                _Game = new Game_WndWartran(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
                     }
                 }
@@ -752,7 +753,8 @@ namespace DemulShooter
                                     Logger.WriteLog("Controller Buttons Events : " + Player.RIController.Computed_Buttons.ToString());
                                 Logger.WriteLog("-");
 
-                                _Game.SendInput(Player);
+                                if (!_NoInput)
+                                    _Game.SendInput(Player);
                             }
                         }
                     }

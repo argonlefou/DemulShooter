@@ -36,8 +36,8 @@ namespace DemulShooter
         private List<WidescreenData> _ListWidescreenHacks;
 
 
-        public Game_DemulAtomiswave(String RomName, String DemulVersion, double ForcedXratio, bool Verbose, bool DisableWindow, bool WidescreenHack)
-            : base(RomName, "demul", ForcedXratio, Verbose)
+        public Game_DemulAtomiswave(String RomName, String DemulVersion, double ForcedXratio, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
+            : base(RomName, "demul", ForcedXratio, DisableInputHack, Verbose)
         {
             _DisableWindow = DisableWindow;
             _WidescreenHack = WidescreenHack;
@@ -104,9 +104,11 @@ namespace DemulShooter
                         {                           
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
+                            if (_DisableInputHack)
+                                SetHack();
+                            else
+                                Logger.WriteLog("Input Hack disabled"); RaiseGameHookedEvent();                            
                             _ProcessHooked = true;
-                            RaiseGameHookedEvent();                            
-                            SetHack();
                         }
                     }
                 }

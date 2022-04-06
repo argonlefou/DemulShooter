@@ -61,8 +61,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwSGG(String RomName, bool DisableAutofire, double _ForcedXratio, bool Verbose)
-            : base(RomName, "RingGunR_RingWide", _ForcedXratio, Verbose)
+        public Game_RwSGG(String RomName, bool DisableAutofire, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "RingGunR_RingWide", _ForcedXratio, DisableInputHack, Verbose)
         {
             _DisableAutofire = DisableAutofire;
             if (_DisableAutofire)
@@ -115,7 +115,10 @@ namespace DemulShooter
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                SetHack();
+                                if (_DisableInputHack)
+                                    SetHack();
+                                else
+                                    Logger.WriteLog("Input Hack disabled");
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }                                                        

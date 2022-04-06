@@ -60,8 +60,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwTransformers(String RomName, double _ForcedXratio, bool Verbose)
-            : base(RomName, "TF_Gun_R_Ring_dumped", _ForcedXratio, Verbose)
+        public Game_RwTransformers(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "TF_Gun_R_Ring_dumped", _ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Transformers Final  - For TeknoParrot", "7e11f7e78ed566a277edba1a8aab0749");
             _KnownMd5Prints.Add("Transformers Final  - For JConfig", "0d23fead523ea91eaea5047e652dff69");
@@ -99,7 +99,14 @@ namespace DemulShooter
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                SetHack();
+                                if (_DisableInputHack)
+                                    SetHack();
+                                else
+                                    Logger.WriteLog("Input Hack disabled");
+
+                                //Output hack
+                                SetHack_RecoilP1();
+                                SetHack_RecoilP2();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             } 
@@ -184,9 +191,7 @@ namespace DemulShooter
             //NOPing axis proc
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Axis_1);
             SetHackInput();
-            CreateDataBank();
-            SetHack_RecoilP1();
-            SetHack_RecoilP2();
+            CreateDataBank();            
                         
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");

@@ -42,8 +42,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwSDR(String RomName, double _ForcedXratio, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, Verbose)
+        public Game_RwSDR(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Sega Dream Raider - Unpatched Header", "abedceb2135ab50c1182dda31153667687f53469");
             _KnownMd5Prints.Add("Sega Dream Raider - Patched Header", "ee96b126534355d96c12449291bdc44bb2d13e29");
@@ -81,7 +81,10 @@ namespace DemulShooter
                                 Logger.WriteLog("Controls base address = 0x" + _Controls_Base_Address.ToString("X8"));
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                SetHack();
+                                if (_DisableInputHack)
+                                    SetHack();
+                                else
+                                    Logger.WriteLog("Input Hack disabled");
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }   

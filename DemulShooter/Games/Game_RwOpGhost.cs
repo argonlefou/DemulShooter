@@ -86,8 +86,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwOpGhost(String RomName, bool EnableFreeplay, int StartCredits, int ContinueCredits, int CoinsCredit, double _ForcedXratio, bool Verbose)
-            : base(RomName, "gs2", _ForcedXratio, Verbose)
+        public Game_RwOpGhost(String RomName, bool EnableFreeplay, int StartCredits, int ContinueCredits, int CoinsCredit, double _ForcedXratio, bool DisableInputHack, bool Verbose)
+            : base(RomName, "gs2", _ForcedXratio, DisableInputHack, Verbose)
         {
             if (EnableFreeplay)
                 _Credits_Freeplay = 1;
@@ -137,7 +137,10 @@ namespace DemulShooter
                                     Logger.WriteLog("JVS emulation detected");
                                     Logger.WriteLog("JVS axis data pointer base address = 0x" + _Jvs_Data_BaseAddress.ToString("X8"));
                                     CheckExeMd5();
-                                    SetHack_Jvs();
+                                    if (_DisableInputHack)
+                                        SetHack_Jvs();
+                                    else
+                                        Logger.WriteLog("Input Hack disabled");
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
                                 }
@@ -160,7 +163,10 @@ namespace DemulShooter
                                     Logger.WriteLog("P2_X adddress =  0x" + _P2_X_Address.ToString("X8"));
                                     Logger.WriteLog("P2_Y adddress =  0x" + _P2_Y_Address.ToString("X8"));
                                     CheckExeMd5();
-                                    SetHack();
+                                    if (_DisableInputHack)
+                                        SetHack();
+                                    else
+                                        Logger.WriteLog("Input Hack disabled");
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
                                 }
