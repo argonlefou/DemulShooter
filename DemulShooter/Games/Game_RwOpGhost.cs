@@ -137,7 +137,7 @@ namespace DemulShooter
                                     Logger.WriteLog("JVS emulation detected");
                                     Logger.WriteLog("JVS axis data pointer base address = 0x" + _Jvs_Data_BaseAddress.ToString("X8"));
                                     CheckExeMd5();
-                                    if (_DisableInputHack)
+                                    if (!_DisableInputHack)
                                         SetHack_Jvs();
                                     else
                                         Logger.WriteLog("Input Hack disabled");
@@ -163,7 +163,7 @@ namespace DemulShooter
                                     Logger.WriteLog("P2_X adddress =  0x" + _P2_X_Address.ToString("X8"));
                                     Logger.WriteLog("P2_Y adddress =  0x" + _P2_Y_Address.ToString("X8"));
                                     CheckExeMd5();
-                                    if (_DisableInputHack)
+                                    if (!_DisableInputHack)
                                         SetHack();
                                     else
                                         Logger.WriteLog("Input Hack disabled");

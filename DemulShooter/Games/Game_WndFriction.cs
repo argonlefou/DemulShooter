@@ -98,7 +98,7 @@ namespace DemulShooter
                                     String VsIoBoardDll_Path = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", "vsioboard.dll");                                  
                                     CheckMd5(VsIoBoardDll_Path);
                                     ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                    if (_DisableInputHack)
+                                    if (!_DisableInputHack)
                                         SetHack();
                                     else
                                         Logger.WriteLog("Input Hack disabled");

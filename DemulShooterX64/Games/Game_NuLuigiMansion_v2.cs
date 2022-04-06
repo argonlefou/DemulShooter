@@ -90,7 +90,7 @@ namespace DemulShooterX64
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X16"));
                                     CheckExeMd5();
-                                    if (_DisableInputHack)
+                                    if (!_DisableInputHack)
                                         SetHack();
                                     else
                                         Logger.WriteLog("Input Hack disabled");

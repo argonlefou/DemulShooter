@@ -140,7 +140,7 @@ namespace DemulShooterX64
                                 Logger.WriteLog("IsStandalone = " + _IsStandalone.ToString());
 
                                 CheckExeMd5();
-                                if (_DisableInputHack)
+                                if (!_DisableInputHack)
                                     SetHack();
                                 else
                                     Logger.WriteLog("Input Hack disabled");

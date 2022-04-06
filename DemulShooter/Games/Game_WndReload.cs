@@ -98,7 +98,7 @@ namespace DemulShooter
                                     Logger.WriteLog("rld_game.dll Module Base Address = 0x " + _RldGameDll_ModuleBaseAddress.ToString("X8"));
                                     CheckExeMd5();
                                     ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                    if (_DisableInputHack)
+                                    if (!_DisableInputHack)
                                         SetHack();
                                     else
                                         Logger.WriteLog("Input Hack disabled");

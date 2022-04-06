@@ -99,7 +99,7 @@ namespace DemulShooter
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                if (_DisableInputHack)
+                                if (!_DisableInputHack)
                                     SetHack();
                                 else
                                     Logger.WriteLog("Input Hack disabled");

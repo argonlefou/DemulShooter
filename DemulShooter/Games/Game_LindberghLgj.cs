@@ -97,7 +97,7 @@ namespace DemulShooter
                                     Logger.WriteLog("P1 InputStruct address = 0x" + _Player1_InputStruct_Address.ToString("X8"));
                                     Logger.WriteLog("P2 InputStruct address = 0x" + _Player2_InputStruct_Address.ToString("X8"));
 
-                                    if (_DisableInputHack)
+                                    if (!_DisableInputHack)
                                         SetHack();
                                     else
                                         Logger.WriteLog("Input Hack disabled");

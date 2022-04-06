@@ -87,7 +87,7 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog("WindowHandle = " + _TargetProcess.MainWindowHandle.ToString());
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                                if (_DisableInputHack)
+                                if (!_DisableInputHack)
                                     SetHack();
                                 else
                                     Logger.WriteLog("Input Hack disabled");

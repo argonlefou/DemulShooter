@@ -76,7 +76,7 @@ namespace DemulShooterX64
                                 Logger.WriteLog("P1_StructAddress = 0x" + _P1_StructAddress.ToString("X16"));
                                 Logger.WriteLog("P1_MouseDeltaXAddress = 0x" + _P1_MouseDeltaX_Address.ToString("X16"));
                                 CheckExeMd5();
-                                if (_DisableInputHack)
+                                if (!_DisableInputHack)
                                     SetHack();
                                 else
                                     Logger.WriteLog("Input Hack disabled");
