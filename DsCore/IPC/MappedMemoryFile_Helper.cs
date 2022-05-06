@@ -178,13 +178,20 @@ namespace DsCore.IPC
                 return 2; // Beyond data area             
             if (_bInit)
             {
-                if (_Mutex != null)
-                    _Mutex.WaitOne();
+                try
+                {
+                    if (_Mutex != null)
+                        _Mutex.WaitOne();
 
-                Marshal.Copy(bytData, lngAddr, _pwData, lngSize);
+                    Marshal.Copy(bytData, lngAddr, _pwData, lngSize);
 
-                if (_Mutex != null)
-                    _Mutex.ReleaseMutex();
+                    if (_Mutex != null)
+                        _Mutex.ReleaseMutex();
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLog("MappedMemoryFile_Helper.WriteByteArray() error : " + ex.Message.ToString());
+                }
             }
             else
             {
@@ -204,7 +211,6 @@ namespace DsCore.IPC
         {
             if (lngAddr + lngSize > _MemSize)
                 return 2; // Beyond data area 
-
 
             if (_bInit)
             {
