@@ -83,12 +83,15 @@ namespace DemulShooter
         {
             _ExecutableFilePath = GamePath + @"\" + HFA_FILENAME;
 
+            Logger.WriteLog("Game path : " + GamePath);
+
             //Steam version of the game has a different .exe name
             if (File.Exists(GamePath + @"\" + HFA_STEAM_FILENAME))
             {
                 _Target_Process_Name = "hf4";
                 _ExecutableFilePath = GamePath + @"\" + HFA_STEAM_FILENAME;
             }
+            Logger.WriteLog("Executable file path : " + _ExecutableFilePath);
 
             _KnownMd5Prints.Add("Heavy Fire 4 - MASTIFF", "9476f9bba48aea6ca04d06158be07f1c");
             _KnownMd5Prints.Add("Heavy Fire 4 - STEAM", "7f8bf20aaba80ac1239efc553d94a53f");

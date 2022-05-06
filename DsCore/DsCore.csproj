@@ -60,6 +60,8 @@
   <ItemGroup>
     <Compile Include="Config\Configurator.cs" />
     <Compile Include="Config\PlayerSettings.cs" />
+    <Compile Include="IPC\MappedMemoryFile_Helper.cs" />
+    <Compile Include="IPC\MMF_DataStruct.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MameOutput\AsyncGameOutput.cs" />
     <Compile Include="MameOutput\BlinkGameOutput.cs" />
@@ -85,6 +87,8 @@
     <Compile Include="RawInput\RawInputController.cs" />
     <Compile Include="RawInput\RawInputHelper.cs" />
     <Compile Include="Win32\CopyDataStruct.cs" />
+    <Compile Include="Win32\FileMapAccessType.cs" />
+    <Compile Include="Win32\PageProtection.cs" />
     <Compile Include="Win32\Point.cs" />
     <Compile Include="RawInput\User32\RawHid.cs" />
     <Compile Include="RawInput\User32\RawInputDataKeyboard.cs" />

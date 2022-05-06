@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Globalization;
 
 namespace DemulShooterX64
 {
@@ -48,7 +49,10 @@ namespace DemulShooterX64
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooterX64 v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        Console.WriteLine("Build date : April, 6th 2022");
+                        DateTime CompileTime = new DateTime(Builtin.CompileTime, DateTimeKind.Utc);
+                        String CompileDate = CompileTime.ToString("MMMM d", new CultureInfo("en-US"));
+                        CompileDate = String.Format("{0}{1}, {2}", CompileDate, GetDaySuffix(CompileTime.Day), CompileTime.ToString("yyyy"));
+                        Console.WriteLine("Build date : " + CompileDate);
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooterX64.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
@@ -155,6 +159,25 @@ namespace DemulShooterX64
                 ExitConsole();
             }
 
+        }
+
+        static string GetDaySuffix(int day)
+        {
+            switch (day)
+            {
+                case 1:
+                case 21:
+                case 31:
+                    return "st";
+                case 2:
+                case 22:
+                    return "nd";
+                case 3:
+                case 23:
+                    return "rd";
+                default:
+                    return "th";
+            }
         }
 
         static bool CheckParameter(String param, string[] list)

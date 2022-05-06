@@ -56,6 +56,16 @@ namespace DemulShooter
         private double _ForceXratio = 0.0;
         private bool _NoInput = false;
         //private bool _UseSingleMouse = true;
+
+        //InterProcessCommunication (Memory Mapped Files)
+        private const String DEMULSHOOTER_INPUTS_MMF_NAME = "DemulShooter_MMF_Inputs";
+        private const String DEMULSHOOTER_OUTPUTS_MMF_NAME = "DemulShooter_MMF_Outputs";
+        private const String DEMULSHOOTER_INPUTS_MUTEX_NAME = "DemulShooter_Inputs_Mutex";
+        private const String DEMULSHOOTER_OUTPUTS_MUTEX_NAME = "DemulShooter_Outputs_Mutex";
+        private bool _EnableInputsIpc = false;
+        private bool _EnableOutputsIpc = false;
+        private DsCore.IPC.MemoryMappedFileHelper _MMF_Inputs;
+        private DsCore.IPC.MemoryMappedFileHelper _MMF_Outputs;
         
         public DemulShooterWindow(string[] Args, bool isVerbose)
         {
@@ -92,10 +102,6 @@ namespace DemulShooter
                         Logger.WriteLog("-ddinumber parameter not good, it will keep default value");
                     }
                 }
-                else if (Args[i].ToLower().Equals("-hardffl"))
-                {
-                    _HardFfl = true;
-                }
                 else if (Args[i].ToLower().StartsWith("-forcexratio"))
                 {
                     String sX = (Args[i].Split('='))[1].Trim();
@@ -114,6 +120,18 @@ namespace DemulShooter
                     {
                         Logger.WriteLog("Can't set -ForcedXratio option : " + sX + " is not a valid value");
                     }                        
+                }
+                else if (Args[i].ToLower().Equals("-hardffl"))
+                {
+                    _HardFfl = true;
+                }
+                else if (Args[i].ToLower().Equals("-ipcinputs"))
+                {
+                    _EnableInputsIpc = true;
+                }
+                else if (Args[i].ToLower().Equals("-ipcoutputs"))
+                {
+                    _EnableOutputsIpc = true;
                 }
                 else if (Args[i].ToLower().Equals("-nocrosshair"))
                 {
@@ -243,6 +261,18 @@ namespace DemulShooter
                 }
             }
             Logger.WriteLog("Monitor maximum resolution = " + Maxres);
+
+            //Setting up IPC for inputs/outputs
+            if (_EnableInputsIpc)
+            {
+                _MMF_Inputs = new DsCore.IPC.MemoryMappedFileHelper(DEMULSHOOTER_INPUTS_MUTEX_NAME);
+                _MMF_Inputs.MMFInit(DEMULSHOOTER_INPUTS_MMF_NAME, 2048);
+            }
+            if (_EnableOutputsIpc)
+            {
+                _MMF_Outputs = new DsCore.IPC.MemoryMappedFileHelper(DEMULSHOOTER_OUTPUTS_MUTEX_NAME);
+                _MMF_Outputs.MMFInit(DEMULSHOOTER_OUTPUTS_MMF_NAME, 2048);
+            }
 
             CreateRawMessageWindow();
             //Register to RawInput thanks to the previously created window Handle
@@ -696,6 +726,8 @@ namespace DemulShooter
 
                                 Logger.WriteLog("RawData event for Player #" + Player.ID.ToString() + ":");
                                 Logger.WriteLog("Device rawinput data (Hex) = [ " + Player.RIController.Computed_X.ToString("X8") + ", " + Player.RIController.Computed_Y.ToString("X8") + " ]");
+                                if (_EnableInputsIpc)
+                                    _MMF_Inputs.UpdateRawPlayerData(Player.ID, (UInt32)Player.RIController.Computed_X, (UInt32)Player.RIController.Computed_Y);
 
                                 _Game.GetScreenResolution();
                                 Logger.WriteLog("PrimaryScreen Size (Px) = [ " + _Game.ScreenWidth + "x" + _Game.ScreenHeight + " ]");
@@ -755,6 +787,14 @@ namespace DemulShooter
 
                                 if (!_NoInput)
                                     _Game.SendInput(Player);
+
+                                if (_EnableInputsIpc)
+                                {
+                                    _MMF_Inputs.UpdateComputedPlayerData(Player.ID, Player.RIController.Computed_X, Player.RIController.Computed_Y, Player.RIController.Hid_Buttons);
+                                    
+                                    if (_MMF_Inputs.WriteData() != 0)
+                                        Logger.WriteLog("Succesfully copied P" + Player.ID.ToString() + " data to MMF " + _MMF_Inputs.MemoryFileName);
+                                }
                             }
                         }
                     }

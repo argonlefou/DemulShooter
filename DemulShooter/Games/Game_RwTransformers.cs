@@ -99,14 +99,17 @@ namespace DemulShooter
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
+
+                                //Output hack
+                                CreateDataBank();
+                                SetHack_RecoilP1();
+                                SetHack_RecoilP2();
+                           
                                 if (!_DisableInputHack)
                                     SetHack();
                                 else
                                     Logger.WriteLog("Input Hack disabled");
-
-                                //Output hack
-                                SetHack_RecoilP1();
-                                SetHack_RecoilP2();
+                                
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             } 
@@ -190,8 +193,7 @@ namespace DemulShooter
         {
             //NOPing axis proc
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Axis_1);
-            SetHackInput();
-            CreateDataBank();            
+            SetHackInput();              
                         
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
@@ -220,7 +222,7 @@ namespace DemulShooter
         ///So we need to make a mask to accept Start button moodification and block other so we can inject   
         /// </summary>>
         private void SetHackInput()
-        {
+        {   
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);

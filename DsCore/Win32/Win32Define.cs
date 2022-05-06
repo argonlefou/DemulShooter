@@ -24,6 +24,23 @@ namespace DsCore.Win32
         public const UInt32 WM_MBUTTONUP = 0x0208;
         public const UInt32 WM_MOUSEWHEEL = 0x020A;
         public const UInt32 WM_SYSKEYDOWN = 0x0104;
-        public const UInt32 WM_USB_DEVICECHANGE = 0x0219;        
+        public const UInt32 WM_USB_DEVICECHANGE = 0x0219;  
+      
+        //Mapped Memory File
+        public const UInt32 ERROR_ALREADY_EXISTS = 183;
+        public const Int32 INVALID_HANDLE_VALUE = -1;
+
+        public const UInt32 STANDARD_RIGHTS_REQUIRED = 0x000F0000;
+        public const UInt32 SECTION_QUERY = 0x0001;
+        public const UInt32 SECTION_MAP_WRITE = 0x0002;
+        public const UInt32 SECTION_MAP_READ = 0x0004;
+        public const UInt32 SECTION_MAP_EXECUTE = 0x0008;
+        public const UInt32 SECTION_EXTEND_SIZE = 0x0010;
+        public const UInt32 SECTION_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED | SECTION_QUERY |
+            SECTION_MAP_WRITE |
+            SECTION_MAP_READ |
+            SECTION_MAP_EXECUTE |
+            SECTION_EXTEND_SIZE);
+        public const UInt32 FILE_MAP_ALL_ACCESS = SECTION_ALL_ACCESS;
     }
 }
