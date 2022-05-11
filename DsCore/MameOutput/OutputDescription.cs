@@ -5,6 +5,10 @@ namespace DsCore.MameOutput
     public static class OutputDesciption
     {
         public static readonly String Credits = "Credits";
+        public static readonly String P1_Credits = "P1_Credits";
+        public static readonly String P2_Credits = "P2_Credits";
+        public static readonly String P3_Credits = "P3_Credits";
+        public static readonly String P4_Credits = "P4_Credits";
 
         public static readonly String P1_LmpStart = "P1_LmpStart";
         public static readonly String P2_LmpStart = "P2_LmpStart";

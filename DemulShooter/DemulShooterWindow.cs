@@ -64,8 +64,8 @@ namespace DemulShooter
         private const String DEMULSHOOTER_OUTPUTS_MUTEX_NAME = "DemulShooter_Outputs_Mutex";
         private bool _EnableInputsIpc = false;
         private bool _EnableOutputsIpc = false;
-        private DsCore.IPC.MemoryMappedFileHelper _MMF_Inputs;
-        private DsCore.IPC.MemoryMappedFileHelper _MMF_Outputs;
+        private DsCore.IPC.MemoryMappedFileHelper_Old _MMF_Inputs;
+        private DsCore.IPC.MemoryMappedFileHelper_Old _MMF_Outputs;
         
         public DemulShooterWindow(string[] Args, bool isVerbose)
         {
@@ -265,12 +265,12 @@ namespace DemulShooter
             //Setting up IPC for inputs/outputs
             if (_EnableInputsIpc)
             {
-                _MMF_Inputs = new DsCore.IPC.MemoryMappedFileHelper(DEMULSHOOTER_INPUTS_MUTEX_NAME);
+                _MMF_Inputs = new DsCore.IPC.MemoryMappedFileHelper_Old(DEMULSHOOTER_INPUTS_MUTEX_NAME);
                 _MMF_Inputs.MMFInit(DEMULSHOOTER_INPUTS_MMF_NAME, 2048);
             }
             if (_EnableOutputsIpc)
             {
-                _MMF_Outputs = new DsCore.IPC.MemoryMappedFileHelper(DEMULSHOOTER_OUTPUTS_MUTEX_NAME);
+                _MMF_Outputs = new DsCore.IPC.MemoryMappedFileHelper_Old(DEMULSHOOTER_OUTPUTS_MUTEX_NAME);
                 _MMF_Outputs.MMFInit(DEMULSHOOTER_OUTPUTS_MMF_NAME, 2048);
             }
 
@@ -331,7 +331,19 @@ namespace DemulShooter
                     Bgw_XInput.RunWorkerAsync();
                 */
 
-                if (_Target.Equals("chihiro"))
+                if (_Target.Equals("coastal"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "wws":
+                            {
+                                _Game = new Game_CoastalWws(_Rom.ToLower(), _Configurator.DIK_Wws_P1Coin, _Configurator.DIK_Wws_P2Coin, _Configurator.DIK_Wws_Test, _ForceXratio, _NoInput, isVerbose);
+                            }; break;
+                    }
+                }
+
+                //Chihiro games
+                else if (_Target.Equals("chihiro"))
                 {
                     switch (_Rom.ToLower())
                     {

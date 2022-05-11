@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Games\Game_CoastalWws.cs" />
     <Compile Include="Games\Game_Lindbergh2spicy.cs" />
     <Compile Include="Games\Game_LindberghLgjsp.cs" />
     <Compile Include="Games\Game_WndFriction.cs" />
@@ -149,8 +150,7 @@
   <Target Name="Date" BeforeTargets="BeforeBuild">
     <WriteLinesToFile File="$(IntermediateOutputPath)gen.cs" Lines="static partial class Builtin { public static long CompileTime = $([System.DateTime]::UtcNow.Ticks) %3B }" Overwrite="true" />
     <ItemGroup>
-        <Compile Include="$(IntermediateOutputPath)gen.cs" />
+      <Compile Include="$(IntermediateOutputPath)gen.cs" />
     </ItemGroup>
- </Target>
-  
+  </Target>
 </Project>

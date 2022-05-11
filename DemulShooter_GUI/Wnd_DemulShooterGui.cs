@@ -149,6 +149,13 @@ namespace DemulShooter_GUI
             Txt_HF4_Browse.Text = _Configurator.HF4_Path;
             TrackBar_HF4_Cover.Value = _Configurator.HF4_CoverSensibility;
 
+            //Fill Wild West Shoutout tab
+            Logger.WriteLog("Initializing GUI [Wild West Shoutout] pages...");
+            Txt_Wws_GamePath.Text = _Configurator.Wws_Path;
+            Txt_Wws_P1Coin.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_P1Coin);
+            Txt_Wws_P2Coin.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_P2Coin);
+            Txt_Wws_Test.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_Test);
+
             //Fill Output Tab
             Logger.WriteLog("Initializing GUI [Output] pages...");
             Cbox_Outputs.Checked = _Configurator.OutputEnabled;
@@ -806,6 +813,45 @@ namespace DemulShooter_GUI
 
         #endregion                  
         
+        #region Wild West Shoutoout tab
+
+        private void Btn_Wws_GamePath_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog1.Description = "Please select \"CowBoy.exe\" installation folder";
+            if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                _Configurator.Wws_Path = folderBrowserDialog1.SelectedPath;
+                Txt_Wws_GamePath.Text = _Configurator.Wws_Path;
+            }
+        }
+
+        private void Btn_Wws_InstallUnity_Click(object sender, EventArgs e)
+        {
+            //foreach (FileInfo file in new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + "\\Unity\\WildWestShoutout").GetFiles())
+            //    file.CopyTo(folderBrowserDialog1.SelectedPath + "\\artwork\\crosshairs\\" + file.Name, true);
+            if ( !CloneDirectory(AppDomain.CurrentDomain.BaseDirectory + "\\Unity\\WildWestShoutout", Txt_Wws_GamePath.Text))
+                MessageBox.Show("Impossible to copy Unity plugin in the followinf folder :\n" + Txt_Wws_GamePath.Text, "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
+                MessageBox.Show("Unity plugin installed !");
+
+            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+                MessageBox.Show("Configuration saved !");
+            else
+                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            
+        }
+
+        private void Btn_Wws_SaveKeys_Click(object sender, EventArgs e)
+        {
+            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+                MessageBox.Show("Configuration saved !");
+            else
+                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            
+        }
+
+        #endregion
+
         #region Outputs tab
 
         private void Cbox_Outputs_CheckedChanged(object sender, EventArgs e)
@@ -939,6 +985,12 @@ namespace DemulShooter_GUI
                             _Configurator.DIK_Gsoz_Pedal_P1 = s.scanCode;
                         else if (_SelectedTextBox == TXT_GSOZ_PEDAL_2)
                             _Configurator.DIK_Gsoz_Pedal_P2 = s.scanCode;
+                        else if (_SelectedTextBox == Txt_Wws_P1Coin)
+                            _Configurator.DIK_Wws_P1Coin = s.scanCode;
+                        else if (_SelectedTextBox == Txt_Wws_P2Coin)
+                            _Configurator.DIK_Wws_P2Coin = s.scanCode;
+                        else if (_SelectedTextBox == Txt_Wws_Test)
+                            _Configurator.DIK_Wws_Test = s.scanCode;
                         
                         _SelectedTextBox = null;
                         _Start_KeyRecord = false;
@@ -1001,6 +1053,35 @@ namespace DemulShooter_GUI
         {
 
         }
+
+        private bool CloneDirectory(string root, string dest)
+        {
+            try
+            {
+
+                foreach (var directory in Directory.GetDirectories(root))
+                {
+                    string dirName = Path.GetFileName(directory);
+                    if (!Directory.Exists(Path.Combine(dest, dirName)))
+                    {
+                        Directory.CreateDirectory(Path.Combine(dest, dirName));
+                    }
+                    CloneDirectory(directory, Path.Combine(dest, dirName));
+                }
+
+                foreach (var file in Directory.GetFiles(root))
+                {
+                    File.Copy(file, Path.Combine(dest, Path.GetFileName(file)), true);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
+        
                                         
     }        
 }

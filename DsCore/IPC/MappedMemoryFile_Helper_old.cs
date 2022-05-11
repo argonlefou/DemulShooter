@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace DsCore.IPC
 {
-    public class MemoryMappedFileHelper
+    public class MemoryMappedFileHelper_Old
     {
         private IntPtr _hSharedMemoryFile = IntPtr.Zero;
         private IntPtr _pwData = IntPtr.Zero;
@@ -47,7 +47,7 @@ namespace DsCore.IPC
 
         #endregion
 
-        public MemoryMappedFileHelper(String strMutexName)
+        public MemoryMappedFileHelper_Old(String strMutexName)
         {
             _mmfData = new MMF_DataStruct[4];
             for (int i = 0; i < 4; i++)
@@ -59,7 +59,7 @@ namespace DsCore.IPC
                 _Mutex = new Mutex(false, strMutexName, out _IsMutexCreated); //false to not take the mutex at creation !!                
         }
 
-        ~MemoryMappedFileHelper()
+        ~MemoryMappedFileHelper_Old()
         {
             MMFClose();
         }
@@ -184,13 +184,15 @@ namespace DsCore.IPC
                         _Mutex.WaitOne();
 
                     Marshal.Copy(bytData, lngAddr, _pwData, lngSize);
-
-                    if (_Mutex != null)
-                        _Mutex.ReleaseMutex();
                 }
                 catch (Exception ex)
                 {
                     Logger.WriteLog("MappedMemoryFile_Helper.WriteByteArray() error : " + ex.Message.ToString());
+                }
+                finally
+                {
+                    if (_Mutex != null)
+                        _Mutex.ReleaseMutex();
                 }
             }
             else

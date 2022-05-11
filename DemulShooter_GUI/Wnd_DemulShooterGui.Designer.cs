@@ -154,6 +154,21 @@
             this.Bgw_XInput = new System.ComponentModel.BackgroundWorker();
             this.Cbo_PageSettings = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
+            this.Tab_WildWest = new System.Windows.Forms.TabPage();
+            this.label28 = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
+            this.Txt_Wws_Test = new System.Windows.Forms.TextBox();
+            this.Btn_Wws_InstallUnity = new System.Windows.Forms.Button();
+            this.label30 = new System.Windows.Forms.Label();
+            this.Txt_Wws_P1Coin = new System.Windows.Forms.TextBox();
+            this.Txt_Wws_P2Coin = new System.Windows.Forms.TextBox();
+            this.label32 = new System.Windows.Forms.Label();
+            this.Btn_Wws_GamePath = new System.Windows.Forms.Button();
+            this.label31 = new System.Windows.Forms.Label();
+            this.Txt_Wws_GamePath = new System.Windows.Forms.TextBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.Btn_Wws_SaveKeys = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.Tab_P1.SuspendLayout();
             this.Tab_P2.SuspendLayout();
@@ -179,6 +194,9 @@
             this.groupBox9.SuspendLayout();
             this.Tab_Outputs.SuspendLayout();
             this.Grp_Outputs.SuspendLayout();
+            this.Tab_WildWest.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox10.SuspendLayout();
             this.SuspendLayout();
             // 
             // Btn_Save_P1
@@ -208,6 +226,7 @@
             this.tabControl1.Controls.Add(this.Tab_Dolphin);
             this.tabControl1.Controls.Add(this.Tab_HeavyFire3);
             this.tabControl1.Controls.Add(this.Tab_HeavyFire4);
+            this.tabControl1.Controls.Add(this.Tab_WildWest);
             this.tabControl1.Controls.Add(this.Tab_Outputs);
             this.tabControl1.ItemSize = new System.Drawing.Size(0, 1);
             this.tabControl1.Location = new System.Drawing.Point(2, 47);
@@ -1584,6 +1603,7 @@
             "Dolphin",
             "Heavy Fire Afghanistan",
             "Heavy Fire Shattered Spear",
+            "Wild West Shoutout",
             "Outputs"});
             this.Cbo_PageSettings.Location = new System.Drawing.Point(118, 12);
             this.Cbo_PageSettings.Name = "Cbo_PageSettings";
@@ -1599,6 +1619,173 @@
             this.label39.Size = new System.Drawing.Size(104, 16);
             this.label39.TabIndex = 40;
             this.label39.Text = "Page selection :";
+            // 
+            // Tab_WildWest
+            // 
+            this.Tab_WildWest.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_WildWest.Controls.Add(this.groupBox10);
+            this.Tab_WildWest.Controls.Add(this.groupBox1);
+            this.Tab_WildWest.Location = new System.Drawing.Point(4, 5);
+            this.Tab_WildWest.Name = "Tab_WildWest";
+            this.Tab_WildWest.Size = new System.Drawing.Size(581, 334);
+            this.Tab_WildWest.TabIndex = 15;
+            this.Tab_WildWest.Text = "Wild West Shoutout";
+            this.Tab_WildWest.UseVisualStyleBackColor = true;
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(7, 32);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(371, 16);
+            this.label28.TabIndex = 68;
+            this.label28.Text = "To set a key, click a box then push the key on your keyboard :";
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label29.Location = new System.Drawing.Point(8, 78);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(60, 15);
+            this.label29.TabIndex = 66;
+            this.label29.Text = "P1 COIN :";
+            // 
+            // Txt_Wws_Test
+            // 
+            this.Txt_Wws_Test.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_Wws_Test.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_Wws_Test.Location = new System.Drawing.Point(340, 75);
+            this.Txt_Wws_Test.Name = "Txt_Wws_Test";
+            this.Txt_Wws_Test.ReadOnly = true;
+            this.Txt_Wws_Test.Size = new System.Drawing.Size(128, 21);
+            this.Txt_Wws_Test.TabIndex = 55;
+            this.Txt_Wws_Test.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_Wws_Test.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Btn_Wws_InstallUnity
+            // 
+            this.Btn_Wws_InstallUnity.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Btn_Wws_InstallUnity.Location = new System.Drawing.Point(209, 66);
+            this.Btn_Wws_InstallUnity.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_Wws_InstallUnity.Name = "Btn_Wws_InstallUnity";
+            this.Btn_Wws_InstallUnity.Size = new System.Drawing.Size(139, 38);
+            this.Btn_Wws_InstallUnity.TabIndex = 67;
+            this.Btn_Wws_InstallUnity.Text = "Install Plugin";
+            this.Btn_Wws_InstallUnity.UseVisualStyleBackColor = true;
+            this.Btn_Wws_InstallUnity.Click += new System.EventHandler(this.Btn_Wws_InstallUnity_Click);
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label30.Location = new System.Drawing.Point(254, 78);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(80, 15);
+            this.label30.TabIndex = 65;
+            this.label30.Text = "TEST MENU:";
+            // 
+            // Txt_Wws_P1Coin
+            // 
+            this.Txt_Wws_P1Coin.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_Wws_P1Coin.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_Wws_P1Coin.Location = new System.Drawing.Point(74, 75);
+            this.Txt_Wws_P1Coin.Name = "Txt_Wws_P1Coin";
+            this.Txt_Wws_P1Coin.ReadOnly = true;
+            this.Txt_Wws_P1Coin.Size = new System.Drawing.Size(127, 21);
+            this.Txt_Wws_P1Coin.TabIndex = 60;
+            this.Txt_Wws_P1Coin.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_Wws_P1Coin.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Txt_Wws_P2Coin
+            // 
+            this.Txt_Wws_P2Coin.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_Wws_P2Coin.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_Wws_P2Coin.Location = new System.Drawing.Point(74, 102);
+            this.Txt_Wws_P2Coin.Name = "Txt_Wws_P2Coin";
+            this.Txt_Wws_P2Coin.ReadOnly = true;
+            this.Txt_Wws_P2Coin.Size = new System.Drawing.Size(128, 21);
+            this.Txt_Wws_P2Coin.TabIndex = 56;
+            this.Txt_Wws_P2Coin.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_Wws_P2Coin.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label32.Location = new System.Drawing.Point(8, 104);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(60, 15);
+            this.label32.TabIndex = 64;
+            this.label32.Text = "P2 COIN :";
+            // 
+            // Btn_Wws_GamePath
+            // 
+            this.Btn_Wws_GamePath.Location = new System.Drawing.Point(525, 32);
+            this.Btn_Wws_GamePath.Name = "Btn_Wws_GamePath";
+            this.Btn_Wws_GamePath.Size = new System.Drawing.Size(27, 27);
+            this.Btn_Wws_GamePath.TabIndex = 71;
+            this.Btn_Wws_GamePath.Text = "...";
+            this.Btn_Wws_GamePath.UseVisualStyleBackColor = true;
+            this.Btn_Wws_GamePath.Click += new System.EventHandler(this.Btn_Wws_GamePath_Click);
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(6, 37);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(101, 16);
+            this.label31.TabIndex = 70;
+            this.label31.Text = "Game location :";
+            // 
+            // Txt_Wws_GamePath
+            // 
+            this.Txt_Wws_GamePath.Location = new System.Drawing.Point(113, 34);
+            this.Txt_Wws_GamePath.Name = "Txt_Wws_GamePath";
+            this.Txt_Wws_GamePath.Size = new System.Drawing.Size(406, 22);
+            this.Txt_Wws_GamePath.TabIndex = 69;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label31);
+            this.groupBox1.Controls.Add(this.Btn_Wws_GamePath);
+            this.groupBox1.Controls.Add(this.Btn_Wws_InstallUnity);
+            this.groupBox1.Controls.Add(this.Txt_Wws_GamePath);
+            this.groupBox1.Location = new System.Drawing.Point(5, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(567, 111);
+            this.groupBox1.TabIndex = 72;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Unity Plugin Install";
+            // 
+            // groupBox10
+            // 
+            this.groupBox10.Controls.Add(this.Btn_Wws_SaveKeys);
+            this.groupBox10.Controls.Add(this.label28);
+            this.groupBox10.Controls.Add(this.label32);
+            this.groupBox10.Controls.Add(this.Txt_Wws_P2Coin);
+            this.groupBox10.Controls.Add(this.label29);
+            this.groupBox10.Controls.Add(this.Txt_Wws_P1Coin);
+            this.groupBox10.Controls.Add(this.Txt_Wws_Test);
+            this.groupBox10.Controls.Add(this.label30);
+            this.groupBox10.Location = new System.Drawing.Point(3, 139);
+            this.groupBox10.Name = "groupBox10";
+            this.groupBox10.Size = new System.Drawing.Size(568, 189);
+            this.groupBox10.TabIndex = 73;
+            this.groupBox10.TabStop = false;
+            this.groupBox10.Text = "System Key Configuration";
+            // 
+            // Btn_Wws_SaveKeys
+            // 
+            this.Btn_Wws_SaveKeys.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Btn_Wws_SaveKeys.Location = new System.Drawing.Point(211, 144);
+            this.Btn_Wws_SaveKeys.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_Wws_SaveKeys.Name = "Btn_Wws_SaveKeys";
+            this.Btn_Wws_SaveKeys.Size = new System.Drawing.Size(139, 38);
+            this.Btn_Wws_SaveKeys.TabIndex = 72;
+            this.Btn_Wws_SaveKeys.Text = "Save Keys";
+            this.Btn_Wws_SaveKeys.UseVisualStyleBackColor = true;
+            this.Btn_Wws_SaveKeys.Click += new System.EventHandler(this.Btn_Wws_SaveKeys_Click);
             // 
             // Wnd_DemulShooterGui
             // 
@@ -1658,6 +1845,11 @@
             this.Tab_Outputs.PerformLayout();
             this.Grp_Outputs.ResumeLayout(false);
             this.Grp_Outputs.PerformLayout();
+            this.Tab_WildWest.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox10.ResumeLayout(false);
+            this.groupBox10.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1790,6 +1982,21 @@
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.TextBox Txt_OutputRecoilOff;
+        private System.Windows.Forms.TabPage Tab_WildWest;
+        private System.Windows.Forms.GroupBox groupBox10;
+        private System.Windows.Forms.Button Btn_Wws_SaveKeys;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.TextBox Txt_Wws_P2Coin;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.TextBox Txt_Wws_P1Coin;
+        private System.Windows.Forms.TextBox Txt_Wws_Test;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Button Btn_Wws_GamePath;
+        private System.Windows.Forms.Button Btn_Wws_InstallUnity;
+        private System.Windows.Forms.TextBox Txt_Wws_GamePath;
     }
 }
 

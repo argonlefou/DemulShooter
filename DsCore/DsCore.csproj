@@ -60,8 +60,10 @@
   <ItemGroup>
     <Compile Include="Config\Configurator.cs" />
     <Compile Include="Config\PlayerSettings.cs" />
-    <Compile Include="IPC\MappedMemoryFile_Helper.cs" />
+    <Compile Include="IPC\MappedMemoryFileHelper.cs" />
+    <Compile Include="IPC\MappedMemoryFile_Helper_old.cs" />
     <Compile Include="IPC\MMF_DataStruct.cs" />
+    <Compile Include="IPC\MMFH_WildWestShoutout.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MameOutput\AsyncGameOutput.cs" />
     <Compile Include="MameOutput\BlinkGameOutput.cs" />

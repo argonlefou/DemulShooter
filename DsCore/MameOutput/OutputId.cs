@@ -118,5 +118,9 @@ namespace DsCore.MameOutput
         P2_Damaged,
         P3_Damaged,
         P4_Damaged,
+        P1_Credit,
+        P2_Credit,
+        P3_Credit,
+        P4_Credit
     }
 }

@@ -33,15 +33,16 @@ namespace DemulShooter
 
             bool isVerbose = false;
 
-            String[] _Targets = new string[] { "chihiro", "demul057", "demul058", "demul07a", "dolphin5", "globalvr", "lindbergh", "model2", "ringwide", "ttx", "windows", "wip" };
+            String[] _Targets = new string[] { "chihiro", "coastal", "demul057", "demul058", "demul07a", "dolphin5", "globalvr", "lindbergh", "model2", "ringwide", "ttx", "windows", "wip" };
+            String[] _ChihiroRoms = new string[] { "vcop3" };
+            String[] _CoastalRoms = new string[] { "wws" };            
             String[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "manicpnc", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
-            String[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
-            String[] _WindowsRoms = new string[] { "artdead", "friction", "hfa", "hfa2p", "hfa2p", "hfss", "hfss2p", "hod2pc", "hod3pc", "hodo", "reload" };
-            String[] _TTXRoms = new string[] { "bkbs", "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
             String[] _GlobalVrRoms = new string[] { "aliens", "farcry", "fearland" };
             String[] _LindberghRoms = new string[] { "2spicy", "hotd4", "lgj", "lgjsp", "rambo" };
+            String[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
             String[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr", "tha" };
-            String[] _ChihiroRoms = new string[] { "vcop3" };
+            String[] _TTXRoms = new string[] { "bkbs", "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
+            String[] _WindowsRoms = new string[] { "artdead", "friction", "hfa", "hfa2p", "hfa2p", "hfss", "hfss2p", "hod2pc", "hod3pc", "hodo", "reload" };
             String[] _WipRoms = new string[] { "bestate", "wartran", "bhapc" };
 
             if (args.Length > 0)
@@ -61,6 +62,7 @@ namespace DemulShooter
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [target] :");
+                        Console.WriteLine("coastal\t\tCoastal Arcade");
                         Console.WriteLine("chihiro\t\tCxbx-Reloaded");
                         Console.WriteLine("demul057\tDemul v0.57");
                         Console.WriteLine("demul058\tDemul v0.582");
@@ -74,6 +76,9 @@ namespace DemulShooter
                         Console.WriteLine("windows\t\tWindows games");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [rom] :");
+                        Console.WriteLine("Coastal roms :");
+                        Console.WriteLine(" wws\t\tWild West Shoutout");
+                        Console.WriteLine("");
                         Console.WriteLine("Chihiro roms :");
                         Console.WriteLine(" vcop3\t\tVirtua Cop 3");
                         Console.WriteLine("");
@@ -200,6 +205,14 @@ namespace DemulShooter
                             if (!CheckParameter(strRom, _ChihiroRoms))
                             {
                                 Console.WriteLine("\n\n\tUnsupported Chihiro rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
+                        else if (strTarget.StartsWith("coastal"))
+                        {
+                            if (!CheckParameter(strRom, _CoastalRoms))
+                            {
+                                Console.WriteLine("Unsupported Coastal rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
                         }

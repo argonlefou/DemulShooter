@@ -56,8 +56,8 @@ namespace DemulShooterX64
         private const String DEMULSHOOTER_OUTPUTS_MUTEX_NAME = "DemulShooter_Outputs_Mutex";
         private bool _EnableInputsIpc = false;
         private bool _EnableOutputsIpc = false;
-        private DsCore.IPC.MemoryMappedFileHelper _MMF_Inputs;
-        private DsCore.IPC.MemoryMappedFileHelper _MMF_Outputs;
+        private DsCore.IPC.MemoryMappedFileHelper_Old _MMF_Inputs;
+        private DsCore.IPC.MemoryMappedFileHelper_Old _MMF_Outputs;
 
         public DemulShooterWindowX64(string[] Args, bool isVerbose)
         {
@@ -154,12 +154,12 @@ namespace DemulShooterX64
             //Setting up IPC for inputs/outputs
             if (_EnableInputsIpc)
             {
-                _MMF_Inputs = new DsCore.IPC.MemoryMappedFileHelper(DEMULSHOOTER_INPUTS_MUTEX_NAME);
+                _MMF_Inputs = new DsCore.IPC.MemoryMappedFileHelper_Old(DEMULSHOOTER_INPUTS_MUTEX_NAME);
                 _MMF_Inputs.MMFInit(DEMULSHOOTER_INPUTS_MMF_NAME, 2048);
             }
             if (_EnableOutputsIpc)
             {
-                _MMF_Outputs = new DsCore.IPC.MemoryMappedFileHelper(DEMULSHOOTER_OUTPUTS_MUTEX_NAME);
+                _MMF_Outputs = new DsCore.IPC.MemoryMappedFileHelper_Old(DEMULSHOOTER_OUTPUTS_MUTEX_NAME);
                 _MMF_Outputs.MMFInit(DEMULSHOOTER_OUTPUTS_MMF_NAME, 2048);
             }
 

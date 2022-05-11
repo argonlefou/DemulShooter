@@ -182,6 +182,34 @@ namespace DsCore.Config
         }
         #endregion
 
+        //Wild West Shoutout Path and Keys
+        private String _Wws_Path = string.Empty;
+        private HardwareScanCode _DIK_Wws_Test = HardwareScanCode.DIK_0;
+        private HardwareScanCode _DIK_Wws_P1Coin = HardwareScanCode.DIK_5;
+        private HardwareScanCode _DIK_Wws_P2Coin = HardwareScanCode.DIK_6;
+        #region Accessors
+        public String Wws_Path
+        {
+            get { return _Wws_Path; }
+            set { _Wws_Path = value; }
+        }
+        public HardwareScanCode DIK_Wws_Test
+        {
+            get { return _DIK_Wws_Test; }
+            set { _DIK_Wws_Test = value; }
+        }
+        public HardwareScanCode DIK_Wws_P1Coin
+        {
+            get { return _DIK_Wws_P1Coin; }
+            set { _DIK_Wws_P1Coin = value; }
+        }
+        public HardwareScanCode DIK_Wws_P2Coin
+        {
+            get { return _DIK_Wws_P2Coin; }
+            set { _DIK_Wws_P2Coin = value; }
+        }
+        #endregion
+
         //Specific setting for Operation Ghost CREDITS (the game is not using the E2PROM file at launch)
         //And Game Test options are available in gs2.ini config file
         private bool _OpGHost_EnableFreeplay = false;
@@ -419,6 +447,37 @@ namespace DsCore.Config
                                     if (!int.TryParse(StrValue, out _HF4_CoverSensibility))
                                         Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
+
+                                else if (StrKey.ToLower().Equals("wws_path"))
+                                {
+                                    _Wws_Path = StrValue;
+                                }
+                                else if (StrKey.ToLower().Equals("wws_p1_coin_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Wws_P1Coin = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("wws_p2_coin_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Wws_P2Coin = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("wws_p1_test_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Wws_Test = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+
+
                                 else if (StrKey.ToLower().Equals("opghost_enablefreeplay"))
                                 {
                                     if (!bool.TryParse(StrValue, out _OpGHost_EnableFreeplay))
@@ -612,6 +671,12 @@ namespace DsCore.Config
                     sr.WriteLine(";Heavy Fire Shattered Spear settings");
                     sr.WriteLine("HF4_Path = " + _HF4_Path);
                     sr.WriteLine("HF4_CoverSensibility = " + _HF4_CoverSensibility.ToString());
+                    sr.WriteLine("");
+                    sr.WriteLine(";Wild West Shoutout settings");
+                    sr.WriteLine("WWS_Path = " + _Wws_Path);
+                    sr.WriteLine("WWS_P1_COIN_KEY = " + _DIK_Wws_P1Coin.ToString());
+                    sr.WriteLine("WWS_P2_COIN_KEY = " + _DIK_Wws_P2Coin.ToString());
+                    sr.WriteLine("WWS_TEST_KEY = " + _DIK_Wws_Test.ToString());
                     sr.WriteLine("");
                     sr.WriteLine(";Operation G.H.O.S.T credits settings");
                     sr.WriteLine("OpGhost_EnableFreeplay = " + _OpGHost_EnableFreeplay.ToString());

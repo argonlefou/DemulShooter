@@ -91,10 +91,6 @@ namespace DemulShooter
                             //Wait for game to load settings
                             if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets) != 0)
                             {
-                                //Force Calibration values
-                                WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets + 0x58, new byte[] { 0x00, 0xFF, 0x00, 0xFF });
-                                WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets + 0x60, new byte[] { 0x00, 0xFF, 0x00, 0xFF });
-
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
@@ -104,9 +100,14 @@ namespace DemulShooter
                                 CreateDataBank();
                                 SetHack_RecoilP1();
                                 SetHack_RecoilP2();
-                           
+
                                 if (!_DisableInputHack)
-                                    SetHack();
+                                {
+                                    //Force Calibration values
+                                    WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets + 0x58, new byte[] { 0x00, 0xFF, 0x00, 0xFF });
+                                    WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets + 0x60, new byte[] { 0x00, 0xFF, 0x00, 0xFF });
+                                    SetHack();                                    
+                                }
                                 else
                                     Logger.WriteLog("Input Hack disabled");
                                 
