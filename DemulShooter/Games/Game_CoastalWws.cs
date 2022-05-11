@@ -246,7 +246,7 @@ namespace DemulShooter
                 else if (PlayerData.ID == 2)
                 {
                     Array.Copy(BitConverter.GetBytes(_P2_Shoot_X), 0, _Mmfh.Payload, MMFH_WildWestShoutout.INDEX_P2_INGAME_X, 4);
-                    Array.Copy(BitConverter.GetBytes(_P2_Shoot_X), 0, _Mmfh.Payload, MMFH_WildWestShoutout.INDEX_P2_INGAME_Y, 4);
+                    Array.Copy(BitConverter.GetBytes(_P2_Shoot_Y), 0, _Mmfh.Payload, MMFH_WildWestShoutout.INDEX_P2_INGAME_Y, 4);
                     Array.Copy(BitConverter.GetBytes(_P2_UIController_X), 0, _Mmfh.Payload, MMFH_WildWestShoutout.INDEX_P2_UISCREEN_X, 4);
                     Array.Copy(BitConverter.GetBytes(_P2_UIController_Y), 0, _Mmfh.Payload, MMFH_WildWestShoutout.INDEX_P2_UISCREEN_Y, 4);
                     
