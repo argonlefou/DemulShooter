@@ -13,6 +13,8 @@ namespace DemulShooter
 {
     class Game_TtxHauntedMuseum2 : Game
     {
+        private const String GAMEDATA_FOLDER = @"MemoryData\ttx\hmuseum2";
+
         /*** MEMORY ADDRESSES **/
         private UInt32 _Axis_Injection_Offset = 0x0009ECD0;
         private UInt32 _Axis_Injection_Return_Offset = 0x0009ECDD;
@@ -23,6 +25,15 @@ namespace DemulShooter
 
         private UInt32 _ScreenWidth_Offset = 0x00332EF0;
         private UInt32 _ScreenHeight_Offset = 0x00332EF4;
+
+        private UInt32 _Outputs_Offset = 0x0029AE434;
+        private UInt32 _Credits_Offset = 0x00AE7AF8;
+        private UInt32 _P1_Status_Offset = 0x00AD1704;
+        private UInt32 _P1_Ammo_Offset = 0x00AD40DC;
+        private UInt32 _P1_Life_Offset = 0x00AD4028;
+        private UInt32 _P2_Status_Offset = 0x00AD170C;
+        private UInt32 _P2_Ammo_Offset = 0x00AD4168;
+        private UInt32 _P2_Life_Offset = 0x00AD4034;
 
         private UInt32 _P1_X_CaveAddress;
         private UInt32 _P1_Y_CaveAddress;
@@ -43,10 +54,14 @@ namespace DemulShooter
         {
             _AlternativeGameplay = AlternativeGameplay;
 
-            _KnownMd5Prints.Add("Haunted Museum 2 v1.01 - Original", "ede2a10fe37221d3994f31553b3a4ef5");
-            _KnownMd5Prints.Add("Haunted Museum 2 v1.01 - Original patched  for NoCrosshair ", "e7d9f02fa52130707c16e9a83ba72dff");
-            _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - For JConfig (v1)", "264d671b83282a09701b27f2249c5d0d");
-            _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - For JConfig (v2)", "9b5567bda69941923feb3f2e05619c68");
+            _KnownMd5Prints.Add("Haunted Museum 2 v1.01 JPN - First Release", "ede2a10fe37221d3994f31553b3a4ef5");
+            _KnownMd5Prints.Add("Haunted Museum 2 v1.01 JPN - First Release patched  for NoCrosshair ", "e7d9f02fa52130707c16e9a83ba72dff");
+            _KnownMd5Prints.Add("Haunted Museum 2 v1.01 JPN - Second release", "fb493eda4cbc8a0866fa733fb784f0e5");
+            _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - For JConfig (v1.6) - game_v1.00_BGR.exe", "9b5567bda69941923feb3f2e05619c68"); 
+            _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - For JConfig (v1.6) - game_v1.00_BGR.exe patched  for NoCrosshair", "f8c9d82705e04e4e03e010ce51ffc16b"); 
+            _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - For JConfig (v1.6) - game_v1.01_JPN.exe", "264d671b83282a09701b27f2249c5d0d"); 
+            _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - For JConfig (v1.6) - game_v1.01_JPN.exe patched  for NoCrosshair", "6b6452843f2d07fd66814e7d0d6af765");
+            _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - For JConfig (v1.6) - game_v1.01_JPN_v2.exe", "0e8f49eb448ff7c9bd448940a53ac16a");
 
             _tProcess.Start();
             Logger.WriteLog("Waiting for Taito type X " + _RomName + " game to hook.....");
@@ -74,6 +89,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
+                            ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
                             if (!_DisableInputHack)
                                 SetHack();
                             else
@@ -481,20 +497,20 @@ namespace DemulShooter
         /// </summary>
         public override void UpdateOutputValues()
         {
-            int P1_RecoilState = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0029AE434) >> 5 & 0x01;
-            int P1_RumbleState = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0029AE436) >> 2 & 0x01;
-            int P2_RecoilState = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0029AE434) >> 4 & 0x01;
-            int P2_RumbleState = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0029AE436) >> 1 & 0x01;
+            int P1_RecoilState = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset) >> 5 & 0x01;
+            int P1_RumbleState = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset + 2) >> 2 & 0x01;
+            int P2_RecoilState = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset) >> 4 & 0x01;
+            int P2_RumbleState = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset + 2) >> 1 & 0x01;
 
             //Orginal
-            SetOutputValue(OutputId.P1_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0029AE436) >> 6 & 0x01);
-            SetOutputValue(OutputId.P2_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0029AE436) >> 5 & 0x01);
-            SetOutputValue(OutputId.P1_Lmp_R, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0029AE436) >> 7 & 0x01);
-            SetOutputValue(OutputId.P1_Lmp_G, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0029AE436) >> 4 & 0x01);
-            SetOutputValue(OutputId.P1_Lmp_B, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0029AE436) >> 3 & 0x01);
-            SetOutputValue(OutputId.P2_Lmp_R, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0029AE435) >> 7 & 0x01);
-            SetOutputValue(OutputId.P2_Lmp_G, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0029AE435) >> 6 & 0x01);
-            SetOutputValue(OutputId.P2_Lmp_B, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0029AE435) >> 5 & 0x01);
+            SetOutputValue(OutputId.P1_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset + 2) >> 6 & 0x01);
+            SetOutputValue(OutputId.P2_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset + 2) >> 5 & 0x01);
+            SetOutputValue(OutputId.P1_Lmp_R, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset + 2) >> 7 & 0x01);
+            SetOutputValue(OutputId.P1_Lmp_G, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset + 2) >> 4 & 0x01);
+            SetOutputValue(OutputId.P1_Lmp_B, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset + 2) >> 3 & 0x01);
+            SetOutputValue(OutputId.P2_Lmp_R, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset + 1) >> 7 & 0x01);
+            SetOutputValue(OutputId.P2_Lmp_G, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset + 1) >> 6 & 0x01);
+            SetOutputValue(OutputId.P2_Lmp_B, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset + 1) >> 5 & 0x01);
             SetOutputValue(OutputId.P1_GunRecoil, P1_RecoilState);
             SetOutputValue(OutputId.P1_GunMotor, P1_RumbleState);
             SetOutputValue(OutputId.P2_GunRecoil, P2_RecoilState);
@@ -511,20 +527,20 @@ namespace DemulShooter
             //[1] : In-Game
             //[2] : Continue Screen
             //[3] : Game Over
-            int P1_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00AD1704);
+            int P1_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Status_Offset);
             if (P1_Status == 1)
             {
-                P1_Ammo =  BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00AD40DC, 4), 0);
-                P1_Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00AD4028, 4), 0));
+                P1_Ammo =  BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Ammo_Offset, 4), 0);
+                P1_Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Life_Offset, 4), 0));
                 if (P1_Life < 0)
                     P1_Life = 0;
             }
 
-            int P2_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00AD170C);
+            int P2_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Status_Offset);
             if (P2_Status == 1)
             {
-                P2_Ammo = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00AD4168, 4), 0);
-                P2_Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00AD4034, 4), 0));
+                P2_Ammo = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Ammo_Offset, 4), 0);
+                P2_Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Life_Offset, 4), 0));
                 if (P2_Life < 0)
                     P2_Life = 0;
             }
@@ -539,7 +555,7 @@ namespace DemulShooter
             //Custom Damaged will simply be activated just like original rumble
             SetOutputValue(OutputId.P1_Damaged, P1_RumbleState);
             SetOutputValue(OutputId.P2_Damaged, P2_RumbleState);
-            SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00AE7AF8));
+            SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset));
         }
 
         #endregion

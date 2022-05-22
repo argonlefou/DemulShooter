@@ -232,7 +232,7 @@ namespace DemulShooter
             //je Player2
             CaveMemory.Write_StrBytes("0F 84 1B 00 00 00");
             //jmp exit
-            CaveMemory.Write_StrBytes("E9 33 00 00 00");
+            CaveMemory.Write_StrBytes("E9 30 00 00 00");
             //Player1 :
             //mov eax, [_P1_Buttons_CaveAddress]
             byte[] b = BitConverter.GetBytes(_P1_Buttons_CaveAddress);
@@ -262,12 +262,12 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 0D");
             CaveMemory.Write_Bytes(b);
             //originalcode:
-            //mov [edx+0x23], ax
-            CaveMemory.Write_StrBytes("66 89 42 23");
-            //mov [edx+0x24], bx
-            CaveMemory.Write_StrBytes("66 89 5A 24");
-            //mov [edx+0x29], cx
-            CaveMemory.Write_StrBytes("66 89 4A 29");
+            //mov [edx+0x23], al
+            CaveMemory.Write_StrBytes("88 42 23");
+            //mov [edx+0x24], bl
+            CaveMemory.Write_StrBytes("88 5A 24");
+            //mov [edx+0x29], cl
+            CaveMemory.Write_StrBytes("88 4A 29");
             //exit:
             //pop ecx
             CaveMemory.Write_StrBytes("59");

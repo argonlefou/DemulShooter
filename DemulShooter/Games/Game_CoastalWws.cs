@@ -5,11 +5,10 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
+using DsCore.IPC;
 using DsCore.MameOutput;
-using DsCore.Memory;
 using DsCore.RawInput;
 using DsCore.Win32;
-using DsCore.IPC;
 
 
 namespace DemulShooter
@@ -72,16 +71,21 @@ namespace DemulShooter
 
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
-                            Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
-                            Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                            String AssemblyDllPath = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", @"CowBoy_Data\Managed\Assembly-CSharp.dll");
-                            CheckMd5(AssemblyDllPath);
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
-                            _ProcessHooked = true;
-                            RaiseGameHookedEvent();  
+                            // The game may start with other Windows than the main one (BepInEx console, other stuff.....) so we need to filter
+                            // the displayed window according to the Title, if DemulShooter is started before the game,  to hook the correct one
+                            if (_TargetProcess.MainWindowHandle != IntPtr.Zero && _TargetProcess.MainWindowTitle == "CowBoy")
+                            {
+                                Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
+                                Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
+                                String AssemblyDllPath = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", @"CowBoy_Data\Managed\Assembly-CSharp.dll");
+                                CheckMd5(AssemblyDllPath);
+                                if (!_DisableInputHack)
+                                    SetHack();
+                                else
+                                    Logger.WriteLog("Input Hack disabled");
+                                _ProcessHooked = true;
+                                RaiseGameHookedEvent();
+                            }
                         }
                     }
                 }
