@@ -7,6 +7,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+#Copyrighted Dll for Unity plugin
+gameLibs/*.dll
+
 # User-specific files
 *.suo
 *.user
