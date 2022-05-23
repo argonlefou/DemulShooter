@@ -14,7 +14,10 @@
 *.sln.docstates
 
 #Licenced DLL for Unity plugin
-*.dll
+Assembly-CSharp.dll
+UnityEngine.dll
+UnityEngine.Networking.dll
+UnityEngine.UI.dll
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
