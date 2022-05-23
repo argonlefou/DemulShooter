@@ -32,15 +32,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>Unitydll\0Harmony.dll</HintPath>
+      <HintPath>UnityLibs\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>Unitydll\Assembly-CSharp.dll</HintPath>
+      <HintPath>UnityLibs\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>Unitydll\BepInEx.dll</HintPath>
+      <HintPath>UnityLibs\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -51,15 +51,15 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>Unitydll\UnityEngine.dll</HintPath>
+      <HintPath>UnityLibs\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.Networking">
-      <HintPath>Unitydll\UnityEngine.Networking.dll</HintPath>
+      <HintPath>UnityLibs\UnityEngine.Networking.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>Unitydll\UnityEngine.UI.dll</HintPath>
+      <HintPath>UnityLibs\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
