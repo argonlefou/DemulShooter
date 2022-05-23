@@ -13,6 +13,9 @@
 *.userosscache
 *.sln.docstates
 
+#Licenced DLL for Unity plugin
+*.dll
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
