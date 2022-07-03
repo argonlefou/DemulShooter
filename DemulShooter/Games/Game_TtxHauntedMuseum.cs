@@ -233,10 +233,10 @@ namespace DemulShooter
 
             _P1_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x00;
             _P2_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x04;
-            _P1_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x00;
-            _P2_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x04;
+            _P1_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x10;
+            _P2_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x14;
 
-            Logger.WriteLog("Custom Outputs data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));
+            Logger.WriteLog("Custom Outputs data will be stored at : 0x" + _P1_RecoilStatus_CaveAddress.ToString("X8"));
         }
 
         /// <summary>
