@@ -73,8 +73,10 @@ namespace UnityPlugin_BepInEx_WWS
                         b[5] = 0;
                         b[6] = 0;
                         ___m_recv_pack.Add(b);
-                        Demulshooter_Plugin.WWS_Mmf.Payload[WWS_MemoryMappedFile_Controller.INDEX_P1_TRIGGER] = 0;
-                        Demulshooter_Plugin.WWS_Mmf.Payload[WWS_MemoryMappedFile_Controller.INDEX_P2_TRIGGER] = 0;
+
+                        //Removed triggers value reset, causing bugs with autofire and simultaneous trigger press :
+                        /*Demulshooter_Plugin.WWS_Mmf.Payload[WWS_MemoryMappedFile_Controller.INDEX_P1_TRIGGER] = 0;
+                        Demulshooter_Plugin.WWS_Mmf.Payload[WWS_MemoryMappedFile_Controller.INDEX_P2_TRIGGER] = 0;*/
                     }
                     
                     //Adding CREDITS to Player 1

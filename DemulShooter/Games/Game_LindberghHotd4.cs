@@ -103,6 +103,7 @@ namespace DemulShooter
                                 else
                                     Logger.WriteLog("Input Hack disabled");
                                 _ProcessHooked = true;
+                                RaiseGameHookedEvent();
                             }
                             else
                             {
@@ -114,7 +115,10 @@ namespace DemulShooter
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                     ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                    SetHack();
+                                    if (!_DisableInputHack)
+                                        SetHack();
+                                    else
+                                        Logger.WriteLog("Input Hack disabled");
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
                                 }
