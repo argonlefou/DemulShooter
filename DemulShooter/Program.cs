@@ -12,13 +12,13 @@ namespace DemulShooter
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool FreeConsole();
         [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();        
+        static extern IntPtr GetConsoleWindow();
         [DllImport("user32.dll")]
         static extern int SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-        
-        const uint  WM_CHAR                 = 0x0102;
-        const int   VK_ENTER                = 0x0D;
-        const int   ATTACH_PARENT_PROCESS   = -1;
+
+        const uint WM_CHAR = 0x0102;
+        const int VK_ENTER = 0x0D;
+        const int ATTACH_PARENT_PROCESS = -1;
 
         static IntPtr ConsoleHwnd = IntPtr.Zero;
 
@@ -33,20 +33,21 @@ namespace DemulShooter
 
             bool isVerbose = false;
 
-            String[] _Targets = new string[] { "chihiro", "coastal", "demul057", "demul058", "demul07a", "dolphin5", "globalvr", "lindbergh", "model2", "ringwide", "ttx", "windows", "wip" };
+            String[] _Targets = new string[] { "chihiro", "coastal", "demul057", "demul058", "demul07a", "dolphin5", "globalvr", "lindbergh", "model2", "rawthrill", "ringwide", "ttx", "windows", "wip" };
             String[] _ChihiroRoms = new string[] { "vcop3" };
-            String[] _CoastalRoms = new string[] { "wws" };            
+            String[] _CoastalRoms = new string[] { "wws" };
             String[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "manicpnc", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
             String[] _GlobalVrRoms = new string[] { "aliens", "farcry", "fearland" };
             String[] _LindberghRoms = new string[] { "2spicy", "hotd4", "lgj", "lgjsp", "rambo" };
             String[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
+            String[] _RawThrillRoms = new string[] { "ts", "aa" };
             String[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr", "tha" };
             String[] _TTXRoms = new string[] { "bkbs", "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
             String[] _WindowsRoms = new string[] { "artdead", "friction", "hfa", "hfa2p", "hfa2p", "hfss", "hfss2p", "hod2pc", "hod3pc", "hodo", "reload" };
             String[] _WipRoms = new string[] { "bestate", "wartran", "bhapc" };
 
             if (args.Length > 0)
-            {      
+            {
                 for (int i = 0; i < args.Length; i++)
                 {
                     if (args[i].ToLower().Equals("-h") || args[i].ToLower().Equals("--help") || args[i].ToLower().Equals("-?"))
@@ -71,6 +72,7 @@ namespace DemulShooter
                         Console.WriteLine("globalvr\tGlobal VR");
                         Console.WriteLine("lindbergh\tTeknoParrot Loader");
                         Console.WriteLine("model2\t\tNebula Model2Emulator v1.1a");
+                        Console.WriteLine("rawthrill\tTeknoparrot Loader");
                         Console.WriteLine("ringwide\tTeknoParrot Loader");
                         Console.WriteLine("ttx\t\tTaito Type X");
                         Console.WriteLine("windows\t\tWindows games");
@@ -124,6 +126,10 @@ namespace DemulShooter
                         Console.WriteLine(" rchase2\tRail Chase 2");
                         Console.WriteLine(" vcop\t\tVirtua Cop");
                         Console.WriteLine(" vcop2\t\tVirtua Cop 2");
+                        Console.WriteLine("");
+                        Console.WriteLine("Raw Thrill roms :");
+                        Console.WriteLine(" ts\t\tTerminator Salvation");
+                        //Console.WriteLine(" aa\t\tAliens Armageddon");
                         Console.WriteLine("");
                         Console.WriteLine("Ringwide roms :");
                         Console.WriteLine(" sgg\t\tSega Golden Gun");
@@ -248,6 +254,14 @@ namespace DemulShooter
                                 ExitConsole();
                             }
                         }
+                        else if (strTarget.Equals("rawthrill"))
+                        {
+                            if (!CheckParameter(strRom, _RawThrillRoms))
+                            {
+                                Console.WriteLine("Unsupported Raw Thrill rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
                         else if (strTarget.Equals("ringwide"))
                         {
                             if (!CheckParameter(strRom, _RingWideRoms))
@@ -297,7 +311,7 @@ namespace DemulShooter
             {
                 Console.WriteLine("\n\n\tMissing parameter!\n\tSee help with DemulShooter.exe -h for correct usage.");
                 ExitConsole();
-            }            
+            }
         }
 
         static string GetDaySuffix(int day)

@@ -472,6 +472,18 @@ namespace DemulShooter
                     }
                 }
 
+                //Raw Thrill Games
+                else if (_Target.Equals("rawthrill"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "ts":
+                            {
+                                _Game = new Game_RtTerminatorSalvation(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
+                            } break;
+                    }
+                }
+
                 //Ring system
                 else if (_Target.Equals("ringwide"))
                 {
@@ -546,7 +558,7 @@ namespace DemulShooter
                         case "sha":
                             {
                                 _Game = new Game_TtxSha(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
-                            } break;                        
+                            } break;
                     }
                 }
 
@@ -562,7 +574,7 @@ namespace DemulShooter
                         case "friction":
                             {
                                 _Game = new Game_WndFriction(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
-                            }break;
+                            } break;
                         case "hfa":
                             {
                                 _Game = new Game_WndHeavyFire3Pc("hfa", _Configurator.HF3_Path, _Configurator.HF3_CoverSensibility, _NoInput, false, isVerbose);
