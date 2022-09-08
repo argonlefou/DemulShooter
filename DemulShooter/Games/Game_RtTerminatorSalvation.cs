@@ -19,15 +19,21 @@ namespace DemulShooter
         //Outputs Address
         private UInt32 _P1_Ammo_Address = 0x88DBF68;
         private UInt32 _P2_Ammo_Address = 0x88DBF7C;
-        private UInt32 _Output_Life_BaseAddress = 0x88CC240;
+        private UInt32 _Lamp_Address = 0x88AE748;
+        private UInt32 _GameState_Address = 0x088CD028;
+        private UInt32 _P1_PlayerStruct_Address = 0x088CC240;
+        private UInt32 _P2_PlayerStruct_Address = 0x088CC2BC;
+        private UInt32 _Recoil_Injection_Address = 0x0811FCF2;
+        private UInt32 _Recoil_Injection_ReturnAddress = 0x0811FCFC;
+        private UInt32 _P1_CustomRecoil_CaveAddress = 0;
+        private UInt32 _P2_CustomRecoil_CaveAddress = 0;
+
         private int _P1_LastLife = 0;
         private int _P2_LastLife = 0;
         private int _P1_Life = 0;
         private int _P2_Life = 0;
-        private int _P1_LastAmmo = 0;
-        private int _P2_LastAmmo = 0;
         private int _P1_Ammo = 0;
-        private int _P2_Ammo = 0;        
+        private int _P2_Ammo = 0;
 
         /// <summary>
         /// Constructor
@@ -68,7 +74,8 @@ namespace DemulShooter
                                 _TargetProcess_Md5Hash = _KnownMd5Prints["Terminator Salvation - 01.25 USA"];
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                                
+
+                                SetHack_Output();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -99,6 +106,75 @@ namespace DemulShooter
             }
         }
 
+        #region Memory Hack
+
+        //Teknoparrot does not emulate the gun board, so the game is not proceding to the real hardware motor engine
+        //To get recoil, we cannot compute Ammo difference, because some weapons have infinite ammo
+        //This game's procedure is called everytime a bullet is fire to choose what the game is going to do according to the current weapon.
+        //Player index is in ESI
+        private void SetHack_Output()
+        {
+            //Create Databak to store our value
+            CreateDataBank();
+
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //mov eax,[_P1_CustomRecoil_CaveAddress]
+            byte[] b = BitConverter.GetBytes(_P1_CustomRecoil_CaveAddress);
+            CaveMemory.Write_StrBytes("B8");
+            CaveMemory.Write_Bytes(b);
+            //mov [eax+esi*4], 1
+            CaveMemory.Write_StrBytes("C7 04 B0 01 00 00 00");
+            //pop eax"
+            CaveMemory.Write_StrBytes("58");
+            //cmp dword ptr[edi+10], 09
+            CaveMemory.Write_StrBytes("83 7F 10 09");
+            //ja 0811FF5E
+            CaveMemory.Write_ja(0x0811FF5E);
+            CaveMemory.Write_jmp(_Recoil_Injection_ReturnAddress);
+
+            Logger.WriteLog("Adding Recoil Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - _Recoil_Injection_Address - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemory(ProcessHandle, _Recoil_Injection_Address, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);        
+
+            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
+        /// <summary>
+        /// Creating a zone in memory where we will save recoil status, updated by the game.
+        /// This memory will then be read by the game thanks to the following hacks.
+        /// </summary>
+        private void CreateDataBank()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            _P1_CustomRecoil_CaveAddress = CaveMemory.CaveAddress;
+            _P2_CustomRecoil_CaveAddress = CaveMemory.CaveAddress + 0x04;
+
+            Logger.WriteLog("Custom data will be stored at : 0x" + _P1_CustomRecoil_CaveAddress.ToString("X8"));
+        }
+
+        #endregion
 
         #region Outputs
 
@@ -110,7 +186,17 @@ namespace DemulShooter
             //Gun motor : Is activated permanently while trigger is pressed
             _Outputs = new List<GameOutput>();
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpStart, OutputId.P1_LmpStart));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpHolder, OutputId.P1_LmpHolder));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpGun_B, OutputId.P1_LmpGun_B));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpGun_G, OutputId.P1_LmpGun_G));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpGun, OutputId.P1_LmpGun));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpHolder, OutputId.P2_LmpHolder));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpStart, OutputId.P2_LmpStart));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpGun_B, OutputId.P2_LmpGun_B));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpGun_G, OutputId.P2_LmpGun_G));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpGun, OutputId.P2_LmpGun));
+            _Outputs.Add(new GameOutput(OutputDesciption.LmpBillboard, OutputId.LmpBillboard));  
+            //In Teknoparrot, Guns hardware is not emulated, so the game is not running original gun recoil procedures 
             /*_Outputs.Add(new GameOutput(OutputDesciption.P1_GunMotor, OutputId.P1_GunMotor));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunMotor, OutputId.P2_GunMotor));*/
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
@@ -123,7 +209,7 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
+            //_Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
         /// <summary>
@@ -132,8 +218,17 @@ namespace DemulShooter
         public override void UpdateOutputValues()
         {
             //Original Outputs
-            SetOutputValue(OutputId.P1_LmpStart, ReadByte(0x088AE768) & 0x01);
-            SetOutputValue(OutputId.P2_LmpStart, ReadByte(0x088AE778) & 0x01);            
+            SetOutputValue(OutputId.P1_LmpStart, ReadByte(_Lamp_Address + 0x20) & 0x01);            
+            SetOutputValue(OutputId.P1_LmpHolder, ReadByte(_Lamp_Address + 0x08) & 0x01);
+            SetOutputValue(OutputId.P1_LmpGun_B, ReadByte(_Lamp_Address + 0x60) & 0x01);
+            SetOutputValue(OutputId.P1_LmpGun_G, ReadByte(_Lamp_Address + 0x70) & 0x01);
+            SetOutputValue(OutputId.P1_LmpGun, ReadByte(_Lamp_Address + 0x68) & 0x01);
+            SetOutputValue(OutputId.P2_LmpStart, ReadByte(_Lamp_Address + 0x30) & 0x01);
+            SetOutputValue(OutputId.P2_LmpHolder, ReadByte(_Lamp_Address + 0x10) & 0x01);
+            SetOutputValue(OutputId.P2_LmpGun_B, ReadByte(_Lamp_Address + 0x48) & 0x01);
+            SetOutputValue(OutputId.P2_LmpGun_G, ReadByte(_Lamp_Address + 0x58) & 0x01);
+            SetOutputValue(OutputId.P2_LmpGun, ReadByte(_Lamp_Address + 0x50) & 0x01);
+            SetOutputValue(OutputId.LmpBillboard, ReadByte(_Lamp_Address) & 0x01);
 
             //Custom Outputs
             _P1_Life = 0;
@@ -143,27 +238,43 @@ namespace DemulShooter
             int P1_Clip = 0;
             int P2_Clip = 0;
 
-            _P1_Ammo = BitConverter.ToInt32(ReadBytes(_P1_Ammo_Address, 4), 0);
-            if (_P1_Ammo < 0)
-                _P1_Ammo = 0;
-            _P2_Ammo = BitConverter.ToInt32(ReadBytes(_P2_Ammo_Address, 4), 0);
-            if (_P2_Ammo < 0)
-                _P2_Ammo = 0;
+            //Check GameState : 
+            //2 = Intro
+            //4 = Title
+            //3 = Chapter Select
+            //2 = Play
+            int GameState = BitConverter.ToInt32(ReadBytes(_GameState_Address, 4), 0);
+            if (GameState == 1)
+            {
+                //Check Player Status:
+                //0 = Not Playing
+                //3 = Playing
+                int P1_Status = BitConverter.ToInt32(ReadBytes(_P1_PlayerStruct_Address, 4), 0);
+                if (P1_Status == 3)
+                {
+                    _P1_Ammo = BitConverter.ToInt32(ReadBytes(_P1_Ammo_Address, 4), 0);
+                    if (_P1_Ammo < 0)
+                        _P1_Ammo = 0;
+
+                    _P1_Life = BitConverter.ToInt32(ReadBytes(_P1_PlayerStruct_Address + 0x58, 4), 0);
+                }
+
+                int P2_Status = BitConverter.ToInt32(ReadBytes(_P2_PlayerStruct_Address, 4), 0);
+                if (P2_Status == 3)
+                {
+                    _P2_Ammo = BitConverter.ToInt32(ReadBytes(_P2_Ammo_Address, 4), 0);
+                    if (_P2_Ammo < 0)
+                        _P2_Ammo = 0;
+
+                    _P2_Life = BitConverter.ToInt32(ReadBytes(_P2_PlayerStruct_Address + 0x58, 4), 0);
+                }
+            }
 
             //[Clip] custom Output   
             if (_P1_Ammo > 0)
                 P1_Clip = 1;   
             if (_P2_Ammo > 0)
                 P2_Clip = 1;
-
-            //[Recoil] custom output :
-            if (_P1_Ammo < _P1_LastAmmo)
-                SetOutputValue(OutputId.P1_CtmRecoil, 1);
-            if (_P2_Ammo < _P2_LastAmmo)
-                SetOutputValue(OutputId.P2_CtmRecoil, 1);
-
-            _P1_Life = BitConverter.ToInt32(ReadBytes(_Output_Life_BaseAddress + 0x58, 4), 0);
-            _P2_Life = BitConverter.ToInt32(ReadBytes(_Output_Life_BaseAddress + 0x7C + 0x58, 4), 0);
 
             //[Damaged] custom Output                
             if (_P1_Life < _P1_LastLife)
@@ -175,8 +286,6 @@ namespace DemulShooter
 
             _P1_LastLife = _P1_Life;
             _P2_LastLife = _P2_Life;
-            _P1_LastAmmo = _P1_Ammo;
-            _P2_LastAmmo = _P2_Ammo;
 
             SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
             SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
@@ -184,6 +293,20 @@ namespace DemulShooter
             SetOutputValue(OutputId.P2_Clip, P2_Clip);
             SetOutputValue(OutputId.P1_Life, _P1_Life);
             SetOutputValue(OutputId.P2_Life, _P2_Life);
+
+            //Recoil : reading updated value from the game
+            if (ReadByte(_P1_CustomRecoil_CaveAddress) == 1)
+            {
+                if (_P1_Ammo > 0)
+                    SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                WriteByte(_P1_CustomRecoil_CaveAddress, 0);
+            }
+            if (ReadByte(_P2_CustomRecoil_CaveAddress) == 1)
+            {
+                if (_P2_Ammo > 0)
+                    SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                WriteByte(_P2_CustomRecoil_CaveAddress, 0);
+            }
             //SetOutputValue(OutputId.Credits, ReadByte(_Credits_Address));
         }
 

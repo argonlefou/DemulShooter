@@ -134,6 +134,17 @@ namespace DsCore.Memory
             return Write_Bytes(Buffer.ToArray());
         }
 
+        //jng [Address]
+        public bool Write_ja(UInt32 Address)
+        {
+            UInt32 JmpAddress = Address - (_Cave_Address + _CaveOffset) - 6;
+            List<Byte> Buffer = new List<byte>();
+            Buffer.Add(0x0F);
+            Buffer.Add(0x87);
+            Buffer.AddRange(BitConverter.GetBytes(JmpAddress));
+            return Write_Bytes(Buffer.ToArray());
+        }
+
         //jnl [Address]
         public bool Write_jl(UInt32 Address)
         {
