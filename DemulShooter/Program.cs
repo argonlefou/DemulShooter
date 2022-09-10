@@ -129,7 +129,7 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("Raw Thrill roms :");
                         Console.WriteLine(" ts\t\tTerminator Salvation");
-                        //Console.WriteLine(" aa\t\tAliens Armageddon");
+                        Console.WriteLine(" aa\t\tAliens Armageddon");
                         Console.WriteLine("");
                         Console.WriteLine("Ringwide roms :");
                         Console.WriteLine(" sgg\t\tSega Golden Gun");

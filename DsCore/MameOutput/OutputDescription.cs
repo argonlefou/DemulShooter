@@ -85,6 +85,15 @@ namespace DsCore.MameOutput
         public static readonly String P1_LedAmmo2 = "P1_LedAmmo2";  //Aliens Extermination, Ammo digits
         public static readonly String P2_LedAmmo1 = "P2_LedAmmo1";  //
         public static readonly String P2_LedAmmo2 = "P2_LedAmmo2";  //
+        public static readonly String P1_LmpGunGrenadeBtn = "P1_LmpGunGrenade";//
+        public static readonly String P2_LmpGunGrenadeBtn = "P2_LmpGunGrenade";//
+        public static readonly String P1_LmpGunMolding = "P1_LmpGunMolding";//
+        public static readonly String P2_LmpGunMolding = "P1_LmpGunMolding";//
+        public static readonly String LmpMarqueeBacklight = "Lmp_MarqueeBacklight";//     Aliens Armageddon (And some for Terminator Salvation)
+        public static readonly String LmpMarqueeUplight = "Lmp_MarqueeUplight";//
+        public static readonly String LmpUpperCtrlPanel = "Lmp_UpperCtrlPanel";//
+        public static readonly String LmpLowerCtrlPanel = "Lmp_LowerCtrlPanel";//
+
 
         public static readonly String P1_GunMotor = "P1_GunMotor";
         public static readonly String P2_GunMotor = "P2_GunMotor";

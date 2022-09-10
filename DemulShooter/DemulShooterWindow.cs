@@ -481,6 +481,10 @@ namespace DemulShooter
                             {
                                 _Game = new Game_RtTerminatorSalvation(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             } break;
+                        case "aa":
+                            {
+                                _Game = new Game_RtAliensArmageddon(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
+                            } break;
                     }
                 }
 

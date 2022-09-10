@@ -19,6 +19,9 @@ namespace DemulShooter
         //Outputs Address
         private UInt32 _P1_Ammo_Address = 0x88DBF68;
         private UInt32 _P2_Ammo_Address = 0x88DBF7C;
+        private UInt32 _P1_WeaponNumber_Address = 0x88A5F80;
+        private UInt32 _P2_WeaponNumber_Address = 0x88A5FE0;
+
         private UInt32 _Lamp_Address = 0x88AE748;
         private UInt32 _GameState_Address = 0x088CD028;
         private UInt32 _P1_PlayerStruct_Address = 0x088CC240;
@@ -34,6 +37,8 @@ namespace DemulShooter
         private int _P2_Life = 0;
         private int _P1_Ammo = 0;
         private int _P2_Ammo = 0;
+        private int _P1_Last_Ammo = 0;
+        private int _P2_Last_Ammo = 0;
 
         /// <summary>
         /// Constructor
@@ -188,12 +193,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpStart, OutputId.P1_LmpStart));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpHolder, OutputId.P1_LmpHolder));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpGun_B, OutputId.P1_LmpGun_B));
-            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpGun_G, OutputId.P1_LmpGun_G));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpGunGrenadeBtn, OutputId.P1_LmpGunGrenadeBtn));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpGun, OutputId.P1_LmpGun));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpHolder, OutputId.P2_LmpHolder));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpStart, OutputId.P2_LmpStart));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpGun_B, OutputId.P2_LmpGun_B));
-            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpGun_G, OutputId.P2_LmpGun_G));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpGunGrenadeBtn, OutputId.P2_LmpGunGrenadeBtn));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpGun, OutputId.P2_LmpGun));
             _Outputs.Add(new GameOutput(OutputDesciption.LmpBillboard, OutputId.LmpBillboard));  
             //In Teknoparrot, Guns hardware is not emulated, so the game is not running original gun recoil procedures 
@@ -221,12 +226,12 @@ namespace DemulShooter
             SetOutputValue(OutputId.P1_LmpStart, ReadByte(_Lamp_Address + 0x20) & 0x01);            
             SetOutputValue(OutputId.P1_LmpHolder, ReadByte(_Lamp_Address + 0x08) & 0x01);
             SetOutputValue(OutputId.P1_LmpGun_B, ReadByte(_Lamp_Address + 0x60) & 0x01);
-            SetOutputValue(OutputId.P1_LmpGun_G, ReadByte(_Lamp_Address + 0x70) & 0x01);
+            SetOutputValue(OutputId.P1_LmpGunGrenadeBtn, ReadByte(_Lamp_Address + 0x70) & 0x01);
             SetOutputValue(OutputId.P1_LmpGun, ReadByte(_Lamp_Address + 0x68) & 0x01);
             SetOutputValue(OutputId.P2_LmpStart, ReadByte(_Lamp_Address + 0x30) & 0x01);
             SetOutputValue(OutputId.P2_LmpHolder, ReadByte(_Lamp_Address + 0x10) & 0x01);
             SetOutputValue(OutputId.P2_LmpGun_B, ReadByte(_Lamp_Address + 0x48) & 0x01);
-            SetOutputValue(OutputId.P2_LmpGun_G, ReadByte(_Lamp_Address + 0x58) & 0x01);
+            SetOutputValue(OutputId.P2_LmpGunGrenadeBtn, ReadByte(_Lamp_Address + 0x58) & 0x01);
             SetOutputValue(OutputId.P2_LmpGun, ReadByte(_Lamp_Address + 0x50) & 0x01);
             SetOutputValue(OutputId.LmpBillboard, ReadByte(_Lamp_Address) & 0x01);
 
@@ -257,6 +262,41 @@ namespace DemulShooter
                         _P1_Ammo = 0;
 
                     _P1_Life = BitConverter.ToInt32(ReadBytes(_P1_PlayerStruct_Address + 0x58, 4), 0);
+                    if (_P1_Life < 0)
+                        _P1_Life = 0;
+
+                    //To get recoil, we can't use original mechanism as Teknoparrot is not emulating the gun board
+                    //and the game is not doing the outputs
+                    //Getting custom recoil by checking ammunition has one drawback this infinite ammo weapons
+                    //Se we"ll check what kind of weapon is used and calculate accordingly
+                    int P1_Weapon = BitConverter.ToInt32(ReadBytes(_P1_WeaponNumber_Address, 4), 0);
+
+                    //For infinite ammo weapon, using memory hack to get data                   
+                    if (P1_Weapon == 5 || P1_Weapon == 8 || P1_Weapon == 9)
+                    {
+                        if (ReadByte(_P1_CustomRecoil_CaveAddress) == 1)
+                            SetOutputValue(OutputId.P1_CtmRecoil, 1); 
+                    }
+                    //For other weapon, just check difference between ammo
+                    //0 = Shotgun
+                    //1 = Regular gun
+                    //2 = Gaitlin
+                    //3-4 Grenade ?
+                    else
+                    {
+                        if (_P1_Ammo < _P1_Last_Ammo)
+                            SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                    }
+                    //Clearing memory hack flag, even if not used
+                    WriteByte(_P1_CustomRecoil_CaveAddress, 0);
+
+                    //[Clip] custom Output   
+                    if (_P1_Ammo > 0)
+                        P1_Clip = 1;
+
+                    //[Damaged] custom Output                
+                    if (_P1_Life < _P1_LastLife)
+                        SetOutputValue(OutputId.P1_Damaged, 1);                   
                 }
 
                 int P2_Status = BitConverter.ToInt32(ReadBytes(_P2_PlayerStruct_Address, 4), 0);
@@ -267,25 +307,48 @@ namespace DemulShooter
                         _P2_Ammo = 0;
 
                     _P2_Life = BitConverter.ToInt32(ReadBytes(_P2_PlayerStruct_Address + 0x58, 4), 0);
+                    if (_P2_Life < 0)
+                        _P2_Life = 0;
+
+                    //To get recoil, we can't use original mechanism as Teknoparrot is not emulating the gun board
+                    //and the game is not doing the outputs
+                    //Getting custom recoil by checking ammunition has one drawback this infinite ammo weapons
+                    //Se we"ll check what kind of weapon is used and calculate accordingly
+                    int P2_Weapon = BitConverter.ToInt32(ReadBytes(_P2_WeaponNumber_Address, 4), 0);
+
+                    //For infinite ammo weapon, using memory hack to get data                   
+                    if (P2_Weapon == 5 || P2_Weapon == 8 || P2_Weapon == 9)
+                    {
+                        if (ReadByte(_P2_CustomRecoil_CaveAddress) == 1)
+                            SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                    }
+                    //For other weapon, just check difference between ammo
+                    //0 = Shotgun
+                    //1 = Regular gun
+                    //2 = Gaitlin
+                    //3-4 Grenade ?
+                    else
+                    {
+                        if (_P2_Ammo < _P2_Last_Ammo)
+                            SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                    }
+                    //Clearing memory hack flag, even if not used
+                    WriteByte(_P2_CustomRecoil_CaveAddress, 0);
+
+                    //[Clip]Custom Output
+                    if (_P2_Ammo > 0)
+                        P2_Clip = 1;
+
+                    //[Damaged] custom Output                
+                    if (_P2_Life < _P2_LastLife)
+                        SetOutputValue(OutputId.P2_Damaged, 1);
                 }
-            }
-
-            //[Clip] custom Output   
-            if (_P1_Ammo > 0)
-                P1_Clip = 1;   
-            if (_P2_Ammo > 0)
-                P2_Clip = 1;
-
-            //[Damaged] custom Output                
-            if (_P1_Life < _P1_LastLife)
-                SetOutputValue(OutputId.P1_Damaged, 1);
-
-            //[Damaged] custom Output                
-            if (_P2_Life < _P2_LastLife)
-                SetOutputValue(OutputId.P2_Damaged, 1);
+            }            
 
             _P1_LastLife = _P1_Life;
             _P2_LastLife = _P2_Life;
+            _P1_Last_Ammo = _P1_Ammo;
+            _P2_Last_Ammo = _P2_Ammo;
 
             SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
             SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
@@ -295,12 +358,7 @@ namespace DemulShooter
             SetOutputValue(OutputId.P2_Life, _P2_Life);
 
             //Recoil : reading updated value from the game
-            if (ReadByte(_P1_CustomRecoil_CaveAddress) == 1)
-            {
-                if (_P1_Ammo > 0)
-                    SetOutputValue(OutputId.P1_CtmRecoil, 1);
-                WriteByte(_P1_CustomRecoil_CaveAddress, 0);
-            }
+            
             if (ReadByte(_P2_CustomRecoil_CaveAddress) == 1)
             {
                 if (_P2_Ammo > 0)
