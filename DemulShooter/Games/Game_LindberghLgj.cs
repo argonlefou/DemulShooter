@@ -339,42 +339,45 @@ namespace DemulShooter
             
 
             //Custom Outputs
-            UInt32 P1_StructAddress = ReadPtr(0x087D3BB0);
-            UInt32 P2_StructAddress = ReadPtr(0x087D3BAC);
+            UInt32 P1_StructAddress = ReadPtr(_Player1_InputPtr_Address);
+            UInt32 P2_StructAddress = ReadPtr(_Player2_InputPtr_Address);
 
-            if (P1_StructAddress != 0)
+            _P1_Life = 0;
+            _P2_Life = 0;
+            //Checking this byte (player playing ?) otherwise the game is still enabing rumble during Attract Mode
+            if (ReadByte(0x87D3DC0) == 1)
             {
-                _P1_Life = (int)BitConverter.ToSingle(ReadBytes(P1_StructAddress + 0x4BC, 4), 0);
-                //[Damaged] custom Output                
-                if (_P1_Life < _P1_LastLife)
-                    SetOutputValue(OutputId.P1_Damaged, 1);
+                if (P1_StructAddress != 0)
+                {
+                    _P1_Life = (int)BitConverter.ToSingle(ReadBytes(P1_StructAddress + 0x4BC, 4), 0);
+                    //[Damaged] custom Output                
+                    if (_P1_Life < _P1_LastLife)
+                        SetOutputValue(OutputId.P1_Damaged, 1);
+
+                    //Using constant "ON" value from motor to create asynch outputs for recoil
+                    SetOutputValue(OutputId.P1_CtmRecoil, ReadByte(_Outputs_Address) >> 3 & 0x01);
+                }
             }
-            else
+
+            //Checking this byte (player playing ?) otherwise the game is still enabing rumble during Attract Mode
+            if (ReadByte(0x87D3DC4) == 1)
             {
-                _P1_Life = 0;
-            }
-            if (P2_StructAddress != 0)
-            {
-                _P2_Life = (int)BitConverter.ToSingle(ReadBytes(P2_StructAddress + 0x4BC, 4), 0);
-                //[Damaged] custom Output        
-                if (_P2_Life < _P2_LastLife)
-                    SetOutputValue(OutputId.P2_Damaged, 1);
-            }
-            else
-            {
-                _P2_Life = 0;
+                if (P2_StructAddress != 0)
+                {
+                    _P2_Life = (int)BitConverter.ToSingle(ReadBytes(P2_StructAddress + 0x4BC, 4), 0);
+                    //[Damaged] custom Output                
+                    if (_P2_Life < _P2_LastLife)
+                        SetOutputValue(OutputId.P2_Damaged, 1);
+
+                    //Using constant "ON" value from motor to create asynch outputs for recoil
+                    SetOutputValue(OutputId.P2_CtmRecoil, ReadByte(_Outputs_Address) >> 6 & 0x01);
+                }
             }
 
             _P1_LastLife = _P1_Life;
             _P2_LastLife = _P2_Life;
-            SetOutputValue(OutputId.P1_CtmRecoil, 0);
-            SetOutputValue(OutputId.P2_CtmRecoil, 0);
             SetOutputValue(OutputId.P1_Life, _P1_Life);
-            SetOutputValue(OutputId.P2_Life, _P2_Life);
-
-            //Using constant "ON" value from motor to create asynch outputs for recoil
-            SetOutputValue(OutputId.P1_CtmRecoil, ReadByte(_Outputs_Address) >> 3 & 0x01);
-            SetOutputValue(OutputId.P2_CtmRecoil, ReadByte(_Outputs_Address) >> 6 & 0x01);
+            SetOutputValue(OutputId.P2_Life, _P2_Life);            
             SetOutputValue(OutputId.Credits, ReadByte(_Credits_Address));
         }
 

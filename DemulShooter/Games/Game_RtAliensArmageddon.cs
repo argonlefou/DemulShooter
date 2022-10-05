@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using DsCore;
-using DsCore.Config;
 using DsCore.MameOutput;
-using DsCore.Memory;
-using DsCore.RawInput;
-using DsCore.Win32;
 
 namespace DemulShooter
 {
@@ -29,6 +25,8 @@ namespace DemulShooter
         private int _P2_Ammo = 0;
         private int _P1_Last_Ammo = 0;
         private int _P2_Last_Ammo = 0;
+        private int _P1_Last_Weapon = 0;
+        private int _P2_Last_Weapon = 0;
 
         /// <summary>
         /// Constructor
@@ -180,14 +178,10 @@ namespace DemulShooter
                 _P1_Ammo = BitConverter.ToInt32(ReadBytes(_P1_Struct_Address + 0x68, 4), 0);
                 if (_P1_Ammo < 0)
                     _P1_Ammo = 0;
-
+                
                 //[Clip] custom Output   
                 if (_P1_Ammo > 0)
                     P1_Clip = 1;
-
-                //Recoil Custom Output
-                if (_P1_Ammo < _P1_Last_Ammo)
-                    SetOutputValue(OutputId.P1_CtmRecoil, 1);
 
                 _P1_Life = BitConverter.ToInt32(ReadBytes(_P1_Struct_Address + 0x10, 4), 0);
                 if (_P1_Life < 0)
@@ -196,6 +190,33 @@ namespace DemulShooter
                 //[Damaged] custom Output                
                 if (_P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);
+
+                //Check if the weapon has changed : moving from one weapon to another with less ammo can cause a "recoil" to be activated otherwise
+                //No acces to some int value for the selected gun, but string value (@P1_Ammo - 0x20). Instead we will use the "Max Ammo" value that is different for almost each weapon (and faster to compute)
+                //assault_rifle : 0x4B (75)
+                //shotgun : 0x0F (15)
+                //minigun : 0x46 (70)
+                //turret : 0x0F4240 (1 000 000) => Octet à lire = 0x40
+                //fthrower : 0x32 (50)
+                //sniper : 0x0A (10)
+                //gunpod_2 : 0x0F4240 (1 000 000) => Octet à lire = 0x40
+                //launcher : 0x0A (10)
+                int P1_Weapon = ReadByte(_P1_Struct_Address + 0x6C);
+                if (P1_Weapon == _P1_Last_Weapon)
+                {   
+                    //Exception for flamethrower, no recoil but rumble motor continuously (for later ?)
+                    if (P1_Weapon != 0x32)
+                    {
+                        //Recoil Custom Output
+                        if (_P1_Ammo < _P1_Last_Ammo)
+                            SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                    }
+                    else
+                    {
+                        //How to compute continuously rumble ??
+                    }
+                }
+                _P1_Last_Weapon = P1_Weapon;
             }
 
             //Check if the Player is currently playing
@@ -220,6 +241,23 @@ namespace DemulShooter
                 //[Damaged] custom Output                
                 if (_P2_Life < _P2_LastLife)
                     SetOutputValue(OutputId.P2_Damaged, 1);
+
+                int P2_Weapon = ReadByte(_P2_Struct_Address + 0x6C);
+                if (P2_Weapon == _P2_Last_Weapon)
+                {
+                    //Exception for flamethrower, no recoil but rumble motor continuously (for later ?)
+                    if (P2_Weapon != 0x32)
+                    {
+                        //Recoil Custom Output
+                        if (_P2_Ammo < _P2_Last_Ammo)
+                            SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                    }
+                    else
+                    {
+                        //How to compute continuously rumble ??
+                    }
+                }
+                _P2_Last_Weapon = P2_Weapon;
             }
             _P1_LastLife = _P1_Life;
             _P2_LastLife = _P2_Life;

@@ -264,6 +264,31 @@ namespace DemulShooterX64
                             } break;
                     }
                 }
+                else if (_Target.Equals("flycast"))
+                {
+                    if (_Rom.ToLower().Equals("confmiss") || _Rom.ToLower().StartsWith("deathcox") || _Rom.ToLower().StartsWith("hotd2")
+                        || _Rom.ToLower().Equals("lupinsho") || _Rom.ToLower().Equals("mok"))
+                    {
+                        _Game = new Game_FlycastNaomi(_Rom.ToLower(), _NoInput, isVerbose);
+                    }
+                    else if (_Rom.ToLower().StartsWith("ninjaslt"))
+                    {
+                        _Game = new Game_FlycastNinjaslt(_Rom.ToLower(), _NoInput, isVerbose);
+                    }
+                    /*else if (_Rom.ToLower().Equals("braveff"))
+                    {
+                        _Game = new Game_DemulHikaru(_Rom.ToLower(), _DemulVersion, _ForceXratio, _NoInput, isVerbose, _DisableWindow, _WidescreenHack);
+                    }*/
+                    /*else if (_Rom.ToLower().Equals("manicpnc") || _Rom.ToLower().Equals("pokasuka"))
+                    {
+                        _Game = new Game_DemulManicpnc(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose, _DisableWindow, _WidescreenHack);
+                    }*/
+                    else
+                    {
+                        _Game = new Game_FlycastAtomiswave(_Rom.ToLower(), _NoInput, isVerbose);
+                    }
+                   
+                }
 
                 _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);
             }

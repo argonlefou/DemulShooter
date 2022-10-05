@@ -40,7 +40,6 @@ namespace DemulShooterX64
         private UInt64 _LongJump_Offset = 0x000ABA41;
         private UInt64 _Standalone_Injection_Return_Offset = 0x0006B069;
 
-
         //JConfig Hack
         private UInt64 _JVS_TriggerButton_CaveAddress = 0;
         private UInt64 _JVS_Trigger_LongJump_Offset = 0x000ABB21;

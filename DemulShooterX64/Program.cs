@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace DemulShooterX64
 {
@@ -33,12 +34,51 @@ namespace DemulShooterX64
 
             bool isVerbose = false;
 
-            String[] _Targets = new string[] { "alls", "es3", "seganu", "windows"};
-            String[] _Es3Roms = new string[] { "tc5" };
-            String[] _AllsRoms = new string[] { "hodsd" };
-            String[] _SegaNuRoms = new string[] { "lma" };
-            String[] _WindowsRoms = new string[] { "bhap" }; 
-            
+            Dictionary<String, String> _SystemTargets = new Dictionary<String, String>(){
+                {"alls","SEGA Amusement Linkage Live System games"},
+                {"es3","Namco ES3 games"},
+                //{"flycast","Flycast v2.0"},
+                {"seganu","SEGA Nu games"}
+                //{"windows","Windows games"}                
+            };            
+
+            Dictionary<String, String> _AllsRoms = new Dictionary<String, String>(){
+                {"hodsd","House of the Dead : Scarlet Down"}
+            };
+
+            Dictionary<String, String> _Es3Roms = new Dictionary<String, String>(){
+                {"tc5","Time Crisis 5"}
+            };
+
+            Dictionary<String, String> _FlycastRoms = new Dictionary<String, String>(){
+                //{"braveff","Brave Fire Fighters"},
+                {"claychal","SEGA Clay Challenge"},
+                {"confmiss","Confidential Mission"},
+                {"deathcox","Death Crimson OX"},
+                {"hotd2","House of the Dead II (USA)"},
+                {"hotd2o","House of the Dead II"},
+                {"hotd2p","House of the Dead II (Prototype)"},
+                {"lupinsho","Lupin the Third"},
+                //{"manicpnc","Manic Panic Ghosts"},
+                {"mok","The Maze of the Kings"},
+                {"ninjaslt","Ninja Assault (World)"},
+                {"ninjaslta","Ninja Assault (Asia)"},
+                {"ninjasltj","Ninja Assault (Japan)"},
+                {"ninjasltu","Ninja Assault (US)"},
+                //{"pokasuka","Pokasuka Ghost"},
+                {"rangrmsn","Ranger Mission"},
+                {"sprtshot","Sports Shooting USA"},
+                {"xtrmhunt","Extreme Hunting"},
+                {"xtrmhnt2","Extreme Hunting 2"}
+            };
+
+            Dictionary<String, String> _SegaNuRoms = new Dictionary<String, String>(){
+                {"lma","Luigi's Mansion Arcade"}
+            };
+
+            Dictionary<String, String> _WindowsRoms = new Dictionary<String, String>(){
+                {"bha","Buck Hunt Arcade PC"}
+            };
             
             if (args.Length > 0)
             {
@@ -57,23 +97,24 @@ namespace DemulShooterX64
                         Console.WriteLine("usage : DemulShooterX64.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [target] :");
-                        Console.WriteLine("alls\t\tSEGA Amusement Linkage Live System games");
-                        Console.WriteLine("es3\t\tNamco ES3 Games");
-                        Console.WriteLine("seganu\t\tSEGA Nu games");
+                        DisplayDictionnaryList(_SystemTargets);
                         Console.WriteLine("");
                         Console.WriteLine("Supported [rom] :");
                         Console.WriteLine("ALLS roms :");
-                        Console.WriteLine(" hodsd\t\tHouse of the Dead : Scarlet Dawn");
+                        DisplayDictionnaryList(_AllsRoms);
                         Console.WriteLine("");
                         Console.WriteLine("ES3 roms :");
-                        Console.WriteLine(" tc5\t\tTime Crisis 5");
+                        DisplayDictionnaryList(_Es3Roms);
                         Console.WriteLine("");
+                        /*Console.WriteLine("Flycast roms :");
+                        DisplayDictionnaryList(_FlycastRoms);
+                        Console.WriteLine("");*/
                         Console.WriteLine("SEGA Nu roms :");
-                        Console.WriteLine(" lma\t\tLuigi's Mansion Arcade");
+                        DisplayDictionnaryList(_SegaNuRoms);
+                        /*Console.WriteLine("");
+                        Console.WriteLine("Windows games :");
+                        DisplayDictionnaryList(_WindowsRoms);*/
                         Console.WriteLine("");
-                        //Console.WriteLine("Windows games :");
-                        //Console.WriteLine(" bhap\t\tBuck Hunt Arcade PC");
-                        //Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
                         Console.WriteLine(" -noinput \tDisable any input hack");
                         Console.WriteLine(" -? -h --help\tShow this help");
@@ -89,7 +130,7 @@ namespace DemulShooterX64
                     else if (args[i].ToLower().StartsWith("-target"))
                     {
                         strTarget = (args[i].ToLower().Split('='))[1].Trim();
-                        if (!CheckParameter(strTarget, _Targets))
+                        if (!CheckParameter(strTarget, _SystemTargets))
                         {
                             Console.WriteLine("\nUnsupported [target] parameter : \"" + strTarget + "\". See help for supported targets");
                             ExitConsole();
@@ -124,6 +165,14 @@ namespace DemulShooterX64
                                 ExitConsole();
                             }
                         }
+                        else if (strTarget.Equals("flycast"))
+                        {
+                            if (!CheckParameter(strRom, _FlycastRoms))
+                            {
+                                Console.WriteLine("Unsupported Flycast rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
                         else if (strTarget.Equals("seganu"))
                         {
                             if (!CheckParameter(strRom, _SegaNuRoms))
@@ -139,7 +188,7 @@ namespace DemulShooterX64
                                 Console.WriteLine("Unsupported Windows rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
-                        }
+                        }                        
                     }
                 }
 
@@ -155,7 +204,7 @@ namespace DemulShooterX64
             }
             else
             {
-                Console.WriteLine("\n\n\tMissing parameter!\n\tSee help with DemulShooter.exe -h for correct usage.");
+                Console.WriteLine("\n\n\tMissing parameter!\n\tSee help with DemulShooterX64.exe -h for correct usage.");
                 ExitConsole();
             }
 
@@ -180,11 +229,22 @@ namespace DemulShooterX64
             }
         }
 
-        static bool CheckParameter(String param, string[] list)
+        static void DisplayDictionnaryList(Dictionary<String, String> list)
         {
-            for (int i = 0; i < list.Length; i++)
+            foreach (KeyValuePair<String, String> item in list)
             {
-                if (param == list[i])
+                Console.Write(" " + item.Key);
+                for (int t = 0; t < (11 - item.Key.Length); t++)
+                    Console.Write(" ");
+                Console.WriteLine(item.Value);
+            }
+        }
+
+        static bool CheckParameter(String param, Dictionary<String, String> list)
+        {
+            foreach (KeyValuePair<String, String> Item in list)
+            {
+                if (param.Equals(Item.Key))
                     return true;
             }
             return false;

@@ -69,6 +69,10 @@
   <ItemGroup>
     <Compile Include="DemulShooterWindowX64.cs" />
     <Compile Include="Games\Game_Es3Tc5.cs" />
+    <Compile Include="Games\Game_Flycast.cs" />
+    <Compile Include="Games\Game_FlycastAtomiswave.cs" />
+    <Compile Include="Games\Game_FlycastNaomi.cs" />
+    <Compile Include="Games\Game_FlycastNinjaslt.cs" />
     <Compile Include="Games\Game_NuLuigiMansion_v2.cs" />
     <Compile Include="Games\Game.cs" />
     <Compile Include="Games\Game_Bhapc.cs" />

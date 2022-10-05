@@ -46,6 +46,10 @@ namespace DemulShooter
 
         private bool _AlternativeGameplay = false;
 
+        //Custom Outputs data
+        protected int _P1_LastLife = 0;
+        protected int _P2_LastLife = 0; 
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -532,8 +536,12 @@ namespace DemulShooter
             {
                 P1_Ammo =  BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Ammo_Offset, 4), 0);
                 P1_Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Life_Offset, 4), 0));
+                
                 if (P1_Life < 0)
                     P1_Life = 0;
+
+                if (P1_Life < _P1_LastLife)
+                    SetOutputValue(OutputId.P1_Damaged, 1);
             }
 
             int P2_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Status_Offset);
@@ -541,9 +549,16 @@ namespace DemulShooter
             {
                 P2_Ammo = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Ammo_Offset, 4), 0);
                 P2_Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Life_Offset, 4), 0));
+                
                 if (P2_Life < 0)
                     P2_Life = 0;
+
+                if (P2_Life < _P2_LastLife)
+                    SetOutputValue(OutputId.P2_Damaged, 1);
             }
+
+            _P1_LastLife = P1_Life;
+            _P2_LastLife = P2_Life;
 
             SetOutputValue(OutputId.P1_Life, P1_Life);
             SetOutputValue(OutputId.P2_Life, P2_Life);
@@ -553,8 +568,10 @@ namespace DemulShooter
             SetOutputValue(OutputId.P1_CtmRecoil, P1_RecoilState);
             SetOutputValue(OutputId.P2_CtmRecoil, P2_RecoilState);
             //Custom Damaged will simply be activated just like original rumble
+            /* De-activated : Rumble also occurs with environmental actions !
             SetOutputValue(OutputId.P1_Damaged, P1_RumbleState);
             SetOutputValue(OutputId.P2_Damaged, P2_RumbleState);
+            */
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset));
         }
 

@@ -681,6 +681,9 @@ namespace DemulShooter
             SetOutputValue(OutputId.P2_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0026FA4B) >> 7 & 0x01);
             SetOutputValue(OutputId.P1_GunMotor, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0026FB1C) & 0x01);
             SetOutputValue(OutputId.P2_GunMotor, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0026FB20) & 0x01);
+
+
+            //@game.exe+a6051 -> decrease ammo (mov, ESI+2C)
             SetOutputValue(OutputId.P1_Ammo, 0);
             SetOutputValue(OutputId.P2_Ammo, 0);
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0026FB88));

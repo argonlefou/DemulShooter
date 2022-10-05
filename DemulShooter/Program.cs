@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace DemulShooter
 {
@@ -33,7 +34,118 @@ namespace DemulShooter
 
             bool isVerbose = false;
 
-            String[] _Targets = new string[] { "chihiro", "coastal", "demul057", "demul058", "demul07a", "dolphin5", "globalvr", "lindbergh", "model2", "rawthrill", "ringwide", "ttx", "windows", "wip" };
+            Dictionary<String,String> _SystemTargets = new Dictionary<String,String> (){
+                {"chihiro","Cxbx-Reloaded"},
+                {"coastal","Coastal Arcade"},
+                {"demul057","Demul v0.57"},
+                {"demul058","Demul v0.582"},
+                {"demul07a","Demul v0.7a 180428"},
+                {"dolphin5","Dolphin v5.0"},
+                {"globalvr","Global VR"},
+                {"lindbergh","TeknoParrot Loader"},
+                {"model2","Nebula Model2Emulator v1.1a"},
+                {"rawthrill","TeknoParrot Loader"},
+                {"ringwide","TeknoParrot Loader / JConfig"},
+                {"ttx","Taito Type X"},
+                {"windows","Windows games"}
+            };
+
+            Dictionary<String, String> _ChihiroRoms = new Dictionary<String, String>(){
+                {"vcop3","Virtua Cop 3"}
+            };
+
+            Dictionary<String, String> _CoastalRoms = new Dictionary<String, String>(){
+                {"wws","Wild West Shootout"}
+            };
+
+            Dictionary<String, String> _DemulRoms = new Dictionary<String, String>(){
+                {"braveff","Brave Fire Fighters"},
+                {"claychal","SEGA Clay Challenge"},
+                {"confmiss","Confidential Mission"},
+                {"deathcox","Death Crimson OX"},
+                {"hotd2","House of the Dead II (USA)"},
+                {"hotd2o","House of the Dead II"},
+                {"hotd2p","House of the Dead II (Prototype)"},
+                {"lupinsho","Lupin the Third"},
+                {"manicpnc","Manic Panic Ghosts"},
+                {"mok","The Maze of the Kings"},
+                {"ninjaslt","Ninja Assault (World)"},
+                {"ninjaslta","Ninja Assault (Asia)"},
+                {"ninjasltj","Ninja Assault (Japan)"},
+                {"ninjasltu","Ninja Assault (US)"},
+                {"pokasuka","Pokasuka Ghost"},
+                {"rangrmsn","Ranger Mission"},
+                {"sprtshot","Sports Shooting USA"},
+                {"xtrmhunt","Extreme Hunting"},
+                {"xtrmhnt2","Extreme Hunting 2"}
+            };
+
+            Dictionary<String, String> _GlobalVrRoms = new Dictionary<String, String>(){
+                {"aliens","Aliens Extermination Dehasped (2nd dump, x86 and x64, no need for VM)"},
+                //{"farcry","Far Cry : Paradise Lost"},
+                {"fearland","Fright Fear Land"}
+            };
+
+            Dictionary<String, String> _LindberghRoms = new Dictionary<String, String>(){
+                {"2spicy","Too Spicy"},
+                {"hotd4","House of The Dead 4"},
+                {"lgj","Let's Go Jungle"},
+                {"lgjsp","Let's Go Jungle Special"},
+                {"rambo","Rambo Arcade"}
+            };
+
+            Dictionary<String, String> _Model2Roms = new Dictionary<String, String>(){
+                {"bel","Behind Ennemy Lines"},
+                {"gunblade","Gunblade NY"},
+                {"hotd","House of the Dead"},
+                {"rchase2","Rail Chase 2"},
+                {"vcop","Virtua Cop"},
+                {"vcop2","Virtua Cop 2"}
+
+            };
+
+            Dictionary<String, String> _RawThrillRoms = new Dictionary<String, String>(){
+                {"aa","Aliens Armageddon"},
+                {"ts","Terminator Salvation"}
+            };
+
+            Dictionary<String, String> _RingSystemRoms = new Dictionary<String, String>(){
+                {"sgg","SEGA golden guns"},
+                {"lgi","Let's Go Island: Lost on the Island of Tropics"},
+                {"lgi3d","Let's go Island 3D"},
+                {"og","Operation G.H.O.S.T"},
+                {"sdr","SEGA Dream Raiders"},
+                {"tha","Transformers : Human Alliance"}
+            };
+
+            Dictionary<String, String> _TtxRoms = new Dictionary<String, String>(){
+                {"bkbs","Block King Ball Shooter"},
+                {"sha","Silent Hill Arcade"},
+                {"eadp", "Elevator Action : Death Parade"},
+                {"gattack4","Gaia Attack 4"},
+                {"gsoz","Gundam : Spirit of Zeon"},
+                {"gsoz2p", "Gundam : Spirit of Zeon (Dual Player)"},
+                {"hmuseum","Haunted Museum"},
+                {"hmuseum2","Haunted Museum 2"},
+                {"mgungun2","Music Gun Gun! 2"}
+            };
+
+            Dictionary<String, String> _WindowsRoms = new Dictionary<String, String>(){
+                {"artdead","Art Is Dead"},
+                {"friction","Friction"},
+                {"hfa", "Heavy Fire Afghanistan"},
+                {"hfa2p","Heavy Fire Afghanistan (dual Player)"},
+                {"hfss","Heavy Fire Shaterred Spear"},
+                {"hfss2p", "Heavy Fire Shaterred Spear (dual player)"},
+                {"hod2pc","House of the Dead II"},
+                {"hod3pc","House of the Dead III"},
+                {"hodo","House of the Dead Overkill"},
+                {"reload","Reload"},
+            };
+
+
+
+            /*String[] _Targets = new string[] { "chihiro", "coastal", "demul057", "demul058", "demul07a", "dolphin5", "globalvr", "lindbergh", "model2", "rawthrill", "ringwide", "ttx", "windows", "wip" };
             String[] _ChihiroRoms = new string[] { "vcop3" };
             String[] _CoastalRoms = new string[] { "wws" };
             String[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "manicpnc", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
@@ -44,7 +156,7 @@ namespace DemulShooter
             String[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr", "tha" };
             String[] _TTXRoms = new string[] { "bkbs", "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
             String[] _WindowsRoms = new string[] { "artdead", "friction", "hfa", "hfa2p", "hfa2p", "hfss", "hfss2p", "hod2pc", "hod3pc", "hodo", "reload" };
-            String[] _WipRoms = new string[] { "bestate", "wartran", "bhapc" };
+            String[] _WipRoms = new string[] { "bestate", "wartran", "bhapc" };*/
 
             if (args.Length > 0)
             {
@@ -63,104 +175,41 @@ namespace DemulShooter
                         Console.WriteLine("usage : DemulShooter.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");
                         Console.WriteLine("Supported [target] :");
-                        Console.WriteLine("coastal\t\tCoastal Arcade");
-                        Console.WriteLine("chihiro\t\tCxbx-Reloaded");
-                        Console.WriteLine("demul057\tDemul v0.57");
-                        Console.WriteLine("demul058\tDemul v0.582");
-                        Console.WriteLine("demul07a\tDemul v0.7a 180428");
-                        Console.WriteLine("dolphin5\tDolphin v5.0");
-                        Console.WriteLine("globalvr\tGlobal VR");
-                        Console.WriteLine("lindbergh\tTeknoParrot Loader");
-                        Console.WriteLine("model2\t\tNebula Model2Emulator v1.1a");
-                        Console.WriteLine("rawthrill\tTeknoparrot Loader");
-                        Console.WriteLine("ringwide\tTeknoParrot Loader");
-                        Console.WriteLine("ttx\t\tTaito Type X");
-                        Console.WriteLine("windows\t\tWindows games");
+                        DisplayDictionnaryList(_SystemTargets);
                         Console.WriteLine("");
                         Console.WriteLine("Supported [rom] :");
                         Console.WriteLine("Coastal roms :");
-                        Console.WriteLine(" wws\t\tWild West Shoutout");
+                        DisplayDictionnaryList(_CoastalRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Chihiro roms :");
-                        Console.WriteLine(" vcop3\t\tVirtua Cop 3");
+                        DisplayDictionnaryList(_ChihiroRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Demul roms :");
-                        Console.WriteLine(" braveff\tBrave Fire Fighters");
-                        Console.WriteLine(" claychal\tSega Clay Challenge");
-                        Console.WriteLine(" confmiss\tConfidential Mission");
-                        Console.WriteLine(" deathcox\tDeath Crimson OX");
-                        Console.WriteLine(" hotd2\t\tHouse of the Dead II (USA)");
-                        Console.WriteLine(" hotd2o\t\tHouse of the Dead II");
-                        Console.WriteLine(" hotd2p\t\tHouse of the Dead II (Prototype)");
-                        Console.WriteLine(" lupinsho\tLupin the Third");
-                        Console.WriteLine(" manicpnc\tManic Panic Ghosts");
-                        Console.WriteLine(" mok\t\tThe Maze of the Kings");
-                        Console.WriteLine(" ninjaslt\tNinja Assault (World)");
-                        Console.WriteLine(" ninjaslta\tNinja Assault (Asia)");
-                        Console.WriteLine(" ninjasltj\tNinja Assault (Japan)");
-                        Console.WriteLine(" ninjasltu\tNinja Assault (US)");
-                        Console.WriteLine(" pokasuka\tPokasuka Ghost");
-                        Console.WriteLine(" rangrmsn\tRanger Mission");
-                        Console.WriteLine(" sprtshot\tSports Shooting USA");
-                        Console.WriteLine(" xtrmhunt\tExtreme Hunting");
-                        Console.WriteLine(" xtrmhnt2\tExtreme Hunting 2");
+                        DisplayDictionnaryList(_DemulRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Dolphin roms :");
                         Console.WriteLine(" - Parameter not used - ");
                         Console.WriteLine("");
                         Console.WriteLine("Global VR Games :");
-                        Console.WriteLine(" aliens\t\tAliens Extermination Dehasped (2nd dump, x86 and x64, no need for VM)");
-                        Console.WriteLine(" fearland\tFright Fear Land");
+                        DisplayDictionnaryList(_GlobalVrRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Lindbergh roms :");
-                        Console.WriteLine(" 2spicy\t\tToo Spicy");
-                        Console.WriteLine(" hotd4\t\tHouse of The Dead 4");
-                        Console.WriteLine(" lgj\t\tLet's Go Jungle");
-                        Console.WriteLine(" lgjsp\t\tLet's Go Jungle Special");
-                        Console.WriteLine(" rambo\t\tRambo Arcade");
+                        DisplayDictionnaryList(_LindberghRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Model2 roms :");
-                        Console.WriteLine(" bel\t\tBehind Enemy Lines");
-                        Console.WriteLine(" gunblade\tGunblade NY");
-                        Console.WriteLine(" hotd\t\tHouse of the dead");
-                        Console.WriteLine(" rchase2\tRail Chase 2");
-                        Console.WriteLine(" vcop\t\tVirtua Cop");
-                        Console.WriteLine(" vcop2\t\tVirtua Cop 2");
+                        DisplayDictionnaryList(_Model2Roms);
                         Console.WriteLine("");
                         Console.WriteLine("Raw Thrill roms :");
-                        Console.WriteLine(" ts\t\tTerminator Salvation");
-                        Console.WriteLine(" aa\t\tAliens Armageddon");
+                        DisplayDictionnaryList(_RawThrillRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Ringwide roms :");
-                        Console.WriteLine(" sgg\t\tSega Golden Gun");
-                        Console.WriteLine(" lgi\t\tLet's Go Island: Lost on the Island of Tropics");
-                        Console.WriteLine(" lgi3d\t\tLet's Go Island 3D");
-                        Console.WriteLine(" og\t\tOperation G.H.O.S.T.");
-                        Console.WriteLine(" sdr\t\tSega Dream Riders");
-                        Console.WriteLine(" tha\t\tTransformers Human Alliance");
+                        DisplayDictionnaryList(_RingSystemRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Taito Type X Games :");
-                        Console.WriteLine(" bkbs\t\tBlock King Ball Shooter");
-                        Console.WriteLine(" eadp\t\tElevator Action Death Parade");
-                        Console.WriteLine(" sha\t\tSilent Hill the Arcade");
-                        Console.WriteLine(" gattack4\tGaia Attack 4");
-                        Console.WriteLine(" gsoz\t\tGundam : Spirit of Zeon");
-                        Console.WriteLine(" gsoz2p\t\tGundam : Spirit of Zeon (Dual Player)");
-                        Console.WriteLine(" hmuseum\tHaunted Museum");
-                        Console.WriteLine(" hmuseum2\tHaunted Museum 2");
-                        Console.WriteLine(" mgungun2\tMusic Gun Gun! 2");
+                        DisplayDictionnaryList(_TtxRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Windows Games :");
-                        Console.WriteLine(" artdead\tArt Is Dead");
-                        //Console.WriteLine(" bestate\tBlue Estate");
-                        Console.WriteLine(" hfa\t\tHeavy Fire Afghanistan");
-                        Console.WriteLine(" hfa2p\t\tHeavy Fire Afghanistan (Dual player)");
-                        Console.WriteLine(" hfss\t\tHeavy Fire Shattered Spear");
-                        Console.WriteLine(" hfss2p\t\tHeavy Fire Shattered Spear (Dual player)");
-                        Console.WriteLine(" hod2pc\t\tHouse of the Dead 2");
-                        Console.WriteLine(" hod3pc\t\tHouse of the Dead 3");
-                        Console.WriteLine(" hodo\t\tHouse of the Dead Overkill");
-                        Console.WriteLine(" reload\t\tReload");
+                        DisplayDictionnaryList(_WindowsRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
                         Console.WriteLine(" -noinput \tDisable any input hack");
@@ -187,7 +236,7 @@ namespace DemulShooter
                     else if (args[i].ToLower().StartsWith("-target"))
                     {
                         strTarget = (args[i].ToLower().Split('='))[1].Trim();
-                        if (!CheckParameter(strTarget, _Targets))
+                        if (!CheckParameter(strTarget, _SystemTargets))
                         {
                             Console.WriteLine("\n\n\tUnsupported [target] parameter : \"" + strTarget + "\". See help for supported targets");
                             ExitConsole();
@@ -264,7 +313,7 @@ namespace DemulShooter
                         }
                         else if (strTarget.Equals("ringwide"))
                         {
-                            if (!CheckParameter(strRom, _RingWideRoms))
+                            if (!CheckParameter(strRom, _RingSystemRoms))
                             {
                                 Console.WriteLine("Unsupported RingWide rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
@@ -272,7 +321,7 @@ namespace DemulShooter
                         }
                         else if (strTarget.Equals("ttx"))
                         {
-                            if (!CheckParameter(strRom, _TTXRoms))
+                            if (!CheckParameter(strRom, _TtxRoms))
                             {
                                 Console.WriteLine("Unsupported Taito Type X rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
@@ -285,15 +334,7 @@ namespace DemulShooter
                                 Console.WriteLine("Unsupported Windows rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
-                        }
-                        else if (strTarget.Equals("wip"))
-                        {
-                            if (!CheckParameter(strRom, _WipRoms))
-                            {
-                                Console.WriteLine("Unsupported W.I.P rom parameter : \"" + strRom + "\". See help for supported roms list");
-                                ExitConsole();
-                            }
-                        }
+                        }                        
                     }
                 }
 
@@ -332,11 +373,23 @@ namespace DemulShooter
                     return "th";
             }
         }
-        static bool CheckParameter(String param, string[] list)
+
+        static void DisplayDictionnaryList(Dictionary<String, String> list)
         {
-            for (int i = 0; i < list.Length; i++)
+            foreach (KeyValuePair<String, String> item in list)
             {
-                if (param == list[i])
+                Console.Write(" " + item.Key);
+                for (int t = 0; t < (11 - item.Key.Length); t++)
+                    Console.Write(" ");
+                Console.WriteLine(item.Value);
+            }
+        }
+
+        static bool CheckParameter(String param, Dictionary<String,String> list)
+        {
+            foreach (KeyValuePair<String, String> Item in list)
+            {
+                if (param.Equals(Item.Key))
                     return true;
             }
             return false;

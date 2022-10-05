@@ -39,6 +39,7 @@ namespace DemulShooter
         protected String _DemulVersion;
 
         //Custom Outputs
+        protected UInt32 _GameRAM_Address = 0x2C000000; //Demul loads the game RAM at 0x2C000000 address        
         protected int _P1_LastLife = 0;
         protected int _P2_LastLife = 0;
         protected int _P1_LastAmmo = 0;

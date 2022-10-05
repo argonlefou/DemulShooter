@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using DsCore;
-using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Memory;
-using DsCore.RawInput;
 using DsCore.Win32;
 
 namespace DemulShooter
@@ -39,6 +37,9 @@ namespace DemulShooter
         private int _P2_Ammo = 0;
         private int _P1_Last_Ammo = 0;
         private int _P2_Last_Ammo = 0;
+        private int _P1_Last_Weapon = 0;
+        private int _P2_Last_Weapon = 0;
+
 
         /// <summary>
         /// Constructor
@@ -277,18 +278,23 @@ namespace DemulShooter
                         if (ReadByte(_P1_CustomRecoil_CaveAddress) == 1)
                             SetOutputValue(OutputId.P1_CtmRecoil, 1); 
                     }
-                    //For other weapon, just check difference between ammo
+                    //For other weapon, just check difference between ammo, and make sure that this smaller value is not due to a gun change
                     //0 = Shotgun
                     //1 = Regular gun
                     //2 = Gaitlin
                     //3-4 Grenade ?
                     else
                     {
-                        if (_P1_Ammo < _P1_Last_Ammo)
-                            SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                        if (_P1_Last_Weapon == P1_Weapon)
+                        {
+                            if (_P1_Ammo < _P1_Last_Ammo)
+                                SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                        }
                     }
                     //Clearing memory hack flag, even if not used
                     WriteByte(_P1_CustomRecoil_CaveAddress, 0);
+
+                    _P1_Last_Weapon = P1_Weapon;
 
                     //[Clip] custom Output   
                     if (_P1_Ammo > 0)
@@ -329,11 +335,16 @@ namespace DemulShooter
                     //3-4 Grenade ?
                     else
                     {
-                        if (_P2_Ammo < _P2_Last_Ammo)
-                            SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                        if (_P2_Last_Weapon == P2_Weapon)
+                        {
+                            if (_P2_Ammo < _P2_Last_Ammo)
+                                SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                        }
                     }
                     //Clearing memory hack flag, even if not used
                     WriteByte(_P2_CustomRecoil_CaveAddress, 0);
+
+                    _P2_Last_Weapon = P2_Weapon;
 
                     //[Clip]Custom Output
                     if (_P2_Ammo > 0)
@@ -357,8 +368,7 @@ namespace DemulShooter
             SetOutputValue(OutputId.P1_Life, _P1_Life);
             SetOutputValue(OutputId.P2_Life, _P2_Life);
 
-            //Recoil : reading updated value from the game
-            
+            //Recoil : reading updated value from the game            
             if (ReadByte(_P2_CustomRecoil_CaveAddress) == 1)
             {
                 if (_P2_Ammo > 0)

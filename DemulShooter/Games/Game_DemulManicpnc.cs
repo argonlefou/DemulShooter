@@ -395,11 +395,10 @@ namespace DemulShooter
         protected override void CreateOutputList()
         {
             _Outputs = new List<GameOutput>();
-            /*_Outputs.Add(new GameOutput(OutputDesciption.P1_Lmp_R, OutputId.P1_Lmp_R));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Lmp_R, OutputId.P1_Lmp_R));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Lmp_B, OutputId.P1_Lmp_B));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Lmp_R, OutputId.P2_Lmp_R));
-            _Outputs.Add(new GameOutput(OutputDesciption.P2_Lmp_B, OutputId.P2_Lmp_B));*/
-
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Lmp_B, OutputId.P2_Lmp_B));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -408,18 +407,21 @@ namespace DemulShooter
         /// </summary>
         public override void UpdateOutputValues()
         {
-            UInt32 Output_Address = (ReadPtr((UInt32)((0x8C03D96C & 0x01FFFFFF) + 0x2C000000)) & 0x01FFFFFF) + 0x2C000000;
+            //From demul.exe+16E9F2 instruction bloc
+            UInt32 OutputsAddress = ((UInt32)_TargetProcess_MemoryBaseAddress + 0x4F57F00) + ((UInt32)_TargetProcess_MemoryBaseAddress + 0x3219D28);
+            OutputsAddress = ReadPtr(ReadPtr(OutputsAddress + 0x04)) + 0x01;
+            Logger.WriteLog("Outputs Address = 0x" + OutputsAddress.ToString("X8"));
 
             //[FF FF]
             //P1 Red 0-F = Output Address
             //P1 Blue 0-F = Output Address
             //P2 Red 0-F = Output Address +1
             //P2 Blue 0-F = Output Address +1
-            //Genuine Outputs -- Not used by the game (just working in TESt MODE)
-            /*SetOutputValue(OutputId.P1_Lmp_R, ReadByte(Output_Address) >> 4 & 0x0F);
-            SetOutputValue(OutputId.P1_Lmp_B, ReadByte(Output_Address) & 0x0F);
-            SetOutputValue(OutputId.P2_Lmp_R, ReadByte(Output_Address + 1) >> 4 & 0x0F);
-            SetOutputValue(OutputId.P2_Lmp_B, ReadByte(Output_Address + 1) & 0x0F);*/
+            //Genuine Outputs
+            SetOutputValue(OutputId.P1_Lmp_R, ReadByte(OutputsAddress) >> 4 & 0x0F);
+            SetOutputValue(OutputId.P1_Lmp_B, ReadByte(OutputsAddress) & 0x0F);
+            SetOutputValue(OutputId.P2_Lmp_R, ReadByte(OutputsAddress + 1) >> 4 & 0x0F);
+            SetOutputValue(OutputId.P2_Lmp_B, ReadByte(OutputsAddress + 1) & 0x0F);
 
             SetOutputValue(OutputId.Credits, ReadByte(0x20200010));
         }

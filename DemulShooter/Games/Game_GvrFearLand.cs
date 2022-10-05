@@ -35,6 +35,10 @@ namespace DemulShooter
 
         private bool _AlternativeGameplay = false;
 
+        //Custom Outputs data
+        protected int _P1_LastLife = 0;
+        protected int _P2_LastLife = 0;        
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -499,48 +503,59 @@ namespace DemulShooter
             SetOutputValue(OutputId.P2_GunRecoil, P2_RecoilState);
             SetOutputValue(OutputId.P2_GunMotor, P2_RumbleState);            
 
+            int P1_Life = 0;
+            int P1_Ammo = 0;
+            int P2_Life = 0;
+            int P2_Ammo = 0;
+
             //Customs Outputs
             //Player Status :
             //[0] : Inactive
             //[1] : In-Game
             //[2] : Continue Screen
-            //[3] : Game Over
-            int P1_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C37364);
+            //[3] : Game Over    
+            int P1_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C37364);            
             if (P1_Status == 1)
             {
-                SetOutputValue(OutputId.P1_Ammo, BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39D3C, 4), 0));
-                int Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39C88, 4), 0));
-                if (Life < 0)
-                    Life = 0;
-                SetOutputValue(OutputId.P1_Life, Life);
+                P1_Ammo = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39D3C, 4), 0);
+                P1_Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39C88, 4), 0));
+                
+                if (P1_Life < 0)
+                    P1_Life = 0;
+
+                if (P1_Life < _P1_LastLife)
+                    SetOutputValue(OutputId.P1_Damaged, 1);                
             }
-            else
-            {
-                SetOutputValue(OutputId.P1_Ammo, 0);
-                SetOutputValue(OutputId.P1_Life, 0);
-            }
+
 
             int P2_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C3736C);
             if (P2_Status == 1)
             {
-                SetOutputValue(OutputId.P2_Ammo, BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39DC8, 4), 0));
-                int Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39C94, 4), 0));
-                if (Life < 0)
-                    Life = 0;
-                SetOutputValue(OutputId.P2_Life, Life);
-            }
-            else
-            {
-                SetOutputValue(OutputId.P2_Ammo, 0);
-                SetOutputValue(OutputId.P2_Life, 0);
+                P2_Ammo = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39DC8, 4), 0);
+                P2_Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39C94, 4), 0));
+                
+                if (P2_Life < 0)
+                    P2_Life = 0;
+
+                if (P2_Life < _P2_LastLife)
+                    SetOutputValue(OutputId.P2_Damaged, 1);      
             }
 
+            _P1_LastLife = P1_Life;
+            _P2_LastLife = P2_Life;
+
+            SetOutputValue(OutputId.P1_Life, P1_Life);
+            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
+            SetOutputValue(OutputId.P2_Life, P2_Life);
+            SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
             //Custom Recoil will simply be activated just like original Recoil
             SetOutputValue(OutputId.P1_CtmRecoil, P1_RecoilState);
             SetOutputValue(OutputId.P2_CtmRecoil, P2_RecoilState);
             //Custom Damaged will simply be activated just like original rumble
+            /* De-activated : Rumble also occurs with environmental actions !
             SetOutputValue(OutputId.P1_Damaged, P1_RumbleState);
             SetOutputValue(OutputId.P2_Damaged, P2_RumbleState);
+            */
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C4D758));
         }
 
