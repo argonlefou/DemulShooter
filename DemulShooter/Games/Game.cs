@@ -504,6 +504,30 @@ namespace DemulShooter
             return BitConverter.ToUInt32(Buffer, 0);
         }
 
+        protected UInt32 ReadPtrChain(UInt32 BaseAddress, UInt32[] Offsets)
+        {
+            byte[] Buffer = ReadBytes(BaseAddress, 4);
+            UInt32 Ptr = BitConverter.ToUInt32(Buffer, 0);
+
+            if (Ptr == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                for (int i = 0; i < Offsets.Length; i++)
+                {
+                    Buffer = ReadBytes(Ptr + Offsets[i], 8);
+                    Ptr = BitConverter.ToUInt32(Buffer, 0);
+
+                    if (Ptr == 0)
+                        return 0;
+                }
+            }
+
+            return Ptr;
+        }
+
         protected bool WriteByte(UInt32 Address, byte Value)
         {
             UInt32 bytesWritten = 0;

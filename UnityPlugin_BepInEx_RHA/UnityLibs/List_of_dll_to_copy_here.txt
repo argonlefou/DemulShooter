@@ -1,0 +1,6 @@
+Copy these files from [Wild West Shootout directory]\CowBoy_Data\Managed\ :
+
+Assembly-CSharp.dll
+UnityEngine.dll
+UnityEngine.Networking.dll
+UnityEngine.UI.dll

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // Les informations générales relatives à un assembly dépendent de 
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
-[assembly: AssemblyTitle("DemulShooter")]
+[assembly: AssemblyTitle("UnityPlugin_BepInEx_RHA")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("DemulShooter")]
-[assembly: AssemblyCopyright("Argonlefou © 2022")]
+[assembly: AssemblyProduct("UnityPlugin_BepInEx_RHA")]
+[assembly: AssemblyCopyright("Argonlefou ©  2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Le GUID suivant est pour l'ID de la typelib si ce projet est exposé à COM
-[assembly: Guid("5ca8460d-6a53-46ca-8f46-937bb728416c")]
+[assembly: Guid("98417912-7453-478d-97cc-e56510f5d8c3")]
 
 // Les informations de version pour un assembly se composent des quatre valeurs suivantes :
 //
@@ -32,4 +32,5 @@ using System.Runtime.InteropServices;
 // Vous pouvez spécifier toutes les valeurs ou indiquer les numéros de build et de révision par défaut 
 // en utilisant '*', comme indiqué ci-dessous :
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("10.8.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

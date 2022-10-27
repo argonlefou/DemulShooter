@@ -102,52 +102,59 @@ namespace DemulShooterX64
         #region MD5 Verification
 
         /// <summary>
-        /// Compute the MD5 hasj of the target executable and compare it to the known list of MD5 Hashes
+        /// Compute the MD5 hash of the target executable and compare it to the known list of MD5 Hashes
         /// This can be usefull if people are using some unknown dump with different memory, 
         /// or a wrong version of emulator
         /// This is absolutely not blocking, just for debuging with output log
         /// </summary>
         protected void CheckExeMd5()
         {
-            GetMd5HashAsString();
-            Logger.WriteLog("MD5 hash of " + _TargetProcess.MainModule.FileName + " = " + _TargetProcess_Md5Hash); 
+            CheckMd5(_TargetProcess.MainModule.FileName);
+        }
+        protected void CheckMd5(String TargetFileName)
+        {
+            GetMd5HashAsString(TargetFileName);
+            Logger.WriteLog("MD5 hash of " + TargetFileName + " = " + _TargetProcess_Md5Hash);
 
-            string FoundExe = string.Empty;
-            foreach (KeyValuePair<string, string> pair in _KnownMd5Prints)
+            String FoundMd5 = String.Empty;
+            foreach (KeyValuePair<String, String> pair in _KnownMd5Prints)
             {
                 if (pair.Value == _TargetProcess_Md5Hash)
                 {
-                    FoundExe = pair.Key;
+                    FoundMd5 = pair.Key;
                     break;
                 }
             }
 
-            if (FoundExe == string.Empty)
+            if (FoundMd5 == String.Empty)
             {
                 Logger.WriteLog(@"/!\ MD5 Hash unknown, DemulShooter may not work correctly with this target /!\");
             }
             else
             {
-                Logger.WriteLog("MD5 Hash is corresponding to a known target = " + FoundExe);
+                Logger.WriteLog("MD5 Hash is corresponding to a known target = " + FoundMd5);
             }
-            
+
         }
 
-        private void GetMd5HashAsString()
+        /// <summary>
+        /// Compute the MD5 hash from the target file.
+        /// </summary>
+        /// <param name="FileName">Full  filepath of the targeted executable.</param>
+        private void GetMd5HashAsString(String FileName)
         {
-            string process_path = _TargetProcess.MainModule.FileName;
-            if (File.Exists(process_path))
+            if (File.Exists(FileName))
             {
                 using (var md5 = MD5.Create())
                 {
-                    using (var stream = File.OpenRead(process_path))
+                    using (var stream = File.OpenRead(FileName))
                     {
                         var hash = md5.ComputeHash(stream);
                         _TargetProcess_Md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
                     }
                 }
             }
-        }        
+        }  
 
         #endregion
 

@@ -48,7 +48,7 @@ namespace DemulShooter
             _P1_Coin_Key = P1_Coin_Key;
             _P2_Coin_Key = P2_Coin_Key;
             _TestMode_Key = TestMode_Key;
-            _KnownMd5Prints.Add("Wild West Shoutout original dump", "4f543c469818c1db8bc856be84f0131e");
+            _KnownMd5Prints.Add("Wild West Shoutout original dump", "2dac74521cd3bb08b61f93830bf2660d");
             _tProcess.Start();
             Logger.WriteLog("Waiting for Coastal " + _RomName + " game to hook.....");
         }

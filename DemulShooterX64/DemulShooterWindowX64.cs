@@ -219,7 +219,20 @@ namespace DemulShooterX64
                 if (EnableXInputProc)
                     Bgw_XInput.RunWorkerAsync();
                 */
-                if (_Target.Equals("alls"))
+
+                //Adrenaline Amusements Games
+                if (_Target.Equals("aagames"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "rha":
+                            {
+                                _Game = new Game_AagamesRha(_Rom.ToLower(), _NoInput, isVerbose);
+                            }; break;
+                    }
+                }
+
+                else if (_Target.Equals("alls"))
                 {
                     switch (_Rom.ToLower())
                     {

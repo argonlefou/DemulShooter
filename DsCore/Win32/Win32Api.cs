@@ -125,6 +125,9 @@ namespace DsCore.Win32
         [DllImport("user32.dll")]
         public static extern IntPtr DefWindowProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
 
+        [DllImport("user32.dll")]
+        public static extern bool EnableWindow(IntPtr hWnd, bool enable);
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
@@ -136,6 +139,9 @@ namespace DsCore.Win32
 
         [DllImport("gdi32.dll")]
         public static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr GetForegroundWindow();
 
         [DllImport("kernel32.dll")]
         public static extern uint GetLastError();
