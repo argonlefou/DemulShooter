@@ -48,7 +48,7 @@ namespace DemulShooter
                 {"ringwide","TeknoParrot Loader / JConfig"},
                 {"ttx","Taito Type X"},
                 {"windows","Windows games"}
-            };
+            };            
 
             Dictionary<String, String> _ChihiroRoms = new Dictionary<String, String>(){
                 {"vcop3","Virtua Cop 3"}
@@ -140,6 +140,7 @@ namespace DemulShooter
                 {"hod2pc","House of the Dead II"},
                 {"hod3pc","House of the Dead III"},
                 {"hodo","House of the Dead Overkill"},
+                {"pgbeat", "Project Green Beat"},
                 {"reload","Reload"},
             };
 
@@ -177,7 +178,7 @@ namespace DemulShooter
                         Console.WriteLine("Supported [target] :");
                         DisplayDictionnaryList(_SystemTargets);
                         Console.WriteLine("");
-                        Console.WriteLine("Supported [rom] :");
+                        Console.WriteLine("Supported [rom] :");                        
                         Console.WriteLine("Coastal roms :");
                         DisplayDictionnaryList(_CoastalRoms);
                         Console.WriteLine("");
@@ -255,7 +256,7 @@ namespace DemulShooter
                     if (args[i].ToLower().StartsWith("-rom"))
                     {
                         strRom = (args[i].ToLower().Split('='))[1].Trim();
-                        if (strTarget.StartsWith("chihiro"))
+                       if (strTarget.StartsWith("chihiro"))
                         {
                             if (!CheckParameter(strRom, _ChihiroRoms))
                             {

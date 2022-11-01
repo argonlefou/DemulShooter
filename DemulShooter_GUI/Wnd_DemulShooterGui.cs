@@ -156,6 +156,10 @@ namespace DemulShooter_GUI
             Txt_Wws_P2Coin.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_P2Coin);
             Txt_Wws_Test.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_Test);
 
+            //Fill Rabbids Hollywood tab
+            Logger.WriteLog("Initializing GUI [Rabbids Hollywood] pages...");
+            Txt_Rha_GamePath.Text = _Configurator.Rha_Path;
+
             //Fill Output Tab
             Logger.WriteLog("Initializing GUI [Output] pages...");
             Cbox_Outputs.Checked = _Configurator.OutputEnabled;
@@ -837,8 +841,7 @@ namespace DemulShooter_GUI
             if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
-                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            
+                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);            
         }
 
         private void Btn_Wws_SaveKeys_Click(object sender, EventArgs e)
@@ -846,9 +849,35 @@ namespace DemulShooter_GUI
             if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
-                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            
+                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);            
         }
+
+        #endregion
+
+        #region Rabbids Hollywood Tab
+
+        private void Btn_Rha_GamePath_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog1.Description = "Please select \"Game.exe\" installation folder";
+            if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                _Configurator.Rha_Path = folderBrowserDialog1.SelectedPath;
+                Txt_Rha_GamePath.Text = _Configurator.Rha_Path;
+            }
+        }
+
+        private void Btn_Rha_InstallUnity_Click(object sender, EventArgs e)
+        {
+            if (!CloneDirectory(AppDomain.CurrentDomain.BaseDirectory + "\\Unity\\RabbidsHollywood", Txt_Rha_GamePath.Text))
+                MessageBox.Show("Impossible to copy Unity plugin in the followinf folder :\n" + Txt_Rha_GamePath.Text, "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
+                MessageBox.Show("Unity plugin installed !");
+
+            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+                MessageBox.Show("Configuration saved !");
+            else
+                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }        
 
         #endregion
 
@@ -1079,9 +1108,6 @@ namespace DemulShooter_GUI
                 return false;
             }
             return true;
-        }
-
-        
-                                        
+        }                             
     }        
 }

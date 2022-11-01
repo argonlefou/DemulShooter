@@ -35,12 +35,17 @@ namespace DemulShooterX64
             bool isVerbose = false;
 
             Dictionary<String, String> _SystemTargets = new Dictionary<String, String>(){
+                {"aagames","Adrenaline Amusements"},
                 {"alls","SEGA Amusement Linkage Live System games"},
                 {"es3","Namco ES3 games"},
                 //{"flycast","Flycast v2.0"},
                 {"seganu","SEGA Nu games"}
                 //{"windows","Windows games"}                
-            };            
+            };
+
+            Dictionary<String, String> _AagamesRoms = new Dictionary<String, String>(){
+                {"rha", "Rabbids Hollywood Arcade"}
+            };
 
             Dictionary<String, String> _AllsRoms = new Dictionary<String, String>(){
                 {"hodsd","House of the Dead : Scarlet Down"}
@@ -100,6 +105,9 @@ namespace DemulShooterX64
                         DisplayDictionnaryList(_SystemTargets);
                         Console.WriteLine("");
                         Console.WriteLine("Supported [rom] :");
+                        Console.WriteLine("Adrenaline Amusements Games roms :");
+                        DisplayDictionnaryList(_AagamesRoms);
+                        Console.WriteLine("");
                         Console.WriteLine("ALLS roms :");
                         DisplayDictionnaryList(_AllsRoms);
                         Console.WriteLine("");
@@ -117,6 +125,7 @@ namespace DemulShooterX64
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
                         Console.WriteLine(" -noinput \tDisable any input hack");
+                        Console.WriteLine(" -nocrosshair \tHide in-game crosshair (Only for Unity-based Games");
                         Console.WriteLine(" -? -h --help\tShow this help");
                         Console.WriteLine(" -v --verbose\tEnable output to log file");
 
@@ -149,7 +158,15 @@ namespace DemulShooterX64
                     if (args[i].ToLower().StartsWith("-rom"))
                     {
                         strRom = (args[i].ToLower().Split('='))[1].Trim();
-                        if (strTarget.Equals("alls"))
+                        if (strTarget.StartsWith("aagames"))
+                        {
+                            if (!CheckParameter(strRom, _AagamesRoms))
+                            {
+                                Console.WriteLine("\n\n\tUnsupported Adrenaline Amusements Game rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
+                        else if (strTarget.Equals("alls"))
                         {
                             if (!CheckParameter(strRom, _AllsRoms))
                             {

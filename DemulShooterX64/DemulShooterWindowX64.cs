@@ -45,6 +45,7 @@ namespace DemulShooterX64
 
         //Game options
         private Game _Game;
+        private bool _HideGameCrosshair = false;
         private string _Rom = String.Empty;
         private string _Target = String.Empty;
         private bool _NoInput = false;
@@ -84,6 +85,7 @@ namespace DemulShooterX64
             for (int i = 0; i < Args.Length; i++)
             {
                 Logger.WriteLog("Cmdline arg " + i + " : " + Args[i]);
+
                 if (Args[i].ToLower().Equals("-ipcinputs"))
                 {
                     _EnableInputsIpc = true;
@@ -91,6 +93,10 @@ namespace DemulShooterX64
                 else if (Args[i].ToLower().Equals("-ipcoutputs"))
                 {
                     _EnableOutputsIpc = true;
+                }
+                else if (Args[i].ToLower().Equals("-nocrosshair"))
+                {
+                    _HideGameCrosshair = true;
                 }
                 else if (Args[i].ToLower().Equals("-noinput"))
                 {
@@ -219,7 +225,20 @@ namespace DemulShooterX64
                 if (EnableXInputProc)
                     Bgw_XInput.RunWorkerAsync();
                 */
-                if (_Target.Equals("alls"))
+
+                //Adrenaline Amusements Games
+                if (_Target.Equals("aagames"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "rha":
+                            {
+                                _Game = new Game_AagamesRha(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            }; break;
+                    }
+                }
+
+                else if (_Target.Equals("alls"))
                 {
                     switch (_Rom.ToLower())
                     {

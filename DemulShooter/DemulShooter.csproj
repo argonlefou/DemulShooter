@@ -84,6 +84,7 @@
     <Compile Include="Games\Game_LindberghHotd4.cs" />
     <Compile Include="Games\Game_LindberghLgj.cs" />
     <Compile Include="Games\Game_LindberghRambo.cs" />
+    <Compile Include="Games\Game_WndProjectGreenBeat.cs" />
     <Compile Include="Games\Game_WndReload.cs" />
     <Compile Include="Games\Game_RwLGI.cs" />
     <Compile Include="Games\Game_RwLGI3D.cs" />

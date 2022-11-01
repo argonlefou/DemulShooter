@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Ds_Diag")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCopyright("Argonlefou")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

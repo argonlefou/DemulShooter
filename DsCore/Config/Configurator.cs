@@ -210,6 +210,16 @@ namespace DsCore.Config
         }
         #endregion
 
+        //Rabbids Hollywood Arcade Path
+        private String _Rha_Path = string.Empty;
+        #region Accessors
+        public String Rha_Path
+        {
+            get { return _Rha_Path; }
+            set { _Rha_Path = value; }
+        }
+        #endregion
+
         //Specific setting for Operation Ghost CREDITS (the game is not using the E2PROM file at launch)
         //And Game Test options are available in gs2.ini config file
         private bool _OpGHost_EnableFreeplay = false;
@@ -477,6 +487,10 @@ namespace DsCore.Config
                                     catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
                                 }
 
+                                else if (StrKey.ToLower().Equals("rha_path"))
+                                {
+                                    _Rha_Path = StrValue;
+                                }
 
                                 else if (StrKey.ToLower().Equals("opghost_enablefreeplay"))
                                 {
@@ -677,6 +691,9 @@ namespace DsCore.Config
                     sr.WriteLine("WWS_P1_COIN_KEY = " + _DIK_Wws_P1Coin.ToString());
                     sr.WriteLine("WWS_P2_COIN_KEY = " + _DIK_Wws_P2Coin.ToString());
                     sr.WriteLine("WWS_TEST_KEY = " + _DIK_Wws_Test.ToString());
+                    sr.WriteLine("");
+                    sr.WriteLine(";Rabbids Hollywood settings");
+                    sr.WriteLine("RHA_Path = " + _Rha_Path);
                     sr.WriteLine("");
                     sr.WriteLine(";Operation G.H.O.S.T credits settings");
                     sr.WriteLine("OpGhost_EnableFreeplay = " + _OpGHost_EnableFreeplay.ToString());

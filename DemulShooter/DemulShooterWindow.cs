@@ -331,6 +331,7 @@ namespace DemulShooter
                     Bgw_XInput.RunWorkerAsync();
                 */
 
+                 //Coastal Games
                 if (_Target.Equals("coastal"))
                 {
                     switch (_Rom.ToLower())
@@ -606,6 +607,10 @@ namespace DemulShooter
                         case "hodo":
                             {
                                 _Game = new Game_WndHotdoPc(_Rom.ToLower(), _NoInput, isVerbose);
+                            }; break;
+                        case "pgbeat":
+                            {
+                                _Game = new Game_WndProjectGreenBeat(_Rom.ToLower(), _NoInput, isVerbose);
                             }; break;
                         case "reload":
                             {
