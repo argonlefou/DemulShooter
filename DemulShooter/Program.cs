@@ -219,8 +219,6 @@ namespace DemulShooter
                         Console.WriteLine(" -widescreen \tDemul Widescreen hack");
                         Console.WriteLine(" -ddinumber \tDolphin's DirectInput number for P2 device");
                         Console.WriteLine(" -noautofire \tDisable in-game autofire for SEGA Golden Gun");
-                        Console.WriteLine(" -noautoreload \tDisable ingame automatic reload for hod3pc");
-                        Console.WriteLine(" -noguns \tRemove guns on screen for hod3pc (like real arcade machine)");
                         Console.WriteLine(" -nocrosshair \tHide in-game crosshair (Only for \"Reload\" on Windows and \"Rambo\" on Lindbergh");
                         Console.WriteLine(" -hardffl \tAlternative gameplay for Fright Fear Land / Haunted Museum 2(see README.TXT)");
 

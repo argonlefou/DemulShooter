@@ -235,6 +235,10 @@ namespace DemulShooterX64
                             {
                                 _Game = new Game_AagamesRha(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             }; break;
+                        case "tra":
+                            {
+                                _Game = new Game_AagamesTra(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            }; break;
                     }
                 }
 

@@ -19,6 +19,8 @@ namespace UnityPlugin_BepInEx_RHA
         static long MAPPED_FILE_CAPACITY = 2048;
         public static RHA_MemoryMappedFile_Controller RHA_Mmf;
 
+        public static bool IsDemoMode = false;
+
         private float[] _fLifebarArray;
         private int[] _iCreditsArray;
 
@@ -71,12 +73,15 @@ namespace UnityPlugin_BepInEx_RHA
                 }
 
                 Player[] playerList = Singleton<PlayerManager>.Instance.m_PlayerList;
-
+                Logger.LogDebug("DemulSHooter_Plugin.Update() => PlayerList.Length =  : " + playerList.Length.ToString());
                 for (int i = 0; i < playerList.Length; i++)
                 {
+                    //Logger.LogDebug("DemulSHooter_Plugin.Update() => PlayerList[" + i + "].m_IsPlaying =  : " + playerList[i].m_IsPlaying);
+                    //Logger.LogDebug("DemulSHooter_Plugin.Update() => PlayerList[" + i + "].Alive =  : " + playerList[i].Alive);
                     if (playerList[i].m_IsPlaying && playerList[i].Alive)
                     {
-                        if (_fLifebarArray[i] > 0)
+                        //Logger.LogDebug("DemulSHooter_Plugin.Update() => PlayerList[" + i + "] fLifebarArray[" + i + "] =  : " + _fLifebarArray[i].ToString());
+                        if (playerList[i].m_Health >= 0)
                             _fLifebarArray[i] = playerList[i].m_Health;
                     }
                     _iCreditsArray[i] = Singleton<KaboomManager>.Instance.GetCoinCount((ID)i);

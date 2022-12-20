@@ -16,6 +16,10 @@ namespace UnityPlugin_BepInEx_RHA
             /// <returns></returns>
             static bool Prefix(Vector3 i_Viewport, ID i_PlayerID, CrosshairWindow __instance)
             {
+                //If in Attractmode, we let the game handle the crosshair without messing with it
+                if (Demulshooter_Plugin.IsDemoMode)
+                    return true;
+
                 //UnityEngine.Debug.Log("mCrosshairWindow.CrosshairMove(), i_PlayerID=" + i_PlayerID.ToString() + ", i_Viewport=" + i_Viewport.ToString());
                 if (SBK.SceneSingleton<GameplayCamera>.Exists())
                 {

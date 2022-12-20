@@ -34,15 +34,12 @@ namespace DemulShooter
         private NopStruct _Nop_Reload_Button = new NopStruct(0x000B4CB1, 4);
         private NopStruct _Nop_Left_Button = new NopStruct(0x000B4C54, 3);
         private NopStruct _Nop_Right_Button = new NopStruct(0x00B4C0E, 3);
-        private NopStruct _Nop_NoAutoReload_1 = new NopStruct(0x0008DEDB, 3);
-        private NopStruct _Nop_NoAutoReload_2 = new NopStruct(0x0008DF1E, 3);
-        private NopStruct _Nop_Arcade_Mode_Display = new NopStruct(0x0008FD29, 2);        
-
-        private bool _NoAutoReload = false;
-        private bool _ArcadeModeDisplay = false;
-
-        //Play the "Coins" sound when adding coin
-        SoundPlayer _SndPlayer;
+        
+        //Not yet in cfg files (always the same for all releases ?)
+        private UInt32 _P1_Ammo_Offset = 0x003B8090;
+        private UInt32 _P1_Life_Offset = 0x003B8044;
+        private UInt32 _P2_Ammo_Offset = 0x003B82BC;
+        private UInt32 _P2_Life_Offset = 0x003B8270;
 
         //Custom Outputs
         private int _P1_LastLife = 0;
@@ -57,11 +54,9 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndHod3pc(String RomName, bool NoAutoReload, bool ArcadeModeDisplay, double ForcedXratio, bool DisableInputHack, bool Verbose) 
+        public Game_WndHod3pc(String RomName, double ForcedXratio, bool DisableInputHack, bool Verbose) 
             : base (RomName, "hod3pc", ForcedXratio, DisableInputHack, Verbose)
         {
-            _NoAutoReload = NoAutoReload;
-            _ArcadeModeDisplay = ArcadeModeDisplay;
             _KnownMd5Prints.Add("hod3pc SEGA Windows", "4bf19dcb7f0182596d93f038189f2301");
             _KnownMd5Prints.Add("hod3pc RELOADED cracked", "3a4501d39bbb7271712421fb992ad37b");
             _KnownMd5Prints.Add("hod3pc REVELATION No-CD", "b8af47f16d5e43cddad8df0a6fdb46f5");
@@ -100,22 +95,8 @@ namespace DemulShooter
                                 SetHack();
                             else
                                 Logger.WriteLog("Input Hack disabled");
-                            SetHack_Other();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
-
-                            //Try to load the "coin" sound
-                            try
-                            {
-                                String strCoinSndPath = _TargetProcess.MainModule.FileName;
-                                strCoinSndPath = strCoinSndPath.Substring(0, strCoinSndPath.Length - 10);
-                                strCoinSndPath += @"..\media\coin002.aif";
-                                _SndPlayer = new SoundPlayer(strCoinSndPath);
-                            }
-                            catch
-                            {
-                                Logger.WriteLog("Unable to find/open the coin002.aif file for Hotd3");
-                            }
                         }
                     }
                 }
@@ -232,23 +213,6 @@ namespace DemulShooter
             Logger.WriteLog("-");
         }
 
-        private void SetHack_Other()
-        {
-            //Cancel Auto-reload when bullets = 0
-            if (_NoAutoReload)
-            {
-                SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_NoAutoReload_1);
-                SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_NoAutoReload_2);
-                Logger.WriteLog("NoAutoReload Hack done");
-            }
-
-            //Hide guns at screen, like real arcade machine
-            if (_ArcadeModeDisplay)
-            {
-                SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Arcade_Mode_Display);
-                Logger.WriteLog("NoGuns Hack done");
-            }
-        }
 
         private void SetHack_Buttons()
         {
@@ -311,7 +275,9 @@ namespace DemulShooter
                 }
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
+                {
                     Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset + 3, 0x01);
+                }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                     Apply_AND_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset + 3, 0x0E);
             }
@@ -339,7 +305,9 @@ namespace DemulShooter
                 }
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
+                {
                     Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Buttons_Offset + 3, 0x01);
+                }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                     Apply_AND_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Buttons_Offset + 3, 0x0E);
             }
@@ -363,30 +331,6 @@ namespace DemulShooter
             }
             return Win32API.CallNextHookEx(MouseHookID, nCode, wParam, lParam);
         }
-
-        /// <summary>
-        /// Low-level Keyboard hook callback.
-        /// This is used to add coin to the game
-        /// </summary>
-        public override IntPtr KeyboardHookCallback(IntPtr KeyboardHookID, int nCode, IntPtr wParam, IntPtr lParam)
-        {
-            if (nCode >= 0)
-            {
-                KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
-                if ((UInt32)wParam == Win32Define.WM_KEYDOWN)
-                {
-                    if (s.scanCode == HardwareScanCode.DIK_5)
-                    {
-                        byte Credits = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset);
-                        Credits++;
-                        WriteByte((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset, Credits);
-                        if (_SndPlayer != null)
-                            _SndPlayer.Play();
-                    }
-                }
-            }
-            return Win32API.CallNextHookEx(KeyboardHookID, nCode, wParam, lParam);
-        } 
 
         #endregion       
                 
@@ -439,8 +383,8 @@ namespace DemulShooter
                 //Force Start Lamp to Off
                 SetOutputValue(OutputId.P1_CtmLmpStart, 0);
 
-                _P1_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B8044);
-                _P1_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B8090);
+                _P1_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Life_Offset);
+                _P1_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Ammo_Offset);
             
                 //Custom Recoil
                 if (_P1_Ammo < _P1_LastAmmo)
@@ -465,8 +409,8 @@ namespace DemulShooter
                 //Force Start Lamp to Off
                 SetOutputValue(OutputId.P2_CtmLmpStart, 0);
 
-                _P2_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B8270);
-                _P2_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x003B82BC);
+                _P2_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Life_Offset);
+                _P2_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Ammo_Offset);
 
                 //Custom Recoil
                 if (_P2_Ammo < _P2_LastAmmo)

@@ -48,9 +48,7 @@ namespace DemulShooter
         private string _DemulVersion = String.Empty;
         private bool _DisableWindow = false;
         private bool _WidescreenHack = false;
-        private bool _NoAutoReload = false;
         private bool _NoAutoFire = false;
-        private bool _NoGuns = false;
         private bool _HideGameCrosshair = false;
         private bool _HardFfl = false;
         private double _ForceXratio = 0.0;
@@ -136,11 +134,7 @@ namespace DemulShooter
                 else if (Args[i].ToLower().Equals("-nocrosshair"))
                 {
                     _HideGameCrosshair = true;
-                }
-                else if (Args[i].ToLower().Equals("-noautoreload"))
-                {
-                    _NoAutoReload = true;
-                }
+                }                
                 else if (Args[i].ToLower().Equals("-noautofire"))
                 {
                     _NoAutoFire = true;
@@ -148,10 +142,6 @@ namespace DemulShooter
                 if (Args[i].ToLower().Equals("-noinput"))
                 {
                     _NoInput = true;
-                }
-                else if (Args[i].ToLower().Equals("-noguns"))
-                {
-                    _NoGuns = true;
                 }
                 else if (Args[i].ToLower().Equals("-noresize"))
                 {
@@ -602,7 +592,7 @@ namespace DemulShooter
                             }; break;
                         case "hod3pc":
                             {
-                                _Game = new Game_WndHod3pc(_Rom.ToLower(), _NoAutoReload, _NoGuns, _ForceXratio, _NoInput, isVerbose);
+                                _Game = new Game_WndHod3pc(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
                             }; break;
                         case "hodo":
                             {

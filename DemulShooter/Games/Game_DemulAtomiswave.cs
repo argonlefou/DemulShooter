@@ -18,18 +18,18 @@ namespace DemulShooter
         private UInt32 _GpuDisplayType_Offset = 0;
 
         /*** MEMORY ADDRESSES **/
-        private UInt32 _Paddemul_Injection_Offset           =   0x0002757A;
-        private UInt32 _Paddemul_Injection_Return_Offset    =   0x00027582;
-        private UInt32 _Paddemul_PtrButtons_Offset          =   0x00037E30;
+        private UInt32 _Paddemul_Injection_Offset = 0x0002757A;
+        private UInt32 _Paddemul_Injection_Return_Offset = 0x00027582;
+        private UInt32 _Paddemul_PtrButtons_Offset = 0x00037E30;
         //private UInt32 _Paddemul_P1_Buttons_Offset          =   0x00037E32;
-        private UInt32 _Paddemul_Aw_P1_Start_Button_Offset  =   0x00037E30;
-        private UInt32 _Paddemul_Aw_P1_Fire_Button_Offset   =   0x00037E32;
-        private UInt32 _Paddemul_P1_X_Offset                =   0x00037E34;
+        private UInt32 _Paddemul_Aw_P1_Start_Button_Offset = 0x00037E30;
+        private UInt32 _Paddemul_Aw_P1_Fire_Button_Offset = 0x00037E32;
+        private UInt32 _Paddemul_P1_X_Offset = 0x00037E34;
         //private UInt32 _Paddemul_P1_Y_Offset                =   0x00037E36;
         //private UInt32 _Paddemul_P2_Buttons_Offset          =   0x00037EB2;
-        private UInt32 _Paddemul_Aw_P2_Start_Button_Offset  =   0x00037EB0;
-        private UInt32 _Paddemul_Aw_P2_Fire_Button_Offset   =   0x00037EB2;
-        private UInt32 _Paddemul_P2_X_Offset                =   0x00037EB4;
+        private UInt32 _Paddemul_Aw_P2_Start_Button_Offset = 0x00037EB0;
+        private UInt32 _Paddemul_Aw_P2_Fire_Button_Offset = 0x00037EB2;
+        private UInt32 _Paddemul_P2_X_Offset = 0x00037EB4;
         //private UInt32 _Paddemul_P2_Y_Offset                =   0x00037EB6;
 
         protected bool _WidescreenHack;
@@ -101,13 +101,13 @@ namespace DemulShooter
                         }
 
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero && _GpuModuleBaseAddress != IntPtr.Zero && _PadDemul_ModuleBaseAddress != IntPtr.Zero)
-                        {                           
+                        {
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             if (!_DisableInputHack)
                                 SetHack();
                             else
-                                Logger.WriteLog("Input Hack disabled"); RaiseGameHookedEvent();                            
+                                Logger.WriteLog("Input Hack disabled"); RaiseGameHookedEvent();
                             _ProcessHooked = true;
                         }
                     }
@@ -131,7 +131,7 @@ namespace DemulShooter
                 }
             }
         }
-        
+
         #region Screen
 
         /// <summary>
@@ -361,12 +361,12 @@ namespace DemulShooter
             {
                 WriteBytes((UInt32)_PadDemul_ModuleBaseAddress + _Paddemul_P1_X_Offset, buffer);
 
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0) 
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
                     WriteByte((UInt32)_PadDemul_ModuleBaseAddress + _Paddemul_Aw_P1_Fire_Button_Offset, 0xFB);
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0) 
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
                     WriteByte((UInt32)_PadDemul_ModuleBaseAddress + _Paddemul_Aw_P1_Fire_Button_Offset, 0xFF);
 
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0) 
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                 {
                     /* For Sprtshot, we force offscreen shoot for reload */
                     if (_RomName.Equals("sprtshot"))
@@ -387,7 +387,7 @@ namespace DemulShooter
                         WriteByte((UInt32)_PadDemul_ModuleBaseAddress + _Paddemul_Aw_P1_Start_Button_Offset, val);
                     }
                 }
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0) 
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                 {
                     if (_RomName.Equals("sprtshot"))
                     {
@@ -406,12 +406,12 @@ namespace DemulShooter
             {
                 WriteBytes((UInt32)_PadDemul_ModuleBaseAddress + _Paddemul_P2_X_Offset, buffer);
 
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0) 
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
                     WriteByte((UInt32)_PadDemul_ModuleBaseAddress + _Paddemul_Aw_P2_Fire_Button_Offset, 0xFB);
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0) 
-                   WriteByte((UInt32)_PadDemul_ModuleBaseAddress + _Paddemul_Aw_P2_Fire_Button_Offset, 0xFF);
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
+                    WriteByte((UInt32)_PadDemul_ModuleBaseAddress + _Paddemul_Aw_P2_Fire_Button_Offset, 0xFF);
 
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0) 
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                 {
                     /* For Sprtshot, we force offscreen shoot for reload */
                     if (_RomName.Equals("sprtshot"))
@@ -432,7 +432,7 @@ namespace DemulShooter
                         WriteByte((UInt32)_PadDemul_ModuleBaseAddress + _Paddemul_Aw_P2_Start_Button_Offset, val);
                     }
                 }
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0) 
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                 {
                     if (_RomName.Equals("sprtshot"))
                     {

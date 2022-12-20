@@ -52,6 +52,7 @@ namespace DemulShooterX64
             _PlayerShootAxis = new Vector3[4];
             _KnownMd5Prints.Add("Rabbids Hollywood Arcade - Clean Dump", "2dac74521cd3bb08b61f93830bf2660d");
             _KnownMd5Prints.Add("Rabbids Hollywood Arcade - Patch by Ducon v2 (dongle+operator)", "72b58266f2d1311b2ba2e7c96ca774fa");
+            _KnownMd5Prints.Add("Rabbids Hollywood Arcade - Patch by Ducon v3 (dongle+operator+attract mode)", "7edf14803ae7d43d14e7459b2baa651e");
             _KnownMd5Prints.Add("Rabbids Hollywood Arcade - Patch by Argon (dongle)", "1e74554181161f8a83084e02beeec5fc");
             _tProcess.Start();
             Logger.WriteLog("Waiting for Adrenaline Amusements game " + _RomName + " game to hook.....");
