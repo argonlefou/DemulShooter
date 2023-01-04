@@ -38,7 +38,7 @@ namespace DemulShooterX64
                 {"aagames","Adrenaline Amusements"},
                 {"alls","SEGA Amusement Linkage Live System games"},
                 {"es3","Namco ES3 games"},
-                //{"flycast","Flycast v2.0"},
+                {"flycast","Flycast v2.0"},
                 {"seganu","SEGA Nu games"}
                 //{"windows","Windows games"}                
             };

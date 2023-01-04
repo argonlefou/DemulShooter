@@ -319,17 +319,21 @@ namespace DemulShooter
         /// </summary>
         public override IntPtr MouseHookCallback(IntPtr MouseHookID, int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0 && (UInt32)wParam == Win32Define.WM_MBUTTONDOWN)
+            if (!_DisableInputHack)
             {
-                //Just blocking middle clicks                
-                return new IntPtr(1);
-            }
-            else if (nCode >= 0 && (UInt32)wParam == Win32Define.WM_RBUTTONDOWN)
-            {
-                //Just blocking right clicks => if not P1 reload play animation but does not reload
-                return new IntPtr(1);
+                if (nCode >= 0 && (UInt32)wParam == Win32Define.WM_MBUTTONDOWN)
+                {
+                    //Just blocking middle clicks                
+                    return new IntPtr(1);
+                }
+                else if (nCode >= 0 && (UInt32)wParam == Win32Define.WM_RBUTTONDOWN)
+                {
+                    //Just blocking right clicks => if not P1 reload play animation but does not reload
+                    return new IntPtr(1);
+                }
             }
             return Win32API.CallNextHookEx(MouseHookID, nCode, wParam, lParam);
+
         }
 
         #endregion       

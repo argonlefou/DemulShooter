@@ -23,6 +23,9 @@ namespace DemulShooter
         private Configurator _Configurator;
         private const string DEMULSHOOTER_CONF_FILENAME = "config.ini";
 
+        //Timer for Hooking TimeOut
+        private System.Timers.Timer _TimerHookTimeout;
+
         //Tray Icon
         private ContextMenu _TrayIconMenu;
         private System.Windows.Forms.NotifyIcon _TrayIcon;
@@ -78,6 +81,11 @@ namespace DemulShooter
             //Creating TrayIcon and TrayIcon "Exit" menu
             Application.ApplicationExit += new EventHandler(OnApplicationExit);
             InitializeComponent();
+
+            //Creating the timeout Timer
+            _TimerHookTimeout = new System.Timers.Timer();
+            _TimerHookTimeout.Enabled = false;
+            _TimerHookTimeout.Elapsed += tHookTimeOut_Elapsed;
 
             Logger.IsEnabled = isVerbose;
             Logger.InitLogFileName();
@@ -399,6 +407,18 @@ namespace DemulShooter
                     }
                 }
 
+                //KONAMI Arcade
+                else if (_Target.Equals("konami"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "wartran":
+                            {
+                                _Game = new Game_KonamiWartran(_Rom.ToLower(), _ForceXratio, _NoInput, isVerbose);
+                            } break;
+                    }
+                }
+
                 //Lindbergh
                 else if (_Target.Equals("lindbergh"))
                 {
@@ -622,6 +642,13 @@ namespace DemulShooter
                 }
 
                 _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);
+
+                //starting the TimeOut Timer
+                if (_Configurator.HookTimeout != 0)
+                {
+                    _TimerHookTimeout.Interval = (_Configurator.HookTimeout * 1000);
+                    _TimerHookTimeout.Start();
+                }
             }
         }       
 
@@ -875,12 +902,21 @@ namespace DemulShooter
         {
             _TrayIcon.Icon = DemulShooter.Properties.Resources.DemulShooter_Hooked_Icon;
             _TrayIcon.Text += "[Hooked]";
+
+            //Stopping the Timeout timer
+            _TimerHookTimeout.Stop();
+        }
+
+        private void OnApplicationExit(object sender, EventArgs e)
+        {
+            Logger.WriteLog("Cleaning things before exiting application...");
+            CleanAppBeforeExit();
         }
 
         /// <summary>
         /// Application Exit cleanup
         /// </summary>
-        private void OnApplicationExit(object sender, EventArgs e)
+        private void CleanAppBeforeExit()
         {
             if (_OutputUpdateLoop != null)
                 _OutputUpdateLoop.Abort();
@@ -893,7 +929,7 @@ namespace DemulShooter
             {
                 _TrayIcon.Visible = false;
                 _TrayIcon.Dispose();
-            }
+            }        
         }
 
         /// <summary>
@@ -1041,6 +1077,14 @@ namespace DemulShooter
         protected void RemoveKeyboardHook()
         {
             Win32API.UnhookWindowsHookEx(_KeyboardHookID);
-        }     
+        }
+
+        //quit application if TimeOut enabled for game hooking
+        private void tHookTimeOut_Elapsed(Object Sender, EventArgs e)
+        {
+            Logger.WriteLog("Hook timeout expired, exiting application.");
+            CleanAppBeforeExit();
+            Environment.Exit(0);
+        }
     }
 }

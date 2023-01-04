@@ -2,8 +2,8 @@
 using System.Reflection;
 using BepInEx;
 using HarmonyLib;
-using UnityEngine;
 using SBK;
+using UnityEngine;
 
 namespace UnityPlugin_BepInEx_RHA
 {

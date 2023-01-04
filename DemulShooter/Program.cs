@@ -42,6 +42,7 @@ namespace DemulShooter
                 {"demul07a","Demul v0.7a 180428"},
                 {"dolphin5","Dolphin v5.0"},
                 {"globalvr","Global VR"},
+                {"konami","Konami Arcade"},
                 {"lindbergh","TeknoParrot Loader"},
                 {"model2","Nebula Model2Emulator v1.1a"},
                 {"rawthrill","TeknoParrot Loader"},
@@ -84,6 +85,10 @@ namespace DemulShooter
                 {"aliens","Aliens Extermination Dehasped (2nd dump, x86 and x64, no need for VM)"},
                 //{"farcry","Far Cry : Paradise Lost"},
                 {"fearland","Fright Fear Land"}
+            };
+
+            Dictionary<String, String> _KonamiRoms = new Dictionary<String, String>(){
+                {"wartran","Wartran Troopers"}
             };
 
             Dictionary<String, String> _LindberghRoms = new Dictionary<String, String>(){
@@ -193,6 +198,9 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("Global VR Games :");
                         DisplayDictionnaryList(_GlobalVrRoms);
+                        Console.WriteLine("");
+                        Console.WriteLine("Konami Games :");
+                        DisplayDictionnaryList(_KonamiRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Lindbergh roms :");
                         DisplayDictionnaryList(_LindberghRoms);

@@ -18,6 +18,9 @@ namespace DemulShooter_GUI
         private Configurator _Configurator;
         private const string CONF_FILENAME = "config.ini";
 
+        //Non-GUI settings (W.I.P -- they should be incliuded next)
+        private int _HookTimeout = 0;
+
         //Available RawInput devices (filters by thir Type)
         private RawInputController[] _AvailableControllers;
 
@@ -166,7 +169,10 @@ namespace DemulShooter_GUI
             Txt_OutputDelay.Text = _Configurator.OutputPollingDelay.ToString();
             Txt_OutputRecoilOn.Text = _Configurator.OutputCustomRecoilOnDelay.ToString();
             Txt_OutputRecoilOff.Text = _Configurator.OutputCustomRecoilOffDelay.ToString();
-            Txt_OutputDamaged.Text = _Configurator.OutputCustomDamagedDelay.ToString();
+            Txt_OutputDamaged.Text = _Configurator.OutputCustomDamagedDelay.ToString();           
+
+            //Non-GUI settings
+            _HookTimeout = _Configurator.HookTimeout;
 
             // Register to rawinput
             Logger.WriteLog("Registering to RawInput service...");

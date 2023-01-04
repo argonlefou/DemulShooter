@@ -19,6 +19,11 @@ namespace DsCore.Config
             get { return _PlayersSettings; }
         }
 
+        //Timeout setting for Hooking procedure
+        private int _HookTimeout = 0;
+        public int HookTimeout
+        { get { return _HookTimeout; } }
+
         //ActLbs offset
         private bool _Act_Labs_Offset_Enable = false;
         private bool _Act_Labs_Display_Crosshair = true;
@@ -537,6 +542,11 @@ namespace DsCore.Config
                                     if (!int.TryParse(StrValue, out _OutputCustomRecoilOffDelay))
                                         Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
+                                else if (StrKey.ToLower().Equals("hooktimeout"))
+                                {
+                                    if (!int.TryParse(StrValue, out _HookTimeout))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
                             }
                         }
                         line = sr.ReadLine();
@@ -707,6 +717,9 @@ namespace DsCore.Config
                     sr.WriteLine("OutputCustomDamagedDelay = " + _OutputCustomDamagedDelay.ToString());
                     sr.WriteLine("OutputCustomRecoilOnDelay = " + _OutputCustomRecoilOnDelay.ToString());
                     sr.WriteLine("OutputCustomRecoilOffDelay = " + _OutputCustomRecoilOffDelay.ToString());
+                    sr.WriteLine("");
+                    sr.WriteLine(";DemulShooter Hooking procedure Timeout value");
+                    sr.WriteLine("HookTimeout = " + _HookTimeout.ToString());
                     sr.Close();
                 }
                 return true;

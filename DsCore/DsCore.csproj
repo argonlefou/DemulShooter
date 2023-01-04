@@ -62,6 +62,7 @@
     <Compile Include="Config\PlayerSettings.cs" />
     <Compile Include="IPC\MappedMemoryFileHelper.cs" />
     <Compile Include="IPC\MappedMemoryFile_Helper_old.cs" />
+    <Compile Include="IPC\MMFH_HotdRemakeArcade.cs" />
     <Compile Include="IPC\MMFH_RabbidsHollywood.cs" />
     <Compile Include="IPC\MMFH_TombRaider.cs" />
     <Compile Include="IPC\MMF_DataStruct.cs" />

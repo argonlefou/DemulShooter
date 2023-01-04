@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
 using DsCore.IPC;
+using DsCore.MameOutput;
 using DsCore.RawInput;
 using DsCore.Win32;
-using DsCore.MameOutput;
-using System.Collections.Generic;
 
 namespace DemulShooterX64
 {

@@ -78,7 +78,7 @@ namespace DemulShooter
             _tProcess = new System.Timers.Timer();
             _tProcess.Interval = 500;
             _tProcess.Elapsed += new ElapsedEventHandler(tProcess_Elapsed); 
-            _tProcess.Enabled = true;            
+            _tProcess.Enabled = true; 
         }
 
         ~Game()
