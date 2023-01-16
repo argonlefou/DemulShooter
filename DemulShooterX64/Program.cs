@@ -39,8 +39,8 @@ namespace DemulShooterX64
                 {"alls","SEGA Amusement Linkage Live System games"},
                 {"es3","Namco ES3 games"},
                 {"flycast","Flycast v2.0"},
-                {"seganu","SEGA Nu games"}
-                //{"windows","Windows games"}                
+                {"seganu","SEGA Nu games"},
+                {"windows","Windows games"}                
             };
 
             Dictionary<String, String> _AagamesRoms = new Dictionary<String, String>(){
@@ -83,7 +83,8 @@ namespace DemulShooterX64
             };
 
             Dictionary<String, String> _WindowsRoms = new Dictionary<String, String>(){
-                {"bha","Buck Hunt Arcade PC"}
+                //{"bha","Buck Hunt Arcade PC"}
+                {"hotdra","House of the Dead Remake - Arcade Mod"}
             };
             
             if (args.Length > 0)
@@ -115,14 +116,14 @@ namespace DemulShooterX64
                         Console.WriteLine("ES3 roms :");
                         DisplayDictionnaryList(_Es3Roms);
                         Console.WriteLine("");
-                        /*Console.WriteLine("Flycast roms :");
+                        Console.WriteLine("Flycast roms :");
                         DisplayDictionnaryList(_FlycastRoms);
-                        Console.WriteLine("");*/
+                        Console.WriteLine("");
                         Console.WriteLine("SEGA Nu roms :");
                         DisplayDictionnaryList(_SegaNuRoms);
-                        /*Console.WriteLine("");
+                        Console.WriteLine("");
                         Console.WriteLine("Windows games :");
-                        DisplayDictionnaryList(_WindowsRoms);*/
+                        DisplayDictionnaryList(_WindowsRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
                         Console.WriteLine(" -noinput \tDisable any input hack");

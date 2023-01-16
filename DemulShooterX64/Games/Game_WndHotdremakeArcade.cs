@@ -21,10 +21,14 @@ namespace DemulShooterX64
         /// Constructor
         /// </summary>
         public Game_WndHotdremakeArcade(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "Game", DisableInputHack, Verbose)
+            : base(RomName, "The House of the Dead Remake", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("House of the dead Remake - GOG v1.0.0.4", "4cd32190b44d7c2d6b8ca52d0d372692"); //exe = D5FCA0B03AE64D1D0E75B795BD6CCA9F
-            _KnownMd5Prints.Add("House of the dead Remake - STEAM (v1.0)", "7fccfcaa13ebe72043a32601de6d1a6b");
+            _KnownMd5Prints.Add("House of the dead Remake - GOG v1.03", "5e7afcfc9ae4aa8396be7007268bfe12");
+            _KnownMd5Prints.Add("House of the dead Remake - GOG v1.1.3", "21307253063e17c64b4f4030aa7e5d60");
+            _KnownMd5Prints.Add("House of the dead Remake - STEAM (v1.0)", "cdf5f802dcfb9262fe4851b6292");
+            _KnownMd5Prints.Add("House of the dead Remake - STEAM (v1.1.3)", "8377939dd51b947d76146f114fe9c61d");
+
             _tProcess.Start();
             Logger.WriteLog("Waiting for Windows game " + _RomName + " game to hook.....");
         }
@@ -91,10 +95,36 @@ namespace DemulShooterX64
         /// Convert client area pointer location to Game speciffic data for memory injection
         /// this one is easy as the value is simply the pixel corresponding point on the window
         /// </summary>
-        /*public override bool GameScale(PlayerSettings PlayerData)
+        public override bool GameScale(PlayerSettings PlayerData)
         {
-            
-        }*/
+
+            if (_ProcessHandle != IntPtr.Zero)
+            {
+                try
+                {
+                    //Game Window size
+                    Rect TotalRes = new Rect();
+                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
+                    //Win32API.GetWindowRect(_TargetProcess.MainWindowHandle, ref TotalRes);
+                    double TotalResX = TotalRes.Right - TotalRes.Left;
+                    double TotalResY = TotalRes.Bottom - TotalRes.Top;
+
+                    //Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+
+                    //Just need to invert Y axis (0 is bottom)
+                    PlayerData.RIController.Computed_Y = (int)TotalResY - PlayerData.RIController.Computed_Y;
+
+                    return true;
+                }
+                catch (Exception Ex)
+                {
+                    Logger.WriteLog("Error scaling mouse coordonates to GameFormat : " + Ex.Message.ToString());
+                }
+            }
+
+            return false;  
+        }
 
         #endregion
 
@@ -127,13 +157,13 @@ namespace DemulShooterX64
         {
             if (_HackEnabled)
             {
-                Array.Copy(BitConverter.GetBytes((float)PlayerData.RIController.Computed_X), 0, _Mmfh.Payload, (int)MMFH_HotdRemakeArcade.Payload_Inputs_Index.P1_AxisX + (PlayerData.ID - 1), 4);
-                Array.Copy(BitConverter.GetBytes((float)PlayerData.RIController.Computed_Y), 0, _Mmfh.Payload, (int)MMFH_HotdRemakeArcade.Payload_Inputs_Index.P1_AxisY + (PlayerData.ID - 1), 4);
+                Array.Copy(BitConverter.GetBytes((float)PlayerData.RIController.Computed_X), 0, _Mmfh.Payload, (int)MMFH_HotdRemakeArcade.Payload_Inputs_Index.P1_AxisX + (PlayerData.ID - 1) * 8, 4);
+                Array.Copy(BitConverter.GetBytes((float)PlayerData.RIController.Computed_Y), 0, _Mmfh.Payload, (int)MMFH_HotdRemakeArcade.Payload_Inputs_Index.P1_AxisY + (PlayerData.ID - 1) * 8, 4);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
-                    _Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Inputs_Index.P1_Trigger + (PlayerData.ID - 1)] = 2;
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
                     _Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Inputs_Index.P1_Trigger + (PlayerData.ID - 1)] = 1;
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
+                    _Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Inputs_Index.P1_Trigger + (PlayerData.ID - 1)] = 0;
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                     _Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Inputs_Index.P1_Reload + (PlayerData.ID - 1)] = 1;
@@ -175,8 +205,8 @@ namespace DemulShooterX64
         {
             //Gun motor : Is activated for every bullet fired AND when player gets
             _Outputs = new List<GameOutput>();
-            _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P1_CtmLmpStart, OutputId.P1_CtmLmpStart, 500));
-            _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P2_CtmLmpStart, OutputId.P2_CtmLmpStart, 500));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpStart, OutputId.P1_LmpStart));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpStart, OutputId.P2_LmpStart));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
@@ -198,6 +228,10 @@ namespace DemulShooterX64
             int r = _Mmfh.ReadAll();
             if (r == 0)
             {
+                //Start Lamps
+                SetOutputValue(OutputId.P1_LmpStart, _Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Outputs_Index.P1_StartLmp]);
+                SetOutputValue(OutputId.P2_LmpStart, _Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Outputs_Index.P2_StartLmp]);
+
                 //P1 Life
                 SetOutputValue(OutputId.P1_Life, _Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Outputs_Index.P1_Life]);
                 
@@ -220,10 +254,9 @@ namespace DemulShooterX64
                 //P1_Damaged
                 if (_Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Outputs_Index.P1_Damaged] == 1)
                 {
-                    SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                    SetOutputValue(OutputId.P1_Damaged, 1);
                     _Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Outputs_Index.P1_Damaged] = 0;
                 }
-
 
                 //P2 Life
                 SetOutputValue(OutputId.P2_Life, _Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Outputs_Index.P2_Life]);
@@ -247,12 +280,12 @@ namespace DemulShooterX64
                 //P1_Damaged
                 if (_Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Outputs_Index.P2_Damaged] == 1)
                 {
-                    SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                    SetOutputValue(OutputId.P2_Damaged, 1);
                     _Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Outputs_Index.P2_Damaged] = 0;
                 }
 
                 //Credits
-                SetOutputValue(OutputId.Credits, BitConverter.ToInt32(_Mmfh.Payload, (int)MMFH_HotdRemakeArcade.Payload_Outputs_Index.Credits));
+                SetOutputValue(OutputId.Credits, _Mmfh.Payload[(int)MMFH_HotdRemakeArcade.Payload_Outputs_Index.Credits]);
 
                 int r2 = _Mmfh.Writeall();
                 if (r2 != 0)

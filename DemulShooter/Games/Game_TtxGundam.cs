@@ -55,6 +55,37 @@ namespace DemulShooter
 
         private Codecave _Cave_Check1, _Cave_Check2;
 
+        /*** Outputs ***/
+        private UInt32 _P1_GunMotorOffset = 0x0026FB1C;
+        private UInt32 _P2_GunMotorOffset = 0x0026FB20;
+        //dword_66FB24 also set to 0 and 1 at the same time than motors sometimes ??
+        private UInt32 _P1_Playing_Offset = 0x0026FB9C;
+        private UInt32 _P2_Playing_Offset = 0x0026FB9D;
+        private UInt32 _Ammo_Injection_Offset = 0x000A7BA3;
+        private UInt32 _Ammo_Injection_ReturnOffset = 0x000A7BA9;
+        private UInt32 _Life_Injection_Offset = 0x00099964;
+        private UInt32 _Life_Injection_ReturnOffset = 0x0009996A;
+
+        //Sets value to 1 when active, 0 un-initialized, 2 otherwise
+        private UInt32 _SetRumbleGunShot_Offset = 0x000A60FF;
+        private UInt32 _SetRumbleCanonShot_Offset = 0x000A7649;
+        private UInt32 _SetRumbleOnHit_Offset = 0x009B06B;
+        private UInt32 _SetRumbleUnkownReason01_Offset = 0x000A70F3;
+        private UInt32 _SetRumbleUnkownReason02_Offset = 0x000E19CA;
+        private UInt32 _SetRumbleUnkownReason03_Offset = 0x000E1A31;
+        private UInt32 _SetRumbleStateFuntionOffset = 0x000D0B40;
+
+        private UInt32 _P1_RecoilEnabled_CustomAddress;
+        private UInt32 _P2_RecoilEnabled_CustomAddress;
+        private UInt32 _P1_DamagedEnabled_CustomAddress;
+        private UInt32 _P2_DamagedEnabled_CustomAddress;
+        private UInt32 _P1_Ammo_CustomAddress;
+        private UInt32 _P2_Ammo_CustomAddress;
+        private UInt32 _P1_Life_CustomAddress;
+        private UInt32 _P2_Life_CustomAddress;
+
+
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -97,6 +128,7 @@ namespace DemulShooter
                                 SetHack();
                             else
                                 Logger.WriteLog("Input Hack disabled");
+                            SetHack_Outputs();
                             CheckExeMd5();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
@@ -468,6 +500,226 @@ namespace DemulShooter
             Logger.WriteLog("-");
         }
 
+        private void SetHack_Outputs()
+        {
+            CreateDataBank();
+            GetRecoilEvent(_SetRumbleGunShot_Offset);
+            GetRecoilEvent(_SetRumbleCanonShot_Offset);
+            GetDamagedEvent(_SetRumbleOnHit_Offset);
+
+            //Not knowing when these these part of code are called to vibrate, we will put it in the "Damage" output (less likely to be used than an unwanted recoil)
+            GetDamagedEvent(_SetRumbleUnkownReason01_Offset);
+            GetDamagedEvent(_SetRumbleUnkownReason02_Offset);
+            GetDamagedEvent(_SetRumbleUnkownReason03_Offset);
+
+            Hack_GetAmmo();
+            Hack_GetLife();
+        }
+
+        /// <summary>
+        /// Creating a zone in memory where we will save our recoil and hit events
+        /// This memory will then be read by the game thanks to the following hacks.
+        /// </summary>
+        private void CreateDataBank()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            _P1_RecoilEnabled_CustomAddress = CaveMemory.CaveAddress;
+            _P2_RecoilEnabled_CustomAddress = CaveMemory.CaveAddress + 0x04;
+            _P1_DamagedEnabled_CustomAddress = CaveMemory.CaveAddress + 0x08;
+            _P2_DamagedEnabled_CustomAddress = CaveMemory.CaveAddress + 0x0C;
+            _P1_Ammo_CustomAddress = CaveMemory.CaveAddress + 0x10;
+            _P2_Ammo_CustomAddress = CaveMemory.CaveAddress + 0x14;
+            _P1_Life_CustomAddress = CaveMemory.CaveAddress + 0x18;
+            _P2_Life_CustomAddress = CaveMemory.CaveAddress + 0x1C;
+
+            Logger.WriteLog("Custom data will be stored at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+        }
+
+        /// <summary>
+        /// The function to set Rumble state Up is called at many places
+        /// These one will catch when the Rumble is called because of gun fire, or cannon fire
+        /// and put a flag in out data bank
+        private void GetRecoilEvent(UInt32 Injection_Offset)
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //mov eax, [esp+4]
+            CaveMemory.Write_StrBytes("8B 44 24 04");
+            //shl eax, 2
+            CaveMemory.Write_StrBytes("C1 E0 02");
+            //add eax, _P1_RecoilEnabled_customAddress
+            CaveMemory.Write_StrBytes("05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_RecoilEnabled_CustomAddress));
+            //mov [eax],00000001
+            CaveMemory.Write_StrBytes("C7 00 01 00 00 00");
+            //pop eax
+            CaveMemory.Write_StrBytes("58");
+            //call game.exe+D0B40
+            CaveMemory.Write_call((UInt32)_TargetProcess_MemoryBaseAddress + _SetRumbleStateFuntionOffset);
+            //jmp return
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + Injection_Offset + 5);
+
+            Logger.WriteLog("Adding Recoil Detetcion Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));            
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+        /// <summary>
+        /// Same thing but injected at the moment the game is setting rumble on Damage Received
+        private void GetDamagedEvent(UInt32 Injection_Offset)
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //mov eax, [esp+4]
+            CaveMemory.Write_StrBytes("8B 44 24 04");
+            //shl eax, 2
+            CaveMemory.Write_StrBytes("C1 E0 02");
+            //add eax, _P1_RecoilEnabled_customAddress
+            CaveMemory.Write_StrBytes("05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_DamagedEnabled_CustomAddress));
+            //mov [eax],00000001
+            CaveMemory.Write_StrBytes("C7 00 01 00 00 00");
+            //pop eax
+            CaveMemory.Write_StrBytes("58");
+            //call game.exe+D0B40
+            CaveMemory.Write_call((UInt32)_TargetProcess_MemoryBaseAddress + _SetRumbleStateFuntionOffset);
+            //jmp return
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + Injection_Offset + 5);
+
+            Logger.WriteLog("Adding Damage Detetcion Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+
+        //Weapon Struct:
+        //+ 0x08 -> Weapon Type (0 = Gaitling, 1 = Canon, 2 = Mines)
+        //+ 0x2C -> Gaitling Ammo
+        //+ 0x30 -> Canon Ammo
+        //+ 0x34 -> Mines Ammo
+        //+ 0xC0 -> Player ID
+        //We will read values at a time when the Struct Pointer created and is used by the game during playthrough
+        private void Hack_GetAmmo()
+        {            
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //mov ecx,[esi+54]
+            CaveMemory.Write_StrBytes("8B 4E 54");
+            //mov [edx+0C],eax
+            CaveMemory.Write_StrBytes("89 42 0C");
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //push ebx
+            CaveMemory.Write_StrBytes("53");
+            //eax,[ecx+000000C0]
+            CaveMemory.Write_StrBytes("8B 81 C0 00 00 00");
+            //shl eax,02
+            CaveMemory.Write_StrBytes("C1 E0 02");
+            //add eax, _P1_Ammo_CustomAddress
+            CaveMemory.Write_StrBytes("05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Ammo_CustomAddress));
+            //mov ebx,[ecx+8]
+            CaveMemory.Write_StrBytes("8B 59 08");
+            //shl ebx, 2
+            CaveMemory.Write_StrBytes("C1 E3 02");
+            //add ebx, 2C
+            CaveMemory.Write_StrBytes("83 C3 2C");
+            //add ebx, ecx
+            CaveMemory.Write_StrBytes("01 CB");
+            //mov ebx, [ebx]
+            CaveMemory.Write_StrBytes("8B 1B");
+            //mov [eax],ebx
+            CaveMemory.Write_StrBytes("89 18");
+            //pop ebx
+            CaveMemory.Write_StrBytes("5B");
+            //pop eax
+            CaveMemory.Write_StrBytes("58");
+            //jmp return
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Ammo_Injection_ReturnOffset);
+
+            Logger.WriteLog("Adding Ammo Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _Ammo_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Ammo_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten); 
+        }
+
+        //Struct :
+        //+ 0x1C -> Player ID
+        //+ 0x4C -> Life
+        private void Hack_GetLife()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //mov eax,[esi+4C]
+            CaveMemory.Write_StrBytes("8B 46 4C");
+            //ecx,[esi+1C]
+            CaveMemory.Write_StrBytes("8B 4E 1C");
+            //shl ecx,02
+            CaveMemory.Write_StrBytes("C1 E1 02");
+            //add ecx, _P1_Life_CustomAddress
+            CaveMemory.Write_StrBytes("81 C1");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Life_CustomAddress));
+            //mov [ecx], eax
+            CaveMemory.Write_StrBytes("89 01");
+            //mov ecx,[esi+50]
+            CaveMemory.Write_StrBytes("8B 4E 50");
+            //jmp return
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Life_Injection_ReturnOffset);
+
+            Logger.WriteLog("Adding Life Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _Life_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Life_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+
         #endregion
 
         #region Inputs
@@ -687,15 +939,68 @@ namespace DemulShooter
         {
             SetOutputValue(OutputId.P1_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0026FA49) >> 7 & 0x01);
             SetOutputValue(OutputId.P2_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0026FA4B) >> 7 & 0x01);
-            SetOutputValue(OutputId.P1_GunMotor, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0026FB1C) & 0x01);
-            SetOutputValue(OutputId.P2_GunMotor, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0026FB20) & 0x01);
+            //Motor byte value is 1 if enabled, 0 or 2 if disabled
+            SetOutputValue(OutputId.P1_GunMotor, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_GunMotorOffset) & 0x01);
+            SetOutputValue(OutputId.P2_GunMotor, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_GunMotorOffset) & 0x01);
 
             //Gun motor is activated on shoot and dammage, and stays activated on dammaged untill the player hides
             //So Custom outputs will be based on game values (ammo, life)
 
+            int P1_Life = 0;
+            int P1_Ammo = 0;
+            int P1_Clip = 0;
+            int P2_Life = 0;
+            int P2_Ammo = 0;
+            int P2_Clip = 0;
+
+            if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Playing_Offset) == 1)
+            {
+                if (ReadByte(_P1_RecoilEnabled_CustomAddress) == 1)
+                {
+                    SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                    WriteByte(_P1_RecoilEnabled_CustomAddress, 0x00);
+                }
+
+                if (ReadByte(_P1_DamagedEnabled_CustomAddress) == 1)
+                {
+                    SetOutputValue(OutputId.P1_Damaged, 1);
+                    WriteByte(_P1_DamagedEnabled_CustomAddress, 0x00);
+                }
+
+                P1_Ammo = ReadByte(_P1_Ammo_CustomAddress);
+                P1_Life = ReadByte(_P1_Life_CustomAddress);
+            }
+
+            if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Playing_Offset) == 1)
+            {
+                if (ReadByte(_P2_RecoilEnabled_CustomAddress) == 1)
+                {
+                    SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                    WriteByte(_P2_RecoilEnabled_CustomAddress, 0x00);
+                }
+
+                if (ReadByte(_P2_DamagedEnabled_CustomAddress) == 1)
+                {
+                    SetOutputValue(OutputId.P2_Damaged, 1);
+                    WriteByte(_P2_DamagedEnabled_CustomAddress, 0x00);
+                }
+
+                P2_Ammo = ReadByte(_P2_Ammo_CustomAddress);
+                P2_Life = ReadByte(_P2_Life_CustomAddress);
+            }
+
+
             //@game.exe+a6051 -> decrease ammo (mov, ESI+2C)
-            SetOutputValue(OutputId.P1_Ammo, 0);
-            SetOutputValue(OutputId.P2_Ammo, 0);
+            //Pointer address + 2c = ammo
+            //pointer address + c0 = player ID
+            //Need to separate betwen gameplay and attract mode :(
+            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
+            SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
+            SetOutputValue(OutputId.P1_Clip, P1_Clip);
+            SetOutputValue(OutputId.P2_Clip, P2_Clip);
+            SetOutputValue(OutputId.P1_Life, P1_Life);
+            SetOutputValue(OutputId.P2_Life, P2_Life);
+
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0026FB88));
         }
 

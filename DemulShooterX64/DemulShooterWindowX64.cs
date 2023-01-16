@@ -284,7 +284,7 @@ namespace DemulShooterX64
                 }
 
 
-                //W.I.P Games
+                //Windows games
                 else if (_Target.Equals("windows"))
                 {
                     switch (_Rom.ToLower())

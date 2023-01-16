@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
@@ -14,9 +13,10 @@ namespace DemulShooter
 {
     /// <summary>
     /// For this hack, Cxbx-Reloaded must be started with the following command line :
-    /// Cxbx-Reloaded.exe /load [PATH_TO_ROM]
+    /// cxbxr-ldr.exe /load [PATH_TO_ROM] 
     /// This will result in one (and only one Process), and easier to target and get window handle,
     /// whereas running Cxbx GUI, then choosing a Rom will create 2 different processes (sources : Cxbx Wiki)
+    /// Last tested on build CI-0b69563 (2022-11-20)
     /// </summary>
     public class Game_CxbxVcop3 : Game
     {
@@ -50,7 +50,7 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         public Game_CxbxVcop3(String RomName, double ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "cxbx", ForcedXratio, DisableInputHack, Verbose)
+            : base(RomName, "cxbxr-ldr", ForcedXratio, DisableInputHack, Verbose)
         {
             _tProcess.Start();
             Logger.WriteLog("Waiting for Chihiro " + _RomName + " game to hook.....");
@@ -365,8 +365,6 @@ namespace DemulShooter
         /// </summary>
         protected override void CreateOutputList()
         {
-            //Gun recoil : is handled by the game like it should (On/Off with every bullets)
-            //Gun motor  : is activated when player gets hit
             _Outputs = new List<GameOutput>();
             _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P1_CtmLmpStart, OutputId.P1_CtmLmpStart, 500));
             _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P2_CtmLmpStart, OutputId.P2_CtmLmpStart, 500));            
@@ -387,6 +385,10 @@ namespace DemulShooter
         /// </summary>
         public override void UpdateOutputValues()
         {            
+            //No native outputs found by checking memory !
+            //Service menu not very helpfull :(
+            //Look at 0x003685EA in the future ?
+
             //Customs Outputs
             //Player Status :
             //[0] : Inactive

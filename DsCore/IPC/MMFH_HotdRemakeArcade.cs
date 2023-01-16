@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
 
 namespace DsCore.IPC
@@ -22,22 +20,24 @@ namespace DsCore.IPC
         //Byte[18]          : P1_Reload         [0-1]
         //Byte[19]          : P2_Reload         [0-1]
         // Game -> DemulShooter :
-        //Byte[20]         : P1_Life           [int]
-        //Byte[21]         : P2_Life           [int]
-        //Byte[22]         : P1_Ammo           [int]
-        //Byte[23]         : P2_Ammo           [int]
-        //Byte[24]         : P1_Recoil         [0-1]
-        //Byte[25]         : P2_Recoil         [0-1]
-        //Byte[26]         : P1_Damaged        [int]
-        //Byte[27]         : P2_Damaged        [int]
-        //Byte[28]         : Credits           [int]
+        //Byte[20]         : P1_StartLmp       [0-1]
+        //Byte[21]         : P2_StartLmp       [0-1]
+        //Byte[22]         : P1_Life           [int]
+        //Byte[23]         : P2_Life           [int]
+        //Byte[24]         : P1_Ammo           [int]
+        //Byte[25]         : P2_Ammo           [int]
+        //Byte[26]         : P1_Recoil         [0-1]
+        //Byte[27]         : P2_Recoil         [0-1]
+        //Byte[28]         : P1_Damaged        [int]
+        //Byte[29]         : P2_Damaged        [int]
+        //Byte[30]         : Credits           [0-FF]
 
         private Byte[] _bPayload;
 
         #region Payload Indexes
-        public const int PAYLOAD_LENGTH = 30;
+        public const int PAYLOAD_LENGTH = 31;
         public const int PAYLOAD_INPUT_LENGTH = 20;
-        public const int PAYLOAD_OUTPUTS_LENGTH = 9;
+        public const int PAYLOAD_OUTPUTS_LENGTH = 11;
 
         public enum Payload_Inputs_Index
         {
@@ -53,7 +53,9 @@ namespace DsCore.IPC
 
         public enum Payload_Outputs_Index
         {
-            P1_Life = PAYLOAD_INPUT_LENGTH,
+            P1_StartLmp = PAYLOAD_INPUT_LENGTH,
+            P2_StartLmp,
+            P1_Life,
             P2_Life,
             P1_Ammo,
             P2_Ammo,
