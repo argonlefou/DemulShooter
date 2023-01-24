@@ -45,7 +45,7 @@ namespace DemulShooterX64
 
             Dictionary<String, String> _AagamesRoms = new Dictionary<String, String>(){
                 {"rha", "Rabbids Hollywood Arcade"},
-                //{"tra", "Tomb Raider Arcade"}
+                {"tra", "Tomb Raider Arcade"}
             };
 
             Dictionary<String, String> _AllsRoms = new Dictionary<String, String>(){

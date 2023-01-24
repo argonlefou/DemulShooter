@@ -45,6 +45,8 @@ namespace DemulShooter
         private UInt32 _GameStatusPtr_Offset = 0x027034BC;
         private UInt32 _Credits_Offset = 0x0065C410;
         private UInt32 _PlayersPtr_Offset = 0x027034E4;
+        private UInt32 _P1_CustomRecoil_Address = 0;
+        private UInt32 _P2_CustomRecoil_Address = 0;
         private int _P1_LastLife = 0;
         private int _P2_LastLife = 0;
         private int _P1_LastAmmo = 0;
@@ -53,6 +55,10 @@ namespace DemulShooter
         private int _P2_Life = 0;
         private int _P1_Ammo = 0;
         private int _P2_Ammo = 0;
+        private UInt32 _P1_Recoil_Injection_Offset = 0x00075B60;
+        private UInt32 _P1_Recoil_Injection_Return_Offset = 0x00075B65;
+        private UInt32 _P2_Recoil_Injection_Offset = 0x00075B82;
+        private UInt32 _P2_Recoil_Injection_Return_Offset = 0x00075B87;
 
         private Timer _Tmr_NoAutofireP1;
         private Timer _Tmr_NoAutofireP2;
@@ -119,6 +125,7 @@ namespace DemulShooter
                                     SetHack();
                                 else
                                     Logger.WriteLog("Input Hack disabled");
+                                SetHack_Outputs();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }                                                        
@@ -216,7 +223,7 @@ namespace DemulShooter
 
             Logger.WriteLog("Custom data will be stored at : 0x" + _P2_Buttons_CaveAddress.ToString("X8"));
         }
-
+                
         private void SetHack_Axis()
         {
             //NOPing Axis proc
@@ -290,6 +297,91 @@ namespace DemulShooter
 
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
+        }
+
+        /// <summary>
+        /// HAcks for recoil output :
+        /// Data is available on the Output offset but the game is resetting the value too quickly for DemulShooter to get it everytime
+        /// So we are using a custom flag in memory, and will put it to 0 or 1 when the game is changing original recoil state.
+        /// </summary>
+        private void SetHack_Outputs()
+        {
+            CreateOutputDataBank();
+            SetHack_Recoil_P1();
+            SetHack_Recoil_P2();
+        }
+
+        /// <summary>
+        /// Custom Recoil Output Data storage
+        /// </summary>
+        private void CreateOutputDataBank()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            _P1_CustomRecoil_Address = CaveMemory.CaveAddress;
+            _P2_CustomRecoil_Address = CaveMemory.CaveAddress + 0x04;
+
+            Logger.WriteLog("Custom recoil data will be stored at : 0x" + _P2_CustomRecoil_Address.ToString("X8"));
+        }
+
+        private void SetHack_Recoil_P1()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //xor ecx,ecx
+            CaveMemory.Write_StrBytes("31 C9");
+            //or ebx,40
+            CaveMemory.Write_StrBytes("83 CB 40");
+            //mov [_P1_CustomRecoil_Address], 1
+            CaveMemory.Write_StrBytes("C7 05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_CustomRecoil_Address));
+            CaveMemory.Write_StrBytes("01 00 00 00");
+            //Jump back
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _P1_Recoil_Injection_Return_Offset);
+
+            Logger.WriteLog("Adding P1 Recoil output CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code Injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _P1_Recoil_Injection_Offset) - 5;
+            List<Byte> Buffer = new List<Byte>();            
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _P1_Recoil_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+        private void SetHack_Recoil_P2()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //mov ecx, 1
+            CaveMemory.Write_StrBytes("B9 01 00 00 00");
+            //mov [_P2_CustomRecoil_Address], 1
+            CaveMemory.Write_StrBytes("C7 05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_CustomRecoil_Address));
+            CaveMemory.Write_StrBytes("01 00 00 00");
+            //Jump back
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _P2_Recoil_Injection_Return_Offset);
+
+            Logger.WriteLog("Adding P2 Recoil output CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code Injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _P2_Recoil_Injection_Offset) - 5;
+            List<Byte> Buffer = new List<Byte>();            
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _P2_Recoil_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
         }
 
         #endregion
@@ -471,6 +563,19 @@ namespace DemulShooter
                 }
             }
 
+
+            //Custom Recoil will be read by our own codecave
+            if (ReadByte(_P1_CustomRecoil_Address) == 1)
+            {
+                SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                WriteByte(_P1_CustomRecoil_Address, 0);
+            }
+            if (ReadByte(_P2_CustomRecoil_Address) == 1)
+            {
+                SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                WriteByte(_P2_CustomRecoil_Address, 0);
+            }
+
             _P1_LastAmmo = _P1_Ammo;
             _P2_LastAmmo = _P2_Ammo;
             _P1_LastLife = _P1_Life;
@@ -480,9 +585,7 @@ namespace DemulShooter
             SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
             SetOutputValue(OutputId.P1_Clip, P1_Clip);
             SetOutputValue(OutputId.P2_Clip, P2_Clip);
-            //Custom Recoil will simply be activated just like original Recoil
-            SetOutputValue(OutputId.P1_CtmRecoil, ReadByte(_Outputs_Address) >> 6 & 0x01);
-            SetOutputValue(OutputId.P2_CtmRecoil, ReadByte(_Outputs_Address) >> 3 & 0x01);
+            
             SetOutputValue(OutputId.P1_Life, _P1_Life);
             SetOutputValue(OutputId.P2_Life, _P2_Life);
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset));
