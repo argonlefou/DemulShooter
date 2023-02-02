@@ -82,6 +82,10 @@ namespace UnityPlugin_BepInEx_TRA
                         {
                             Singleton<PlayerManager>.Instance.PlayerReload((ID)i);
                         }
+                        if (!___m_HoldTrigger[i])
+                        {
+                            Singleton<PlayerManager>.Instance.StopHoldingFire(ID.One);
+                        }
                     }
                 }
        

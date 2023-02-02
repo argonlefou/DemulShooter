@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="DemulShooter_Plugin.cs" />
     <Compile Include="mArcadeManager.cs" />
+    <Compile Include="mCheatsManager.cs" />
     <Compile Include="mCrosshairWindow.cs" />
     <Compile Include="mInputManager.cs" />
     <Compile Include="mKaboomManager.cs" />
