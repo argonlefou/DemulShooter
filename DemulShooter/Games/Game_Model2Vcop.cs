@@ -41,8 +41,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_Model2Vcop(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "EMULATOR", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_Model2Vcop(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "EMULATOR", DisableInputHack, Verbose)
         {   
             _KnownMd5Prints.Add("Model2Emulator 1.1a", "26bd488f9a391dcac1c5099014aa1c9e");
             _KnownMd5Prints.Add("Model2Emulator 1.1a multicpu", "ac59ce7cfb95d6d639c0f0d1afba1192");

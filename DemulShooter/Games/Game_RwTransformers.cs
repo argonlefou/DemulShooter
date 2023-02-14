@@ -60,8 +60,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwTransformers(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "TF_Gun_R_Ring_dumped", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_RwTransformers(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "TF_Gun_R_Ring_dumped", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Transformers Final  - For TeknoParrot", "7e11f7e78ed566a277edba1a8aab0749");
             _KnownMd5Prints.Add("Transformers Final  - For JConfig", "0d23fead523ea91eaea5047e652dff69");

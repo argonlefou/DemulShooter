@@ -58,7 +58,7 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         public Game_WndReload(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose) 
-            : base(RomName, "Reload", 00.0, DisableInputHack, Verbose)
+            : base(RomName, "Reload", DisableInputHack, Verbose)
         {
             _HideCrosshair = HideCrosshair;
             _KnownMd5Prints.Add("Reload v1.0.0.1 - IGG", "aaaf22c6671c12176d8317d4cc4b478d");

@@ -52,8 +52,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Demul(String RomName, String SystemName, String DemulVersion, double ForcedXratio, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
-            : base(RomName, "demul", ForcedXratio, DisableInputHack, Verbose)
+        public Game_Demul(String RomName, String SystemName, String DemulVersion, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
+            : base(RomName, "demul", DisableInputHack, Verbose)
         {
             _SystemName = SystemName;
             _DemulVersion = DemulVersion;

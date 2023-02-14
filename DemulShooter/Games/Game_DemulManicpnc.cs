@@ -26,8 +26,8 @@ namespace DemulShooter
         private int[] _TriggerPushed = new int[] { 0, 0 };
         private Timer[] _TimerHoldTrigger = new Timer[2];
 
-        public Game_DemulManicpnc(String RomName, double ForcedXratio, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
-            : base(RomName, "demul", ForcedXratio, DisableInputHack, Verbose)
+        public Game_DemulManicpnc(String RomName, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
+            : base(RomName, "demul", DisableInputHack, Verbose)
         {
             _DisableWindow = DisableWindow;
             _tProcess.Start();

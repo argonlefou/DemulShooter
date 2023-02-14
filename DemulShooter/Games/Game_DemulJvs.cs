@@ -17,8 +17,8 @@ namespace DemulShooter
         private int _P1_LastDammage = 0;
         private int _P2_LastDammage = 0;
 
-        public Game_DemulJvs(String Rom, String DemulVersion, double ForcedXratio, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
-            : base(Rom, "naomiJvs", DemulVersion, ForcedXratio, DisableInputHack, Verbose, DisableWindow, WidescreenHack)
+        public Game_DemulJvs(String Rom, String DemulVersion, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
+            : base(Rom, "naomiJvs", DemulVersion, DisableInputHack, Verbose, DisableWindow, WidescreenHack)
         {
 
             if (Rom.Equals("ninjaslt"))

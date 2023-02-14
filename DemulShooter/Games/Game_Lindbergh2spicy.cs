@@ -49,8 +49,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_Lindbergh2spicy(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BudgieLoader", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_Lindbergh2spicy(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
         {
             _tProcess.Start();
             Logger.WriteLog("Waiting for Lindbergh " + _RomName + " game to hook.....");

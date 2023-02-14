@@ -54,8 +54,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndWartran(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_WndWartran(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("", "");
 

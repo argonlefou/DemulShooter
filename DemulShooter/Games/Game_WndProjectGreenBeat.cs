@@ -34,7 +34,7 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         public Game_WndProjectGreenBeat(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "ProjectGreenBeat", 0.00, DisableInputHack, Verbose)
+            : base(RomName, "ProjectGreenBeat", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Project Green Beat - PROPHET", "7962b8b40d71464a988a7c6db96c88c0");
 

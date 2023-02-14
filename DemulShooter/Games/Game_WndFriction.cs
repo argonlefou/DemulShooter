@@ -56,8 +56,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndFriction(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "Friction", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_WndFriction(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "Friction", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Friction original dump", "931146ddcac8429634401d08158b8bec");
             _KnownMd5Prints.Add("Friction hacked VSIOBOARD.dll - v1.0", "9bbe8c9bf916826d6ab22703f6d83f7b");

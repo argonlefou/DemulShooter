@@ -40,8 +40,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Dolphin5(String RomName, UInt32 DinputNumber, HardwareScanCode DIK_P2_LClick, HardwareScanCode DIK_P2_MClick, HardwareScanCode DIK_P2_RClick, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "Dolphin", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_Dolphin5(String RomName, UInt32 DinputNumber, HardwareScanCode DIK_P2_LClick, HardwareScanCode DIK_P2_MClick, HardwareScanCode DIK_P2_RClick, bool DisableInputHack, bool Verbose)
+            : base(RomName, "Dolphin", DisableInputHack, Verbose)
         {
             _DinputNumber = DinputNumber;
             _DIK_P2_Key_LClick = DIK_P2_LClick;

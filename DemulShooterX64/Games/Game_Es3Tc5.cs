@@ -762,19 +762,24 @@ namespace DemulShooterX64
             //SetOutputValue(OutputId.P1_GunRecoil, bRecoil);
             
             //#2
-            byte bRecoil = ReadByte((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x1860630));
-            if (bRecoil != 0)
+            //Only Jconfig with emulated JVS will get these events
+            if (!_IsStandalone)
             {
-                if (_P1_LastRecoil == 0x40 && bRecoil == 0x80)
+                byte bRecoil = ReadByte((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x1860630));
+                if (bRecoil != 0)
                 {
-                    SetOutputValue(OutputId.P1_GunRecoil, 1);
-                    SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                    if (_P1_LastRecoil == 0x40 && bRecoil == 0x80)
+                    {
+                        SetOutputValue(OutputId.P1_GunRecoil, 1);
+                        SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                    }
+                    else if (_P1_LastRecoil == 0x80 && bRecoil == 0x40)
+                    {
+                        SetOutputValue(OutputId.P1_GunRecoil, 1);
+                        SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                    }
                 }
-                else if (_P1_LastRecoil == 0x80 && bRecoil == 0x40)
-                {
-                    SetOutputValue(OutputId.P1_GunRecoil, 1);
-                    SetOutputValue(OutputId.P1_CtmRecoil, 1);
-                }
+                _P1_LastRecoil = bRecoil;
             }
 
             _P1_Life = 0;
@@ -783,8 +788,6 @@ namespace DemulShooterX64
             int P1_Clip = 0;
 
             UInt64 PtrAmmoLife = ReadPtrChain((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x0185BE18), new UInt64[] { 0x1C, 0x08, 0x70, 0x1FC });
-            SetOutputValue(OutputId.P1_Ammo, ReadByte((IntPtr)(PtrAmmoLife + 0x170)));
-            SetOutputValue(OutputId.P1_Life, ReadByte((IntPtr)(PtrAmmoLife + 0x10)) >> 1);
             //To compute custom outputs, we will read Life and Ammo values
             //Pointers are constantly changing, removed, created, etc....so the value might not exist
             //On top of that, Ammo number can also be decreased when changing Weapon, so this is a supplementary check to do 
@@ -796,21 +799,19 @@ namespace DemulShooterX64
                 _P1_Weapon = ReadByte((IntPtr)(PtrAmmoLife + 0x118));
                 _P1_Ammo = ReadByte((IntPtr)(PtrAmmoLife + 0x170));
                 
-                //Computing custom Recoil with the following way (= using Ammo count) will not work during STAGE 2 with unimited ammo weapon
-                //Instead we're computing it along with "Original" recoil (few lines up)
-                /*
+                //Computing custom Recoil with the following way (= using Ammo count) will not work during STAGE 2 with unimited ammo weapon              
                 if (_P1_Weapon == _P1_LastWeapon)
                 {  
                     //Custom Recoil
                     //As we don't have a "STATUS" variable telling us if the player is playing or not,
                     //we will smoothly filter for decrease to limit false recoil events if the game sets back Ammo to default value after game-over
-                    if (_P1_Ammo == _P1_LastAmmo - 1)
+                    if (_IsStandalone && _P1_Ammo == _P1_LastAmmo - 1)
                         SetOutputValue(OutputId.P1_CtmRecoil, 1);
 
                     //[Clip Empty] custom Output
                     if (_P1_Ammo > 0)
                         P1_Clip = 1;
-                }*/
+                }
                 
                 //[Damaged] custom Output                
                 if (_P1_Life < _P1_LastLife)
@@ -821,7 +822,7 @@ namespace DemulShooterX64
             _P1_LastAmmo = _P1_Ammo;
             _P1_LastLife = _P1_Life;
             _P1_LastWeapon = _P1_Weapon;
-            _P1_LastRecoil = bRecoil;
+            
 
             SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
             SetOutputValue(OutputId.P1_Clip, P1_Clip);

@@ -304,5 +304,15 @@ namespace DsCore.Win32
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
 
         #endregion
+
+        #region winmm.dll
+
+        [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+        public static extern uint MM_BeginPeriod(uint uMilliseconds);
+
+        [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+        public static extern uint MM_EndPeriod(uint uMilliseconds);
+
+        #endregion
     }
 }

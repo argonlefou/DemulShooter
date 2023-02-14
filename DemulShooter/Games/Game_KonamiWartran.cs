@@ -42,8 +42,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_KonamiWartran(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_KonamiWartran(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Wartran Original dump", "4c987ea93e8dbd5a6aa624e504a4706c");
 

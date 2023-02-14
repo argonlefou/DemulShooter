@@ -49,8 +49,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_CxbxVcop3(String RomName, double ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "cxbxr-ldr", ForcedXratio, DisableInputHack, Verbose)
+        public Game_CxbxVcop3(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "cxbxr-ldr", DisableInputHack, Verbose)
         {
             _tProcess.Start();
             Logger.WriteLog("Waiting for Chihiro " + _RomName + " game to hook.....");
@@ -147,23 +147,6 @@ namespace DemulShooter
                     double dMaxY = 240.0;
                     double dRangeX = dMaxX - dMinX + 1;
                     double dRangeY = dMaxY - dMinY + 1;
-
-                    //In case of forced scren ration (4/3)
-                    if (_ForcedXratio > 0)
-                    {
-                        Logger.WriteLog("Forcing X Ratio to = " + _ForcedXratio.ToString());
-                        double GameHeight = TotalResY;
-                        double GameWidth = TotalResY * _ForcedXratio;
-                        Logger.WriteLog("Game Viewport size (Px) = [ " + GameWidth + "x" + GameHeight + " ]");
-
-                        double HorizontalRatio = TotalResX / GameWidth;
-                        dRangeX = dRangeX * HorizontalRatio;
-                        dMaxX = (dRangeX / 2);
-                        dMinX = -dMaxX;
-                        Logger.WriteLog("Horizontal Ratio = " + HorizontalRatio.ToString());
-                        Logger.WriteLog("New dMaxX = " + dMaxX.ToString());
-                        Logger.WriteLog("New dMinX = " + dMinX.ToString());
-                    }
 
                     PlayerData.RIController.Computed_X = Convert.ToInt16(Math.Round(dRangeX * PlayerData.RIController.Computed_X / TotalResX) - dRangeX / 2);
                     PlayerData.RIController.Computed_Y = Convert.ToInt16((Math.Round(dRangeY * PlayerData.RIController.Computed_Y / TotalResY) - dRangeY / 2) * -1);

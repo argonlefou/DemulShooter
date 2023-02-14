@@ -51,8 +51,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndBE(String RomName, String GamePath, double ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BEGame", ForcedXratio, DisableInputHack, Verbose)
+        public Game_WndBE(String RomName, String GamePath, bool DisableInputHack, bool Verbose)
+            : base(RomName, "BEGame", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Blue Estate CODEX - Cracked", "188605d4083377e4ee3552b4c89f52fb");
 

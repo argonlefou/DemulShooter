@@ -40,8 +40,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxSha(String RomName, double ForcedXratio, bool DisableInputHack, bool Verbose) 
-            : base (RomName, "KSHG", ForcedXratio, DisableInputHack, Verbose)
+        public Game_TtxSha(String RomName, bool DisableInputHack, bool Verbose) 
+            : base (RomName, "KSHG", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Silent Hill Arcade - Original KSHG_no_cursor.exe", "0e58fd1c7bcb5e0cace0e4ee548ecd0c");
             _KnownMd5Prints.Add("Silent Hill Arcade - Original KSHG.exe", "2778219dcaf3d8e09fb197417b17dc1b");
@@ -135,22 +135,8 @@ namespace DemulShooter
                     double dMaxY = GameResY;
                     double dRangeX = dMaxX - dMinX + 1;
                     double dRangeY = dMaxY - dMinY + 1;
-
-                    //In case of forced scren ration
-                    if (_ForcedXratio > 0)
-                    {
-                        Logger.WriteLog("Forcing X Ratio to = " + _ForcedXratio.ToString());
-                        double ViewportHeight = GameResY;
-                        double ViewportWidth = GameResY * _ForcedXratio;
-                        double SideBarsWidth = (GameResX - ViewportWidth) / 2;
-                        Logger.WriteLog("Game Viewport size (Px) = [ " + ViewportWidth + "x" + ViewportHeight + " ]");
-                        Logger.WriteLog("SideBars Width (px) = " + SideBarsWidth.ToString());
-                        dRangeX = dRangeX + SideBarsWidth * 2;
-                        PlayerData.RIController.Computed_X = Convert.ToInt16(Math.Round(dRangeX * PlayerData.RIController.Computed_X / GameResX) - SideBarsWidth);
-                    }
-                    else
-                        PlayerData.RIController.Computed_X = Convert.ToInt16(Math.Round(dRangeX * PlayerData.RIController.Computed_X / GameResX));
- 
+                    
+                    PlayerData.RIController.Computed_X = Convert.ToInt16(Math.Round(dRangeX * PlayerData.RIController.Computed_X / GameResX)); 
                     PlayerData.RIController.Computed_Y = Convert.ToInt16(Math.Round(dRangeY * PlayerData.RIController.Computed_Y / GameResY));
                     if (PlayerData.RIController.Computed_X < (int)dMinX)
                         PlayerData.RIController.Computed_X = (int)dMinX;

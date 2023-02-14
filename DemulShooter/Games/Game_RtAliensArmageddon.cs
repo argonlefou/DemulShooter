@@ -32,8 +32,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_RtAliensArmageddon(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BudgieLoader", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_RtAliensArmageddon(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Aliens Armageddon - 03.90 USA", "fe95d8a34331b95d14f788220e6b8fed");
 

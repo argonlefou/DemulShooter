@@ -36,8 +36,8 @@ namespace DemulShooter
         private List<WidescreenData> _ListWidescreenHacks;
 
 
-        public Game_DemulAtomiswave(String RomName, String DemulVersion, double ForcedXratio, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
-            : base(RomName, "demul", ForcedXratio, DisableInputHack, Verbose)
+        public Game_DemulAtomiswave(String RomName, String DemulVersion, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
+            : base(RomName, "demul", DisableInputHack, Verbose)
         {
             _DisableWindow = DisableWindow;
             _WidescreenHack = WidescreenHack;

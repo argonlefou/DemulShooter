@@ -552,8 +552,9 @@ namespace DemulShooterX64
                     _Game.UpdateOutputValues();
                     _OutputHelper.SendValues(_Game.Outputs);
                 }
-
+                Win32API.MM_BeginPeriod(1);
                 Thread.Sleep(_Configurator.OutputPollingDelay);
+                Win32API.MM_EndPeriod(1);
             }
         }
 

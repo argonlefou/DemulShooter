@@ -70,6 +70,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="MameOutput\AsyncGameOutput.cs" />
     <Compile Include="MameOutput\BlinkGameOutput.cs" />
+    <Compile Include="MameOutput\MMT.cs" />
     <Compile Include="MameOutput\SyncBlinkingGameOutput.cs" />
     <Compile Include="MameOutput\OutputId.cs" />
     <Compile Include="MameOutput\GameOutput.cs" />

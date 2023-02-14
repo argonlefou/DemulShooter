@@ -67,8 +67,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwSGG(String RomName, bool DisableAutofire, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "RingGunR_RingWide", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_RwSGG(String RomName, bool DisableAutofire, bool DisableInputHack, bool Verbose)
+            : base(RomName, "RingGunR_RingWide", DisableInputHack, Verbose)
         {
             _DisableAutofire = DisableAutofire;
             if (_DisableAutofire)

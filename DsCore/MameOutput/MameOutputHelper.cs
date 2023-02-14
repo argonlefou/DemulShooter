@@ -8,6 +8,8 @@ namespace DsCore.MameOutput
 {
     public class MameOutputHelper
     {
+        private static MameOutputHelper _Instance = null;
+
         private IntPtr _hWnd = IntPtr.Zero;
         private List<OutputClient> _RegisteredClients;
 
@@ -63,19 +65,29 @@ namespace DsCore.MameOutput
 
         public MameOutputHelper(IntPtr MainWindowHandle, int RecoilOnDelay, int RecoilOffDelay, int DamagedDelay)
         {
-            _hWnd = MainWindowHandle;
-            _RegisteredClients = new List<OutputClient>();
+            if (_Instance == null)
+            {
+                _hWnd = MainWindowHandle;
+                _RegisteredClients = new List<OutputClient>();
 
-            _Mame_OnStartMsg = RegisterMameOutputMessage(MAME_START_STRING);
-            _Mame_OnStopMsg = RegisterMameOutputMessage(MAME_STOP_STRING);
-            _Mame_UpdateStateMsg = RegisterMameOutputMessage(MAME_UPDATE_STRING);
-            _Mame_RegisterClientMsg = RegisterMameOutputMessage(MAME_REGISTER_STRING);
-            _Mame_UnregisterClientMsg = RegisterMameOutputMessage(MAME_UNREGISTER_STRING);
-            _Mame_GetIdStringMsg = RegisterMameOutputMessage(MAME_GETID_STRING);
+                _Mame_OnStartMsg = RegisterMameOutputMessage(MAME_START_STRING);
+                _Mame_OnStopMsg = RegisterMameOutputMessage(MAME_STOP_STRING);
+                _Mame_UpdateStateMsg = RegisterMameOutputMessage(MAME_UPDATE_STRING);
+                _Mame_RegisterClientMsg = RegisterMameOutputMessage(MAME_REGISTER_STRING);
+                _Mame_UnregisterClientMsg = RegisterMameOutputMessage(MAME_UNREGISTER_STRING);
+                _Mame_GetIdStringMsg = RegisterMameOutputMessage(MAME_GETID_STRING);
 
-            _CustomRecoilOnDelay = RecoilOnDelay;
-            _CustomRecoilOffDelay = RecoilOffDelay;
-            _CustomDamageDelay = DamagedDelay;
+                _CustomRecoilOnDelay = RecoilOnDelay;
+                _CustomRecoilOffDelay = RecoilOffDelay;
+                _CustomDamageDelay = DamagedDelay;
+
+                _Instance = this;
+            }
+        }
+
+        public static MameOutputHelper Instance()
+        {
+            return _Instance;
         }
 
         /// <summary>

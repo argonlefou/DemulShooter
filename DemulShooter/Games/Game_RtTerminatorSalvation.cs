@@ -45,8 +45,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_RtTerminatorSalvation(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BudgieLoader", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_RtTerminatorSalvation(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Terminator Salvation - 01.25 USA", "b1e68e0f4dc1db9ec04a1c0e83c9913e");
 
@@ -248,7 +248,7 @@ namespace DemulShooter
             //2 = Intro
             //4 = Title
             //3 = Chapter Select
-            //2 = Play
+            //1 = Play
             int GameState = BitConverter.ToInt32(ReadBytes(_GameState_Address, 4), 0);
             if (GameState == 1)
             {
@@ -272,12 +272,14 @@ namespace DemulShooter
                     //Se we"ll check what kind of weapon is used and calculate accordingly
                     int P1_Weapon = BitConverter.ToInt32(ReadBytes(_P1_WeaponNumber_Address, 4), 0);
 
+                    
                     //For infinite ammo weapon, using memory hack to get data                   
                     if (P1_Weapon == 5 || P1_Weapon == 8 || P1_Weapon == 9)
                     {
                         if (ReadByte(_P1_CustomRecoil_CaveAddress) == 1)
                             SetOutputValue(OutputId.P1_CtmRecoil, 1); 
                     }
+
                     //For other weapon, just check difference between ammo, and make sure that this smaller value is not due to a gun change
                     //0 = Shotgun
                     //1 = Regular gun
@@ -291,6 +293,8 @@ namespace DemulShooter
                                 SetOutputValue(OutputId.P1_CtmRecoil, 1);
                         }
                     }
+                    
+
                     //Clearing memory hack flag, even if not used
                     WriteByte(_P1_CustomRecoil_CaveAddress, 0);
 
@@ -322,6 +326,7 @@ namespace DemulShooter
                     //Se we"ll check what kind of weapon is used and calculate accordingly
                     int P2_Weapon = BitConverter.ToInt32(ReadBytes(_P2_WeaponNumber_Address, 4), 0);
 
+                    
                     //For infinite ammo weapon, using memory hack to get data                   
                     if (P2_Weapon == 5 || P2_Weapon == 8 || P2_Weapon == 9)
                     {
@@ -341,6 +346,7 @@ namespace DemulShooter
                                 SetOutputValue(OutputId.P2_CtmRecoil, 1);
                         }
                     }
+                    
                     //Clearing memory hack flag, even if not used
                     WriteByte(_P2_CustomRecoil_CaveAddress, 0);
 
@@ -368,18 +374,11 @@ namespace DemulShooter
             SetOutputValue(OutputId.P1_Life, _P1_Life);
             SetOutputValue(OutputId.P2_Life, _P2_Life);
 
-            //Recoil : reading updated value from the game            
-            if (ReadByte(_P2_CustomRecoil_CaveAddress) == 1)
-            {
-                if (_P2_Ammo > 0)
-                    SetOutputValue(OutputId.P2_CtmRecoil, 1);
-                WriteByte(_P2_CustomRecoil_CaveAddress, 0);
-            }
+           
             //SetOutputValue(OutputId.Credits, ReadByte(_Credits_Address));
         }
 
-        #endregion
-    
+        #endregion   
 
     }
 }

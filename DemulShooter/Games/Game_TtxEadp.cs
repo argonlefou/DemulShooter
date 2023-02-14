@@ -52,8 +52,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxEadp(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_TtxEadp(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Elevator Action Dead Parade - Original", "59dbaf264bb96323cb3127dee0f809ca");
             _KnownMd5Prints.Add("Elevator Action Dead Parade - For JConfig", "1bc36915ac4a4658feeca80ca1b6ca10");
@@ -141,23 +141,7 @@ namespace DemulShooter
                     double dRangeX = dMaxX - dMinX + 1;
                     double dRangeY = dMaxY - dMinY + 1;
                     
-                     //In case of forced scren ration
-                    if (_ForcedXratio > 0)
-                    {
-                        Logger.WriteLog("Forcing X Ratio to = " + _ForcedXratio.ToString());
-                        double ViewportHeight = TotalResY;
-                        double ViewportWidth = TotalResY * _ForcedXratio;
-                        double SideBarsWidth = (TotalResX - ViewportWidth) / 2;
-                        Logger.WriteLog("Game Viewport size (Px) = [ " + ViewportWidth + "x" + ViewportHeight + " ]");
-                        Logger.WriteLog("SideBars Width (px) = " + SideBarsWidth.ToString());
-                        double GameSideBars = dRangeX * SideBarsWidth / ViewportWidth;
-                        dRangeX = dRangeX + GameSideBars * 2;
-                        Logger.WriteLog("X Range = " + dRangeX.ToString());
-                        PlayerData.RIController.Computed_X = Convert.ToInt32(Math.Round(dRangeX * PlayerData.RIController.Computed_X / TotalResX) - GameSideBars);
-                    }
-                    else
-                        PlayerData.RIController.Computed_X = Convert.ToInt32(Math.Round(dRangeX * PlayerData.RIController.Computed_X / TotalResX));
-
+                    PlayerData.RIController.Computed_X = Convert.ToInt32(Math.Round(dRangeX * PlayerData.RIController.Computed_X / TotalResX));
                     PlayerData.RIController.Computed_Y = Convert.ToInt32(Math.Round(dRangeY * PlayerData.RIController.Computed_Y / TotalResY));
                     
                     if (PlayerData.RIController.Computed_X < (int)dMinX)

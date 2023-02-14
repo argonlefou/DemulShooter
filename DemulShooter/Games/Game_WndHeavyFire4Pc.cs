@@ -79,7 +79,7 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         public Game_WndHeavyFire4Pc(String RomName, String GamePath, int CoverSensibility, bool EnableP2, bool DisableInputHack, bool Verbose) 
-            : base(RomName, "HeavyFire4", 00.0, DisableInputHack, Verbose)
+            : base(RomName, "HeavyFire4", DisableInputHack, Verbose)
         {
             _ExecutableFilePath = GamePath + @"\" + HFA_FILENAME;
 

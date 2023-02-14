@@ -43,7 +43,9 @@ namespace DemulShooterX64
             if (_RomName.Equals("confmiss"))
                 Compute_Confmiss_Outputs();             
             else if (_RomName.Equals("deathcox"))
-                Compute_Deathcox_Outputs();             //Need better filter (Playing vs Not Playing to display ammo/life)
+                Compute_Deathcox_Outputs();
+            else if (_RomName.Equals("deathcoxo"))
+                Compute_Deathcoxo_Outputs(); 
             else if (_RomName.Equals("hotd2"))
                 Compute_Hotd2_Outputs(0x00096FA0);
             /*else if (_RomName.Equals("hotd2e"))       //Need to find memory values, no available on Demul
@@ -75,7 +77,7 @@ namespace DemulShooterX64
             int P2_Clip = 0;
 
             UInt64 P1_Ammo_Address = _GameRAM_Address + (UInt64)(BitConverter.ToUInt32(ReadBytes((IntPtr)(_GameRAM_Address + 0x2AA50), 4), 0) & 0x01FFFFFF) - 0x14;  // = P1_Status_Address + 0xB4C ?
-            UInt64 P2_Ammo_Address = _GameRAM_Address + (UInt64)(BitConverter.ToUInt32(ReadBytes((IntPtr)(_GameRAM_Address + 0x2AA50), 4), 0) & 0x01FFFFFF) + 0x114;
+            UInt64 P2_Ammo_Address = _GameRAM_Address + (UInt64)(BitConverter.ToUInt32(ReadBytes((IntPtr)(_GameRAM_Address + 0x2AA50), 4), 0) & 0x01FFFFFF) + 0x100;
             UInt64 Credits_Address = _GameRAM_Address + (UInt64)(BitConverter.ToUInt32(ReadBytes((IntPtr)(_GameRAM_Address + 0x2F88C), 4), 0) & 0x01FFFFFF);
 
             if (ReadByte((IntPtr)P1_Status_Address) == 0 || ReadByte((IntPtr)P1_Status_Address) == 1)
@@ -136,7 +138,7 @@ namespace DemulShooterX64
         private void Compute_Deathcox_Outputs()
         {
             //InGame Status : 0 = AttractMode/Demo/Menu, 1 = InGame
-            UInt64 InGame_Address = _GameRAM_Address + 0x00096680;
+            UInt64 InGame_Address = _GameRAM_Address + 0x000982B8;
             _P1_Life = 0;
             _P2_Life = 0;
             _P1_Ammo = 0;
@@ -144,14 +146,18 @@ namespace DemulShooterX64
             int P1_Clip = 0;
             int P2_Clip = 0;
 
-            UInt64 P1_Ammo_Address = _GameRAM_Address + 0x0018BFC9;
+            UInt64 P1_Ammo_Address = _GameRAM_Address + 0x0018E395;
             UInt64 P2_Ammo_Address = P1_Ammo_Address + 0x3C;
-            UInt64 Credits_Address = _GameRAM_Address + 0x00974A8;
+            UInt64 Credits_Address = _GameRAM_Address + 0x009917C;
             //P1 and P2 Enable : Display ammo and life when it's 0 ( not reliable but well...)
-            UInt64 P1_Enable_Address = _GameRAM_Address + 0x00096634;
-            UInt64 P2_Enable_Address = _GameRAM_Address + 0x00096638;
+            //UInt64 P1_Enable_Address = _GameRAM_Address + 0x00096634;
+            //UInt64 P2_Enable_Address = _GameRAM_Address + 0x00096638;
 
-            if (ReadByte((IntPtr)P1_Enable_Address) == 0 && ReadByte((IntPtr)InGame_Address) == 1)
+            //---> Ammo + 0xC => Byte going from 0 to 1 when alive...use for status ???
+            UInt64 P1_Enable_Address = P1_Ammo_Address + 0xC;
+            UInt64 P2_Enable_Address = P2_Ammo_Address + 0xC;
+
+            if (ReadByte((IntPtr)P1_Enable_Address) == 1 && ReadByte((IntPtr)InGame_Address) == 1)
             {
                 _P1_Life = (int)(BitConverter.ToSingle(ReadBytes((IntPtr)(Credits_Address + 0x04), 4), 0) * 100);
                 _P1_Ammo = ReadByte((IntPtr)P1_Ammo_Address);
@@ -169,7 +175,88 @@ namespace DemulShooterX64
                     SetOutputValue(OutputId.P1_Damaged, 1);
             }
 
-            if (ReadByte((IntPtr)P2_Enable_Address) == 0 && ReadByte((IntPtr)InGame_Address) == 1)
+            if (ReadByte((IntPtr)P2_Enable_Address) == 1 && ReadByte((IntPtr)InGame_Address) == 1)
+            {
+                _P2_Life = (int)(BitConverter.ToSingle(ReadBytes((IntPtr)(Credits_Address + 0x08), 4), 0) * 100);
+                _P2_Ammo = ReadByte((IntPtr)P2_Ammo_Address);
+
+                //Custom Recoil
+                if (_P2_Ammo < _P2_LastAmmo)
+                    SetOutputValue(OutputId.P2_CtmRecoil, 1);
+
+                //[Clip Empty] custom Output
+                if (_P2_Ammo > 0)
+                    P2_Clip = 1;
+
+                //[Damaged] custom Output                
+                if (_P2_Life < _P2_LastLife)
+                    SetOutputValue(OutputId.P2_Damaged, 1);
+            }
+
+            _P1_LastAmmo = _P1_Ammo;
+            _P2_LastAmmo = _P2_Ammo;
+            _P1_LastLife = _P1_Life;
+            _P2_LastLife = _P2_Life;
+
+            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
+            SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
+            SetOutputValue(OutputId.P1_Clip, P1_Clip);
+            SetOutputValue(OutputId.P2_Clip, P2_Clip);
+            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P2_Life, _P2_Life);
+
+            //Genuine Outputs
+            //Genuine Outputs memory location still need to be find on this rom
+            //SetOutputValue(OutputId.P1_LmpStart, ReadByte((IntPtr)(_GameRAM_Address + 0x0001C8D16)) >> 7 & 0x01);
+            //SetOutputValue(OutputId.P2_LmpStart, ReadByte((IntPtr)(_GameRAM_Address + 0x0001C8D16)) >> 4 & 0x01);
+            //In the meantime, there is some values that can be used, but does not blink Lamps on the attract/menu screen
+            SetOutputValue(OutputId.P1_LmpStart, ReadByte((IntPtr)(_GameRAM_Address + 0x000098258)));
+            SetOutputValue(OutputId.P2_LmpStart, ReadByte((IntPtr)(_GameRAM_Address + 0x00009825C)));
+
+            SetOutputValue(OutputId.Credits, ReadByte((IntPtr)Credits_Address));
+        }
+
+        private void Compute_Deathcoxo_Outputs()
+        {
+            //InGame Status : 0 = AttractMode/Demo/Menu, 1 = InGame
+            UInt64 InGame_Address = _GameRAM_Address + 0x00096680;
+            _P1_Life = 0;
+            _P2_Life = 0;
+            _P1_Ammo = 0;
+            _P2_Ammo = 0;
+            int P1_Clip = 0;
+            int P2_Clip = 0;
+
+            UInt64 P1_Ammo_Address = _GameRAM_Address + 0x0018BFC9;
+            UInt64 P2_Ammo_Address = P1_Ammo_Address + 0x3C;
+            UInt64 Credits_Address = _GameRAM_Address + 0x00974A8;
+            //P1 and P2 Enable : Display ammo and life when it's 0 ( not reliable but well...)
+            //UInt64 P1_Enable_Address = _GameRAM_Address + 0x00096634;
+            //UInt64 P2_Enable_Address = _GameRAM_Address + 0x00096638;
+
+            //---> Ammo + 0xC => Byte going from 0 to 1 when alive...use for status ???
+            UInt64 P1_Enable_Address = P1_Ammo_Address + 0xC;
+            UInt64 P2_Enable_Address = P2_Ammo_Address + 0xC;
+
+            if (ReadByte((IntPtr)P1_Enable_Address) == 1 && ReadByte((IntPtr)InGame_Address) == 1)
+            {
+                _P1_Life = (int)(BitConverter.ToSingle(ReadBytes((IntPtr)(Credits_Address + 0x04), 4), 0) * 100);
+                _P1_Ammo = ReadByte((IntPtr)P1_Ammo_Address);
+
+                //Custom Recoil
+                if (_P1_Ammo < _P1_LastAmmo)
+                    SetOutputValue(OutputId.P1_CtmRecoil, 1);
+
+                //[Clip Empty] custom Output
+                if (_P1_Ammo > 0)
+                    P1_Clip = 1;
+
+                //[Damaged] custom Output                
+                if (_P1_Life < _P1_LastLife)
+                    SetOutputValue(OutputId.P1_Damaged, 1);
+            }
+
+            if (ReadByte((IntPtr)P2_Enable_Address) == 1 && ReadByte((IntPtr)InGame_Address) == 1)
             {
                 _P2_Life = (int)(BitConverter.ToSingle(ReadBytes((IntPtr)(Credits_Address + 0x08), 4), 0) * 100);
                 _P2_Ammo = ReadByte((IntPtr)P2_Ammo_Address);

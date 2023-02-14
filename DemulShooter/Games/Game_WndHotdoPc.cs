@@ -30,7 +30,7 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         public Game_WndHotdoPc(String RomName, bool DisableInputHack, bool Verbose) 
-            : base (RomName, "HOTD_NG",00.0, DisableInputHack, Verbose)
+            : base (RomName, "HOTD_NG", DisableInputHack, Verbose)
         {                      
             _KnownMd5Prints.Add("Typing Of The Dead SEGA Windows", "da39156a426e3f3faca25d3c8cb2b401");
 

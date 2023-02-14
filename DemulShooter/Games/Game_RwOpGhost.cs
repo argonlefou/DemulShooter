@@ -86,8 +86,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwOpGhost(String RomName, bool EnableFreeplay, int StartCredits, int ContinueCredits, int CoinsCredit, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "gs2", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_RwOpGhost(String RomName, bool EnableFreeplay, int StartCredits, int ContinueCredits, int CoinsCredit, bool DisableInputHack, bool Verbose)
+            : base(RomName, "gs2", DisableInputHack, Verbose)
         {
             if (EnableFreeplay)
                 _Credits_Freeplay = 1;

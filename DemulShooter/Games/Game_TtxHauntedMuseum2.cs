@@ -53,8 +53,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxHauntedMuseum2(String RomName, bool AlternativeGameplay, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_TtxHauntedMuseum2(String RomName, bool AlternativeGameplay, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", DisableInputHack, Verbose)
         {
             _AlternativeGameplay = AlternativeGameplay;
 
@@ -163,20 +163,7 @@ namespace DemulShooter
                     double RatioX = GameResX / TotalResX;
                     double RatioY = GameResY / TotalResY;
 
-                    if (_ForcedXratio != 0)
-                    {
-                        Logger.WriteLog("Forcing X Ratio to = " + _ForcedXratio.ToString());
-                        double ViewportHeight = GameResY;
-                        double ViewportWidth = GameResX / (1 / _ForcedXratio);
-                        double SideBarsWidth = (ViewportWidth - GameResX) / 2;
-                        Logger.WriteLog("Game Viewport size (Px) = [ " + ((int)ViewportWidth).ToString() + "x" + ((int)ViewportHeight).ToString() + " ]");
-                        Logger.WriteLog("SideBars Width (px) = " + ((int)SideBarsWidth).ToString());
-                        RatioX = ViewportWidth / TotalResX;
-                        PlayerData.RIController.Computed_X = Convert.ToInt16(Math.Round(RatioX * PlayerData.RIController.Computed_X) - SideBarsWidth);
-                    }
-                    else
-                        PlayerData.RIController.Computed_X = Convert.ToInt16(Math.Round(RatioX * PlayerData.RIController.Computed_X));
-
+                    PlayerData.RIController.Computed_X = Convert.ToInt16(Math.Round(RatioX * PlayerData.RIController.Computed_X));
                     PlayerData.RIController.Computed_Y = Convert.ToInt16(Math.Round(RatioY * PlayerData.RIController.Computed_Y));
 
                     if (PlayerData.RIController.Computed_X < (int)dMinX)

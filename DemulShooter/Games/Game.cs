@@ -31,7 +31,6 @@ namespace DemulShooter
         protected bool _VerboseEnable;
         protected bool _DisableWindow = false;
         protected bool _DisableInputHack = false;
-        protected double _ForcedXratio = 0;
 
         //MD5 check of target binaries, may help to know if it's the wrong version or not compatible
         protected Dictionary<string, string> _KnownMd5Prints;
@@ -58,7 +57,7 @@ namespace DemulShooter
         /// <param name="RomName">DemumShooter [-rom] Parameter</param>
         /// <param name="TargetProcessName">Executable name to hook in process list</param>
         /// <param name="Verbose">Create a debug.txt file if TRUE</param>
-        public Game(String RomName, String TargetProcessName, double ForcedXratio, bool DisableInputHack, bool Verbose)
+        public Game(String RomName, String TargetProcessName, bool DisableInputHack, bool Verbose)
         {
             _KnownMd5Prints = new Dictionary<String, String>();
             GetScreenResolution();
@@ -70,8 +69,6 @@ namespace DemulShooter
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
             _Target_Process_Name = TargetProcessName;
-
-            _ForcedXratio = ForcedXratio;
 
             CreateOutputList();
 

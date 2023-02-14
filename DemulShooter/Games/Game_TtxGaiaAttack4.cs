@@ -54,8 +54,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxGaiaAttack4(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_TtxGaiaAttack4(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Gaia Attack 4 v1.02 - Original", "f2d8e8f7d3a9a29d4804ff7cb29aa8a2");
             _KnownMd5Prints.Add("Gaia Attack 4 v1.02 - For JConfig", "94fe4e73f6fd915ffb10885dc091d5cb");

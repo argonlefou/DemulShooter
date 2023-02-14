@@ -41,8 +41,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwLGI(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "LGI_RingW_F_Safe", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_RwLGI(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "LGI_RingW_F_Safe", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Let's Go Island - For TeknoParrot", "b782c82a8ccb87c97d77441505e17a26");
             _KnownMd5Prints.Add("Let's Go Island - For JConfig", "aec871535341123a0899e5850b64cb85");

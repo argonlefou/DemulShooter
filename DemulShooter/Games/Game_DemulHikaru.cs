@@ -11,8 +11,8 @@ namespace DemulShooter
 {
     class Game_DemulHikaru : Game_Demul
     {
-        public Game_DemulHikaru(String Rom, String DemulVersion, double ForcedXratio, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
-            : base(Rom, "hikaru", DemulVersion, ForcedXratio, DisableInputHack, Verbose, DisableWindow, WidescreenHack)
+        public Game_DemulHikaru(String Rom, String DemulVersion, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
+            : base(Rom, "hikaru", DemulVersion, DisableInputHack, Verbose, DisableWindow, WidescreenHack)
         {}
 
         #region Memory Hack

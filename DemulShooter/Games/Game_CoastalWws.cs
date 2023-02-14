@@ -42,13 +42,13 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_CoastalWws(String RomName, HardwareScanCode P1_Coin_Key, HardwareScanCode P2_Coin_Key, HardwareScanCode TestMode_Key, double ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "CowBoy", ForcedXratio, DisableInputHack, Verbose)
+        public Game_CoastalWws(String RomName, HardwareScanCode P1_Coin_Key, HardwareScanCode P2_Coin_Key, HardwareScanCode TestMode_Key, bool DisableInputHack, bool Verbose)
+            : base(RomName, "CowBoy", DisableInputHack, Verbose)
         {
             _P1_Coin_Key = P1_Coin_Key;
             _P2_Coin_Key = P2_Coin_Key;
             _TestMode_Key = TestMode_Key;
-            _KnownMd5Prints.Add("Wild West Shoutout original dump", "2dac74521cd3bb08b61f93830bf2660d");
+            _KnownMd5Prints.Add("Wild West Shoutout original dump", "4f543c469818c1db8bc856be84f0131e");
             _tProcess.Start();
             Logger.WriteLog("Waiting for Coastal " + _RomName + " game to hook.....");
         }

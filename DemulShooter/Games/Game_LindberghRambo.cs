@@ -71,8 +71,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_LindberghRambo(String RomName, bool HideCrosshair, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BudgieLoader", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_LindberghRambo(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
+            : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
         {
             _HideCrosshair = HideCrosshair;
             _tProcess.Start();

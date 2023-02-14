@@ -29,8 +29,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxBlockKingBallShooter(String RomName, double _ForcedXratio, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", _ForcedXratio, DisableInputHack, Verbose)
+        public Game_TtxBlockKingBallShooter(String RomName, bool DisableInputHack, bool Verbose)
+            : base(RomName, "game", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Block King Ball Shooter v1.05 - Original", "42b7ab17909d13ff096f2b08ece6bf2a");
             _KnownMd5Prints.Add("Block King Ball Shooter v1.05 - For JConfig", "7e2fae81627c05a836033918e01046c6");
@@ -125,21 +125,7 @@ namespace DemulShooter
                     double X = 0.0;
                     double Y = 0.0;
 
-                    if (_ForcedXratio != 0)
-                    {
-                        Logger.WriteLog("Forcing X Ratio to = " + _ForcedXratio.ToString());
-                        double ViewportHeight = TotalResY;
-                        double ViewportWidth = TotalResY * _ForcedXratio;
-                        double SideBarsWidth = (TotalResX - ViewportWidth) / 2;
-                        Logger.WriteLog("Game Viewport size (Px) = [ " + ((int)ViewportWidth).ToString() + "x" + ((int)ViewportHeight).ToString() + " ]");
-                        Logger.WriteLog("SideBars Width (px) = " + ((int)SideBarsWidth).ToString());
-                        dRangeX = dRangeX + (SideBarsWidth * dRangeX / TotalResX) * 2;
-                        //X = Math.Round(dRangeX * PlayerData.RIController.Computed_X / TotalResX) - (SideBarsWidth * dMaxX / TotalResX);
-                        X = Math.Round((dRangeX / TotalResX) * (PlayerData.RIController.Computed_X - SideBarsWidth));
-                    }
-                    else
-                        X = Math.Round(dRangeX * PlayerData.RIController.Computed_X / TotalResX);
-                    
+                    X = Math.Round(dRangeX * PlayerData.RIController.Computed_X / TotalResX);                    
                     Y = Math.Round(dMaxY * PlayerData.RIController.Computed_Y / TotalResY);
                     if (X < 0)
                         X = 0;
