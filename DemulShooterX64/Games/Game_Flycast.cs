@@ -13,6 +13,8 @@ namespace DemulShooterX64
 {
     public class Game_Flycast : Game
     {
+        private const String GAMEDATA_FOLDER = @"MemoryData\flycast";
+
         /* 
          * Output status with derived class : 
          * Ninja Assault (ninjaslt, ninjaslta, ninjasltj, ninjasltu) => working. Need better filter for player playing (force life = 0 at start ?)
@@ -47,6 +49,7 @@ namespace DemulShooterX64
         public Game_Flycast(String RomName, bool DisableInputHack, bool Verbose) : base(RomName, "flycast", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Flycast v2.0", "84b08b9aa61d8c46ff47abcc77f690f7");
+            _KnownMd5Prints.Add("Flycast v2.1", "cf56b386e1a9e82f5a92f8aadb2b6df9");
             _tProcess.Start();
             Logger.WriteLog("Waiting for Flycast " + _RomName + " game to hook.....");
         }
@@ -69,6 +72,8 @@ namespace DemulShooterX64
 
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
+                            CheckExeMd5();
+                            ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
 
                             _GameRAM_Address = BitConverter.ToUInt64(ReadBytes((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _GameRAMPtr_Offset), 8), 0);
 
@@ -78,13 +83,8 @@ namespace DemulShooterX64
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X16"));
                                 Logger.WriteLog("MainWindowHandle = 0x" + _TargetProcess.MainWindowHandle.ToString("X16"));
                                 Logger.WriteLog("MainWindowTitle" + _TargetProcess.MainWindowTitle);
-                                Logger.WriteLog("Game RAM loaded at 0x" + _GameRAM_Address.ToString("X16"));
+                                Logger.WriteLog("Game RAM loaded at 0x" + _GameRAM_Address.ToString("X16"));                                
 
-                                CheckExeMd5();
-                                /*if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");*/
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }

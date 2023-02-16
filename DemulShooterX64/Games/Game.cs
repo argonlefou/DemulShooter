@@ -10,6 +10,8 @@ using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.MemoryX64;
 using DsCore.Win32;
+using System.Reflection;
+using System.Globalization;
 
 namespace DemulShooterX64
 {
@@ -342,8 +344,74 @@ namespace DemulShooterX64
         /// </summary>
         protected virtual void ReadGameData()
         {}
+
+        /// <summary>
+        /// Read memory values in .cfg file, whose name depends on the MD5 hash of the targeted exe.
+        /// Mostly used for PC games
+        /// </summary>
+        /// <param name="GameData_Folder"></param>
+        protected virtual void ReadGameDataFromMd5Hash(String GameData_Folder)
+        {
+            String ConfigFile = AppDomain.CurrentDomain.BaseDirectory + GameData_Folder + @"\" + _TargetProcess_Md5Hash + ".cfg";
+            if (File.Exists(ConfigFile))
+            {
+                Logger.WriteLog("Reading game memory setting from " + ConfigFile);
+                using (StreamReader sr = new StreamReader(ConfigFile))
+                {
+                    String line;
+                    String FieldName = String.Empty;
+                    line = sr.ReadLine();
+                    while (line != null)
+                    {
+                        String[] buffer = line.Split('=');
+                        if (buffer.Length > 1)
+                        {
+                            try
+                            {
+                                FieldName = "_" + buffer[0].Trim();
+                                if (buffer[0].Contains("Nop"))
+                                {
+                                    NopStruct n = new NopStruct(buffer[1].Trim());
+                                    this.GetType().GetField(FieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase).SetValue(this, n);
+                                    Logger.WriteLog(FieldName + " successfully set to following value : 0x" + n.MemoryOffset.ToString("X8") + "|" + n.Length.ToString());
+                                }
+                                else if (buffer[0].Contains("DIK"))
+                                {
+                                    HardwareScanCode sc = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), buffer[1].Trim());
+                                    this.GetType().GetField(FieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase).SetValue(this, sc);
+                                    Logger.WriteLog(FieldName + " successfully set to following value :" + sc.ToString());
+                                }
+                                else if (buffer[0].Contains("VK"))
+                                {
+                                    VirtualKeyCode vk = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), buffer[1].Trim());
+                                    this.GetType().GetField(FieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase).SetValue(this, vk);
+                                    Logger.WriteLog(FieldName + " successfully set to following value :" + vk.ToString());
+                                }
+                                else
+                                {
+                                    UInt64 v = UInt64.Parse(buffer[1].Substring(3).Trim(), NumberStyles.HexNumber);
+                                    this.GetType().GetField(FieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase).SetValue(this, v);
+                                    Logger.WriteLog(FieldName + " successfully set to following value : 0x" + v.ToString("X8"));
+                                }                                
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.WriteLog("Error reading game data for " + FieldName + " : " + ex.Message.ToString());
+                            }
+                        }
+                        line = sr.ReadLine();
+                    }
+                    sr.Close();
+                }
+            }
+            else
+            {
+                Logger.WriteLog("File not found : " + ConfigFile);
+            }
+        }
         
         #endregion
+       
 
         #region MemoryHack x64
 

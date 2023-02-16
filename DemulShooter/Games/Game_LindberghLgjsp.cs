@@ -42,6 +42,11 @@ namespace DemulShooter
         private int _P2_LastLife = 0;
         private int _P1_Life = 0;
         private int _P2_Life = 0;
+        //Custom recoil injection
+        private UInt32 _Recoil_Injection_Address = 0x080B6549;
+        private UInt32 _Recoil_Injection_Return_Address = 0x080B654F;
+        private UInt32 _P1_CustomRecoil_CaveAddress = 0;
+        private UInt32 _P2_CustomRecoil_CaveAddress = 0;
 
         private UInt32 _Player1_InputStruct_Address = 0;
         private UInt32 _Player2_InputStruct_Address = 0;
@@ -97,6 +102,7 @@ namespace DemulShooter
                                     Logger.WriteLog("P1 InputStruct address = 0x" + _Player1_InputStruct_Address.ToString("X8"));
                                     Logger.WriteLog("P2 InputStruct address = 0x" + _Player2_InputStruct_Address.ToString("X8"));
 
+                                    SetHack_Output();
                                     if (!_DisableInputHack)
                                         SetHack();
                                     else
@@ -255,7 +261,72 @@ namespace DemulShooter
         private void SetHackEnableP2()
         {
             WriteByte(0x84E4A56, 0xEB);
-        }        
+        }
+
+        //Original game is simply setting a Motor to vibrate, so simply using this data to create or pulsed custom recoil will not be synchronized with bullets shot
+        //as the pulses lenght and spaceing will depend on DemulShooter output pulse config data.
+        //To synch recoil pulse with projectiles, this hack allows to intercept the code increasing the "PlayerShotCounter" variable
+        private void SetHack_Output()
+        {
+            //Create Databak to store our value
+            CreateDataBank();
+
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //mov    eax,DWORD PTR [ebx+0x118] 
+            CaveMemory.Write_StrBytes("8B 83 18 01 00 00");
+            //shl eax, 2
+            CaveMemory.Write_StrBytes("C1 E0 02");
+            //add eax, _P1_CustomRecoil_CaveAddress
+            CaveMemory.Write_StrBytes("05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_CustomRecoil_CaveAddress));
+            //mov [eax], 1
+            CaveMemory.Write_StrBytes("C7 00 01 00 00 00");
+            //pop eax
+            CaveMemory.Write_StrBytes("58");
+            //mov ds:g_PlayerShotCounter, ecx
+            CaveMemory.Write_StrBytes("89 0D 2C 0B 81 08");
+
+            //return
+            CaveMemory.Write_jmp(_Recoil_Injection_Return_Address);
+
+            Logger.WriteLog("Adding Recoil Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - _Recoil_Injection_Address - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemory(ProcessHandle, _Recoil_Injection_Address, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+
+            Logger.WriteLog("Output memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
+        /// <summary>
+        /// Creating a zone in memory where we will save recoil status, updated by the game.
+        /// This memory will then be read by the game thanks to the following hacks.
+        /// </summary>
+        private void CreateDataBank()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            _P1_CustomRecoil_CaveAddress = CaveMemory.CaveAddress;
+            _P2_CustomRecoil_CaveAddress = CaveMemory.CaveAddress + 0x04;
+
+            Logger.WriteLog("Custom Recoil data will be stored at : 0x" + _P1_CustomRecoil_CaveAddress.ToString("X8"));
+        }
 
         #endregion
 
@@ -359,9 +430,19 @@ namespace DemulShooter
             SetOutputValue(OutputId.P1_Life, _P1_Life);
             SetOutputValue(OutputId.P2_Life, _P2_Life);
 
-            //Using constant "ON" value from motor to create asynch outputs for recoil
-            SetOutputValue(OutputId.P1_CtmRecoil, ReadByte(_Outputs_Address) >> 3 & 0x01);
-            SetOutputValue(OutputId.P2_CtmRecoil, ReadByte(_Outputs_Address) >> 6 & 0x01);
+            //The game does not seem to have an attract mode ?
+            //No filtering for now...
+            if (ReadByte(_P1_CustomRecoil_CaveAddress) == 1 && (ReadByte(_Outputs_Address) >> 3 & 0x01) == 1)
+            {
+                SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                WriteByte(_P1_CustomRecoil_CaveAddress, 0);
+            }
+
+            if (ReadByte(_P2_CustomRecoil_CaveAddress) == 1 && (ReadByte(_Outputs_Address) >> 6 & 0x01) == 1)
+            {
+                SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                WriteByte(_P2_CustomRecoil_CaveAddress, 0);
+            }
             SetOutputValue(OutputId.Credits, ReadByte(_Credits_Address));
         }
 

@@ -148,6 +148,12 @@
             this.Btn_Wws_GamePath = new System.Windows.Forms.Button();
             this.Btn_Wws_InstallUnity = new System.Windows.Forms.Button();
             this.Txt_Wws_GamePath = new System.Windows.Forms.TextBox();
+            this.Tab_RabbidsHollywod = new System.Windows.Forms.TabPage();
+            this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.label36 = new System.Windows.Forms.Label();
+            this.Btn_Rha_GamePath = new System.Windows.Forms.Button();
+            this.Btn_Rha_InstallUnity = new System.Windows.Forms.Button();
+            this.Txt_Rha_GamePath = new System.Windows.Forms.TextBox();
             this.Tab_Outputs = new System.Windows.Forms.TabPage();
             this.Btn_SaveOutput = new System.Windows.Forms.Button();
             this.Grp_Outputs = new System.Windows.Forms.GroupBox();
@@ -169,12 +175,6 @@
             this.Bgw_XInput = new System.ComponentModel.BackgroundWorker();
             this.Cbo_PageSettings = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
-            this.Tab_RabbidsHollywod = new System.Windows.Forms.TabPage();
-            this.groupBox11 = new System.Windows.Forms.GroupBox();
-            this.label36 = new System.Windows.Forms.Label();
-            this.Btn_Rha_GamePath = new System.Windows.Forms.Button();
-            this.Btn_Rha_InstallUnity = new System.Windows.Forms.Button();
-            this.Txt_Rha_GamePath = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.Tab_P1.SuspendLayout();
             this.Tab_P2.SuspendLayout();
@@ -201,10 +201,10 @@
             this.Tab_WildWest.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.Tab_Outputs.SuspendLayout();
-            this.Grp_Outputs.SuspendLayout();
             this.Tab_RabbidsHollywod.SuspendLayout();
             this.groupBox11.SuspendLayout();
+            this.Tab_Outputs.SuspendLayout();
+            this.Grp_Outputs.SuspendLayout();
             this.SuspendLayout();
             // 
             // Btn_Save_P1
@@ -1576,6 +1576,68 @@
             this.Txt_Wws_GamePath.Size = new System.Drawing.Size(406, 22);
             this.Txt_Wws_GamePath.TabIndex = 69;
             // 
+            // Tab_RabbidsHollywod
+            // 
+            this.Tab_RabbidsHollywod.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_RabbidsHollywod.Controls.Add(this.groupBox11);
+            this.Tab_RabbidsHollywod.Location = new System.Drawing.Point(4, 5);
+            this.Tab_RabbidsHollywod.Name = "Tab_RabbidsHollywod";
+            this.Tab_RabbidsHollywod.Size = new System.Drawing.Size(581, 334);
+            this.Tab_RabbidsHollywod.TabIndex = 16;
+            this.Tab_RabbidsHollywod.Text = "tabPage1";
+            this.Tab_RabbidsHollywod.UseVisualStyleBackColor = true;
+            // 
+            // groupBox11
+            // 
+            this.groupBox11.Controls.Add(this.label36);
+            this.groupBox11.Controls.Add(this.Btn_Rha_GamePath);
+            this.groupBox11.Controls.Add(this.Btn_Rha_InstallUnity);
+            this.groupBox11.Controls.Add(this.Txt_Rha_GamePath);
+            this.groupBox11.Location = new System.Drawing.Point(5, 12);
+            this.groupBox11.Name = "groupBox11";
+            this.groupBox11.Size = new System.Drawing.Size(567, 111);
+            this.groupBox11.TabIndex = 73;
+            this.groupBox11.TabStop = false;
+            this.groupBox11.Text = "Unity Plugin Install";
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(6, 37);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(101, 16);
+            this.label36.TabIndex = 70;
+            this.label36.Text = "Game location :";
+            // 
+            // Btn_Rha_GamePath
+            // 
+            this.Btn_Rha_GamePath.Location = new System.Drawing.Point(525, 32);
+            this.Btn_Rha_GamePath.Name = "Btn_Rha_GamePath";
+            this.Btn_Rha_GamePath.Size = new System.Drawing.Size(27, 27);
+            this.Btn_Rha_GamePath.TabIndex = 71;
+            this.Btn_Rha_GamePath.Text = "...";
+            this.Btn_Rha_GamePath.UseVisualStyleBackColor = true;
+            this.Btn_Rha_GamePath.Click += new System.EventHandler(this.Btn_Rha_GamePath_Click);
+            // 
+            // Btn_Rha_InstallUnity
+            // 
+            this.Btn_Rha_InstallUnity.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Btn_Rha_InstallUnity.Location = new System.Drawing.Point(209, 66);
+            this.Btn_Rha_InstallUnity.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_Rha_InstallUnity.Name = "Btn_Rha_InstallUnity";
+            this.Btn_Rha_InstallUnity.Size = new System.Drawing.Size(139, 38);
+            this.Btn_Rha_InstallUnity.TabIndex = 67;
+            this.Btn_Rha_InstallUnity.Text = "Install Plugin";
+            this.Btn_Rha_InstallUnity.UseVisualStyleBackColor = true;
+            this.Btn_Rha_InstallUnity.Click += new System.EventHandler(this.Btn_Rha_InstallUnity_Click);
+            // 
+            // Txt_Rha_GamePath
+            // 
+            this.Txt_Rha_GamePath.Location = new System.Drawing.Point(113, 34);
+            this.Txt_Rha_GamePath.Name = "Txt_Rha_GamePath";
+            this.Txt_Rha_GamePath.Size = new System.Drawing.Size(406, 22);
+            this.Txt_Rha_GamePath.TabIndex = 69;
+            // 
             // Tab_Outputs
             // 
             this.Tab_Outputs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1746,7 +1808,7 @@
             this.Txt_OutputDelay.Name = "Txt_OutputDelay";
             this.Txt_OutputDelay.Size = new System.Drawing.Size(56, 22);
             this.Txt_OutputDelay.TabIndex = 2;
-            this.Txt_OutputDelay.Text = "20";
+            this.Txt_OutputDelay.Text = "1";
             this.Txt_OutputDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.Txt_OutputDelay.TextChanged += new System.EventHandler(this.Txt_OutputDelay_TextChanged);
             // 
@@ -1796,68 +1858,6 @@
             this.label39.Size = new System.Drawing.Size(104, 16);
             this.label39.TabIndex = 40;
             this.label39.Text = "Page selection :";
-            // 
-            // Tab_RabbidsHollywod
-            // 
-            this.Tab_RabbidsHollywod.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Tab_RabbidsHollywod.Controls.Add(this.groupBox11);
-            this.Tab_RabbidsHollywod.Location = new System.Drawing.Point(4, 5);
-            this.Tab_RabbidsHollywod.Name = "Tab_RabbidsHollywod";
-            this.Tab_RabbidsHollywod.Size = new System.Drawing.Size(581, 334);
-            this.Tab_RabbidsHollywod.TabIndex = 16;
-            this.Tab_RabbidsHollywod.Text = "tabPage1";
-            this.Tab_RabbidsHollywod.UseVisualStyleBackColor = true;
-            // 
-            // groupBox11
-            // 
-            this.groupBox11.Controls.Add(this.label36);
-            this.groupBox11.Controls.Add(this.Btn_Rha_GamePath);
-            this.groupBox11.Controls.Add(this.Btn_Rha_InstallUnity);
-            this.groupBox11.Controls.Add(this.Txt_Rha_GamePath);
-            this.groupBox11.Location = new System.Drawing.Point(5, 12);
-            this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(567, 111);
-            this.groupBox11.TabIndex = 73;
-            this.groupBox11.TabStop = false;
-            this.groupBox11.Text = "Unity Plugin Install";
-            // 
-            // label36
-            // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(6, 37);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(101, 16);
-            this.label36.TabIndex = 70;
-            this.label36.Text = "Game location :";
-            // 
-            // Btn_Rha_GamePath
-            // 
-            this.Btn_Rha_GamePath.Location = new System.Drawing.Point(525, 32);
-            this.Btn_Rha_GamePath.Name = "Btn_Rha_GamePath";
-            this.Btn_Rha_GamePath.Size = new System.Drawing.Size(27, 27);
-            this.Btn_Rha_GamePath.TabIndex = 71;
-            this.Btn_Rha_GamePath.Text = "...";
-            this.Btn_Rha_GamePath.UseVisualStyleBackColor = true;
-            this.Btn_Rha_GamePath.Click += new System.EventHandler(this.Btn_Rha_GamePath_Click);
-            // 
-            // Btn_Rha_InstallUnity
-            // 
-            this.Btn_Rha_InstallUnity.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.Btn_Rha_InstallUnity.Location = new System.Drawing.Point(209, 66);
-            this.Btn_Rha_InstallUnity.Margin = new System.Windows.Forms.Padding(4);
-            this.Btn_Rha_InstallUnity.Name = "Btn_Rha_InstallUnity";
-            this.Btn_Rha_InstallUnity.Size = new System.Drawing.Size(139, 38);
-            this.Btn_Rha_InstallUnity.TabIndex = 67;
-            this.Btn_Rha_InstallUnity.Text = "Install Plugin";
-            this.Btn_Rha_InstallUnity.UseVisualStyleBackColor = true;
-            this.Btn_Rha_InstallUnity.Click += new System.EventHandler(this.Btn_Rha_InstallUnity_Click);
-            // 
-            // Txt_Rha_GamePath
-            // 
-            this.Txt_Rha_GamePath.Location = new System.Drawing.Point(113, 34);
-            this.Txt_Rha_GamePath.Name = "Txt_Rha_GamePath";
-            this.Txt_Rha_GamePath.Size = new System.Drawing.Size(406, 22);
-            this.Txt_Rha_GamePath.TabIndex = 69;
             // 
             // Wnd_DemulShooterGui
             // 
@@ -1918,13 +1918,13 @@
             this.groupBox10.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.Tab_RabbidsHollywod.ResumeLayout(false);
+            this.groupBox11.ResumeLayout(false);
+            this.groupBox11.PerformLayout();
             this.Tab_Outputs.ResumeLayout(false);
             this.Tab_Outputs.PerformLayout();
             this.Grp_Outputs.ResumeLayout(false);
             this.Grp_Outputs.PerformLayout();
-            this.Tab_RabbidsHollywod.ResumeLayout(false);
-            this.groupBox11.ResumeLayout(false);
-            this.groupBox11.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

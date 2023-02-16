@@ -37,6 +37,11 @@ namespace DemulShooter
         private int _P2_LastLife = 0;
         private int _P1_Life = 0;
         private int _P2_Life = 0;
+        //Custom recoil injection
+        private UInt32 _Recoil_Injection_Offset = 0x003518F1;
+        private UInt32 _Recoil_Injection_Return_Offset = 0x003518F6;
+        private UInt32 _P1_CustomRecoil_CaveAddress = 0;
+        private UInt32 _P2_CustomRecoil_CaveAddress = 0;
 
         /// <summary>
         /// Constructor
@@ -83,6 +88,7 @@ namespace DemulShooter
                                     Logger.WriteLog("Data base adddress =  0x" + _Data_Base_Address.ToString("X8"));
                                     CheckExeMd5();
                                     ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
+                                    SetHack_Output();
                                     if (!_DisableInputHack)
                                         SetHack();
                                     else
@@ -176,7 +182,7 @@ namespace DemulShooter
             SetHack_Buttons();
             SetHack_Calibration();           
             
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Input memory Hack complete !");
             Logger.WriteLog("-");
         }
 
@@ -295,6 +301,66 @@ namespace DemulShooter
             Buffer.AddRange(BitConverter.GetBytes(jumpTo));
             Buffer.Add(0x90);
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _CalibrationValues_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+        //Original game is simply setting a Motor to vibrate, so simply using this data to create or pulsed custom recoil will not be synchronized with bullets shot
+        //as the pulses lenght and spaceing will depend on DemulShooter output pulse config data.
+        //To synch recoil pulse with projectiles, this hack allows to intercept the code shooting the actual projectile to generate the pulse
+        private void SetHack_Output()
+        {
+            //Create Databak to store our value
+            CreateDataBank();
+
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+
+            //mov ecx,[edi+04]
+            CaveMemory.Write_StrBytes("8B 4F 04");
+            //mov eax,ecx
+            CaveMemory.Write_StrBytes("8B C1");
+            //shl eax, 2
+            CaveMemory.Write_StrBytes("C1 E0 02");
+            //add eax, _P1_CustomRecoil_CaveAddress
+            CaveMemory.Write_StrBytes("05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_CustomRecoil_CaveAddress));
+            //mov [eax], 1
+            CaveMemory.Write_StrBytes("C7 00 01 00 00 00");
+            //xor al,al
+            CaveMemory.Write_StrBytes("30 C0");
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_Injection_Return_Offset);
+
+            Logger.WriteLog("Adding Recoil Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+
+            Logger.WriteLog("Output memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
+        /// <summary>
+        /// Creating a zone in memory where we will save recoil status, updated by the game.
+        /// This memory will then be read by the game thanks to the following hacks.
+        /// </summary>
+        private void CreateDataBank()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            _P1_CustomRecoil_CaveAddress = CaveMemory.CaveAddress;
+            _P2_CustomRecoil_CaveAddress = CaveMemory.CaveAddress + 0x04;
+
+            Logger.WriteLog("Custom Recoil data will be stored at : 0x" + _P1_CustomRecoil_CaveAddress.ToString("X8"));
         }
 
         #endregion
@@ -431,8 +497,22 @@ namespace DemulShooter
             SetOutputValue(OutputId.P2_Life, _P2_Life);
 
             //Using constant "ON" value from motor to create asynch outputs for recoil
-            SetOutputValue(OutputId.P1_CtmRecoil, OutputData1 >> 6 & 0x01);
-            SetOutputValue(OutputId.P2_CtmRecoil, OutputData1 >> 3 & 0x01);
+            //Pulses are not sync with bullets, but with DemulShooter output on/off timings only
+            /*SetOutputValue(OutputId.P1_CtmRecoil, OutputData1 >> 6 & 0x01);
+            SetOutputValue(OutputId.P2_CtmRecoil, OutputData1 >> 3 & 0x01);*/
+
+            //New method : reading intercepted value for bullet fired, so that recoil is sync with bullets
+            //Need to filter this with MOTOR_ON, if not : recoil will be activated when bullets are fired during attract
+            if (ReadByte(_P1_CustomRecoil_CaveAddress) == 1 && (OutputData1 >> 6 & 0x01) == 1)
+            {
+                SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                WriteByte(_P1_CustomRecoil_CaveAddress, 0);
+            }
+            if (ReadByte(_P2_CustomRecoil_CaveAddress) == 1 && (OutputData1 >> 3 & 0x01) == 1)
+            {
+                SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                WriteByte(_P2_CustomRecoil_CaveAddress, 0);
+            }
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0082E6A0)); //0x00842A88 also possible
         }
 
