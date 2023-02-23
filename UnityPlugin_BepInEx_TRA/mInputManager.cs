@@ -2,6 +2,8 @@
 using HarmonyLib;
 using UnityEngine;
 using SBK;
+using SBK.Audio;
+using TRA.Arcade.Manager;
 
 namespace UnityPlugin_BepInEx_TRA
 {
@@ -19,12 +21,13 @@ namespace UnityPlugin_BepInEx_TRA
                 {
                     for (int i = 0; i < playerList.Length; i++)
                     {
-                        if (i == 0)
+                        i_Arg.x = BitConverter.ToSingle(Demulshooter_Plugin.TRA_Mmf.Payload, TRA_MemoryMappedFile_Controller.INDEX_P1_INGAME_X + 16 * i);
+                        i_Arg.y = BitConverter.ToSingle(Demulshooter_Plugin.TRA_Mmf.Payload, TRA_MemoryMappedFile_Controller.INDEX_P1_INGAME_Y + 16 * i);
+
+                        /*if (i == 0)
                         {
                             if ((Singleton<ArcadeManager>.Instance.GunEnabled(i) && playerList[i].IsPlaying()) || Singleton<WindowManager>.Instance.GetWindow(WindowID.ID.MainMenuWindow))
                             {
-                                i_Arg.x = BitConverter.ToSingle(Demulshooter_Plugin.TRA_Mmf.Payload, TRA_MemoryMappedFile_Controller.INDEX_P1_INGAME_X + 16 * i);
-                                i_Arg.y = BitConverter.ToSingle(Demulshooter_Plugin.TRA_Mmf.Payload, TRA_MemoryMappedFile_Controller.INDEX_P1_INGAME_Y + 16 * i);
                                 Singleton<PlayerManager>.Instance.PlayerMoveCrosshair(i_Arg, ID.One);
                             }
                         }
@@ -32,25 +35,26 @@ namespace UnityPlugin_BepInEx_TRA
                         {
                             if (Singleton<ArcadeManager>.Instance.GunEnabled(i) && playerList[i].IsPlaying())
                             {
-                                i_Arg.x = BitConverter.ToSingle(Demulshooter_Plugin.TRA_Mmf.Payload, TRA_MemoryMappedFile_Controller.INDEX_P1_INGAME_X + 16 * i);
-                                i_Arg.y = BitConverter.ToSingle(Demulshooter_Plugin.TRA_Mmf.Payload, TRA_MemoryMappedFile_Controller.INDEX_P1_INGAME_Y + 16 * i);
                                 Singleton<PlayerManager>.Instance.PlayerMoveCrosshair(i_Arg, (ID)i);
                             }
+                        }*/
+
+                        //Enabling selection screen for every player at the same time, if not : only P1 can choose level/mode
+                        if ((Singleton<ArcadeManager>.Instance.GunEnabled(i) && playerList[i].IsPlaying()) || Singleton<WindowManager>.Instance.GetWindow(WindowID.ID.MainMenuWindow))
+                        {
+                            Singleton<PlayerManager>.Instance.PlayerMoveCrosshair(i_Arg, (ID)i);
                         }
                     }
                 }
 
                 for (int i = 0; i < 4; i++)
                 {
+                    i_Arg.x = BitConverter.ToSingle(Demulshooter_Plugin.TRA_Mmf.Payload, TRA_MemoryMappedFile_Controller.INDEX_P1_INGAME_X + 16 * i);
+                    i_Arg.y = BitConverter.ToSingle(Demulshooter_Plugin.TRA_Mmf.Payload, TRA_MemoryMappedFile_Controller.INDEX_P1_INGAME_Y + 16 * i);
+
                     if (Singleton<ArcadeManager>.Instance.GunEnabled(i))
                     {
-                        i_Arg.x = BitConverter.ToSingle(Demulshooter_Plugin.TRA_Mmf.Payload, TRA_MemoryMappedFile_Controller.INDEX_P1_INGAME_X + 16 * i);
-                        i_Arg.y = BitConverter.ToSingle(Demulshooter_Plugin.TRA_Mmf.Payload, TRA_MemoryMappedFile_Controller.INDEX_P1_INGAME_Y + 16 * i);
-
-                        //For Triggers, DemulShooter will output "1" for ButtonUp and "2" for ButtonDown. 0 When no inputs
-                        byte TriggerState = Demulshooter_Plugin.TRA_Mmf.Payload[TRA_MemoryMappedFile_Controller.INDEX_P1_TRIGGER + 4 * i];
-                        byte ReloadState = Demulshooter_Plugin.TRA_Mmf.Payload[TRA_MemoryMappedFile_Controller.INDEX_P1_RELOAD + 4 * i];
-                        if (TriggerState == 2 && Singleton<PlayerManager>.Instance.GetPlayerByID((ID)i).Alive)
+                        if (Demulshooter_Plugin.TRA_Mmf.Payload[TRA_MemoryMappedFile_Controller.INDEX_P1_TRIGGER + 4 * i] == 1 && Singleton<PlayerManager>.Instance.GetPlayerByID((ID)i).Alive)
                         {
                             Singleton<PlayerManager>.Instance.PlayerPressTrigger(i_Arg, (ID)i);
                             if (___m_AreCrosshairsEnabled)
@@ -64,33 +68,34 @@ namespace UnityPlugin_BepInEx_TRA
                             else if (!___m_HoldTrigger[i])
                             {
                                 ___m_HoldTrigger[i] = true;
-                                if (Singleton<GameplayManager>.Instance.CurrentState == GameplayManager.State.PlayState && !Singleton<TRA.Arcade.Manager.VideoPlaybackManager>.Instance.IsPlaying)
+                                if (Singleton<GameplayManager>.Instance.CurrentState == GameplayManager.State.PlayState && !Singleton<VideoPlaybackManager>.Instance.IsPlaying)
                                 {
-                                    Singleton<PlayerManager>.Instance.PlayPlayerSound(SBK.Audio.AudioID_Global.player_cantshoot, ___m_IDResolution[i]);
+                                    Singleton<PlayerManager>.Instance.PlayPlayerSound(AudioID_Global.player_cantshoot, ___m_IDResolution[i]);
                                 }
                             }
                         }
-                        if (TriggerState == 1)
-                        {
-                            if (___m_AreCrosshairsEnabled)
-                            {
-                                Singleton<PlayerManager>.Instance.PlayerTriggerRelease((ID)i);
-                            }
-                            ___m_HoldTrigger[i] = false;
-                        }
-                        if (ReloadState == 1)
+                        if (Demulshooter_Plugin.TRA_Mmf.Payload[TRA_MemoryMappedFile_Controller.INDEX_P1_RELOAD + 4 * i] == 1)
                         {
                             Singleton<PlayerManager>.Instance.PlayerReload((ID)i);
                         }
-                        if (!___m_HoldTrigger[i])
+                    }
+                    if (Singleton<ArcadeManager>.Instance.GunEnabled(i) && Demulshooter_Plugin.TRA_Mmf.Payload[TRA_MemoryMappedFile_Controller.INDEX_P1_TRIGGER + 4 * i] == 0)
+                    {
+                        if (___m_AreCrosshairsEnabled)
                         {
-                            Singleton<PlayerManager>.Instance.StopHoldingFire(ID.One);
+                            Singleton<PlayerManager>.Instance.PlayerTriggerRelease((ID)i);
                         }
+                        ___m_HoldTrigger[i] = false;
+                    }
+
+                    if (!___m_HoldTrigger[i])
+                    {
+                        Singleton<PlayerManager>.Instance.StopHoldingFire((ID)i);
                     }
                 }
-       
+
                 return false;
             }
-        } 
+        }         
     }
 }

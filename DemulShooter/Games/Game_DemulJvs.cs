@@ -420,9 +420,7 @@ namespace DemulShooter
             int P2_Clip = 0;
 
             //Check if the game is in Gameplay mode 
-            //2 and 3 seem to be gameplay and cutscene
-            //0,1,9 in attract mode
-            if (ReadByte(_GameRAM_Address + _Outputs_PlayerData_Offset) == 3 || ReadByte(_GameRAM_Address + _Outputs_PlayerData_Offset) == 2)
+            if (ReadByte(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x1A) == 1)
             {
                 //Didn't find any reliable "player state", but Life seem to stay at 0 when not playing, so we will use that
                 //Note that at start, life may be > 0 if the player has never entered a game :(

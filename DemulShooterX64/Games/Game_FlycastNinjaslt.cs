@@ -90,14 +90,12 @@ namespace DemulShooterX64
             int P1_Clip = 0;
             int P2_Clip = 0;
 
-            //Check if the game is in Gameplay mode 
-            //2 and 3 seem to be gameplay and cutscene
-            //0,1,9 in attract mode
-            if (ReadByte((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset)) == 3 || ReadByte((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset)) == 2)
+            //Check if the game is in Gameplay mode
+            if (ReadByte((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x1A)) == 1)
             {
                 //Didn't find any reliable "player state", but Life seem to stay at 0 when not playing, so we will use that
                 //Note that at start, life may be > 0 if the player has never entered a game :(
-                _P1_Life = (int)BitConverter.ToInt16(ReadBytes((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x54), 2), 0); 
+                _P1_Life = (int)BitConverter.ToInt16(ReadBytes((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x54), 2), 0);
                 _P2_Life = (int)BitConverter.ToInt16(ReadBytes((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x56), 2), 0);
 
                 //For custom dammaged : 
@@ -130,7 +128,7 @@ namespace DemulShooterX64
 
                     //[Clip Empty] custom Output
                     if (_P1_Ammo > 0)
-                        P1_Clip = 1;                    
+                        P1_Clip = 1;
                 }
 
                 if (_P2_Life > 0)
@@ -143,7 +141,7 @@ namespace DemulShooterX64
 
                     //[Clip Empty] custom Output
                     if (_P2_Ammo > 0)
-                        P2_Clip = 1;  
+                        P2_Clip = 1;
                 }
             }
 

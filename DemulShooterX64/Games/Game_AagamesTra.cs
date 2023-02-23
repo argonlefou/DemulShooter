@@ -217,9 +217,9 @@ namespace DemulShooterX64
                 Array.Copy(BitConverter.GetBytes(_PlayerCrosshairAxis[PlayerData.ID - 1].Y), 0, _Mmfh.Payload, MMFH_TombRaider.INDEX_P1_UISCREEN_Y + 16 * (PlayerData.ID - 1), 4);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
-                    _Mmfh.Payload[MMFH_TombRaider.INDEX_P1_TRIGGER + 4 * (PlayerData.ID - 1)] = 2;
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
                     _Mmfh.Payload[MMFH_TombRaider.INDEX_P1_TRIGGER + 4 * (PlayerData.ID - 1)] = 1;
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
+                    _Mmfh.Payload[MMFH_TombRaider.INDEX_P1_TRIGGER + 4 * (PlayerData.ID - 1)] = 0;
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                     _Mmfh.Payload[MMFH_TombRaider.INDEX_P1_RELOAD + 4 * (PlayerData.ID - 1)] = 1;

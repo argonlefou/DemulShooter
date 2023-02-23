@@ -12,7 +12,7 @@ namespace UnityPlugin_BepInEx_TRA
     {
         public const String pluginGuid = "argonlefou.demulshooter.tra";
         public const String pluginName = "TRA DemulShooter Plugin";
-        public const String pluginVersion = "1.0.0.0";
+        public const String pluginVersion = "2.0.0.0";
 
         static String MAPPED_FILE_NAME = "DemulShooter_MMF_Tra";
         static String MUTEX_NAME = "DemulShooter_Mutex_Tra";
