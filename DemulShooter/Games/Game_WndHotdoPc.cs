@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Media;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -23,8 +24,10 @@ namespace DemulShooter
         private int _P1_Life = 0;
         private int _P1_Ammo = 0;
 
-        //Play the "Coins" sound when adding coin
-        SoundPlayer _SndPlayer;
+        //Play the "Coins" sounds when adding coin
+        List<SoundPlayer> _SndPlayers = new List<SoundPlayer>();
+        Random _Prng = new Random((int)DateTime.Now.Ticks);
+        int _LastSnd = 0;
 
         /// <summary>
         /// Constructor
@@ -60,17 +63,13 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
 
-                            //Try to load the "coin" sound
-                            try
+                            String strCoinSndPath = _TargetProcess.MainModule.FileName;
+                            strCoinSndPath = strCoinSndPath.Substring(0, strCoinSndPath.Length - 11) + "coins\\";
+                            String[] strCoinSndFiles = Directory.GetFiles(strCoinSndPath, "*.wav");
+
+                            foreach (String strCoinSndFile in strCoinSndFiles)
                             {
-                                String strCoinSndPath = _TargetProcess.MainModule.FileName;
-                                strCoinSndPath = strCoinSndPath.Substring(0, strCoinSndPath.Length - 10);
-                                strCoinSndPath += @"..\media\coin002.aif";
-                                _SndPlayer = new SoundPlayer(strCoinSndPath);
-                            }
-                            catch
-                            {
-                                Logger.WriteLog("Unable to find/open the coin002.aif file for Hotd3");
+                                _SndPlayers.Add(new SoundPlayer(strCoinSndFile));
                             }
 
                             _ProcessHooked = true;                            
@@ -116,8 +115,15 @@ namespace DemulShooter
                         byte Credits = ReadByte(_Credits_Address);
                         Credits++;
                         WriteByte(_Credits_Address, Credits);
-                        if (_SndPlayer != null)
-                            _SndPlayer.Play();
+                        if (_SndPlayers.Count > 0)
+                        {
+                            int nextSnd;
+                            do
+                                nextSnd = _Prng.Next(0, _SndPlayers.Count);
+                            while (nextSnd == _LastSnd);
+                            _SndPlayers[nextSnd].Play();
+                            _LastSnd = nextSnd;
+                        }
                     }
                 }
             }

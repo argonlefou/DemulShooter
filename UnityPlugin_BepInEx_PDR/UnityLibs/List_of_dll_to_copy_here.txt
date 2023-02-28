@@ -1,0 +1,6 @@
+Copy these files from [Panzer Dragoon Remake directory]\Panzer Dragoon Remake_Data\Managed\ :
+
+Assembly-CSharp.dll
+UnityEngine.dll
+UnityEngine.CoreModule.dll
+UnityEngine.InputLegacyModule.dll
