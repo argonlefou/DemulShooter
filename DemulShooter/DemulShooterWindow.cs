@@ -433,6 +433,10 @@ namespace DemulShooter
                             {
                                 _Game = new Game_LindberghHotd4(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
+                        case "hotd4sp":
+                            {
+                                _Game = new Game_LindberghHotd4Sp(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;
                         case "lgj":
                             {
                                 _Game = new Game_LindberghLgj(_Rom.ToLower(), _NoInput, isVerbose);

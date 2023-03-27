@@ -66,6 +66,7 @@
     <Compile Include="Games\Game_CoastalWws.cs" />
     <Compile Include="Games\Game_KonamiWartran.cs" />
     <Compile Include="Games\Game_Lindbergh2spicy.cs" />
+    <Compile Include="Games\Game_LindberghHotd4Sp.cs" />
     <Compile Include="Games\Game_LindberghLgjsp.cs" />
     <Compile Include="Games\Game_RtAliensArmageddon.cs" />
     <Compile Include="Games\Game_RtTerminatorSalvation.cs" />

@@ -256,10 +256,10 @@ namespace DsCore.Config
 
         //Outputs settings
         private bool _OutputEnabled = false;
-        private int _OutputPollingDelay = 20;
+        private int _OutputPollingDelay = 1;
         private int _OutputCustomDamagedDelay = 200;
-        private int _OutputCustomRecoilOnDelay = 50;
-        private int _OutputCustomRecoilOffDelay = 50;
+        private int _OutputCustomRecoilOnDelay = 10;
+        private int _OutputCustomRecoilOffDelay = 30;
         #region Accessors
         public bool OutputEnabled
         { 

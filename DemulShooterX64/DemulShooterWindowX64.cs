@@ -744,7 +744,7 @@ namespace DemulShooterX64
                     }
 
                     //Second step : forward the event to the Game
-                    return _Game.MouseHookCallback(_MouseHookID, nCode, wParam, lParam);
+                    return _Game.KeyboardHookCallback(_MouseHookID, nCode, wParam, lParam);
 
                 }
                 catch (Exception Ex)

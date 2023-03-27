@@ -175,6 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DemulShooter_Icon.ico" />
+    <Content Include="DemulShooter_Icon_Old.ico" />
     <None Include="Resources\xinput1_3.dll" />
     <None Include="Resources\dinput8.dll" />
     <None Include="bin\Release\m2emulator\artwork\crosshairs\sharps2.png" />

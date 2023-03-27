@@ -6,8 +6,8 @@ using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.MemoryX64;
-using DsCore.Win32;
 using DsCore.RawInput;
+using DsCore.Win32;
 
 namespace DemulShooterX64
 {

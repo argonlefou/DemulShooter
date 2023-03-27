@@ -93,7 +93,13 @@ namespace DsCore.MameOutput
         public static readonly String LmpMarqueeUplight = "Lmp_MarqueeUplight";//
         public static readonly String LmpUpperCtrlPanel = "Lmp_UpperCtrlPanel";//
         public static readonly String LmpLowerCtrlPanel = "Lmp_LowerCtrlPanel";//
-
+        public static readonly String LmpStop = "Lmp_Stop";//
+        public static readonly String LmpAction = "Lmp_Action";//
+        public static readonly String LmpReset = "Lmp_Reset";//
+        public static readonly String LmpSpot = "Lmp_Spot";//       HOTD4SP
+        public static readonly String LmpFloor = "Lmp_Floor";//
+        public static readonly String LmpError = "Lmp_Error";//
+        public static readonly String LmpSafety = "Lmp_Safety";//
 
         public static readonly String P1_GunMotor = "P1_GunMotor";
         public static readonly String P2_GunMotor = "P2_GunMotor";
@@ -109,6 +115,11 @@ namespace DsCore.MameOutput
         public static readonly String P1_AirRear = "P1_AirRear";
         public static readonly String P2_AirRear = "P2_AirRear";
         public static readonly String Blower_Lvl = "Blower_Lvl";
+
+        public static readonly String P1_Fan = "P1_Fan";
+        public static readonly String P2_Fan = "P2_Fan";
+        public static readonly String VibrationSeat = "VibrationSeat";
+
 
         //Custom Outputs
         public static readonly String P1_CtmLmpStart = "P1_CtmLmpStart";

@@ -39,6 +39,7 @@ namespace DemulShooterX64
                 {"alls","SEGA Amusement Linkage Live System games"},
                 {"es3","Namco ES3 games"},
                 {"flycast","Flycast v2.0"},
+                {"rpcs3", "RPCS3 for System 357"},
                 {"seganu","SEGA Nu games"},
                 {"windows","Windows games"}                
             };
@@ -192,7 +193,7 @@ namespace DemulShooterX64
                                 Console.WriteLine("Unsupported Flycast rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
-                        }
+                        }                        
                         else if (strTarget.Equals("seganu"))
                         {
                             if (!CheckParameter(strRom, _SegaNuRoms))

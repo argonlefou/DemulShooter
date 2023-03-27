@@ -128,6 +128,13 @@ namespace DsCore.Win32
         [DllImport("user32.dll")]
         public static extern bool EnableWindow(IntPtr hWnd, bool enable);
 
+        [DllImport("user32.dll")]
+        public static extern bool EnumThreadWindows(int dwThreadId, EnumThreadDelegate lpfn, IntPtr lParam);
+        public delegate bool EnumThreadDelegate(IntPtr hwnd, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr hWndChildAfter, string className, string windowTitle);
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
@@ -154,6 +161,9 @@ namespace DsCore.Win32
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int GetWindowText(IntPtr Hwnd, StringBuilder lpString, int nMaxCount);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int GetWindowTextLength(IntPtr hWnd);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out UInt32 lpdwProcessId);
