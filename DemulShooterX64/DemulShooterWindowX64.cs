@@ -250,6 +250,7 @@ namespace DemulShooterX64
                     }
                 }
 
+                //SEGA ALLS Games
                 else if (_Target.Equals("alls"))
                 {
                     switch (_Rom.ToLower())
@@ -261,6 +262,7 @@ namespace DemulShooterX64
                     }
                 }
 
+                //NAMCO ES3 Games
                 else if (_Target.Equals("es3"))
                 {
                     switch (_Rom.ToLower())
@@ -272,33 +274,7 @@ namespace DemulShooterX64
                     }
                 }
 
-                else if (_Target.Equals("seganu"))
-                {
-                    switch (_Rom.ToLower())
-                    {
-                        case "lma":
-                            {
-                                _Game = new Game_NuLuigiMansion_v2(_Rom.ToLower(), _NoInput, isVerbose);
-                            }; break;
-                    }
-                }
-
-
-                //Windows games
-                else if (_Target.Equals("windows"))
-                {
-                    switch (_Rom.ToLower())
-                    {
-                        case "bhapc":
-                            {
-                                _Game = new Game_Bhapc(_Rom.ToLower(), _NoInput, isVerbose);
-                            } break;
-                        case "hotdra":
-                            {
-                                _Game = new Game_WndHotdremakeArcade(_Rom.ToLower(), _NoInput, isVerbose);
-                            } break;
-                    }
-                }
+                //Flycast games
                 else if (_Target.Equals("flycast"))
                 {
                     if (_Rom.ToLower().Equals("confmiss") || _Rom.ToLower().StartsWith("deathcox") || _Rom.ToLower().StartsWith("hotd2")
@@ -322,7 +298,49 @@ namespace DemulShooterX64
                     {
                         _Game = new Game_FlycastAtomiswave(_Rom.ToLower(), _NoInput, isVerbose);
                     }
-                   
+                }
+
+                //SEGA NU Games
+                else if (_Target.Equals("seganu"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "lma":
+                            {
+                                _Game = new Game_NuLuigiMansion_v2(_Rom.ToLower(), _NoInput, isVerbose);
+                            }; break;
+                    }
+                }
+
+                //UNIS Games
+                else if (_Target.Equals("unis"))
+                {
+                    if (_Rom.ToLower().Equals("nha"))
+                    {
+                        _Game = new Game_UnisNightHunterArcade(_Rom.ToLower(), _NoInput, isVerbose);
+                    }
+                }
+
+                //Windows games
+                else if (_Target.Equals("windows"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "bhapc":
+                            {
+                                _Game = new Game_Bhapc(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;
+                        case "hotdra":
+                            {
+                                _Game = new Game_WndHotdremakeArcade(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;
+                    }
+                }                
+
+                //Wip Games
+                else if (_Target.Equals("wip"))
+                {
+
                 }
 
                 _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);

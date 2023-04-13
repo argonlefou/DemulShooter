@@ -397,7 +397,7 @@ namespace DemulShooter
                             } break;
                         case "farcry":
                             {
-                                _Game = new Game_GvrFarCryV2(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_GvrFarCry(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
                         case "fearland":
                             {

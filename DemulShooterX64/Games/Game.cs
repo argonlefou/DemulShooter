@@ -375,6 +375,12 @@ namespace DemulShooterX64
                                     this.GetType().GetField(FieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase).SetValue(this, n);
                                     Logger.WriteLog(FieldName + " successfully set to following value : 0x" + n.MemoryOffset.ToString("X8") + "|" + n.Length.ToString());
                                 }
+                                else if (buffer[0].Contains("InjectionStruct"))
+                                {
+                                    InjectionStruct n = new InjectionStruct(buffer[1].Trim());
+                                    this.GetType().GetField(FieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase).SetValue(this, n);
+                                    Logger.WriteLog(FieldName + " successfully set to following value : 0x" + n.InjectionOffset.ToString("X8") + "|" + n.Length.ToString());
+                                }
                                 else if (buffer[0].Contains("DIK"))
                                 {
                                     HardwareScanCode sc = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), buffer[1].Trim());
@@ -504,6 +510,24 @@ namespace DemulShooterX64
             }
             else
                 return false;
+        }
+
+        protected void Write_Codecave(Codecave CodecaveToWrite, InjectionStruct Injection)
+        {
+            UIntPtr bytesWritten = UIntPtr.Zero;
+            List<byte> Buffer = new List<byte>();
+            Buffer.Add(0xFF);
+            Buffer.Add(0x25);
+            Buffer.Add(0x00);
+            Buffer.Add(0x00);
+            Buffer.Add(0x00);
+            Buffer.Add(0x00);
+            Buffer.AddRange(BitConverter.GetBytes(CodecaveToWrite.CaveAddress));
+            for (int i = 0; i < Injection.NeededNops; i++)
+            {
+                Buffer.Add(0x90);
+            }
+            Win32API.WriteProcessMemoryX64(_TargetProcess.Handle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + Injection.InjectionOffset), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
         }
 
         protected void SetNops(IntPtr BaseAddress, NopStruct Nop)

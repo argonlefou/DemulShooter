@@ -91,7 +91,7 @@
     <Compile Include="Games\Game_Dolphin5.cs" />
     <Compile Include="Games\Game_GvrAliens.cs" />
     <Compile Include="Games\Game_GvrAliensHasp.cs" />
-    <Compile Include="Games\Game_GvrFarCryV2.cs" />
+    <Compile Include="Games\Game_GvrFarCry.cs" />
     <Compile Include="Games\Game_GvrFearLand.cs" />
     <Compile Include="Games\Game_WndHeavyFire3Pc.cs" />
     <Compile Include="Games\Game_WndHeavyFire4Pc.cs" />

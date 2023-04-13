@@ -100,6 +100,10 @@ namespace DsCore.MameOutput
         public static readonly String LmpFloor = "Lmp_Floor";//
         public static readonly String LmpError = "Lmp_Error";//
         public static readonly String LmpSafety = "Lmp_Safety";//
+        public static readonly String P1_LedKills1 = "P1_LedKills1";  //
+        public static readonly String P1_LedKills2 = "P1_LedKills2";  //Far Cry Paradise
+        public static readonly String P2_LedKills1 = "P2_LedKills1";  //
+        public static readonly String P2_LedKills2 = "P2_LedKills2";  //
 
         public static readonly String P1_GunMotor = "P1_GunMotor";
         public static readonly String P2_GunMotor = "P2_GunMotor";

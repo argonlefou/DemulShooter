@@ -1,5 +1,4 @@
 ﻿using System;
-using DsCore;
 using System.Globalization;
 
 namespace DsCore.Memory

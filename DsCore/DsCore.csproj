@@ -63,6 +63,7 @@
     <Compile Include="IPC\MappedMemoryFileHelper.cs" />
     <Compile Include="IPC\MappedMemoryFile_Helper_old.cs" />
     <Compile Include="IPC\MMFH_HotdRemakeArcade.cs" />
+    <Compile Include="IPC\MMFH_NightHunterArcade.cs" />
     <Compile Include="IPC\MMFH_RabbidsHollywood.cs" />
     <Compile Include="IPC\MMFH_TombRaider.cs" />
     <Compile Include="IPC\MMF_DataStruct.cs" />
@@ -78,9 +79,11 @@
     <Compile Include="MameOutput\OutputClient.cs" />
     <Compile Include="MameOutput\OutputDataStruct.cs" />
     <Compile Include="MameOutput\OutputDescription.cs" />
+    <Compile Include="MemoryX64\InjectionStruct.cs" />
     <Compile Include="MemoryX64\NopStruct.cs" />
     <Compile Include="Memory\Codecave.cs" />
     <Compile Include="MemoryX64\Codecave.cs" />
+    <Compile Include="Memory\InjectionStruct.cs" />
     <Compile Include="Memory\NopStruct.cs" />
     <Compile Include="RawInput\Hid\HidPButtonCaps.cs" />
     <Compile Include="RawInput\Hid\HidPCaps.cs" />

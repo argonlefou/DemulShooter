@@ -226,7 +226,8 @@ namespace DemulShooterX64
             Logger.WriteLog("Adding P1 Buttons Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X16"));
 
             //Code Injection
-            List<Byte> Buffer = new List<Byte>();IntPtr ProcessHandle = _TargetProcess.Handle;
+            List<Byte> Buffer = new List<Byte>();
+            IntPtr ProcessHandle = _TargetProcess.Handle;
             UIntPtr bytesWritten = UIntPtr.Zero;
             Buffer = new List<byte>();
             Buffer.Add(0xFF);

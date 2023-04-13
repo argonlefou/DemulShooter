@@ -83,7 +83,7 @@ namespace DemulShooter
 
             Dictionary<String, String> _GlobalVrRoms = new Dictionary<String, String>(){
                 {"aliens","Aliens Extermination Dehasped (2nd dump, x86 and x64, no need for VM)"},
-                //{"farcry","Far Cry : Paradise Lost"},
+                {"farcry","Far Cry : Paradise Lost"},
                 {"fearland","Fright Fear Land"}
             };
 
@@ -149,21 +149,6 @@ namespace DemulShooter
                 {"pgbeat", "Project Green Beat"},
                 {"reload","Reload"},
             };
-
-
-
-            /*String[] _Targets = new string[] { "chihiro", "coastal", "demul057", "demul058", "demul07a", "dolphin5", "globalvr", "lindbergh", "model2", "rawthrill", "ringwide", "ttx", "windows", "wip" };
-            String[] _ChihiroRoms = new string[] { "vcop3" };
-            String[] _CoastalRoms = new string[] { "wws" };
-            String[] _DemulRoms = new string[] { "braveff", "claychal", "confmiss", "deathcox", "hotd2", "hotd2o", "hotd2p", "lupinsho", "manicpnc", "mok", "ninjaslt", "ninjaslta", "ninjasltj", "ninjasltu", "pokasuka", "rangrmsn", "sprtshot", "xtrmhunt", "xtrmhnt2" };
-            String[] _GlobalVrRoms = new string[] { "aliens", "farcry", "fearland" };
-            String[] _LindberghRoms = new string[] { "2spicy", "hotd4", "lgj", "lgjsp", "rambo" };
-            String[] _Model2Roms = new string[] { "bel", "gunblade", "hotd", "rchase2", "vcop", "vcop2" };
-            String[] _RawThrillRoms = new string[] { "ts", "aa" };
-            String[] _RingWideRoms = new string[] { "sgg", "lgi", "lgi3d", "og", "sdr", "tha" };
-            String[] _TTXRoms = new string[] { "bkbs", "sha", "eadp", "gattack4", "gsoz", "gsoz2p", "hmuseum", "hmuseum2", "mgungun2" };
-            String[] _WindowsRoms = new string[] { "artdead", "friction", "hfa", "hfa2p", "hfa2p", "hfss", "hfss2p", "hod2pc", "hod3pc", "hodo", "reload" };
-            String[] _WipRoms = new string[] { "bestate", "wartran", "bhapc" };*/
 
             if (args.Length > 0)
             {
@@ -241,7 +226,7 @@ namespace DemulShooter
                         isVerbose = true;
                     }
 
-                    else if (args[i].ToLower().StartsWith("-target"))
+                    else if (args[i].ToLower().StartsWith("-target") && !strTarget.Equals("wip"))
                     {
                         strTarget = (args[i].ToLower().Split('='))[1].Trim();
                         if (!CheckParameter(strTarget, _SystemTargets))

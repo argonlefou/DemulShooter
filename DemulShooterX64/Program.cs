@@ -41,6 +41,7 @@ namespace DemulShooterX64
                 {"flycast","Flycast v2.0"},
                 {"rpcs3", "RPCS3 for System 357"},
                 {"seganu","SEGA Nu games"},
+                {"unis","UNIS Technology"}, 
                 {"windows","Windows games"}                
             };
 
@@ -84,6 +85,10 @@ namespace DemulShooterX64
                 {"lma","Luigi's Mansion Arcade"}
             };
 
+            Dictionary<String, String> _UnisRoms = new Dictionary<String, String>(){
+                {"nha","Night Hunter"}
+            };
+
             Dictionary<String, String> _WindowsRoms = new Dictionary<String, String>(){
                 //{"bha","Buck Hunt Arcade PC"}
                 {"hotdra","House of the Dead Remake - Arcade Mod"}
@@ -124,6 +129,9 @@ namespace DemulShooterX64
                         Console.WriteLine("SEGA Nu roms :");
                         DisplayDictionnaryList(_SegaNuRoms);
                         Console.WriteLine("");
+                        Console.WriteLine("UNIS roms :");
+                        DisplayDictionnaryList(_UnisRoms);
+                        Console.WriteLine("");
                         Console.WriteLine("Windows games :");
                         DisplayDictionnaryList(_WindowsRoms);
                         Console.WriteLine("");
@@ -143,7 +151,7 @@ namespace DemulShooterX64
                     else if (args[i].ToLower().StartsWith("-target"))
                     {
                         strTarget = (args[i].ToLower().Split('='))[1].Trim();
-                        if (!CheckParameter(strTarget, _SystemTargets))
+                        if (!CheckParameter(strTarget, _SystemTargets) && !strTarget.Equals("wip"))
                         {
                             Console.WriteLine("\nUnsupported [target] parameter : \"" + strTarget + "\". See help for supported targets");
                             ExitConsole();
@@ -199,6 +207,14 @@ namespace DemulShooterX64
                             if (!CheckParameter(strRom, _SegaNuRoms))
                             {
                                 Console.WriteLine("Unsupported Saga Nu rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
+                        else if (strTarget.Equals("unis"))
+                        {
+                            if (!CheckParameter(strRom, _UnisRoms))
+                            {
+                                Console.WriteLine("Unsupported UNIS rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
                         }

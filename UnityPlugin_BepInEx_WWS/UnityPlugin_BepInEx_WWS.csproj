@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Demulshooter_Plugin.cs" />
+    <Compile Include="mBaseCom.cs" />
     <Compile Include="mPlayerUIController.cs" />
     <Compile Include="mGameBeginUIController.cs" />
     <Compile Include="mGameStart.cs" />
