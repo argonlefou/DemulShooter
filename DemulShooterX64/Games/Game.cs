@@ -156,7 +156,7 @@ namespace DemulShooterX64
                     }
                 }
             }
-        }  
+        }
 
         #endregion
 

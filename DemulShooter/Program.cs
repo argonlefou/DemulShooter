@@ -226,13 +226,16 @@ namespace DemulShooter
                         isVerbose = true;
                     }
 
-                    else if (args[i].ToLower().StartsWith("-target") && !strTarget.Equals("wip"))
+                    else if (args[i].ToLower().StartsWith("-target"))
                     {
                         strTarget = (args[i].ToLower().Split('='))[1].Trim();
-                        if (!CheckParameter(strTarget, _SystemTargets))
+                        if (strTarget != "wip")
                         {
-                            Console.WriteLine("\n\n\tUnsupported [target] parameter : \"" + strTarget + "\". See help for supported targets");
-                            ExitConsole();
+                            if (!CheckParameter(strTarget, _SystemTargets))
+                            {
+                                Console.WriteLine("\n\n\tUnsupported [target] parameter : \"" + strTarget + "\". See help for supported targets");
+                                ExitConsole();
+                            }
                         }
                     }
                 }

@@ -163,6 +163,16 @@ namespace DemulShooter_GUI
             Logger.WriteLog("Initializing GUI [Rabbids Hollywood] pages...");
             Txt_Rha_GamePath.Text = _Configurator.Rha_Path;
 
+            //Fill RPCS3 Tab
+            Logger.WriteLog("Initializing GUI [RPCS3] pages...");
+            Txt_Rpcs3_P1_Start.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_P1_Start);
+            Txt_Rpcs3_P2_Start.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_P2_Start);
+            Txt_Rpcs3_Service.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_Service);
+            Txt_Rpcs3_Up.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_Up);
+            Txt_Rpcs3_Down.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_Down);
+            Txt_Rpcs3_Enter.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_Enter);
+            Txt_Rpcs3_3D_Switch.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_3D_Switch);
+
             //Fill Output Tab
             Logger.WriteLog("Initializing GUI [Output] pages...");
             Cbox_Outputs.Checked = _Configurator.OutputEnabled;
@@ -887,6 +897,120 @@ namespace DemulShooter_GUI
 
         #endregion
 
+        #region RPCS3 Tab
+
+        private void Btn_Rpcs3_DeadStorm_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                fbd.Description = "Select \"DeadStorm Pirates\" rpcs3-gun.exe folder :";
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && fbd.SelectedPath != string.Empty)
+                {
+                    string CacheFolder = fbd.SelectedPath + @"\cache\SCEEXE000\ppu-obiMX8TqMzUsChXLV1Ln5TAJegSZ-EBOOT.BIN\";
+                    if (!Directory.Exists(CacheFolder))
+                    {
+                        MessageBox.Show("Directory not found :\n " + CacheFolder + "\n\nPlease run the game once before patching the PPU-Cache", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    foreach (FileInfo file in new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + "\\RPCS3\\DeadStorm").GetFiles())
+                    {
+                        Patch_RPCS3_PPU_CacheFile(CacheFolder, file.Name, file);
+                    }
+                }
+            }
+        }
+
+        private void Btn_Rpcs3_DarkEscape_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                fbd.Description = "Select \"Dark Escape\" rpcs3-gun.exe folder :";
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && fbd.SelectedPath != string.Empty)
+                {
+                    string CacheFolder = fbd.SelectedPath + @"\cache\SCEEXE000\ppu-gfm17oJj1cUecjZQ8dVv46oQv2iW-EBOOT.BIN\";
+                    if (!Directory.Exists(CacheFolder))
+                    {
+                        MessageBox.Show("Directory not found :\n " + CacheFolder + "\n\nPlease run the game once before patching the PPU-Cache", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    foreach (FileInfo file in new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + "\\RPCS3\\DarkEscape").GetFiles())
+                    {
+                        Patch_RPCS3_PPU_CacheFile(CacheFolder, file.Name, file);
+                    }
+                }
+            }
+        }
+
+        private void Btn_Rpcs3_SailorZombie_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                fbd.Description = "Select \"Sailor Zombie\" rpcs3-gun.exe folder :";
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && fbd.SelectedPath != string.Empty)
+                {
+                    string CacheFolder = fbd.SelectedPath + @"\cache\SCEEXE000\ppu-se1PtZVS5iF9A6M5Y1vu0wNqiASu-EBOOT.BIN\";
+                    if (!Directory.Exists(CacheFolder))
+                    {
+                        MessageBox.Show("Directory not found :\n " + CacheFolder + "\n\nPlease run the game once before patching the PPU-Cache", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    foreach (FileInfo file in new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + "\\RPCS3\\SailorZombie").GetFiles())
+                    {
+                        Patch_RPCS3_PPU_CacheFile(CacheFolder, file.Name, file);
+                    }
+                }
+            }
+        }
+
+        private void Btn_Rpcs3_RazingStorm_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Txt_Rpcs3_Save_Click(object sender, EventArgs e)
+        {
+            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+                MessageBox.Show("Configuration saved !");
+            else
+                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        
+        private void Patch_RPCS3_PPU_CacheFile(string CacheFolder, string CacheFileName, FileInfo SourceFile)
+        {
+            string CPU_Type = string.Empty;
+            foreach (String sCacheFile in Directory.GetFiles(CacheFolder))
+            {
+                String sCacheFileNameShort = Path.GetFileName(sCacheFile);
+
+                if (sCacheFileNameShort.StartsWith(CacheFileName))
+                {
+                    try
+                    {
+                        SourceFile.CopyTo(sCacheFile, true);
+                        MessageBox.Show("Successfully replaced PPU-Cache file : " + sCacheFile, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error writing PPU-Cache file :" + sCacheFile + "\n\n" + ex.Message.ToString(), this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }                    
+                    return;
+                }
+            }
+            MessageBox.Show("PPU-Cache file not found :\n " + CacheFileName + "\n\nPlease run the game once before patching the PPU-Cache", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        }
+
+        #endregion
+
         #region Outputs tab
 
         private void Cbox_Outputs_CheckedChanged(object sender, EventArgs e)
@@ -1026,6 +1150,20 @@ namespace DemulShooter_GUI
                             _Configurator.DIK_Wws_P2Coin = s.scanCode;
                         else if (_SelectedTextBox == Txt_Wws_Test)
                             _Configurator.DIK_Wws_Test = s.scanCode;
+                        else if (_SelectedTextBox == Txt_Rpcs3_P1_Start)
+                            _Configurator.DIK_Rpcs3_P1_Start = s.scanCode;
+                        else if (_SelectedTextBox == Txt_Rpcs3_P2_Start)
+                            _Configurator.DIK_Rpcs3_P2_Start = s.scanCode;
+                        else if (_SelectedTextBox == Txt_Rpcs3_Service)
+                            _Configurator.DIK_Rpcs3_Service = s.scanCode;
+                        else if (_SelectedTextBox == Txt_Rpcs3_Up)
+                            _Configurator.DIK_Rpcs3_Up = s.scanCode;
+                        else if (_SelectedTextBox == Txt_Rpcs3_Down)
+                            _Configurator.DIK_Rpcs3_Down = s.scanCode;
+                        else if (_SelectedTextBox == Txt_Rpcs3_Enter)
+                            _Configurator.DIK_Rpcs3_Enter = s.scanCode;
+                        else if (_SelectedTextBox == Txt_Rpcs3_3D_Switch)
+                            _Configurator.DIK_Rpcs3_3D_Switch = s.scanCode;
                         
                         _SelectedTextBox = null;
                         _Start_KeyRecord = false;
@@ -1114,6 +1252,8 @@ namespace DemulShooter_GUI
                 return false;
             }
             return true;
-        }                             
+        }
+
+                            
     }        
 }

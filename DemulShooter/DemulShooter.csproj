@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Games\Game_CoastalWws.cs" />
+    <Compile Include="Games\Game_KonamiLethalEnforcer3.cs" />
     <Compile Include="Games\Game_KonamiWartran.cs" />
     <Compile Include="Games\Game_Lindbergh2spicy.cs" />
     <Compile Include="Games\Game_LindberghHotd4Sp.cs" />

@@ -164,6 +164,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\v5-kusa-aQwdyxfu7HwmKZwJpsrgjQ-00001G" />
+    <None Include="Resources\v5-kusa-i7aj8qVvJVSC4AVE3TbxET-00001G" />
+    <None Include="Resources\v5-kusa-Nk1ztL1zd9hqYxZvsSzanK-00001G" />
+    <None Include="Resources\v5-kusa-qkvp7tpoTGacuznXZ31HmQ-00001G" />
+    <None Include="Resources\v5-kusa-RfXcExAKkmrdG4qseqx2b8-00001G" />
+    <None Include="Resources\v5-kusa-rvYuWdKw9d618McpKm75ir-00001G" />
+    <None Include="Resources\v5-kusa-YS0mZH4vvSfUP58FQH907h-00001G" />
     <None Include="Resources\WiimoteNew_v4.ini" />
     <None Include="Resources\WiimoteNew_v5.ini" />
   </ItemGroup>
@@ -182,6 +189,7 @@
     <None Include="bin\Release\m2emulator\artwork\crosshairs\sharps1.png" />
     <None Include="Resources\Crosshair.cur" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

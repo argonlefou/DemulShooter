@@ -300,6 +300,26 @@ namespace DemulShooterX64
                     }
                 }
 
+
+                else if (_Target.Equals("rpcs3"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "deadstorm":
+                            {
+                                _Game = new Game_S357DeadStormPirates(_Rom.ToLower(), _Configurator, _NoInput, isVerbose);
+                            }; break;
+                        case "de4d":
+                            {
+                                _Game = new Game_S357DarkEscape(_Rom.ToLower(), _Configurator, _NoInput, isVerbose);
+                            }; break;
+                        case "sailorz":
+                            {
+                                _Game = new Game_S357SailorZombie(_Rom.ToLower(), _Configurator, _NoInput, isVerbose);
+                            }; break;
+                    }
+                }
+
                 //SEGA NU Games
                 else if (_Target.Equals("seganu"))
                 {

@@ -39,7 +39,7 @@ namespace DemulShooterX64
                 {"alls","SEGA Amusement Linkage Live System games"},
                 {"es3","Namco ES3 games"},
                 {"flycast","Flycast v2.0"},
-                {"rpcs3", "RPCS3 for System 357"},
+                {"rpcs3", "RPCS3 (System 357)"},
                 {"seganu","SEGA Nu games"},
                 {"unis","UNIS Technology"}, 
                 {"windows","Windows games"}                
@@ -79,6 +79,12 @@ namespace DemulShooterX64
                 {"sprtshot","Sports Shooting USA"},
                 {"xtrmhunt","Extreme Hunting"},
                 {"xtrmhnt2","Extreme Hunting 2"}
+            };
+
+            Dictionary<String, String> _RPCS3_System357Roms = new Dictionary<String, String>(){
+                {"deadstorm","Dead Storm Pirates"},
+                {"de4d","Dark Escape 4D"},
+                {"sailorz","Sailor Zombies"}
             };
 
             Dictionary<String, String> _SegaNuRoms = new Dictionary<String, String>(){
@@ -126,8 +132,11 @@ namespace DemulShooterX64
                         Console.WriteLine("Flycast roms :");
                         DisplayDictionnaryList(_FlycastRoms);
                         Console.WriteLine("");
+                        Console.WriteLine("RPCS3 (System 357) roms :");
+                        DisplayDictionnaryList(_RPCS3_System357Roms);
+                        Console.WriteLine("");
                         Console.WriteLine("SEGA Nu roms :");
-                        DisplayDictionnaryList(_SegaNuRoms);
+                        DisplayDictionnaryList(_SegaNuRoms);                        
                         Console.WriteLine("");
                         Console.WriteLine("UNIS roms :");
                         DisplayDictionnaryList(_UnisRoms);
@@ -201,7 +210,15 @@ namespace DemulShooterX64
                                 Console.WriteLine("Unsupported Flycast rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
-                        }                        
+                        }
+                        else if (strTarget.Equals("rpcs3"))
+                        {
+                            if (!CheckParameter(strRom, _RPCS3_System357Roms))
+                            {
+                                Console.WriteLine("Unsupported RPCS3 rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }  
                         else if (strTarget.Equals("seganu"))
                         {
                             if (!CheckParameter(strRom, _SegaNuRoms))

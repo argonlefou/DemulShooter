@@ -225,6 +225,52 @@ namespace DsCore.Config
         }
         #endregion
 
+        //RPCS3 Settings (only for System 357)
+        private HardwareScanCode _DIK_Rpcs3_P1_Start = HardwareScanCode.DIK_1;
+        private HardwareScanCode _DIK_Rpcs3_P2_Start = HardwareScanCode.DIK_2;
+        private HardwareScanCode _DIK_Rpcs3_Service = HardwareScanCode.DIK_0;
+        private HardwareScanCode _DIK_Rpcs3_Up = HardwareScanCode.DIK_NUMPAD8;    //Scancodes for Up and Down arrows are the one of Numpad Arrows (bug in my side ??)
+        private HardwareScanCode _DIK_Rpcs3_Down = HardwareScanCode.DIK_NUMPAD2;
+        private HardwareScanCode _DIK_Rpcs3_Enter = HardwareScanCode.DIK_8;
+        private HardwareScanCode _DIK_Rpcs3_3D_Switch = HardwareScanCode.DIK_SPACE;     //Only for Dark Escape 4D
+        #region Accessors
+        public HardwareScanCode DIK_Rpcs3_P1_Start
+        {
+            get { return _DIK_Rpcs3_P1_Start; }
+            set { _DIK_Rpcs3_P1_Start = value; }
+        }
+        public HardwareScanCode DIK_Rpcs3_P2_Start
+        {
+            get { return _DIK_Rpcs3_P2_Start; }
+            set { _DIK_Rpcs3_P2_Start = value; }
+        }
+        public HardwareScanCode DIK_Rpcs3_Service
+        {
+            get { return _DIK_Rpcs3_Service; }
+            set { _DIK_Rpcs3_Service = value; }
+        }
+        public HardwareScanCode DIK_Rpcs3_Up
+        {
+            get { return _DIK_Rpcs3_Up; }
+            set { _DIK_Rpcs3_Up = value; }
+        }
+        public HardwareScanCode DIK_Rpcs3_Down
+        {
+            get { return _DIK_Rpcs3_Down; }
+            set { _DIK_Rpcs3_Down = value; }
+        }
+        public HardwareScanCode DIK_Rpcs3_Enter
+        {
+            get { return _DIK_Rpcs3_Enter; }
+            set { _DIK_Rpcs3_Enter = value; }
+        }
+        public HardwareScanCode DIK_Rpcs3_3D_Switch
+        {
+            get { return _DIK_Rpcs3_3D_Switch; }
+            set { _DIK_Rpcs3_3D_Switch = value; }
+        }
+        #endregion
+
         //Specific setting for Operation Ghost CREDITS (the game is not using the E2PROM file at launch)
         //And Game Test options are available in gs2.ini config file
         private bool _OpGHost_EnableFreeplay = false;
@@ -517,6 +563,63 @@ namespace DsCore.Config
                                     if (!int.TryParse(StrValue, out _OpGhost_CoinsByCredits))
                                         Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
+
+                                else if (StrKey.ToLower().Equals("rpcs3_p1_start"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Rpcs3_P1_Start = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("rpcs3_p2_start"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Rpcs3_P2_Start = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("rpcs3_service"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Rpcs3_Service = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("rpcs3_up"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Rpcs3_Up = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("rpcs3_down"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Rpcs3_Down = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("rpcs3_enter"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Rpcs3_Enter = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("rpcs3_3d"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Rpcs3_3D_Switch = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
                                 else if (StrKey.ToLower().Equals("outputenabled"))
                                 {
                                     if (!bool.TryParse(StrValue, out _OutputEnabled))
@@ -710,7 +813,16 @@ namespace DsCore.Config
                     sr.WriteLine("OpGhost_CreditsToStart = " + _OpGhost_CreditsToStart.ToString());
                     sr.WriteLine("OpGhost_CreditsToContinue = " + _OpGhost_CreditsToContinue.ToString());
                     sr.WriteLine("OpGhost_CoinsByCredits = " + _OpGhost_CoinsByCredits.ToString());
-                    sr.WriteLine("");   
+                    sr.WriteLine("");
+                    sr.WriteLine(";RPCS3 Keys (System 357 only)");
+                    sr.WriteLine("RPCS3_P1_START = " + _DIK_Rpcs3_P1_Start.ToString());
+                    sr.WriteLine("RPCS3_P2_START = " + _DIK_Rpcs3_P2_Start.ToString());
+                    sr.WriteLine("RPCS3_SERVICE = " + _DIK_Rpcs3_Service.ToString());
+                    sr.WriteLine("RPCS3_UP = " + _DIK_Rpcs3_Up.ToString());
+                    sr.WriteLine("RPCS3_DOWN = " + _DIK_Rpcs3_Down.ToString());
+                    sr.WriteLine("RPCS3_ENTER = " + _DIK_Rpcs3_Enter.ToString());
+                    sr.WriteLine("RPCS3_3D = " + _DIK_Rpcs3_3D_Switch.ToString());
+                    sr.WriteLine(""); 
                     sr.WriteLine(";Output Settings");
                     sr.WriteLine("OutputEnabled = " + _OutputEnabled.ToString());
                     sr.WriteLine("OutputPollingDelay = " + _OutputPollingDelay.ToString());

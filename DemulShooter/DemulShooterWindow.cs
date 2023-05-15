@@ -643,6 +643,10 @@ namespace DemulShooter
                             {
                                 _Game = new Game_WndWartran(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
+                        case "le3":
+                            {
+                                _Game = new Game_KonamiLethalEnforcer3(_Rom.ToLower(), _NoInput, isVerbose);
+                            }break;
                     }
                 }
 

@@ -63,35 +63,9 @@
             this.Txt_ActLabs_X1 = new System.Windows.Forms.TextBox();
             this.Cb_ActLabsOffset = new System.Windows.Forms.CheckBox();
             this.label15 = new System.Windows.Forms.Label();
-            this.Tab_M2 = new System.Windows.Forms.TabPage();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.Cbox_M2_Flash = new System.Windows.Forms.CheckBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.TXT_CH_P1 = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.TXT_CH_P2 = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.TXT_CH_VIS = new System.Windows.Forms.TextBox();
-            this.Btn_M2Scripts = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.Tab_SHA = new System.Windows.Forms.TabPage();
-            this.label35 = new System.Windows.Forms.Label();
-            this.TXT_P1_S = new System.Windows.Forms.TextBox();
-            this.TXT_P1_T = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.TXT_SERVICE = new System.Windows.Forms.TextBox();
-            this.Save_Sha_Keys = new System.Windows.Forms.Button();
-            this.label7 = new System.Windows.Forms.Label();
-            this.TXT_EXIT = new System.Windows.Forms.TextBox();
-            this.TXT_TEST = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.TXT_P2_S = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.TXT_P2_T = new System.Windows.Forms.TextBox();
+            this.Tab_Dolphin = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.Btn_Dolphin5 = new System.Windows.Forms.Button();
             this.Tab_GSOZ = new System.Windows.Forms.TabPage();
             this.Btn_Save_Gsoz = new System.Windows.Forms.Button();
             this.label34 = new System.Windows.Forms.Label();
@@ -103,9 +77,6 @@
             this.label9 = new System.Windows.Forms.Label();
             this.TXT_GSOZ_PEDAL_1 = new System.Windows.Forms.TextBox();
             this.Chk_GundamP1Pedal = new System.Windows.Forms.CheckBox();
-            this.Tab_Dolphin = new System.Windows.Forms.TabPage();
-            this.label2 = new System.Windows.Forms.Label();
-            this.Btn_Dolphin5 = new System.Windows.Forms.Button();
             this.Tab_HeavyFire3 = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.Lbl_HFA_Command = new System.Windows.Forms.Label();
@@ -133,6 +104,63 @@
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.Btn_HF4_Install = new System.Windows.Forms.Button();
             this.label46 = new System.Windows.Forms.Label();
+            this.Tab_M2 = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.Cbox_M2_Flash = new System.Windows.Forms.CheckBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.TXT_CH_P1 = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.TXT_CH_P2 = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.TXT_CH_VIS = new System.Windows.Forms.TextBox();
+            this.Btn_M2Scripts = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.Tab_RabbidsHollywod = new System.Windows.Forms.TabPage();
+            this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.label36 = new System.Windows.Forms.Label();
+            this.Btn_Rha_GamePath = new System.Windows.Forms.Button();
+            this.Btn_Rha_InstallUnity = new System.Windows.Forms.Button();
+            this.Txt_Rha_GamePath = new System.Windows.Forms.TextBox();
+            this.Tab_RPCS3 = new System.Windows.Forms.TabPage();
+            this.Txt_Rpcs3_Save = new System.Windows.Forms.Button();
+            this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.Btn_Rpcs3_RazingStorm = new System.Windows.Forms.Button();
+            this.Btn_Rpcs3_SailorZombies = new System.Windows.Forms.Button();
+            this.Btn_Rpcs3_DarkEscape = new System.Windows.Forms.Button();
+            this.Btn_Rpcs3_DeadStorm = new System.Windows.Forms.Button();
+            this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.Txt_Rpcs3_P1_Start = new System.Windows.Forms.TextBox();
+            this.Txt_Rpcs3_Service = new System.Windows.Forms.TextBox();
+            this.Txt_Rpcs3_P2_Start = new System.Windows.Forms.TextBox();
+            this.label56 = new System.Windows.Forms.Label();
+            this.label38 = new System.Windows.Forms.Label();
+            this.label55 = new System.Windows.Forms.Label();
+            this.Txt_Rpcs3_Enter = new System.Windows.Forms.TextBox();
+            this.Txt_Rpcs3_3D_Switch = new System.Windows.Forms.TextBox();
+            this.label54 = new System.Windows.Forms.Label();
+            this.label51 = new System.Windows.Forms.Label();
+            this.label53 = new System.Windows.Forms.Label();
+            this.Txt_Rpcs3_Up = new System.Windows.Forms.TextBox();
+            this.label52 = new System.Windows.Forms.Label();
+            this.Txt_Rpcs3_Down = new System.Windows.Forms.TextBox();
+            this.Tab_SHA = new System.Windows.Forms.TabPage();
+            this.label35 = new System.Windows.Forms.Label();
+            this.TXT_P1_S = new System.Windows.Forms.TextBox();
+            this.TXT_P1_T = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.TXT_SERVICE = new System.Windows.Forms.TextBox();
+            this.Save_Sha_Keys = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.TXT_EXIT = new System.Windows.Forms.TextBox();
+            this.TXT_TEST = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.TXT_P2_S = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.TXT_P2_T = new System.Windows.Forms.TextBox();
             this.Tab_WildWest = new System.Windows.Forms.TabPage();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.Btn_Wws_SaveKeys = new System.Windows.Forms.Button();
@@ -148,12 +176,6 @@
             this.Btn_Wws_GamePath = new System.Windows.Forms.Button();
             this.Btn_Wws_InstallUnity = new System.Windows.Forms.Button();
             this.Txt_Wws_GamePath = new System.Windows.Forms.TextBox();
-            this.Tab_RabbidsHollywod = new System.Windows.Forms.TabPage();
-            this.groupBox11 = new System.Windows.Forms.GroupBox();
-            this.label36 = new System.Windows.Forms.Label();
-            this.Btn_Rha_GamePath = new System.Windows.Forms.Button();
-            this.Btn_Rha_InstallUnity = new System.Windows.Forms.Button();
-            this.Txt_Rha_GamePath = new System.Windows.Forms.TextBox();
             this.Tab_Outputs = new System.Windows.Forms.TabPage();
             this.Btn_SaveOutput = new System.Windows.Forms.Button();
             this.Grp_Outputs = new System.Windows.Forms.GroupBox();
@@ -175,6 +197,9 @@
             this.Bgw_XInput = new System.ComponentModel.BackgroundWorker();
             this.Cbo_PageSettings = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
+            this.label37 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label57 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.Tab_P1.SuspendLayout();
             this.Tab_P2.SuspendLayout();
@@ -183,13 +208,10 @@
             this.Tab_AnalogCalib.SuspendLayout();
             this.Tab_ActLAbs.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.Tab_M2.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.Tab_SHA.SuspendLayout();
+            this.Tab_Dolphin.SuspendLayout();
             this.Tab_GSOZ.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
-            this.Tab_Dolphin.SuspendLayout();
             this.Tab_HeavyFire3.SuspendLayout();
             this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TrackBar_HF3_Cover)).BeginInit();
@@ -198,11 +220,17 @@
             this.groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TrackBar_HF4_Cover)).BeginInit();
             this.groupBox9.SuspendLayout();
+            this.Tab_M2.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.Tab_RabbidsHollywod.SuspendLayout();
+            this.groupBox11.SuspendLayout();
+            this.Tab_RPCS3.SuspendLayout();
+            this.groupBox13.SuspendLayout();
+            this.groupBox12.SuspendLayout();
+            this.Tab_SHA.SuspendLayout();
             this.Tab_WildWest.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.Tab_RabbidsHollywod.SuspendLayout();
-            this.groupBox11.SuspendLayout();
             this.Tab_Outputs.SuspendLayout();
             this.Grp_Outputs.SuspendLayout();
             this.SuspendLayout();
@@ -228,14 +256,15 @@
             this.tabControl1.Controls.Add(this.Tab_P4);
             this.tabControl1.Controls.Add(this.Tab_AnalogCalib);
             this.tabControl1.Controls.Add(this.Tab_ActLAbs);
-            this.tabControl1.Controls.Add(this.Tab_M2);
-            this.tabControl1.Controls.Add(this.Tab_SHA);
-            this.tabControl1.Controls.Add(this.Tab_GSOZ);
             this.tabControl1.Controls.Add(this.Tab_Dolphin);
+            this.tabControl1.Controls.Add(this.Tab_GSOZ);
             this.tabControl1.Controls.Add(this.Tab_HeavyFire3);
             this.tabControl1.Controls.Add(this.Tab_HeavyFire4);
-            this.tabControl1.Controls.Add(this.Tab_WildWest);
+            this.tabControl1.Controls.Add(this.Tab_M2);
             this.tabControl1.Controls.Add(this.Tab_RabbidsHollywod);
+            this.tabControl1.Controls.Add(this.Tab_RPCS3);
+            this.tabControl1.Controls.Add(this.Tab_SHA);
+            this.tabControl1.Controls.Add(this.Tab_WildWest);
             this.tabControl1.Controls.Add(this.Tab_Outputs);
             this.tabControl1.ItemSize = new System.Drawing.Size(0, 1);
             this.tabControl1.Location = new System.Drawing.Point(2, 47);
@@ -619,348 +648,42 @@
             this.label15.TabIndex = 52;
             this.label15.Text = resources.GetString("label15.Text");
             // 
-            // Tab_M2
+            // Tab_Dolphin
             // 
-            this.Tab_M2.BackColor = System.Drawing.SystemColors.Control;
-            this.Tab_M2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Tab_M2.Controls.Add(this.groupBox2);
-            this.Tab_M2.Controls.Add(this.Btn_M2Scripts);
-            this.Tab_M2.Controls.Add(this.label1);
-            this.Tab_M2.Location = new System.Drawing.Point(4, 5);
-            this.Tab_M2.Name = "Tab_M2";
-            this.Tab_M2.Padding = new System.Windows.Forms.Padding(3);
-            this.Tab_M2.Size = new System.Drawing.Size(581, 334);
-            this.Tab_M2.TabIndex = 5;
-            this.Tab_M2.Text = "m2emulator";
+            this.Tab_Dolphin.BackColor = System.Drawing.SystemColors.Control;
+            this.Tab_Dolphin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_Dolphin.Controls.Add(this.label2);
+            this.Tab_Dolphin.Controls.Add(this.Btn_Dolphin5);
+            this.Tab_Dolphin.Location = new System.Drawing.Point(4, 5);
+            this.Tab_Dolphin.Name = "Tab_Dolphin";
+            this.Tab_Dolphin.Padding = new System.Windows.Forms.Padding(3);
+            this.Tab_Dolphin.Size = new System.Drawing.Size(581, 334);
+            this.Tab_Dolphin.TabIndex = 4;
+            this.Tab_Dolphin.Text = "Dolphin";
             // 
-            // groupBox2
+            // label2
             // 
-            this.groupBox2.Controls.Add(this.panel1);
-            this.groupBox2.Controls.Add(this.Cbox_M2_Flash);
-            this.groupBox2.Controls.Add(this.label14);
-            this.groupBox2.Controls.Add(this.TXT_CH_P1);
-            this.groupBox2.Controls.Add(this.label13);
-            this.groupBox2.Controls.Add(this.TXT_CH_P2);
-            this.groupBox2.Controls.Add(this.label11);
-            this.groupBox2.Controls.Add(this.TXT_CH_VIS);
-            this.groupBox2.Location = new System.Drawing.Point(9, 105);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(568, 120);
-            this.groupBox2.TabIndex = 59;
-            this.groupBox2.TabStop = false;
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(15, 13);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(320, 60);
+            this.label2.TabIndex = 50;
+            this.label2.Text = "Click the button to copy the file \"WiimoteNew.ini\" to \r\n\"MyDocuments\\Dolphin Emul" +
+                "ator\\Config\\WiimoteNew.ini\"\r\n\r\nExisting file will be backed-up and overwritten !" +
+                "";
             // 
-            // panel1
+            // Btn_Dolphin5
             // 
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel1.Location = new System.Drawing.Point(282, 14);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(4, 100);
-            this.panel1.TabIndex = 60;
-            // 
-            // Cbox_M2_Flash
-            // 
-            this.Cbox_M2_Flash.AutoSize = true;
-            this.Cbox_M2_Flash.Checked = true;
-            this.Cbox_M2_Flash.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.Cbox_M2_Flash.Location = new System.Drawing.Point(333, 59);
-            this.Cbox_M2_Flash.Name = "Cbox_M2_Flash";
-            this.Cbox_M2_Flash.Size = new System.Drawing.Size(192, 20);
-            this.Cbox_M2_Flash.TabIndex = 59;
-            this.Cbox_M2_Flash.Text = "Disable white flash on shoot";
-            this.Cbox_M2_Flash.UseVisualStyleBackColor = true;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(14, 87);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(109, 15);
-            this.label14.TabIndex = 58;
-            this.label14.Text = "Crosshair visibility :";
-            // 
-            // TXT_CH_P1
-            // 
-            this.TXT_CH_P1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_CH_P1.Location = new System.Drawing.Point(145, 30);
-            this.TXT_CH_P1.Name = "TXT_CH_P1";
-            this.TXT_CH_P1.ReadOnly = true;
-            this.TXT_CH_P1.Size = new System.Drawing.Size(100, 22);
-            this.TXT_CH_P1.TabIndex = 53;
-            this.TXT_CH_P1.Text = "7";
-            this.TXT_CH_P1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_CH_P1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(14, 59);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(125, 15);
-            this.label13.TabIndex = 57;
-            this.label13.Text = "P2 change crosshair :";
-            // 
-            // TXT_CH_P2
-            // 
-            this.TXT_CH_P2.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_CH_P2.Location = new System.Drawing.Point(145, 56);
-            this.TXT_CH_P2.Name = "TXT_CH_P2";
-            this.TXT_CH_P2.ReadOnly = true;
-            this.TXT_CH_P2.Size = new System.Drawing.Size(100, 22);
-            this.TXT_CH_P2.TabIndex = 54;
-            this.TXT_CH_P2.Text = "8";
-            this.TXT_CH_P2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_CH_P2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(14, 33);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(125, 15);
-            this.label11.TabIndex = 56;
-            this.label11.Text = "P1 change crosshair :";
-            // 
-            // TXT_CH_VIS
-            // 
-            this.TXT_CH_VIS.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_CH_VIS.Location = new System.Drawing.Point(145, 84);
-            this.TXT_CH_VIS.Name = "TXT_CH_VIS";
-            this.TXT_CH_VIS.ReadOnly = true;
-            this.TXT_CH_VIS.Size = new System.Drawing.Size(100, 22);
-            this.TXT_CH_VIS.TabIndex = 55;
-            this.TXT_CH_VIS.Text = "9";
-            this.TXT_CH_VIS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_CH_VIS.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // Btn_M2Scripts
-            // 
-            this.Btn_M2Scripts.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Btn_M2Scripts.Location = new System.Drawing.Point(191, 249);
-            this.Btn_M2Scripts.Margin = new System.Windows.Forms.Padding(4);
-            this.Btn_M2Scripts.Name = "Btn_M2Scripts";
-            this.Btn_M2Scripts.Size = new System.Drawing.Size(202, 57);
-            this.Btn_M2Scripts.TabIndex = 52;
-            this.Btn_M2Scripts.Text = "Install m2emulator crosshair scripts";
-            this.Btn_M2Scripts.UseVisualStyleBackColor = true;
-            this.Btn_M2Scripts.Click += new System.EventHandler(this.Btn_M2Scripts_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(15, 13);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(309, 75);
-            this.label1.TabIndex = 51;
-            this.label1.Text = "Click the button to install lua scripts for custom crosshair\r\nin nebula Model2 Em" +
-                "ulator.\r\nYou will be asked for the emulator .exe location\r\n\r\nExisting files will" +
-                " be overwritten !";
-            // 
-            // Tab_SHA
-            // 
-            this.Tab_SHA.BackColor = System.Drawing.SystemColors.Control;
-            this.Tab_SHA.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Tab_SHA.Controls.Add(this.label35);
-            this.Tab_SHA.Controls.Add(this.TXT_P1_S);
-            this.Tab_SHA.Controls.Add(this.TXT_P1_T);
-            this.Tab_SHA.Controls.Add(this.label8);
-            this.Tab_SHA.Controls.Add(this.TXT_SERVICE);
-            this.Tab_SHA.Controls.Add(this.Save_Sha_Keys);
-            this.Tab_SHA.Controls.Add(this.label7);
-            this.Tab_SHA.Controls.Add(this.TXT_EXIT);
-            this.Tab_SHA.Controls.Add(this.TXT_TEST);
-            this.Tab_SHA.Controls.Add(this.label12);
-            this.Tab_SHA.Controls.Add(this.label6);
-            this.Tab_SHA.Controls.Add(this.label5);
-            this.Tab_SHA.Controls.Add(this.TXT_P2_S);
-            this.Tab_SHA.Controls.Add(this.label3);
-            this.Tab_SHA.Controls.Add(this.label4);
-            this.Tab_SHA.Controls.Add(this.TXT_P2_T);
-            this.Tab_SHA.Location = new System.Drawing.Point(4, 5);
-            this.Tab_SHA.Margin = new System.Windows.Forms.Padding(4);
-            this.Tab_SHA.Name = "Tab_SHA";
-            this.Tab_SHA.Padding = new System.Windows.Forms.Padding(4);
-            this.Tab_SHA.Size = new System.Drawing.Size(581, 334);
-            this.Tab_SHA.TabIndex = 2;
-            this.Tab_SHA.Text = "Silent Hill the Arcade";
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(16, 14);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(371, 16);
-            this.label35.TabIndex = 52;
-            this.label35.Text = "To set a key, click a box then push the key on your keyboard :";
-            // 
-            // TXT_P1_S
-            // 
-            this.TXT_P1_S.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_P1_S.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TXT_P1_S.Location = new System.Drawing.Point(86, 48);
-            this.TXT_P1_S.Name = "TXT_P1_S";
-            this.TXT_P1_S.ReadOnly = true;
-            this.TXT_P1_S.Size = new System.Drawing.Size(127, 21);
-            this.TXT_P1_S.TabIndex = 0;
-            this.TXT_P1_S.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_P1_S.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // TXT_P1_T
-            // 
-            this.TXT_P1_T.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_P1_T.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TXT_P1_T.Location = new System.Drawing.Point(86, 80);
-            this.TXT_P1_T.Name = "TXT_P1_T";
-            this.TXT_P1_T.ReadOnly = true;
-            this.TXT_P1_T.Size = new System.Drawing.Size(127, 21);
-            this.TXT_P1_T.TabIndex = 1;
-            this.TXT_P1_T.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_P1_T.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(305, 112);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(64, 15);
-            this.label8.TabIndex = 47;
-            this.label8.Text = "SERVICE :";
-            // 
-            // TXT_SERVICE
-            // 
-            this.TXT_SERVICE.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_SERVICE.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TXT_SERVICE.Location = new System.Drawing.Point(378, 109);
-            this.TXT_SERVICE.Name = "TXT_SERVICE";
-            this.TXT_SERVICE.ReadOnly = true;
-            this.TXT_SERVICE.Size = new System.Drawing.Size(128, 21);
-            this.TXT_SERVICE.TabIndex = 3;
-            this.TXT_SERVICE.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_SERVICE.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // Save_Sha_Keys
-            // 
-            this.Save_Sha_Keys.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.Save_Sha_Keys.Location = new System.Drawing.Point(180, 242);
-            this.Save_Sha_Keys.Margin = new System.Windows.Forms.Padding(4);
-            this.Save_Sha_Keys.Name = "Save_Sha_Keys";
-            this.Save_Sha_Keys.Size = new System.Drawing.Size(207, 47);
-            this.Save_Sha_Keys.TabIndex = 48;
-            this.Save_Sha_Keys.Text = "Save Key config";
-            this.Save_Sha_Keys.UseVisualStyleBackColor = true;
-            this.Save_Sha_Keys.Click += new System.EventHandler(this.Save_Sha_Keys_Click);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(305, 80);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(43, 15);
-            this.label7.TabIndex = 46;
-            this.label7.Text = "TEST :";
-            // 
-            // TXT_EXIT
-            // 
-            this.TXT_EXIT.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_EXIT.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TXT_EXIT.Location = new System.Drawing.Point(379, 45);
-            this.TXT_EXIT.Name = "TXT_EXIT";
-            this.TXT_EXIT.ReadOnly = true;
-            this.TXT_EXIT.Size = new System.Drawing.Size(127, 21);
-            this.TXT_EXIT.TabIndex = 40;
-            this.TXT_EXIT.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_EXIT.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // TXT_TEST
-            // 
-            this.TXT_TEST.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_TEST.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TXT_TEST.Location = new System.Drawing.Point(378, 77);
-            this.TXT_TEST.Name = "TXT_TEST";
-            this.TXT_TEST.ReadOnly = true;
-            this.TXT_TEST.Size = new System.Drawing.Size(128, 21);
-            this.TXT_TEST.TabIndex = 4;
-            this.TXT_TEST.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_TEST.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(12, 83);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(70, 15);
-            this.label12.TabIndex = 42;
-            this.label12.Text = "P1 Trigger :";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(305, 48);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(39, 15);
-            this.label6.TabIndex = 45;
-            this.label6.Text = "EXIT :";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(12, 51);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(56, 15);
-            this.label5.TabIndex = 9;
-            this.label5.Text = "P1 Start :";
-            // 
-            // TXT_P2_S
-            // 
-            this.TXT_P2_S.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_P2_S.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TXT_P2_S.Location = new System.Drawing.Point(86, 112);
-            this.TXT_P2_S.Name = "TXT_P2_S";
-            this.TXT_P2_S.ReadOnly = true;
-            this.TXT_P2_S.Size = new System.Drawing.Size(127, 21);
-            this.TXT_P2_S.TabIndex = 5;
-            this.TXT_P2_S.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_P2_S.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(12, 115);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 15);
-            this.label3.TabIndex = 43;
-            this.label3.Text = "P2 Start :";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(12, 146);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(70, 15);
-            this.label4.TabIndex = 44;
-            this.label4.Text = "P2 Trigger :";
-            // 
-            // TXT_P2_T
-            // 
-            this.TXT_P2_T.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_P2_T.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TXT_P2_T.Location = new System.Drawing.Point(86, 144);
-            this.TXT_P2_T.Name = "TXT_P2_T";
-            this.TXT_P2_T.ReadOnly = true;
-            this.TXT_P2_T.Size = new System.Drawing.Size(127, 21);
-            this.TXT_P2_T.TabIndex = 6;
-            this.TXT_P2_T.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_P2_T.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            this.Btn_Dolphin5.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Btn_Dolphin5.Location = new System.Drawing.Point(147, 203);
+            this.Btn_Dolphin5.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_Dolphin5.Name = "Btn_Dolphin5";
+            this.Btn_Dolphin5.Size = new System.Drawing.Size(307, 46);
+            this.Btn_Dolphin5.TabIndex = 49;
+            this.Btn_Dolphin5.Text = "Install Wiimote configuration";
+            this.Btn_Dolphin5.UseVisualStyleBackColor = true;
+            this.Btn_Dolphin5.Click += new System.EventHandler(this.Btn_Dolphin5_Click);
             // 
             // Tab_GSOZ
             // 
@@ -1086,43 +809,6 @@
             this.Chk_GundamP1Pedal.Text = "Enable \"Pedal-Mode\"";
             this.Chk_GundamP1Pedal.UseVisualStyleBackColor = true;
             this.Chk_GundamP1Pedal.CheckedChanged += new System.EventHandler(this.Chk_GundamP1Pedal_CheckedChanged);
-            // 
-            // Tab_Dolphin
-            // 
-            this.Tab_Dolphin.BackColor = System.Drawing.SystemColors.Control;
-            this.Tab_Dolphin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Tab_Dolphin.Controls.Add(this.label2);
-            this.Tab_Dolphin.Controls.Add(this.Btn_Dolphin5);
-            this.Tab_Dolphin.Location = new System.Drawing.Point(4, 5);
-            this.Tab_Dolphin.Name = "Tab_Dolphin";
-            this.Tab_Dolphin.Padding = new System.Windows.Forms.Padding(3);
-            this.Tab_Dolphin.Size = new System.Drawing.Size(581, 334);
-            this.Tab_Dolphin.TabIndex = 4;
-            this.Tab_Dolphin.Text = "Dolphin";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(15, 13);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(320, 60);
-            this.label2.TabIndex = 50;
-            this.label2.Text = "Click the button to copy the file \"WiimoteNew.ini\" to \r\n\"MyDocuments\\Dolphin Emul" +
-                "ator\\Config\\WiimoteNew.ini\"\r\n\r\nExisting file will be backed-up and overwritten !" +
-                "";
-            // 
-            // Btn_Dolphin5
-            // 
-            this.Btn_Dolphin5.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.Btn_Dolphin5.Location = new System.Drawing.Point(147, 203);
-            this.Btn_Dolphin5.Margin = new System.Windows.Forms.Padding(4);
-            this.Btn_Dolphin5.Name = "Btn_Dolphin5";
-            this.Btn_Dolphin5.Size = new System.Drawing.Size(307, 46);
-            this.Btn_Dolphin5.TabIndex = 49;
-            this.Btn_Dolphin5.Text = "Install Wiimote configuration";
-            this.Btn_Dolphin5.UseVisualStyleBackColor = true;
-            this.Btn_Dolphin5.Click += new System.EventHandler(this.Btn_Dolphin5_Click);
             // 
             // Tab_HeavyFire3
             // 
@@ -1409,6 +1095,670 @@
             this.label46.Text = "Click this button to install needed Dinput and Xinput dll into the game\'s folder." +
                 "";
             // 
+            // Tab_M2
+            // 
+            this.Tab_M2.BackColor = System.Drawing.SystemColors.Control;
+            this.Tab_M2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_M2.Controls.Add(this.groupBox2);
+            this.Tab_M2.Controls.Add(this.Btn_M2Scripts);
+            this.Tab_M2.Controls.Add(this.label1);
+            this.Tab_M2.Location = new System.Drawing.Point(4, 5);
+            this.Tab_M2.Name = "Tab_M2";
+            this.Tab_M2.Padding = new System.Windows.Forms.Padding(3);
+            this.Tab_M2.Size = new System.Drawing.Size(581, 334);
+            this.Tab_M2.TabIndex = 5;
+            this.Tab_M2.Text = "m2emulator";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.panel1);
+            this.groupBox2.Controls.Add(this.Cbox_M2_Flash);
+            this.groupBox2.Controls.Add(this.label14);
+            this.groupBox2.Controls.Add(this.TXT_CH_P1);
+            this.groupBox2.Controls.Add(this.label13);
+            this.groupBox2.Controls.Add(this.TXT_CH_P2);
+            this.groupBox2.Controls.Add(this.label11);
+            this.groupBox2.Controls.Add(this.TXT_CH_VIS);
+            this.groupBox2.Location = new System.Drawing.Point(9, 105);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(568, 120);
+            this.groupBox2.TabIndex = 59;
+            this.groupBox2.TabStop = false;
+            // 
+            // panel1
+            // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Location = new System.Drawing.Point(282, 14);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(4, 100);
+            this.panel1.TabIndex = 60;
+            // 
+            // Cbox_M2_Flash
+            // 
+            this.Cbox_M2_Flash.AutoSize = true;
+            this.Cbox_M2_Flash.Checked = true;
+            this.Cbox_M2_Flash.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.Cbox_M2_Flash.Location = new System.Drawing.Point(333, 59);
+            this.Cbox_M2_Flash.Name = "Cbox_M2_Flash";
+            this.Cbox_M2_Flash.Size = new System.Drawing.Size(192, 20);
+            this.Cbox_M2_Flash.TabIndex = 59;
+            this.Cbox_M2_Flash.Text = "Disable white flash on shoot";
+            this.Cbox_M2_Flash.UseVisualStyleBackColor = true;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(14, 87);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(109, 15);
+            this.label14.TabIndex = 58;
+            this.label14.Text = "Crosshair visibility :";
+            // 
+            // TXT_CH_P1
+            // 
+            this.TXT_CH_P1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_CH_P1.Location = new System.Drawing.Point(145, 30);
+            this.TXT_CH_P1.Name = "TXT_CH_P1";
+            this.TXT_CH_P1.ReadOnly = true;
+            this.TXT_CH_P1.Size = new System.Drawing.Size(100, 22);
+            this.TXT_CH_P1.TabIndex = 53;
+            this.TXT_CH_P1.Text = "7";
+            this.TXT_CH_P1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_CH_P1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(14, 59);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(125, 15);
+            this.label13.TabIndex = 57;
+            this.label13.Text = "P2 change crosshair :";
+            // 
+            // TXT_CH_P2
+            // 
+            this.TXT_CH_P2.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_CH_P2.Location = new System.Drawing.Point(145, 56);
+            this.TXT_CH_P2.Name = "TXT_CH_P2";
+            this.TXT_CH_P2.ReadOnly = true;
+            this.TXT_CH_P2.Size = new System.Drawing.Size(100, 22);
+            this.TXT_CH_P2.TabIndex = 54;
+            this.TXT_CH_P2.Text = "8";
+            this.TXT_CH_P2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_CH_P2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(14, 33);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(125, 15);
+            this.label11.TabIndex = 56;
+            this.label11.Text = "P1 change crosshair :";
+            // 
+            // TXT_CH_VIS
+            // 
+            this.TXT_CH_VIS.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_CH_VIS.Location = new System.Drawing.Point(145, 84);
+            this.TXT_CH_VIS.Name = "TXT_CH_VIS";
+            this.TXT_CH_VIS.ReadOnly = true;
+            this.TXT_CH_VIS.Size = new System.Drawing.Size(100, 22);
+            this.TXT_CH_VIS.TabIndex = 55;
+            this.TXT_CH_VIS.Text = "9";
+            this.TXT_CH_VIS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_CH_VIS.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Btn_M2Scripts
+            // 
+            this.Btn_M2Scripts.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Btn_M2Scripts.Location = new System.Drawing.Point(191, 249);
+            this.Btn_M2Scripts.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_M2Scripts.Name = "Btn_M2Scripts";
+            this.Btn_M2Scripts.Size = new System.Drawing.Size(202, 57);
+            this.Btn_M2Scripts.TabIndex = 52;
+            this.Btn_M2Scripts.Text = "Install m2emulator crosshair scripts";
+            this.Btn_M2Scripts.UseVisualStyleBackColor = true;
+            this.Btn_M2Scripts.Click += new System.EventHandler(this.Btn_M2Scripts_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(15, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(309, 75);
+            this.label1.TabIndex = 51;
+            this.label1.Text = "Click the button to install lua scripts for custom crosshair\r\nin nebula Model2 Em" +
+                "ulator.\r\nYou will be asked for the emulator .exe location\r\n\r\nExisting files will" +
+                " be overwritten !";
+            // 
+            // Tab_RabbidsHollywod
+            // 
+            this.Tab_RabbidsHollywod.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_RabbidsHollywod.Controls.Add(this.groupBox11);
+            this.Tab_RabbidsHollywod.Location = new System.Drawing.Point(4, 5);
+            this.Tab_RabbidsHollywod.Name = "Tab_RabbidsHollywod";
+            this.Tab_RabbidsHollywod.Size = new System.Drawing.Size(581, 334);
+            this.Tab_RabbidsHollywod.TabIndex = 16;
+            this.Tab_RabbidsHollywod.Text = "tabPage1";
+            this.Tab_RabbidsHollywod.UseVisualStyleBackColor = true;
+            // 
+            // groupBox11
+            // 
+            this.groupBox11.Controls.Add(this.label36);
+            this.groupBox11.Controls.Add(this.Btn_Rha_GamePath);
+            this.groupBox11.Controls.Add(this.Btn_Rha_InstallUnity);
+            this.groupBox11.Controls.Add(this.Txt_Rha_GamePath);
+            this.groupBox11.Location = new System.Drawing.Point(5, 12);
+            this.groupBox11.Name = "groupBox11";
+            this.groupBox11.Size = new System.Drawing.Size(567, 111);
+            this.groupBox11.TabIndex = 73;
+            this.groupBox11.TabStop = false;
+            this.groupBox11.Text = "Unity Plugin Install";
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(6, 37);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(101, 16);
+            this.label36.TabIndex = 70;
+            this.label36.Text = "Game location :";
+            // 
+            // Btn_Rha_GamePath
+            // 
+            this.Btn_Rha_GamePath.Location = new System.Drawing.Point(525, 32);
+            this.Btn_Rha_GamePath.Name = "Btn_Rha_GamePath";
+            this.Btn_Rha_GamePath.Size = new System.Drawing.Size(27, 27);
+            this.Btn_Rha_GamePath.TabIndex = 71;
+            this.Btn_Rha_GamePath.Text = "...";
+            this.Btn_Rha_GamePath.UseVisualStyleBackColor = true;
+            this.Btn_Rha_GamePath.Click += new System.EventHandler(this.Btn_Rha_GamePath_Click);
+            // 
+            // Btn_Rha_InstallUnity
+            // 
+            this.Btn_Rha_InstallUnity.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Btn_Rha_InstallUnity.Location = new System.Drawing.Point(209, 66);
+            this.Btn_Rha_InstallUnity.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_Rha_InstallUnity.Name = "Btn_Rha_InstallUnity";
+            this.Btn_Rha_InstallUnity.Size = new System.Drawing.Size(139, 38);
+            this.Btn_Rha_InstallUnity.TabIndex = 67;
+            this.Btn_Rha_InstallUnity.Text = "Install Plugin";
+            this.Btn_Rha_InstallUnity.UseVisualStyleBackColor = true;
+            this.Btn_Rha_InstallUnity.Click += new System.EventHandler(this.Btn_Rha_InstallUnity_Click);
+            // 
+            // Txt_Rha_GamePath
+            // 
+            this.Txt_Rha_GamePath.Location = new System.Drawing.Point(113, 34);
+            this.Txt_Rha_GamePath.Name = "Txt_Rha_GamePath";
+            this.Txt_Rha_GamePath.Size = new System.Drawing.Size(406, 22);
+            this.Txt_Rha_GamePath.TabIndex = 69;
+            // 
+            // Tab_RPCS3
+            // 
+            this.Tab_RPCS3.Controls.Add(this.Txt_Rpcs3_Save);
+            this.Tab_RPCS3.Controls.Add(this.groupBox13);
+            this.Tab_RPCS3.Controls.Add(this.groupBox12);
+            this.Tab_RPCS3.Location = new System.Drawing.Point(4, 5);
+            this.Tab_RPCS3.Name = "Tab_RPCS3";
+            this.Tab_RPCS3.Size = new System.Drawing.Size(581, 334);
+            this.Tab_RPCS3.TabIndex = 17;
+            this.Tab_RPCS3.Text = "RPCS3 (System 357)";
+            this.Tab_RPCS3.UseVisualStyleBackColor = true;
+            // 
+            // Txt_Rpcs3_Save
+            // 
+            this.Txt_Rpcs3_Save.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Txt_Rpcs3_Save.Location = new System.Drawing.Point(217, 284);
+            this.Txt_Rpcs3_Save.Margin = new System.Windows.Forms.Padding(4);
+            this.Txt_Rpcs3_Save.Name = "Txt_Rpcs3_Save";
+            this.Txt_Rpcs3_Save.Size = new System.Drawing.Size(145, 37);
+            this.Txt_Rpcs3_Save.TabIndex = 71;
+            this.Txt_Rpcs3_Save.Text = "Save Config";
+            this.Txt_Rpcs3_Save.UseVisualStyleBackColor = true;
+            this.Txt_Rpcs3_Save.Click += new System.EventHandler(this.Txt_Rpcs3_Save_Click);
+            // 
+            // groupBox13
+            // 
+            this.groupBox13.Controls.Add(this.Btn_Rpcs3_RazingStorm);
+            this.groupBox13.Controls.Add(this.Btn_Rpcs3_SailorZombies);
+            this.groupBox13.Controls.Add(this.Btn_Rpcs3_DarkEscape);
+            this.groupBox13.Controls.Add(this.Btn_Rpcs3_DeadStorm);
+            this.groupBox13.Location = new System.Drawing.Point(6, 3);
+            this.groupBox13.Name = "groupBox13";
+            this.groupBox13.Size = new System.Drawing.Size(569, 70);
+            this.groupBox13.TabIndex = 70;
+            this.groupBox13.TabStop = false;
+            this.groupBox13.Text = "PPU Cache Patching :";
+            // 
+            // Btn_Rpcs3_RazingStorm
+            // 
+            this.Btn_Rpcs3_RazingStorm.Enabled = false;
+            this.Btn_Rpcs3_RazingStorm.Location = new System.Drawing.Point(429, 36);
+            this.Btn_Rpcs3_RazingStorm.Name = "Btn_Rpcs3_RazingStorm";
+            this.Btn_Rpcs3_RazingStorm.Size = new System.Drawing.Size(132, 28);
+            this.Btn_Rpcs3_RazingStorm.TabIndex = 3;
+            this.Btn_Rpcs3_RazingStorm.Text = "Razing Storm";
+            this.Btn_Rpcs3_RazingStorm.UseVisualStyleBackColor = true;
+            this.Btn_Rpcs3_RazingStorm.Click += new System.EventHandler(this.Btn_Rpcs3_RazingStorm_Click);
+            // 
+            // Btn_Rpcs3_SailorZombies
+            // 
+            this.Btn_Rpcs3_SailorZombies.Location = new System.Drawing.Point(288, 36);
+            this.Btn_Rpcs3_SailorZombies.Name = "Btn_Rpcs3_SailorZombies";
+            this.Btn_Rpcs3_SailorZombies.Size = new System.Drawing.Size(132, 28);
+            this.Btn_Rpcs3_SailorZombies.TabIndex = 2;
+            this.Btn_Rpcs3_SailorZombies.Text = "Sailor Zombie";
+            this.Btn_Rpcs3_SailorZombies.UseVisualStyleBackColor = true;
+            this.Btn_Rpcs3_SailorZombies.Click += new System.EventHandler(this.Btn_Rpcs3_SailorZombie_Click);
+            // 
+            // Btn_Rpcs3_DarkEscape
+            // 
+            this.Btn_Rpcs3_DarkEscape.Location = new System.Drawing.Point(147, 36);
+            this.Btn_Rpcs3_DarkEscape.Name = "Btn_Rpcs3_DarkEscape";
+            this.Btn_Rpcs3_DarkEscape.Size = new System.Drawing.Size(132, 28);
+            this.Btn_Rpcs3_DarkEscape.TabIndex = 1;
+            this.Btn_Rpcs3_DarkEscape.Text = "Dark Escape 4D";
+            this.Btn_Rpcs3_DarkEscape.UseVisualStyleBackColor = true;
+            this.Btn_Rpcs3_DarkEscape.Click += new System.EventHandler(this.Btn_Rpcs3_DarkEscape_Click);
+            // 
+            // Btn_Rpcs3_DeadStorm
+            // 
+            this.Btn_Rpcs3_DeadStorm.Location = new System.Drawing.Point(6, 36);
+            this.Btn_Rpcs3_DeadStorm.Name = "Btn_Rpcs3_DeadStorm";
+            this.Btn_Rpcs3_DeadStorm.Size = new System.Drawing.Size(132, 28);
+            this.Btn_Rpcs3_DeadStorm.TabIndex = 0;
+            this.Btn_Rpcs3_DeadStorm.Text = "DeadStorm Pirates";
+            this.Btn_Rpcs3_DeadStorm.UseVisualStyleBackColor = true;
+            this.Btn_Rpcs3_DeadStorm.Click += new System.EventHandler(this.Btn_Rpcs3_DeadStorm_Click);
+            // 
+            // groupBox12
+            // 
+            this.groupBox12.Controls.Add(this.label57);
+            this.groupBox12.Controls.Add(this.panel2);
+            this.groupBox12.Controls.Add(this.label37);
+            this.groupBox12.Controls.Add(this.Txt_Rpcs3_P1_Start);
+            this.groupBox12.Controls.Add(this.Txt_Rpcs3_Service);
+            this.groupBox12.Controls.Add(this.Txt_Rpcs3_P2_Start);
+            this.groupBox12.Controls.Add(this.label56);
+            this.groupBox12.Controls.Add(this.label38);
+            this.groupBox12.Controls.Add(this.label55);
+            this.groupBox12.Controls.Add(this.Txt_Rpcs3_Enter);
+            this.groupBox12.Controls.Add(this.Txt_Rpcs3_3D_Switch);
+            this.groupBox12.Controls.Add(this.label54);
+            this.groupBox12.Controls.Add(this.label51);
+            this.groupBox12.Controls.Add(this.label53);
+            this.groupBox12.Controls.Add(this.Txt_Rpcs3_Up);
+            this.groupBox12.Controls.Add(this.label52);
+            this.groupBox12.Controls.Add(this.Txt_Rpcs3_Down);
+            this.groupBox12.Location = new System.Drawing.Point(5, 87);
+            this.groupBox12.Name = "groupBox12";
+            this.groupBox12.Size = new System.Drawing.Size(569, 185);
+            this.groupBox12.TabIndex = 69;
+            this.groupBox12.TabStop = false;
+            this.groupBox12.Text = "Key configuration : to set a key, click a box then push the key on your keyboard " +
+                ":";
+            // 
+            // Txt_Rpcs3_P1_Start
+            // 
+            this.Txt_Rpcs3_P1_Start.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_Rpcs3_P1_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_Rpcs3_P1_Start.Location = new System.Drawing.Point(84, 70);
+            this.Txt_Rpcs3_P1_Start.Name = "Txt_Rpcs3_P1_Start";
+            this.Txt_Rpcs3_P1_Start.ReadOnly = true;
+            this.Txt_Rpcs3_P1_Start.Size = new System.Drawing.Size(127, 21);
+            this.Txt_Rpcs3_P1_Start.TabIndex = 53;
+            this.Txt_Rpcs3_P1_Start.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_Rpcs3_P1_Start.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Txt_Rpcs3_Service
+            // 
+            this.Txt_Rpcs3_Service.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_Rpcs3_Service.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_Rpcs3_Service.Location = new System.Drawing.Point(84, 124);
+            this.Txt_Rpcs3_Service.Name = "Txt_Rpcs3_Service";
+            this.Txt_Rpcs3_Service.ReadOnly = true;
+            this.Txt_Rpcs3_Service.Size = new System.Drawing.Size(127, 21);
+            this.Txt_Rpcs3_Service.TabIndex = 58;
+            this.Txt_Rpcs3_Service.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_Rpcs3_Service.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Txt_Rpcs3_P2_Start
+            // 
+            this.Txt_Rpcs3_P2_Start.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_Rpcs3_P2_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_Rpcs3_P2_Start.Location = new System.Drawing.Point(84, 97);
+            this.Txt_Rpcs3_P2_Start.Name = "Txt_Rpcs3_P2_Start";
+            this.Txt_Rpcs3_P2_Start.ReadOnly = true;
+            this.Txt_Rpcs3_P2_Start.Size = new System.Drawing.Size(127, 21);
+            this.Txt_Rpcs3_P2_Start.TabIndex = 54;
+            this.Txt_Rpcs3_P2_Start.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_Rpcs3_P2_Start.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label56
+            // 
+            this.label56.AutoSize = true;
+            this.label56.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label56.Location = new System.Drawing.Point(10, 127);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(64, 15);
+            this.label56.TabIndex = 63;
+            this.label56.Text = "SERVICE :";
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label38.Location = new System.Drawing.Point(10, 154);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(68, 15);
+            this.label38.TabIndex = 66;
+            this.label38.Text = "3D Switch :";
+            // 
+            // label55
+            // 
+            this.label55.AutoSize = true;
+            this.label55.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label55.Location = new System.Drawing.Point(10, 100);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(56, 15);
+            this.label55.TabIndex = 62;
+            this.label55.Text = "P2 Start :";
+            // 
+            // Txt_Rpcs3_Enter
+            // 
+            this.Txt_Rpcs3_Enter.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_Rpcs3_Enter.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_Rpcs3_Enter.Location = new System.Drawing.Point(376, 127);
+            this.Txt_Rpcs3_Enter.Name = "Txt_Rpcs3_Enter";
+            this.Txt_Rpcs3_Enter.ReadOnly = true;
+            this.Txt_Rpcs3_Enter.Size = new System.Drawing.Size(128, 21);
+            this.Txt_Rpcs3_Enter.TabIndex = 55;
+            this.Txt_Rpcs3_Enter.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_Rpcs3_Enter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Txt_Rpcs3_3D_Switch
+            // 
+            this.Txt_Rpcs3_3D_Switch.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_Rpcs3_3D_Switch.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_Rpcs3_3D_Switch.Location = new System.Drawing.Point(84, 151);
+            this.Txt_Rpcs3_3D_Switch.Name = "Txt_Rpcs3_3D_Switch";
+            this.Txt_Rpcs3_3D_Switch.ReadOnly = true;
+            this.Txt_Rpcs3_3D_Switch.Size = new System.Drawing.Size(127, 21);
+            this.Txt_Rpcs3_3D_Switch.TabIndex = 57;
+            this.Txt_Rpcs3_3D_Switch.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_Rpcs3_3D_Switch.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label54.Location = new System.Drawing.Point(10, 73);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(56, 15);
+            this.label54.TabIndex = 59;
+            this.label54.Text = "P1 Start :";
+            // 
+            // label51
+            // 
+            this.label51.AutoSize = true;
+            this.label51.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label51.Location = new System.Drawing.Point(316, 103);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(51, 15);
+            this.label51.TabIndex = 65;
+            this.label51.Text = "DOWN :";
+            // 
+            // label53
+            // 
+            this.label53.AutoSize = true;
+            this.label53.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label53.Location = new System.Drawing.Point(316, 76);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(30, 15);
+            this.label53.TabIndex = 64;
+            this.label53.Text = "UP :";
+            // 
+            // Txt_Rpcs3_Up
+            // 
+            this.Txt_Rpcs3_Up.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_Rpcs3_Up.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_Rpcs3_Up.Location = new System.Drawing.Point(376, 73);
+            this.Txt_Rpcs3_Up.Name = "Txt_Rpcs3_Up";
+            this.Txt_Rpcs3_Up.ReadOnly = true;
+            this.Txt_Rpcs3_Up.Size = new System.Drawing.Size(127, 21);
+            this.Txt_Rpcs3_Up.TabIndex = 60;
+            this.Txt_Rpcs3_Up.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_Rpcs3_Up.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label52.Location = new System.Drawing.Point(316, 130);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(54, 15);
+            this.label52.TabIndex = 61;
+            this.label52.Text = "ENTER :";
+            // 
+            // Txt_Rpcs3_Down
+            // 
+            this.Txt_Rpcs3_Down.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_Rpcs3_Down.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_Rpcs3_Down.Location = new System.Drawing.Point(376, 100);
+            this.Txt_Rpcs3_Down.Name = "Txt_Rpcs3_Down";
+            this.Txt_Rpcs3_Down.ReadOnly = true;
+            this.Txt_Rpcs3_Down.Size = new System.Drawing.Size(128, 21);
+            this.Txt_Rpcs3_Down.TabIndex = 56;
+            this.Txt_Rpcs3_Down.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_Rpcs3_Down.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Tab_SHA
+            // 
+            this.Tab_SHA.BackColor = System.Drawing.SystemColors.Control;
+            this.Tab_SHA.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_SHA.Controls.Add(this.label35);
+            this.Tab_SHA.Controls.Add(this.TXT_P1_S);
+            this.Tab_SHA.Controls.Add(this.TXT_P1_T);
+            this.Tab_SHA.Controls.Add(this.label8);
+            this.Tab_SHA.Controls.Add(this.TXT_SERVICE);
+            this.Tab_SHA.Controls.Add(this.Save_Sha_Keys);
+            this.Tab_SHA.Controls.Add(this.label7);
+            this.Tab_SHA.Controls.Add(this.TXT_EXIT);
+            this.Tab_SHA.Controls.Add(this.TXT_TEST);
+            this.Tab_SHA.Controls.Add(this.label12);
+            this.Tab_SHA.Controls.Add(this.label6);
+            this.Tab_SHA.Controls.Add(this.label5);
+            this.Tab_SHA.Controls.Add(this.TXT_P2_S);
+            this.Tab_SHA.Controls.Add(this.label3);
+            this.Tab_SHA.Controls.Add(this.label4);
+            this.Tab_SHA.Controls.Add(this.TXT_P2_T);
+            this.Tab_SHA.Location = new System.Drawing.Point(4, 5);
+            this.Tab_SHA.Margin = new System.Windows.Forms.Padding(4);
+            this.Tab_SHA.Name = "Tab_SHA";
+            this.Tab_SHA.Padding = new System.Windows.Forms.Padding(4);
+            this.Tab_SHA.Size = new System.Drawing.Size(581, 334);
+            this.Tab_SHA.TabIndex = 2;
+            this.Tab_SHA.Text = "Silent Hill the Arcade";
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(16, 14);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(371, 16);
+            this.label35.TabIndex = 52;
+            this.label35.Text = "To set a key, click a box then push the key on your keyboard :";
+            // 
+            // TXT_P1_S
+            // 
+            this.TXT_P1_S.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_P1_S.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_P1_S.Location = new System.Drawing.Point(86, 48);
+            this.TXT_P1_S.Name = "TXT_P1_S";
+            this.TXT_P1_S.ReadOnly = true;
+            this.TXT_P1_S.Size = new System.Drawing.Size(127, 21);
+            this.TXT_P1_S.TabIndex = 0;
+            this.TXT_P1_S.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_P1_S.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // TXT_P1_T
+            // 
+            this.TXT_P1_T.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_P1_T.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_P1_T.Location = new System.Drawing.Point(86, 80);
+            this.TXT_P1_T.Name = "TXT_P1_T";
+            this.TXT_P1_T.ReadOnly = true;
+            this.TXT_P1_T.Size = new System.Drawing.Size(127, 21);
+            this.TXT_P1_T.TabIndex = 1;
+            this.TXT_P1_T.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_P1_T.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(305, 112);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(64, 15);
+            this.label8.TabIndex = 47;
+            this.label8.Text = "SERVICE :";
+            // 
+            // TXT_SERVICE
+            // 
+            this.TXT_SERVICE.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_SERVICE.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_SERVICE.Location = new System.Drawing.Point(378, 109);
+            this.TXT_SERVICE.Name = "TXT_SERVICE";
+            this.TXT_SERVICE.ReadOnly = true;
+            this.TXT_SERVICE.Size = new System.Drawing.Size(128, 21);
+            this.TXT_SERVICE.TabIndex = 3;
+            this.TXT_SERVICE.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_SERVICE.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Save_Sha_Keys
+            // 
+            this.Save_Sha_Keys.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Save_Sha_Keys.Location = new System.Drawing.Point(180, 242);
+            this.Save_Sha_Keys.Margin = new System.Windows.Forms.Padding(4);
+            this.Save_Sha_Keys.Name = "Save_Sha_Keys";
+            this.Save_Sha_Keys.Size = new System.Drawing.Size(207, 47);
+            this.Save_Sha_Keys.TabIndex = 48;
+            this.Save_Sha_Keys.Text = "Save Key config";
+            this.Save_Sha_Keys.UseVisualStyleBackColor = true;
+            this.Save_Sha_Keys.Click += new System.EventHandler(this.Save_Sha_Keys_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(305, 80);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(43, 15);
+            this.label7.TabIndex = 46;
+            this.label7.Text = "TEST :";
+            // 
+            // TXT_EXIT
+            // 
+            this.TXT_EXIT.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_EXIT.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_EXIT.Location = new System.Drawing.Point(379, 45);
+            this.TXT_EXIT.Name = "TXT_EXIT";
+            this.TXT_EXIT.ReadOnly = true;
+            this.TXT_EXIT.Size = new System.Drawing.Size(127, 21);
+            this.TXT_EXIT.TabIndex = 40;
+            this.TXT_EXIT.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_EXIT.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // TXT_TEST
+            // 
+            this.TXT_TEST.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_TEST.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_TEST.Location = new System.Drawing.Point(378, 77);
+            this.TXT_TEST.Name = "TXT_TEST";
+            this.TXT_TEST.ReadOnly = true;
+            this.TXT_TEST.Size = new System.Drawing.Size(128, 21);
+            this.TXT_TEST.TabIndex = 4;
+            this.TXT_TEST.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_TEST.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(12, 83);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(70, 15);
+            this.label12.TabIndex = 42;
+            this.label12.Text = "P1 Trigger :";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(305, 48);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(39, 15);
+            this.label6.TabIndex = 45;
+            this.label6.Text = "EXIT :";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(12, 51);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(56, 15);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "P1 Start :";
+            // 
+            // TXT_P2_S
+            // 
+            this.TXT_P2_S.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_P2_S.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_P2_S.Location = new System.Drawing.Point(86, 112);
+            this.TXT_P2_S.Name = "TXT_P2_S";
+            this.TXT_P2_S.ReadOnly = true;
+            this.TXT_P2_S.Size = new System.Drawing.Size(127, 21);
+            this.TXT_P2_S.TabIndex = 5;
+            this.TXT_P2_S.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_P2_S.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(12, 115);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(56, 15);
+            this.label3.TabIndex = 43;
+            this.label3.Text = "P2 Start :";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(12, 146);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(70, 15);
+            this.label4.TabIndex = 44;
+            this.label4.Text = "P2 Trigger :";
+            // 
+            // TXT_P2_T
+            // 
+            this.TXT_P2_T.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_P2_T.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_P2_T.Location = new System.Drawing.Point(86, 144);
+            this.TXT_P2_T.Name = "TXT_P2_T";
+            this.TXT_P2_T.ReadOnly = true;
+            this.TXT_P2_T.Size = new System.Drawing.Size(127, 21);
+            this.TXT_P2_T.TabIndex = 6;
+            this.TXT_P2_T.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_P2_T.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
             // Tab_WildWest
             // 
             this.Tab_WildWest.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1575,68 +1925,6 @@
             this.Txt_Wws_GamePath.Name = "Txt_Wws_GamePath";
             this.Txt_Wws_GamePath.Size = new System.Drawing.Size(406, 22);
             this.Txt_Wws_GamePath.TabIndex = 69;
-            // 
-            // Tab_RabbidsHollywod
-            // 
-            this.Tab_RabbidsHollywod.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Tab_RabbidsHollywod.Controls.Add(this.groupBox11);
-            this.Tab_RabbidsHollywod.Location = new System.Drawing.Point(4, 5);
-            this.Tab_RabbidsHollywod.Name = "Tab_RabbidsHollywod";
-            this.Tab_RabbidsHollywod.Size = new System.Drawing.Size(581, 334);
-            this.Tab_RabbidsHollywod.TabIndex = 16;
-            this.Tab_RabbidsHollywod.Text = "tabPage1";
-            this.Tab_RabbidsHollywod.UseVisualStyleBackColor = true;
-            // 
-            // groupBox11
-            // 
-            this.groupBox11.Controls.Add(this.label36);
-            this.groupBox11.Controls.Add(this.Btn_Rha_GamePath);
-            this.groupBox11.Controls.Add(this.Btn_Rha_InstallUnity);
-            this.groupBox11.Controls.Add(this.Txt_Rha_GamePath);
-            this.groupBox11.Location = new System.Drawing.Point(5, 12);
-            this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(567, 111);
-            this.groupBox11.TabIndex = 73;
-            this.groupBox11.TabStop = false;
-            this.groupBox11.Text = "Unity Plugin Install";
-            // 
-            // label36
-            // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(6, 37);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(101, 16);
-            this.label36.TabIndex = 70;
-            this.label36.Text = "Game location :";
-            // 
-            // Btn_Rha_GamePath
-            // 
-            this.Btn_Rha_GamePath.Location = new System.Drawing.Point(525, 32);
-            this.Btn_Rha_GamePath.Name = "Btn_Rha_GamePath";
-            this.Btn_Rha_GamePath.Size = new System.Drawing.Size(27, 27);
-            this.Btn_Rha_GamePath.TabIndex = 71;
-            this.Btn_Rha_GamePath.Text = "...";
-            this.Btn_Rha_GamePath.UseVisualStyleBackColor = true;
-            this.Btn_Rha_GamePath.Click += new System.EventHandler(this.Btn_Rha_GamePath_Click);
-            // 
-            // Btn_Rha_InstallUnity
-            // 
-            this.Btn_Rha_InstallUnity.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.Btn_Rha_InstallUnity.Location = new System.Drawing.Point(209, 66);
-            this.Btn_Rha_InstallUnity.Margin = new System.Windows.Forms.Padding(4);
-            this.Btn_Rha_InstallUnity.Name = "Btn_Rha_InstallUnity";
-            this.Btn_Rha_InstallUnity.Size = new System.Drawing.Size(139, 38);
-            this.Btn_Rha_InstallUnity.TabIndex = 67;
-            this.Btn_Rha_InstallUnity.Text = "Install Plugin";
-            this.Btn_Rha_InstallUnity.UseVisualStyleBackColor = true;
-            this.Btn_Rha_InstallUnity.Click += new System.EventHandler(this.Btn_Rha_InstallUnity_Click);
-            // 
-            // Txt_Rha_GamePath
-            // 
-            this.Txt_Rha_GamePath.Location = new System.Drawing.Point(113, 34);
-            this.Txt_Rha_GamePath.Name = "Txt_Rha_GamePath";
-            this.Txt_Rha_GamePath.Size = new System.Drawing.Size(406, 22);
-            this.Txt_Rha_GamePath.TabIndex = 69;
             // 
             // Tab_Outputs
             // 
@@ -1835,14 +2123,15 @@
             "P4 Configuration",
             "Calibration (Analog devices)",
             "Calibration (Act Labs lightguns)",
-            "m2Emulator",
-            "Silent Hill : The Arcade",
-            "Gundam : SoZ",
             "Dolphin",
+            "Gundam : SoZ",
             "Heavy Fire Afghanistan",
             "Heavy Fire Shattered Spear",
-            "Wild West Shoutout",
+            "m2Emulator",
             "Rabbids Hollywood Arcade",
+            "RPCS3 (System 357)",
+            "Silent Hill : The Arcade",
+            "Wild West Shoutout",
             "Outputs"});
             this.Cbo_PageSettings.Location = new System.Drawing.Point(118, 12);
             this.Cbo_PageSettings.Name = "Cbo_PageSettings";
@@ -1858,6 +2147,32 @@
             this.label39.Size = new System.Drawing.Size(104, 16);
             this.label39.TabIndex = 40;
             this.label39.Text = "Page selection :";
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(341, 36);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(162, 16);
+            this.label37.TabIndex = 67;
+            this.label37.Text = "TEST MENU BUTTONS :";
+            // 
+            // panel2
+            // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel2.Location = new System.Drawing.Point(268, 25);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(4, 150);
+            this.panel2.TabIndex = 68;
+            // 
+            // label57
+            // 
+            this.label57.AutoSize = true;
+            this.label57.Location = new System.Drawing.Point(66, 36);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(136, 16);
+            this.label57.TabIndex = 69;
+            this.label57.Text = "PLAYER BUTTONS :";
             // 
             // Wnd_DemulShooterGui
             // 
@@ -1886,20 +2201,14 @@
             this.Tab_ActLAbs.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.Tab_M2.ResumeLayout(false);
-            this.Tab_M2.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.Tab_SHA.ResumeLayout(false);
-            this.Tab_SHA.PerformLayout();
+            this.Tab_Dolphin.ResumeLayout(false);
+            this.Tab_Dolphin.PerformLayout();
             this.Tab_GSOZ.ResumeLayout(false);
             this.Tab_GSOZ.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
-            this.Tab_Dolphin.ResumeLayout(false);
-            this.Tab_Dolphin.PerformLayout();
             this.Tab_HeavyFire3.ResumeLayout(false);
             this.Tab_HeavyFire3.PerformLayout();
             this.groupBox7.ResumeLayout(false);
@@ -1913,14 +2222,24 @@
             ((System.ComponentModel.ISupportInitialize)(this.TrackBar_HF4_Cover)).EndInit();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
+            this.Tab_M2.ResumeLayout(false);
+            this.Tab_M2.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.Tab_RabbidsHollywod.ResumeLayout(false);
+            this.groupBox11.ResumeLayout(false);
+            this.groupBox11.PerformLayout();
+            this.Tab_RPCS3.ResumeLayout(false);
+            this.groupBox13.ResumeLayout(false);
+            this.groupBox12.ResumeLayout(false);
+            this.groupBox12.PerformLayout();
+            this.Tab_SHA.ResumeLayout(false);
+            this.Tab_SHA.PerformLayout();
             this.Tab_WildWest.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
             this.groupBox10.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.Tab_RabbidsHollywod.ResumeLayout(false);
-            this.groupBox11.ResumeLayout(false);
-            this.groupBox11.PerformLayout();
             this.Tab_Outputs.ResumeLayout(false);
             this.Tab_Outputs.PerformLayout();
             this.Grp_Outputs.ResumeLayout(false);
@@ -2078,6 +2397,31 @@
         private System.Windows.Forms.Button Btn_Rha_GamePath;
         private System.Windows.Forms.Button Btn_Rha_InstallUnity;
         private System.Windows.Forms.TextBox Txt_Rha_GamePath;
+        private System.Windows.Forms.TabPage Tab_RPCS3;
+        private System.Windows.Forms.GroupBox groupBox13;
+        private System.Windows.Forms.Button Btn_Rpcs3_RazingStorm;
+        private System.Windows.Forms.Button Btn_Rpcs3_SailorZombies;
+        private System.Windows.Forms.Button Btn_Rpcs3_DarkEscape;
+        private System.Windows.Forms.Button Btn_Rpcs3_DeadStorm;
+        private System.Windows.Forms.GroupBox groupBox12;
+        private System.Windows.Forms.TextBox Txt_Rpcs3_P1_Start;
+        private System.Windows.Forms.TextBox Txt_Rpcs3_Service;
+        private System.Windows.Forms.TextBox Txt_Rpcs3_P2_Start;
+        private System.Windows.Forms.Label label56;
+        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.Label label55;
+        private System.Windows.Forms.TextBox Txt_Rpcs3_Enter;
+        private System.Windows.Forms.TextBox Txt_Rpcs3_3D_Switch;
+        private System.Windows.Forms.Label label54;
+        private System.Windows.Forms.Label label51;
+        private System.Windows.Forms.Label label53;
+        private System.Windows.Forms.TextBox Txt_Rpcs3_Up;
+        private System.Windows.Forms.Label label52;
+        private System.Windows.Forms.TextBox Txt_Rpcs3_Down;
+        private System.Windows.Forms.Button Txt_Rpcs3_Save;
+        private System.Windows.Forms.Label label57;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label37;
     }
 }
 
