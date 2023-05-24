@@ -100,10 +100,16 @@ namespace DsCore.MameOutput
         public static readonly String LmpFloor = "Lmp_Floor";//
         public static readonly String LmpError = "Lmp_Error";//
         public static readonly String LmpSafety = "Lmp_Safety";//
-        public static readonly String P1_LedKills1 = "P1_LedKills1";  //
+        public static readonly String P1_LedKills1 = "P1_LedKills1";  //\
         public static readonly String P1_LedKills2 = "P1_LedKills2";  //Far Cry Paradise
         public static readonly String P2_LedKills1 = "P2_LedKills1";  //
-        public static readonly String P2_LedKills2 = "P2_LedKills2";  //
+        public static readonly String P2_LedKills2 = "P2_LedKills2";  ///
+        public static readonly String P1_Whip_R = "P1_Whip_R";    //\    
+        public static readonly String P1_Whip_G = "P1_Whip_G";    // 
+        public static readonly String P1_Whip_B = "P1_Whip_B";    // Castlevania Arcade
+        public static readonly String P2_Whip_R = "P2_Whip_R";    //
+        public static readonly String P2_Whip_G = "P2_Whip_G";    //
+        public static readonly String P2_Whip_B = "P2_Whip_B";    ///
 
         public static readonly String P1_GunMotor = "P1_GunMotor";
         public static readonly String P2_GunMotor = "P2_GunMotor";

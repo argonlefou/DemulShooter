@@ -111,6 +111,13 @@ namespace DsCore.MameOutput
         P1_LedKills2,
         P2_LedKills1,
         P2_LedKills2,
+        P1_Whip_R,
+        P1_Whip_G,
+        P1_Whip_B,
+        P2_Whip_R,
+        P2_Whip_G,
+        P2_Whip_B,
+
         Credits = 1000,
         P1_CtmLmpStart,
         P2_CtmLmpStart,

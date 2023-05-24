@@ -413,6 +413,14 @@ namespace DemulShooter
                 {
                     switch (_Rom.ToLower())
                     {
+                        case "hcv":
+                            {
+                                _Game = new Game_KonamiCastlevania(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;
+                        case "le3":
+                            {
+                                _Game = new Game_KonamiLethalEnforcers3(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;
                         case "wartran":
                             {
                                 _Game = new Game_KonamiWartran(_Rom.ToLower(), _NoInput, isVerbose);
@@ -645,7 +653,7 @@ namespace DemulShooter
                             } break;
                         case "le3":
                             {
-                                _Game = new Game_KonamiLethalEnforcer3(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_KonamiLethalEnforcers3(_Rom.ToLower(), _NoInput, isVerbose);
                             }break;
                     }
                 }

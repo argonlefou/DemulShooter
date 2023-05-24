@@ -10,7 +10,7 @@ using DsCore.Win32;
 
 namespace DemulShooter
 {
-    class Game_KonamiLethalEnforcer3 : Game
+    class Game_KonamiLethalEnforcers3 : Game
     {
         private const String GAMEDATA_FOLDER = @"MemoryData\konami\le3";
 
@@ -23,6 +23,10 @@ namespace DemulShooter
         private UInt32 _P2_Start_Offset = 0xE447;
         private UInt32 _P1_Trigger_Offset = 0xE448;
         private UInt32 _P2_Trigger_Offset = 0xE449;
+        private UInt32 _P1_Option_Offset = 0xE44A;
+        private UInt32 _P2_Option_Offset = 0xE44B;
+        private UInt32 _CreditsToAdd_Offset = 0x374628;
+        private UInt32 _CreditsTotal_Offset = 0x37462C;
         private NopStruct _Nop_AxisX_1 = new NopStruct(0x0011D5C4, 2);
         private NopStruct _Nop_AxisX_2 = new NopStruct(0x0011D66F, 2);
         private NopStruct _Nop_AxisY_1 = new NopStruct(0x0011D610, 3);
@@ -32,12 +36,13 @@ namespace DemulShooter
         private HardwareScanCode _Test_Key = HardwareScanCode.DIK_9;
         private HardwareScanCode _P1_Start_Key = HardwareScanCode.DIK_1;
         private HardwareScanCode _P2_Start_Key = HardwareScanCode.DIK_2;
+        private HardwareScanCode _Credits_Key = HardwareScanCode.DIK_5;
 
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_KonamiLethalEnforcer3(String RomName, bool DisableInputHack, bool Verbose) 
+        public Game_KonamiLethalEnforcers3(String RomName, bool DisableInputHack, bool Verbose) 
             : base (RomName, "game_patched", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Lethal Enforcer 3 v2005-04-15-1 - Original game.exe", "1d338c452c7b087bc7aad823a74bb023");
@@ -195,10 +200,15 @@ namespace DemulShooter
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
                     WriteByte(_BaseData_Address + _P1_Trigger_Offset - 0x06, 0x00);   //this byte show event in TEST mode but not used in game ??
 
-                /*if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
-                    Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset, 0x02);
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
+                {
+                    SetButtonBistable(_P1_Option_Offset);
+                    WriteByte(_BaseData_Address + _P1_Option_Offset - 0x06, 0x01);
+                }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
-                    Apply_AND_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Buttons_Offset, 0xFD);*/
+                {
+                    WriteByte(_BaseData_Address + _P1_Option_Offset - 0x06, 0x00);
+                }
             }            
         }
 
@@ -233,6 +243,10 @@ namespace DemulShooter
                     else if (s.scanCode == _Test_Key)
                     {
                         WriteByte(_BaseData_Address + _TEST_Offset, 0x01);   //this byte show event in TEST mode but not used in game ??
+                    }
+                    else if (s.scanCode == _Credits_Key)
+                    {
+                        WriteByte((UInt32)_TargetProcess_MemoryBaseAddress + _CreditsToAdd_Offset, 0x01);
                     }
                 }
                 else if ((UInt32)wParam == Win32Define.WM_KEYUP)

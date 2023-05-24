@@ -88,6 +88,8 @@ namespace DemulShooter
             };
 
             Dictionary<String, String> _KonamiRoms = new Dictionary<String, String>(){
+                {"hcv","Castlevania Arcade"},
+                {"le3","Lethal Enforcers 3"},
                 {"wartran","Wartran Troopers"}
             };
 
