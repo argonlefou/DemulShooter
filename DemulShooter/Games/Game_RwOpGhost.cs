@@ -83,10 +83,15 @@ namespace DemulShooter
         private int _Credits_CreditsToContinue = 1;
         private int _Credits_CoinsByCredits = 2;
 
+        //Separating Action button
+        private bool _SeparateActionButton = false;
+        private HardwareScanCode _P1_Action_Key = HardwareScanCode.DIK_G;
+        private HardwareScanCode _P2_Action_Key = HardwareScanCode.DIK_H;
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwOpGhost(String RomName, bool EnableFreeplay, int StartCredits, int ContinueCredits, int CoinsCredit, bool DisableInputHack, bool Verbose)
+        public Game_RwOpGhost(String RomName, bool EnableFreeplay, int StartCredits, int ContinueCredits, int CoinsCredit, bool SeparateButtons, HardwareScanCode P1_Action_Key, HardwareScanCode P2_Action_Key, bool DisableInputHack, bool Verbose)
             : base(RomName, "gs2", DisableInputHack, Verbose)
         {
             if (EnableFreeplay)
@@ -94,6 +99,9 @@ namespace DemulShooter
             _Credits_CreditsToStart = StartCredits;
             _Credits_CreditsToContinue = ContinueCredits;
             _Credits_CoinsByCredits = CoinsCredit;
+            _SeparateActionButton = SeparateButtons;
+            _P1_Action_Key = P1_Action_Key;
+            _P2_Action_Key = P2_Action_Key;
             _KnownMd5Prints.Add("Operation Ghost - For TeknoParrot", "40f795933abc4f441c98acc778610aa2");
             _KnownMd5Prints.Add("Operation Ghost - For JConfig", "19a949581145ed8478637d286a4b85a0");
             _tProcess.Start();
@@ -479,12 +487,14 @@ namespace DemulShooter
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                     {
                         Apply_OR_ByteMask(_Buttons_CaveAddress, 0x01);
-                        Apply_OR_ByteMask(_Buttons_CaveAddress + 1, 0x80);                       
+                        if (!_SeparateActionButton)
+                            Apply_OR_ByteMask(_Buttons_CaveAddress + 1, 0x80);                       
                     }
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                     {
                         Apply_AND_ByteMask(_Buttons_CaveAddress, 0xFE);
-                        Apply_AND_ByteMask(_Buttons_CaveAddress + 1, 0x7F); 
+                        if (!_SeparateActionButton)
+                            Apply_AND_ByteMask(_Buttons_CaveAddress + 1, 0x7F); 
                     }
                 }
                 else
@@ -504,14 +514,18 @@ namespace DemulShooter
 
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                     {
-                        WriteByte(_P1_Action_CaveAddress, 0x80);
+                        if (!_SeparateActionButton)
+                            WriteByte(_P1_Action_CaveAddress, 0x80);
                         PlayerData.RIController.Computed_X = 2000;
                         byte[] bufferX_R = { (byte)(PlayerData.RIController.Computed_X & 0xFF), (byte)(PlayerData.RIController.Computed_X >> 8), 0, 0 };
                         WriteBytes(_P1_X_CaveAddress, bufferX_R);
                         System.Threading.Thread.Sleep(20);
                     }
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
-                        WriteByte(_P1_Action_CaveAddress, 0x00);
+                    {
+                        if (!_SeparateActionButton)
+                            WriteByte(_P1_Action_CaveAddress, 0x00);
+                    }
                 }                
             }
             else if (PlayerData.ID == 2)
@@ -537,12 +551,14 @@ namespace DemulShooter
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                     {
                         Apply_OR_ByteMask(_Buttons_CaveAddress + 2, 0x01);
-                        Apply_OR_ByteMask(_Buttons_CaveAddress + 3, 0x80);
+                        if (!_SeparateActionButton)
+                            Apply_OR_ByteMask(_Buttons_CaveAddress + 3, 0x80);
                     }
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                     {
                         Apply_AND_ByteMask(_Buttons_CaveAddress + 2, 0xFE);
-                        Apply_AND_ByteMask(_Buttons_CaveAddress + 3, 0x7F);
+                        if (!_SeparateActionButton)
+                            Apply_AND_ByteMask(_Buttons_CaveAddress + 3, 0x7F);
                     }
                 }
                 else
@@ -582,12 +598,14 @@ namespace DemulShooter
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                     {
                         Send_VK_KeyDown(_P2_Reload_VK);
-                        Send_VK_KeyDown(_P2_Action_VK);
+                        if (!_SeparateActionButton)
+                            Send_VK_KeyDown(_P2_Action_VK);
                     }
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                     {
                         Send_VK_KeyUp(_P2_Reload_VK);
-                        Send_VK_KeyUp(_P2_Action_VK);
+                        if (!_SeparateActionButton)
+                            Send_VK_KeyUp(_P2_Action_VK);
                     }
                 }
             }
@@ -599,29 +617,85 @@ namespace DemulShooter
         /// </summary>
         public override IntPtr KeyboardHookCallback(IntPtr KeyboardHookID, int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0 && _IsJvsEnabled)
+            if (nCode >= 0)
             {
                 KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
                 if ((UInt32)wParam == Win32Define.WM_KEYDOWN)
                 {
-                    if (s.scanCode == _TestButton)
+                    if (_IsJvsEnabled)
                     {
-                        Apply_OR_ByteMask(_Buttons_CaveAddress, 0x40);
+                        if (s.scanCode == _TestButton)
+                        {
+                            Apply_OR_ByteMask(_Buttons_CaveAddress, 0x40);
+                        }
+                        else if (s.scanCode == _ServiceButton)
+                        {
+                            Apply_OR_ByteMask(_Buttons_CaveAddress + 4, 0x80);
+                        }
+                        if (_SeparateActionButton)
+                        {
+                            if (s.scanCode == _P1_Action_Key)
+                            {
+                                Apply_OR_ByteMask(_Buttons_CaveAddress + 1, 0x80);
+                            }
+                            else if (s.scanCode == _P2_Action_Key)
+                            {
+                                Apply_OR_ByteMask(_Buttons_CaveAddress + 3, 0x80);
+                            }
+                        }
                     }
-                    else if (s.scanCode == _ServiceButton)
+                    else
                     {
-                        Apply_OR_ByteMask(_Buttons_CaveAddress + 4, 0x80);
-                    }
+                        if (_SeparateActionButton)
+                        {
+                            if (s.scanCode == _P1_Action_Key)
+                            {
+                                WriteByte(_P1_Action_CaveAddress, 0x80);
+                            }
+                            else if (s.scanCode == _P2_Action_Key)
+                            {
+                                Send_VK_KeyDown(_P2_Action_VK);
+                            }
+                        }
+                    }                    
                 }
                 else if ((UInt32)wParam == Win32Define.WM_KEYUP)
                 {
-                    if (s.scanCode == _TestButton)
+                    if (_IsJvsEnabled)
                     {
-                        Apply_AND_ByteMask(_Buttons_CaveAddress, 0xBF);
+                        if (s.scanCode == _TestButton)
+                        {
+                            Apply_AND_ByteMask(_Buttons_CaveAddress, 0xBF);
+                        }
+                        else if (s.scanCode == _ServiceButton)
+                        {
+                            Apply_AND_ByteMask(_Buttons_CaveAddress + 4, 0x7F);
+                        }
+                        if (_SeparateActionButton)
+                        {
+                            if (s.scanCode == _P1_Action_Key)
+                            {
+                                Apply_AND_ByteMask(_Buttons_CaveAddress + 1, 0x7F);
+                            }
+                            else if (s.scanCode == _P2_Action_Key)
+                            {
+                                Apply_AND_ByteMask(_Buttons_CaveAddress + 3, 0x7F);
+                            }
+                        }
                     }
-                    else if (s.scanCode == _ServiceButton)
+                    else
                     {
-                        Apply_AND_ByteMask(_Buttons_CaveAddress + 4, 0x7F);
+                        if (_SeparateActionButton)
+                        {
+                            if (s.scanCode == _P1_Action_Key)
+                            {
+                                WriteByte(_P1_Action_CaveAddress, 0x00);
+                            }
+                            else if (s.scanCode == _P2_Action_Key)
+                            {
+                                Send_VK_KeyUp(_P2_Action_VK);
+                            }
+                        }
                     }
                 }
             }

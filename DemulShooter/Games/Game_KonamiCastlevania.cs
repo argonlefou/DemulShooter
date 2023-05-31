@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
+using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
 using DsCore.Win32;
-using System.Collections.Generic;
-using System.Text;
-using DsCore.MameOutput;
+using System.Media;
 
 namespace DemulShooter
 {
@@ -23,7 +24,7 @@ namespace DemulShooter
         private UInt32 _ViewportWidth_Offset = 0x0032508C;
         private UInt32 _ViewportHeight_Offset = 0x00325090;
         private UInt32 _Credits_Offset = 0x003280F8;
-        private UInt32 _Buttons_CaveAddress = 0;
+        private UInt32 _Buttons_CaveAddress = 0;        
 
         private UInt32 _CheckIOEmulated_Offset = 0x00083978;
         private UInt32 _P1_X_Offset = 0x003281A0;
@@ -33,12 +34,18 @@ namespace DemulShooter
         //private UInt32 _Buttons_Offset = 0x00328138; //Unused, may be used for Emulated IO
         private UInt32 _Buttons_Injection_Offset = 0x00080E84;
         private UInt32 _Buttons_Injection_Return_Offset = 0x00080E89;
+        //by default, putting a credit does not produce sound, compared to SERVICE key (but credit does not go into BOOKEEPING log)
+        //By doing this we can force the game to play credit sound with CREDIT KEY
+        private NopStruct _Nop_CreditsSound = new NopStruct(0x00083065, 4);
+        private UInt32 _CreditsSoundMod_Offset = 0x00083061;
 
         private HardwareScanCode _Test_Key = HardwareScanCode.DIK_9;
         private HardwareScanCode _Service_Key = HardwareScanCode.DIK_0;
         private HardwareScanCode _P1_Start_Key = HardwareScanCode.DIK_1;
         private HardwareScanCode _P2_Start_Key = HardwareScanCode.DIK_2;
         private HardwareScanCode _Credits_Key = HardwareScanCode.DIK_5;
+        //Disabling adding credits while the key stays pressed
+        private bool _IsCreditsKeyPressed = false;
 
         //Outputs
         private UInt32 _Outputs_Offset = 0x00331F24;
@@ -232,6 +239,10 @@ namespace DemulShooter
             //+83963 -> JE -----> JNE
             //WriteByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x83963, 0xEB);
 
+            //Forcing Sound with Credits insertion
+            SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_CreditsSound);
+            WriteByte((UInt32)_TargetProcess_MemoryBaseAddress + _CreditsSoundMod_Offset, 0x29); //ORiginal code is writing in Ptr+2A, and Service is using Ptr+29
+
             CreateDataBank();
             SetHack_Buttons();
             Logger.WriteLog("Memory Hack complete !");
@@ -358,10 +369,15 @@ namespace DemulShooter
                         }
                         else if (s.scanCode == _Credits_Key)
                         {
-                            Apply_OR_ByteMask(_Buttons_CaveAddress, 0x04);
-                            int Credits = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset, 4), 0);
-                            Credits++;
-                            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset, BitConverter.GetBytes(Credits));
+                            if (!_IsCreditsKeyPressed)
+                            {
+                                Apply_OR_ByteMask(_Buttons_CaveAddress, 0x04);
+                                /*int Credits = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset, 4), 0);
+                                Credits++;
+                                WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset, BitConverter.GetBytes(Credits));*/
+                                WriteByte(0x72811c, 1);
+                                _IsCreditsKeyPressed = true;
+                            } 
                         }
                     }
                     else if ((UInt32)wParam == Win32Define.WM_KEYUP)
@@ -385,6 +401,8 @@ namespace DemulShooter
                         else if (s.scanCode == _Credits_Key)
                         {
                             Apply_AND_ByteMask(_Buttons_CaveAddress, 0xFB);
+                            WriteByte(0x72811c, 0);
+                            _IsCreditsKeyPressed = false;
                         }
                     }
                 }

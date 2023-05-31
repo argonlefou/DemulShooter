@@ -117,7 +117,12 @@ namespace DsCore.MameOutput
         P2_Whip_R,
         P2_Whip_G,
         P2_Whip_B,
-
+        P1_LmpHead,
+        P2_LmpHead,
+        P1_LmpFoot,
+        P2_LmpFoot,
+        P1_LmpFront,  
+        P2_LmpFront,
         Credits = 1000,
         P1_CtmLmpStart,
         P2_CtmLmpStart,

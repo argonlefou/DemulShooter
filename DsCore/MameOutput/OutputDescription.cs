@@ -110,6 +110,12 @@ namespace DsCore.MameOutput
         public static readonly String P2_Whip_R = "P2_Whip_R";    //
         public static readonly String P2_Whip_G = "P2_Whip_G";    //
         public static readonly String P2_Whip_B = "P2_Whip_B";    ///
+        public static readonly String P1_LmpHead = "P1_LmpHead";    //\    
+        public static readonly String P1_LmpFoot = "P1_LmpFoot";  // 
+        public static readonly String P1_LmpFront = "P1_LmpFront";    // LEthal Enforcers 3
+        public static readonly String P2_LmpHead = "P2_LmpHead";    //
+        public static readonly String P2_LmpFoot = "P2_LmpFoot";  //
+        public static readonly String P2_LmpFront = "P2_LmpFront";    ///
 
         public static readonly String P1_GunMotor = "P1_GunMotor";
         public static readonly String P2_GunMotor = "P2_GunMotor";

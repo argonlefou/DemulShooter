@@ -187,6 +187,35 @@ namespace DsCore.Config
         }
         #endregion
 
+
+        //Gundam Data
+        private HardwareScanCode _DIK_Le3_Pedal_P1 = HardwareScanCode.DIK_G;
+        private HardwareScanCode _DIK_Le3_Pedal_P2 = HardwareScanCode.DIK_H;
+        private bool _Le3_Pedal_P1_Enabled = false;
+        private bool _Le3_Pedal_P2_Enabled = false;
+        #region Accessors
+        public bool Le3_Pedal_P1_Enabled
+        {
+            get { return _Le3_Pedal_P1_Enabled; }
+            set { _Le3_Pedal_P1_Enabled = value; }
+        }
+        public bool Le3_Pedal_P2_Enabled
+        {
+            get { return _Le3_Pedal_P2_Enabled; }
+            set { _Le3_Pedal_P2_Enabled = value; }
+        }
+        public HardwareScanCode DIK_Le3_Pedal_P1
+        {
+            get { return _DIK_Le3_Pedal_P1; }
+            set { _DIK_Le3_Pedal_P1 = value; }
+        }
+        public HardwareScanCode DIK_Le3_Pedal_P2
+        {
+            get { return _DIK_Le3_Pedal_P2; }
+            set { _DIK_Le3_Pedal_P2 = value; }
+        }
+        #endregion
+
         //Wild West Shoutout Path and Keys
         private String _Wws_Path = string.Empty;
         private HardwareScanCode _DIK_Wws_Test = HardwareScanCode.DIK_0;
@@ -277,6 +306,10 @@ namespace DsCore.Config
         private int _OpGhost_CreditsToStart = 2;
         private int _OpGhost_CreditsToContinue = 1;
         private int _OpGhost_CoinsByCredits = 2;
+        //Other options
+        private bool _OpGhost_SeparateButtons = false;
+        private HardwareScanCode _DIK_OpGhost_Action_P1 = HardwareScanCode.DIK_G;
+        private HardwareScanCode _DIK_OpGhost_Action_P2 = HardwareScanCode.DIK_H;
         #region Accessors
         public bool OpGhost_EnableFreeplay
         {
@@ -298,6 +331,22 @@ namespace DsCore.Config
             get { return _OpGhost_CoinsByCredits; }
             set { _OpGhost_CoinsByCredits = value; }
         }
+        public bool OpGhost_SeparateButtons
+        {
+            get { return _OpGhost_SeparateButtons; }
+            set { _OpGhost_SeparateButtons = value; }
+        }
+        public HardwareScanCode DIK_OpGhost_Action_P1
+        {
+            get { return _DIK_OpGhost_Action_P1; }
+            set { _DIK_OpGhost_Action_P1 = value; }
+        }
+        public HardwareScanCode DIK_OpGhost_Action_P2
+        {
+            get { return _DIK_OpGhost_Action_P2; }
+            set { _DIK_OpGhost_Action_P2 = value; }
+        }
+
         #endregion
 
         //Outputs settings
@@ -563,7 +612,27 @@ namespace DsCore.Config
                                     if (!int.TryParse(StrValue, out _OpGhost_CoinsByCredits))
                                         Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
-
+                                else if (StrKey.ToLower().Equals("opghost_separatebuttons"))
+                                {
+                                    if (!bool.TryParse(StrValue, out _OpGhost_SeparateButtons))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
+                                else if (StrKey.ToLower().Equals("opghost_p1_action_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_OpGhost_Action_P1 = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("opghost_p2_action_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_OpGhost_Action_P2 = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
                                 else if (StrKey.ToLower().Equals("rpcs3_p1_start"))
                                 {
                                     try
@@ -617,6 +686,32 @@ namespace DsCore.Config
                                     try
                                     {
                                         _DIK_Rpcs3_3D_Switch = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("le3_p1_pedal_enable"))
+                                {
+                                    if (!bool.TryParse(StrValue, out _Le3_Pedal_P1_Enabled))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
+                                else if (StrKey.ToLower().Equals("le3_p2_pedal_enable"))
+                                {
+                                    if (!bool.TryParse(StrValue, out _Le3_Pedal_P2_Enabled))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
+                                else if (StrKey.ToLower().Equals("le3_p1_pedal_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Le3_Pedal_P1 = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("le3_p2_pedal_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Le3_Pedal_P2 = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
                                     }
                                     catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
                                 }
@@ -813,6 +908,9 @@ namespace DsCore.Config
                     sr.WriteLine("OpGhost_CreditsToStart = " + _OpGhost_CreditsToStart.ToString());
                     sr.WriteLine("OpGhost_CreditsToContinue = " + _OpGhost_CreditsToContinue.ToString());
                     sr.WriteLine("OpGhost_CoinsByCredits = " + _OpGhost_CoinsByCredits.ToString());
+                    sr.WriteLine("OpGhost_SeparateButtons = " + _OpGhost_SeparateButtons.ToString());
+                    sr.WriteLine("OpGhost_P1_ACTION_KEY = " + _DIK_OpGhost_Action_P1.ToString());
+                    sr.WriteLine("OpGhost_P2_ACTION_KEY = " + _DIK_OpGhost_Action_P2.ToString());
                     sr.WriteLine("");
                     sr.WriteLine(";RPCS3 Keys (System 357 only)");
                     sr.WriteLine("RPCS3_P1_START = " + _DIK_Rpcs3_P1_Start.ToString());
@@ -822,7 +920,13 @@ namespace DsCore.Config
                     sr.WriteLine("RPCS3_DOWN = " + _DIK_Rpcs3_Down.ToString());
                     sr.WriteLine("RPCS3_ENTER = " + _DIK_Rpcs3_Enter.ToString());
                     sr.WriteLine("RPCS3_3D = " + _DIK_Rpcs3_3D_Switch.ToString());
-                    sr.WriteLine(""); 
+                    sr.WriteLine("");
+                    sr.WriteLine(";Enable Pedal-Mode for Lethal Enforcers 3, and set Keys");
+                    sr.WriteLine("LE3_P1_PEDAL_ENABLE = " + _Le3_Pedal_P1_Enabled.ToString());
+                    sr.WriteLine("LE3_P1_PEDAL_KEY = " + _DIK_Le3_Pedal_P1.ToString());
+                    sr.WriteLine("LE3_P2_PEDAL_ENABLE = " + _Le3_Pedal_P2_Enabled.ToString());
+                    sr.WriteLine("LE3_P2_PEDAL_KEY = " + _DIK_Le3_Pedal_P2.ToString());
+                    sr.WriteLine("");
                     sr.WriteLine(";Output Settings");
                     sr.WriteLine("OutputEnabled = " + _OutputEnabled.ToString());
                     sr.WriteLine("OutputPollingDelay = " + _OutputPollingDelay.ToString());

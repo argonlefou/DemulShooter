@@ -152,12 +152,25 @@ namespace DemulShooter_GUI
             Txt_HF4_Browse.Text = _Configurator.HF4_Path;
             TrackBar_HF4_Cover.Value = _Configurator.HF4_CoverSensibility;
 
-            //Fill Wild West Shoutout tab
-            Logger.WriteLog("Initializing GUI [Wild West Shoutout] pages...");
-            Txt_Wws_GamePath.Text = _Configurator.Wws_Path;
-            Txt_Wws_P1Coin.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_P1Coin);
-            Txt_Wws_P2Coin.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_P2Coin);
-            Txt_Wws_Test.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_Test);
+            //Fill Lethal Enforcers 3 tab
+            Logger.WriteLog("Initializing GUI [Lethal Enforcers 3] pages...");
+            Chk_Le3_EnablePedal1.Checked = _Configurator.Le3_Pedal_P1_Enabled;
+            Chk_Le3_EnablePedal2.Checked = _Configurator.Le3_Pedal_P2_Enabled;
+            TXT_LE3_PEDAL_1.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Le3_Pedal_P1);
+            TXT_LE3_PEDAL_2.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Le3_Pedal_P2);            
+
+            //Fill Operation GHOST Tab
+            Logger.WriteLog("Initializing GUI [Operation G.H.O.S.T] pages...");
+            if (_Configurator.OpGhost_EnableFreeplay)
+                Cbox_OpGhost_Freeplay.SelectedIndex = 1;
+            else
+                Cbox_OpGhost_Freeplay.SelectedIndex = 0;
+            Cbox_OpGhost_CreditsByCoin.SelectedIndex = _Configurator.OpGhost_CoinsByCredits;
+            Cbox_OpGhost_CreditsToStart.SelectedIndex = _Configurator.OpGhost_CreditsToStart;
+            Cbox_OpGhost_CreditsToContinue.SelectedIndex = _Configurator.OpGhost_CreditsToContinue;
+            Chk_OpGhost_SeparateButton.Checked = _Configurator.OpGhost_SeparateButtons;
+            TXT_OPGHOST_ACTION_P1.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_OpGhost_Action_P1);
+            TXT_OPGHOST_ACTION_P2.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_OpGhost_Action_P2);
 
             //Fill Rabbids Hollywood tab
             Logger.WriteLog("Initializing GUI [Rabbids Hollywood] pages...");
@@ -172,6 +185,13 @@ namespace DemulShooter_GUI
             Txt_Rpcs3_Down.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_Down);
             Txt_Rpcs3_Enter.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_Enter);
             Txt_Rpcs3_3D_Switch.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_3D_Switch);
+
+            //Fill Wild West Shoutout tab
+            Logger.WriteLog("Initializing GUI [Wild West Shoutout] pages...");
+            Txt_Wws_GamePath.Text = _Configurator.Wws_Path;
+            Txt_Wws_P1Coin.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_P1Coin);
+            Txt_Wws_P2Coin.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_P2Coin);
+            Txt_Wws_Test.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_Test);
 
             //Fill Output Tab
             Logger.WriteLog("Initializing GUI [Output] pages...");
@@ -833,6 +853,63 @@ namespace DemulShooter_GUI
 
         #endregion                  
         
+        #region Lethal Enforcer 3 tab
+
+        private void Chk_Le3_EnablePedal1_CheckedChanged(object sender, EventArgs e)
+        {
+            _Configurator.Le3_Pedal_P1_Enabled = Chk_Le3_EnablePedal1.Checked;
+            if (_Configurator.Le3_Pedal_P1_Enabled)
+                TXT_LE3_PEDAL_1.Enabled = true;
+            else
+                TXT_LE3_PEDAL_1.Enabled = false;
+        }
+
+        private void Chk_Le3_EnablePedal2_CheckedChanged(object sender, EventArgs e)
+        {
+            _Configurator.Le3_Pedal_P2_Enabled = Chk_Le3_EnablePedal2.Checked;
+            if (_Configurator.Le3_Pedal_P2_Enabled)
+                TXT_LE3_PEDAL_2.Enabled = true;
+            else
+                TXT_LE3_PEDAL_2.Enabled = false;
+        }
+
+        private void Btn_Save_Le3_Click(object sender, EventArgs e)
+        {
+            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+                MessageBox.Show("Configuration saved !");
+            else
+                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        #endregion
+
+        #region Operation Ghost Tab
+
+        private void Chk_OpGhost_SeparateButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _Configurator.OpGhost_SeparateButtons = Chk_OpGhost_SeparateButton.Checked;
+            if (_Configurator.OpGhost_SeparateButtons)
+            {
+                TXT_OPGHOST_ACTION_P1.Enabled = true;
+                TXT_OPGHOST_ACTION_P2.Enabled = true;
+            }
+            else
+            {
+                TXT_OPGHOST_ACTION_P1.Enabled = false;
+                TXT_OPGHOST_ACTION_P2.Enabled = false;
+            }
+        }
+
+        private void Btn_Save_OpGhost_Click(object sender, EventArgs e)
+        {
+            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+                MessageBox.Show("Configuration saved !");
+            else
+                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        #endregion
+
         #region Wild West Shoutoout tab
 
         private void Btn_Wws_GamePath_Click(object sender, EventArgs e)
@@ -1164,6 +1241,14 @@ namespace DemulShooter_GUI
                             _Configurator.DIK_Rpcs3_Enter = s.scanCode;
                         else if (_SelectedTextBox == Txt_Rpcs3_3D_Switch)
                             _Configurator.DIK_Rpcs3_3D_Switch = s.scanCode;
+                        else if (_SelectedTextBox == TXT_LE3_PEDAL_1)
+                            _Configurator.DIK_Le3_Pedal_P1 = s.scanCode;
+                        else if (_SelectedTextBox == TXT_LE3_PEDAL_2)
+                            _Configurator.DIK_Le3_Pedal_P2 = s.scanCode;
+                        else if (_SelectedTextBox == TXT_OPGHOST_ACTION_P1)
+                            _Configurator.DIK_OpGhost_Action_P1 = s.scanCode;
+                        else if (_SelectedTextBox == TXT_OPGHOST_ACTION_P2)
+                            _Configurator.DIK_OpGhost_Action_P2 = s.scanCode;
                         
                         _SelectedTextBox = null;
                         _Start_KeyRecord = false;
@@ -1252,8 +1337,6 @@ namespace DemulShooter_GUI
                 return false;
             }
             return true;
-        }
-
-                            
+        }     
     }        
 }

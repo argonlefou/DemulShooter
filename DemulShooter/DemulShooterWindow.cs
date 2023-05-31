@@ -419,7 +419,7 @@ namespace DemulShooter
                             } break;
                         case "le3":
                             {
-                                _Game = new Game_KonamiLethalEnforcers3(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_KonamiLethalEnforcers3(_Rom.ToLower(), _Configurator.Le3_Pedal_P1_Enabled, _Configurator.DIK_Le3_Pedal_P1, _Configurator.Le3_Pedal_P2_Enabled, _Configurator.DIK_Le3_Pedal_P2, _NoInput, isVerbose);
                             } break;
                         case "wartran":
                             {
@@ -531,7 +531,7 @@ namespace DemulShooter
                             } break;
                         case "og":
                             {
-                                _Game = new Game_RwOpGhost(_Rom.ToLower(), _Configurator.OpGhost_EnableFreeplay, _Configurator.OpGhost_CreditsToStart, _Configurator.OpGhost_CreditsToContinue, _Configurator.OpGhost_CoinsByCredits, _NoInput, isVerbose);
+                                _Game = new Game_RwOpGhost(_Rom.ToLower(), _Configurator.OpGhost_EnableFreeplay, _Configurator.OpGhost_CreditsToStart, _Configurator.OpGhost_CreditsToContinue, _Configurator.OpGhost_CoinsByCredits, _Configurator.OpGhost_SeparateButtons, _Configurator.DIK_OpGhost_Action_P1, _Configurator.DIK_OpGhost_Action_P2, _NoInput, isVerbose);
                             } break;
                         case "sdr":
                             {
@@ -645,17 +645,7 @@ namespace DemulShooter
                 //W.I.P Games
                 else if (_Target.Equals("wip"))
                 {
-                    switch (_Rom.ToLower())
-                    {
-                        case "wartran":
-                            {
-                                _Game = new Game_WndWartran(_Rom.ToLower(), _NoInput, isVerbose);
-                            } break;
-                        case "le3":
-                            {
-                                _Game = new Game_KonamiLethalEnforcers3(_Rom.ToLower(), _NoInput, isVerbose);
-                            }break;
-                    }
+                    
                 }
 
                 _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);
