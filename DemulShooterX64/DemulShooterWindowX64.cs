@@ -335,7 +335,11 @@ namespace DemulShooterX64
                 //UNIS Games
                 else if (_Target.Equals("unis"))
                 {
-                    if (_Rom.ToLower().Equals("nha"))
+                    if (_Rom.ToLower().Equals("eai"))
+                    {
+                        _Game = new Game_UnisElevatorActionInvasion(_Rom.ToLower(), _Configurator, _NoInput, isVerbose);
+                    }
+                    else if (_Rom.ToLower().Equals("nha"))
                     {
                         _Game = new Game_UnisNightHunterArcade(_Rom.ToLower(), _NoInput, isVerbose);
                     }

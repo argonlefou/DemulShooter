@@ -104,6 +104,17 @@
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.Btn_HF4_Install = new System.Windows.Forms.Button();
             this.label46 = new System.Windows.Forms.Label();
+            this.Tab_LethalEnforcer3 = new System.Windows.Forms.TabPage();
+            this.Btn_Save_Le3 = new System.Windows.Forms.Button();
+            this.label58 = new System.Windows.Forms.Label();
+            this.groupBox14 = new System.Windows.Forms.GroupBox();
+            this.label59 = new System.Windows.Forms.Label();
+            this.TXT_LE3_PEDAL_2 = new System.Windows.Forms.TextBox();
+            this.Chk_Le3_EnablePedal2 = new System.Windows.Forms.CheckBox();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.label60 = new System.Windows.Forms.Label();
+            this.TXT_LE3_PEDAL_1 = new System.Windows.Forms.TextBox();
+            this.Chk_Le3_EnablePedal1 = new System.Windows.Forms.CheckBox();
             this.Tab_M2 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -116,6 +127,24 @@
             this.TXT_CH_VIS = new System.Windows.Forms.TextBox();
             this.Btn_M2Scripts = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.Tab_OpGhost = new System.Windows.Forms.TabPage();
+            this.label67 = new System.Windows.Forms.Label();
+            this.groupBox18 = new System.Windows.Forms.GroupBox();
+            this.Cbox_OpGhost_CreditsToContinue = new System.Windows.Forms.ComboBox();
+            this.label66 = new System.Windows.Forms.Label();
+            this.Cbox_OpGhost_CreditsToStart = new System.Windows.Forms.ComboBox();
+            this.label65 = new System.Windows.Forms.Label();
+            this.Cbox_OpGhost_CreditsByCoin = new System.Windows.Forms.ComboBox();
+            this.label64 = new System.Windows.Forms.Label();
+            this.Cbox_OpGhost_Freeplay = new System.Windows.Forms.ComboBox();
+            this.label62 = new System.Windows.Forms.Label();
+            this.Btn_Save_OpGhost = new System.Windows.Forms.Button();
+            this.Gbox_OpGhost_Buttons = new System.Windows.Forms.GroupBox();
+            this.label61 = new System.Windows.Forms.Label();
+            this.TXT_OPGHOST_ACTION_P2 = new System.Windows.Forms.TextBox();
+            this.label63 = new System.Windows.Forms.Label();
+            this.TXT_OPGHOST_ACTION_P1 = new System.Windows.Forms.TextBox();
+            this.Chk_OpGhost_SeparateButton = new System.Windows.Forms.CheckBox();
             this.Tab_RabbidsHollywod = new System.Windows.Forms.TabPage();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.label36 = new System.Windows.Forms.Label();
@@ -200,35 +229,30 @@
             this.Bgw_XInput = new System.ComponentModel.BackgroundWorker();
             this.Cbo_PageSettings = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
-            this.Tab_OpGhost = new System.Windows.Forms.TabPage();
-            this.Tab_LethalEnforcer3 = new System.Windows.Forms.TabPage();
-            this.Btn_Save_Le3 = new System.Windows.Forms.Button();
-            this.label58 = new System.Windows.Forms.Label();
-            this.groupBox14 = new System.Windows.Forms.GroupBox();
-            this.label59 = new System.Windows.Forms.Label();
-            this.TXT_LE3_PEDAL_2 = new System.Windows.Forms.TextBox();
-            this.Chk_Le3_EnablePedal2 = new System.Windows.Forms.CheckBox();
-            this.groupBox15 = new System.Windows.Forms.GroupBox();
-            this.label60 = new System.Windows.Forms.Label();
-            this.TXT_LE3_PEDAL_1 = new System.Windows.Forms.TextBox();
-            this.Chk_Le3_EnablePedal1 = new System.Windows.Forms.CheckBox();
-            this.Btn_Save_OpGhost = new System.Windows.Forms.Button();
-            this.Gbox_OpGhost_Buttons = new System.Windows.Forms.GroupBox();
-            this.label63 = new System.Windows.Forms.Label();
-            this.TXT_OPGHOST_ACTION_P1 = new System.Windows.Forms.TextBox();
-            this.Chk_OpGhost_SeparateButton = new System.Windows.Forms.CheckBox();
-            this.groupBox18 = new System.Windows.Forms.GroupBox();
-            this.label61 = new System.Windows.Forms.Label();
-            this.TXT_OPGHOST_ACTION_P2 = new System.Windows.Forms.TextBox();
-            this.label62 = new System.Windows.Forms.Label();
-            this.Cbox_OpGhost_Freeplay = new System.Windows.Forms.ComboBox();
-            this.Cbox_OpGhost_CreditsByCoin = new System.Windows.Forms.ComboBox();
-            this.label64 = new System.Windows.Forms.Label();
-            this.Cbox_OpGhost_CreditsToStart = new System.Windows.Forms.ComboBox();
-            this.label65 = new System.Windows.Forms.Label();
-            this.Cbox_OpGhost_CreditsToContinue = new System.Windows.Forms.ComboBox();
-            this.label66 = new System.Windows.Forms.Label();
-            this.label67 = new System.Windows.Forms.Label();
+            this.Tab_EAInvasion = new System.Windows.Forms.TabPage();
+            this.label68 = new System.Windows.Forms.Label();
+            this.Btn_EAI_Save = new System.Windows.Forms.Button();
+            this.groupBox16 = new System.Windows.Forms.GroupBox();
+            this.groupBox17 = new System.Windows.Forms.GroupBox();
+            this.Txt_EAI_Settings = new System.Windows.Forms.TextBox();
+            this.label76 = new System.Windows.Forms.Label();
+            this.Txt_EAI_P1_Start = new System.Windows.Forms.TextBox();
+            this.Txt_EAI_P1_Credits = new System.Windows.Forms.TextBox();
+            this.label69 = new System.Windows.Forms.Label();
+            this.Txt_EAI_Enter = new System.Windows.Forms.TextBox();
+            this.label70 = new System.Windows.Forms.Label();
+            this.Txt_EAI_Up = new System.Windows.Forms.TextBox();
+            this.Txt_EAI_Down = new System.Windows.Forms.TextBox();
+            this.label71 = new System.Windows.Forms.Label();
+            this.label72 = new System.Windows.Forms.Label();
+            this.label73 = new System.Windows.Forms.Label();
+            this.Txt_EAI_P2_Start = new System.Windows.Forms.TextBox();
+            this.label74 = new System.Windows.Forms.Label();
+            this.label75 = new System.Windows.Forms.Label();
+            this.Txt_EAI_P2_Credits = new System.Windows.Forms.TextBox();
+            this.Btn_EAI_Open = new System.Windows.Forms.Button();
+            this.Txt_EAI_FolderPath = new System.Windows.Forms.TextBox();
+            this.Btn_EAI_Patch = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.Tab_P1.SuspendLayout();
             this.Tab_P2.SuspendLayout();
@@ -249,8 +273,14 @@
             this.groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TrackBar_HF4_Cover)).BeginInit();
             this.groupBox9.SuspendLayout();
+            this.Tab_LethalEnforcer3.SuspendLayout();
+            this.groupBox14.SuspendLayout();
+            this.groupBox15.SuspendLayout();
             this.Tab_M2.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.Tab_OpGhost.SuspendLayout();
+            this.groupBox18.SuspendLayout();
+            this.Gbox_OpGhost_Buttons.SuspendLayout();
             this.Tab_RabbidsHollywod.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.Tab_RPCS3.SuspendLayout();
@@ -262,12 +292,9 @@
             this.groupBox1.SuspendLayout();
             this.Tab_Outputs.SuspendLayout();
             this.Grp_Outputs.SuspendLayout();
-            this.Tab_OpGhost.SuspendLayout();
-            this.Tab_LethalEnforcer3.SuspendLayout();
-            this.groupBox14.SuspendLayout();
-            this.groupBox15.SuspendLayout();
-            this.Gbox_OpGhost_Buttons.SuspendLayout();
-            this.groupBox18.SuspendLayout();
+            this.Tab_EAInvasion.SuspendLayout();
+            this.groupBox16.SuspendLayout();
+            this.groupBox17.SuspendLayout();
             this.SuspendLayout();
             // 
             // Btn_Save_P1
@@ -292,6 +319,7 @@
             this.tabControl1.Controls.Add(this.Tab_AnalogCalib);
             this.tabControl1.Controls.Add(this.Tab_ActLAbs);
             this.tabControl1.Controls.Add(this.Tab_Dolphin);
+            this.tabControl1.Controls.Add(this.Tab_EAInvasion);
             this.tabControl1.Controls.Add(this.Tab_GSOZ);
             this.tabControl1.Controls.Add(this.Tab_HeavyFire3);
             this.tabControl1.Controls.Add(this.Tab_HeavyFire4);
@@ -1132,6 +1160,131 @@
             this.label46.Text = "Click this button to install needed Dinput and Xinput dll into the game\'s folder." +
                 "";
             // 
+            // Tab_LethalEnforcer3
+            // 
+            this.Tab_LethalEnforcer3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_LethalEnforcer3.Controls.Add(this.Btn_Save_Le3);
+            this.Tab_LethalEnforcer3.Controls.Add(this.label58);
+            this.Tab_LethalEnforcer3.Controls.Add(this.groupBox14);
+            this.Tab_LethalEnforcer3.Controls.Add(this.groupBox15);
+            this.Tab_LethalEnforcer3.Location = new System.Drawing.Point(4, 5);
+            this.Tab_LethalEnforcer3.Name = "Tab_LethalEnforcer3";
+            this.Tab_LethalEnforcer3.Size = new System.Drawing.Size(581, 334);
+            this.Tab_LethalEnforcer3.TabIndex = 19;
+            this.Tab_LethalEnforcer3.Text = "Lethal Enforcers 3";
+            this.Tab_LethalEnforcer3.UseVisualStyleBackColor = true;
+            // 
+            // Btn_Save_Le3
+            // 
+            this.Btn_Save_Le3.Location = new System.Drawing.Point(410, 259);
+            this.Btn_Save_Le3.Name = "Btn_Save_Le3";
+            this.Btn_Save_Le3.Size = new System.Drawing.Size(145, 37);
+            this.Btn_Save_Le3.TabIndex = 60;
+            this.Btn_Save_Le3.Text = "Save Config";
+            this.Btn_Save_Le3.UseVisualStyleBackColor = true;
+            this.Btn_Save_Le3.Click += new System.EventHandler(this.Btn_Save_Le3_Click);
+            // 
+            // label58
+            // 
+            this.label58.AutoSize = true;
+            this.label58.Location = new System.Drawing.Point(9, 200);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(318, 96);
+            this.label58.TabIndex = 59;
+            this.label58.Text = "Default : \r\nHide in game by pointing the gun out of screen.\r\n\r\nPedal-Mode :\r\nUse " +
+                "a supplementary button to hide, like Time Crisis.\r\nPointing the gun out of scree" +
+                "n won\'t hide anymore.";
+            // 
+            // groupBox14
+            // 
+            this.groupBox14.Controls.Add(this.label59);
+            this.groupBox14.Controls.Add(this.TXT_LE3_PEDAL_2);
+            this.groupBox14.Controls.Add(this.Chk_Le3_EnablePedal2);
+            this.groupBox14.Location = new System.Drawing.Point(12, 103);
+            this.groupBox14.Name = "groupBox14";
+            this.groupBox14.Size = new System.Drawing.Size(562, 75);
+            this.groupBox14.TabIndex = 58;
+            this.groupBox14.TabStop = false;
+            this.groupBox14.Text = "Player 2 :";
+            // 
+            // label59
+            // 
+            this.label59.AutoSize = true;
+            this.label59.Location = new System.Drawing.Point(228, 36);
+            this.label59.Name = "label59";
+            this.label59.Size = new System.Drawing.Size(118, 16);
+            this.label59.TabIndex = 54;
+            this.label59.Text = "Set the pedal key :";
+            // 
+            // TXT_LE3_PEDAL_2
+            // 
+            this.TXT_LE3_PEDAL_2.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_LE3_PEDAL_2.Enabled = false;
+            this.TXT_LE3_PEDAL_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_LE3_PEDAL_2.Location = new System.Drawing.Point(352, 34);
+            this.TXT_LE3_PEDAL_2.Name = "TXT_LE3_PEDAL_2";
+            this.TXT_LE3_PEDAL_2.ReadOnly = true;
+            this.TXT_LE3_PEDAL_2.Size = new System.Drawing.Size(127, 21);
+            this.TXT_LE3_PEDAL_2.TabIndex = 54;
+            this.TXT_LE3_PEDAL_2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_LE3_PEDAL_2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Chk_Le3_EnablePedal2
+            // 
+            this.Chk_Le3_EnablePedal2.AutoSize = true;
+            this.Chk_Le3_EnablePedal2.Location = new System.Drawing.Point(9, 36);
+            this.Chk_Le3_EnablePedal2.Name = "Chk_Le3_EnablePedal2";
+            this.Chk_Le3_EnablePedal2.Size = new System.Drawing.Size(158, 20);
+            this.Chk_Le3_EnablePedal2.TabIndex = 53;
+            this.Chk_Le3_EnablePedal2.Text = "Enable \"Pedal-Mode\"";
+            this.Chk_Le3_EnablePedal2.UseVisualStyleBackColor = true;
+            this.Chk_Le3_EnablePedal2.CheckedChanged += new System.EventHandler(this.Chk_Le3_EnablePedal2_CheckedChanged);
+            // 
+            // groupBox15
+            // 
+            this.groupBox15.Controls.Add(this.label60);
+            this.groupBox15.Controls.Add(this.TXT_LE3_PEDAL_1);
+            this.groupBox15.Controls.Add(this.Chk_Le3_EnablePedal1);
+            this.groupBox15.Location = new System.Drawing.Point(12, 22);
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Size = new System.Drawing.Size(562, 75);
+            this.groupBox15.TabIndex = 57;
+            this.groupBox15.TabStop = false;
+            this.groupBox15.Text = "Player 1 :";
+            // 
+            // label60
+            // 
+            this.label60.AutoSize = true;
+            this.label60.Location = new System.Drawing.Point(228, 36);
+            this.label60.Name = "label60";
+            this.label60.Size = new System.Drawing.Size(118, 16);
+            this.label60.TabIndex = 53;
+            this.label60.Text = "Set the pedal key :";
+            // 
+            // TXT_LE3_PEDAL_1
+            // 
+            this.TXT_LE3_PEDAL_1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_LE3_PEDAL_1.Enabled = false;
+            this.TXT_LE3_PEDAL_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_LE3_PEDAL_1.Location = new System.Drawing.Point(352, 34);
+            this.TXT_LE3_PEDAL_1.Name = "TXT_LE3_PEDAL_1";
+            this.TXT_LE3_PEDAL_1.ReadOnly = true;
+            this.TXT_LE3_PEDAL_1.Size = new System.Drawing.Size(127, 21);
+            this.TXT_LE3_PEDAL_1.TabIndex = 52;
+            this.TXT_LE3_PEDAL_1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_LE3_PEDAL_1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Chk_Le3_EnablePedal1
+            // 
+            this.Chk_Le3_EnablePedal1.AutoSize = true;
+            this.Chk_Le3_EnablePedal1.Location = new System.Drawing.Point(9, 36);
+            this.Chk_Le3_EnablePedal1.Name = "Chk_Le3_EnablePedal1";
+            this.Chk_Le3_EnablePedal1.Size = new System.Drawing.Size(158, 20);
+            this.Chk_Le3_EnablePedal1.TabIndex = 0;
+            this.Chk_Le3_EnablePedal1.Text = "Enable \"Pedal-Mode\"";
+            this.Chk_Le3_EnablePedal1.UseVisualStyleBackColor = true;
+            this.Chk_Le3_EnablePedal1.CheckedChanged += new System.EventHandler(this.Chk_Le3_EnablePedal1_CheckedChanged);
+            // 
             // Tab_M2
             // 
             this.Tab_M2.BackColor = System.Drawing.SystemColors.Control;
@@ -1271,6 +1424,233 @@
             this.label1.Text = "Click the button to install lua scripts for custom crosshair\r\nin nebula Model2 Em" +
                 "ulator.\r\nYou will be asked for the emulator .exe location\r\n\r\nExisting files will" +
                 " be overwritten !";
+            // 
+            // Tab_OpGhost
+            // 
+            this.Tab_OpGhost.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_OpGhost.Controls.Add(this.label67);
+            this.Tab_OpGhost.Controls.Add(this.groupBox18);
+            this.Tab_OpGhost.Controls.Add(this.Btn_Save_OpGhost);
+            this.Tab_OpGhost.Controls.Add(this.Gbox_OpGhost_Buttons);
+            this.Tab_OpGhost.Location = new System.Drawing.Point(4, 5);
+            this.Tab_OpGhost.Name = "Tab_OpGhost";
+            this.Tab_OpGhost.Size = new System.Drawing.Size(581, 334);
+            this.Tab_OpGhost.TabIndex = 18;
+            this.Tab_OpGhost.Text = "Operation G.H.O.S.T";
+            this.Tab_OpGhost.UseVisualStyleBackColor = true;
+            // 
+            // label67
+            // 
+            this.label67.AutoSize = true;
+            this.label67.Location = new System.Drawing.Point(7, 239);
+            this.label67.Name = "label67";
+            this.label67.Size = new System.Drawing.Size(529, 80);
+            this.label67.TabIndex = 66;
+            this.label67.Text = resources.GetString("label67.Text");
+            // 
+            // groupBox18
+            // 
+            this.groupBox18.Controls.Add(this.Cbox_OpGhost_CreditsToContinue);
+            this.groupBox18.Controls.Add(this.label66);
+            this.groupBox18.Controls.Add(this.Cbox_OpGhost_CreditsToStart);
+            this.groupBox18.Controls.Add(this.label65);
+            this.groupBox18.Controls.Add(this.Cbox_OpGhost_CreditsByCoin);
+            this.groupBox18.Controls.Add(this.label64);
+            this.groupBox18.Controls.Add(this.Cbox_OpGhost_Freeplay);
+            this.groupBox18.Controls.Add(this.label62);
+            this.groupBox18.Location = new System.Drawing.Point(10, 15);
+            this.groupBox18.Name = "groupBox18";
+            this.groupBox18.Size = new System.Drawing.Size(280, 163);
+            this.groupBox18.TabIndex = 65;
+            this.groupBox18.TabStop = false;
+            this.groupBox18.Text = "Coin Settings";
+            // 
+            // Cbox_OpGhost_CreditsToContinue
+            // 
+            this.Cbox_OpGhost_CreditsToContinue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Cbox_OpGhost_CreditsToContinue.FormattingEnabled = true;
+            this.Cbox_OpGhost_CreditsToContinue.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"});
+            this.Cbox_OpGhost_CreditsToContinue.Location = new System.Drawing.Point(183, 131);
+            this.Cbox_OpGhost_CreditsToContinue.Name = "Cbox_OpGhost_CreditsToContinue";
+            this.Cbox_OpGhost_CreditsToContinue.Size = new System.Drawing.Size(77, 24);
+            this.Cbox_OpGhost_CreditsToContinue.TabIndex = 8;
+            this.Cbox_OpGhost_CreditsToContinue.SelectedIndexChanged += new System.EventHandler(this.Cbox_OpGhost_CreditsToContinue_SelectedIndexChanged);
+            // 
+            // label66
+            // 
+            this.label66.AutoSize = true;
+            this.label66.Location = new System.Drawing.Point(9, 134);
+            this.label66.Name = "label66";
+            this.label66.Size = new System.Drawing.Size(168, 16);
+            this.label66.TabIndex = 7;
+            this.label66.Text = "CREDITS TO CONTINUE :";
+            // 
+            // Cbox_OpGhost_CreditsToStart
+            // 
+            this.Cbox_OpGhost_CreditsToStart.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Cbox_OpGhost_CreditsToStart.FormattingEnabled = true;
+            this.Cbox_OpGhost_CreditsToStart.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"});
+            this.Cbox_OpGhost_CreditsToStart.Location = new System.Drawing.Point(183, 101);
+            this.Cbox_OpGhost_CreditsToStart.Name = "Cbox_OpGhost_CreditsToStart";
+            this.Cbox_OpGhost_CreditsToStart.Size = new System.Drawing.Size(77, 24);
+            this.Cbox_OpGhost_CreditsToStart.TabIndex = 6;
+            this.Cbox_OpGhost_CreditsToStart.SelectedIndexChanged += new System.EventHandler(this.Cbox_OpGhost_CreditsToStart_SelectedIndexChanged);
+            // 
+            // label65
+            // 
+            this.label65.AutoSize = true;
+            this.label65.Location = new System.Drawing.Point(9, 104);
+            this.label65.Name = "label65";
+            this.label65.Size = new System.Drawing.Size(144, 16);
+            this.label65.TabIndex = 5;
+            this.label65.Text = "CREDITS TO START :";
+            // 
+            // Cbox_OpGhost_CreditsByCoin
+            // 
+            this.Cbox_OpGhost_CreditsByCoin.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Cbox_OpGhost_CreditsByCoin.FormattingEnabled = true;
+            this.Cbox_OpGhost_CreditsByCoin.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"});
+            this.Cbox_OpGhost_CreditsByCoin.Location = new System.Drawing.Point(183, 71);
+            this.Cbox_OpGhost_CreditsByCoin.Name = "Cbox_OpGhost_CreditsByCoin";
+            this.Cbox_OpGhost_CreditsByCoin.Size = new System.Drawing.Size(77, 24);
+            this.Cbox_OpGhost_CreditsByCoin.TabIndex = 4;
+            this.Cbox_OpGhost_CreditsByCoin.SelectedIndexChanged += new System.EventHandler(this.Cbox_OpGhost_CreditsByCoin_SelectedIndexChanged);
+            // 
+            // label64
+            // 
+            this.label64.AutoSize = true;
+            this.label64.Location = new System.Drawing.Point(7, 74);
+            this.label64.Name = "label64";
+            this.label64.Size = new System.Drawing.Size(147, 16);
+            this.label64.TabIndex = 3;
+            this.label64.Text = "COIN(S) PER CREDIT :";
+            // 
+            // Cbox_OpGhost_Freeplay
+            // 
+            this.Cbox_OpGhost_Freeplay.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Cbox_OpGhost_Freeplay.FormattingEnabled = true;
+            this.Cbox_OpGhost_Freeplay.Items.AddRange(new object[] {
+            "OFF",
+            "ON"});
+            this.Cbox_OpGhost_Freeplay.Location = new System.Drawing.Point(183, 41);
+            this.Cbox_OpGhost_Freeplay.Name = "Cbox_OpGhost_Freeplay";
+            this.Cbox_OpGhost_Freeplay.Size = new System.Drawing.Size(77, 24);
+            this.Cbox_OpGhost_Freeplay.TabIndex = 2;
+            this.Cbox_OpGhost_Freeplay.SelectedIndexChanged += new System.EventHandler(this.Cbox_OpGhost_Freeplay_SelectedIndexChanged);
+            // 
+            // label62
+            // 
+            this.label62.AutoSize = true;
+            this.label62.Location = new System.Drawing.Point(7, 44);
+            this.label62.Name = "label62";
+            this.label62.Size = new System.Drawing.Size(84, 16);
+            this.label62.TabIndex = 1;
+            this.label62.Text = "FREEPLAY :";
+            // 
+            // Btn_Save_OpGhost
+            // 
+            this.Btn_Save_OpGhost.Location = new System.Drawing.Point(376, 149);
+            this.Btn_Save_OpGhost.Name = "Btn_Save_OpGhost";
+            this.Btn_Save_OpGhost.Size = new System.Drawing.Size(145, 37);
+            this.Btn_Save_OpGhost.TabIndex = 64;
+            this.Btn_Save_OpGhost.Text = "Save Config";
+            this.Btn_Save_OpGhost.UseVisualStyleBackColor = true;
+            this.Btn_Save_OpGhost.Click += new System.EventHandler(this.Btn_Save_OpGhost_Click);
+            // 
+            // Gbox_OpGhost_Buttons
+            // 
+            this.Gbox_OpGhost_Buttons.Controls.Add(this.label61);
+            this.Gbox_OpGhost_Buttons.Controls.Add(this.TXT_OPGHOST_ACTION_P2);
+            this.Gbox_OpGhost_Buttons.Controls.Add(this.label63);
+            this.Gbox_OpGhost_Buttons.Controls.Add(this.TXT_OPGHOST_ACTION_P1);
+            this.Gbox_OpGhost_Buttons.Controls.Add(this.Chk_OpGhost_SeparateButton);
+            this.Gbox_OpGhost_Buttons.Location = new System.Drawing.Point(301, 15);
+            this.Gbox_OpGhost_Buttons.Name = "Gbox_OpGhost_Buttons";
+            this.Gbox_OpGhost_Buttons.Size = new System.Drawing.Size(267, 103);
+            this.Gbox_OpGhost_Buttons.TabIndex = 61;
+            this.Gbox_OpGhost_Buttons.TabStop = false;
+            // 
+            // label61
+            // 
+            this.label61.AutoSize = true;
+            this.label61.Location = new System.Drawing.Point(27, 69);
+            this.label61.Name = "label61";
+            this.label61.Size = new System.Drawing.Size(78, 16);
+            this.label61.TabIndex = 56;
+            this.label61.Text = "Set P2 key :";
+            // 
+            // TXT_OPGHOST_ACTION_P2
+            // 
+            this.TXT_OPGHOST_ACTION_P2.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_OPGHOST_ACTION_P2.Enabled = false;
+            this.TXT_OPGHOST_ACTION_P2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_OPGHOST_ACTION_P2.Location = new System.Drawing.Point(111, 66);
+            this.TXT_OPGHOST_ACTION_P2.Name = "TXT_OPGHOST_ACTION_P2";
+            this.TXT_OPGHOST_ACTION_P2.ReadOnly = true;
+            this.TXT_OPGHOST_ACTION_P2.Size = new System.Drawing.Size(127, 21);
+            this.TXT_OPGHOST_ACTION_P2.TabIndex = 57;
+            this.TXT_OPGHOST_ACTION_P2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_OPGHOST_ACTION_P2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label63
+            // 
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(27, 40);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(78, 16);
+            this.label63.TabIndex = 53;
+            this.label63.Text = "Set P1 key :";
+            // 
+            // TXT_OPGHOST_ACTION_P1
+            // 
+            this.TXT_OPGHOST_ACTION_P1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TXT_OPGHOST_ACTION_P1.Enabled = false;
+            this.TXT_OPGHOST_ACTION_P1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_OPGHOST_ACTION_P1.Location = new System.Drawing.Point(111, 37);
+            this.TXT_OPGHOST_ACTION_P1.Name = "TXT_OPGHOST_ACTION_P1";
+            this.TXT_OPGHOST_ACTION_P1.ReadOnly = true;
+            this.TXT_OPGHOST_ACTION_P1.Size = new System.Drawing.Size(127, 21);
+            this.TXT_OPGHOST_ACTION_P1.TabIndex = 52;
+            this.TXT_OPGHOST_ACTION_P1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TXT_OPGHOST_ACTION_P1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Chk_OpGhost_SeparateButton
+            // 
+            this.Chk_OpGhost_SeparateButton.AutoSize = true;
+            this.Chk_OpGhost_SeparateButton.Location = new System.Drawing.Point(9, 0);
+            this.Chk_OpGhost_SeparateButton.Name = "Chk_OpGhost_SeparateButton";
+            this.Chk_OpGhost_SeparateButton.Size = new System.Drawing.Size(175, 20);
+            this.Chk_OpGhost_SeparateButton.TabIndex = 0;
+            this.Chk_OpGhost_SeparateButton.Text = "Separate ACTION button";
+            this.Chk_OpGhost_SeparateButton.UseVisualStyleBackColor = true;
+            this.Chk_OpGhost_SeparateButton.CheckedChanged += new System.EventHandler(this.Chk_OpGhost_SeparateButton_CheckedChanged);
             // 
             // Tab_RabbidsHollywod
             // 
@@ -2187,6 +2567,7 @@
             "Calibration (Analog devices)",
             "Calibration (Act Labs lightguns)",
             "Dolphin",
+            "Elevator Action Invasion",
             "Gundam : SoZ",
             "Heavy Fire Afghanistan",
             "Heavy Fire Shattered Spear",
@@ -2213,353 +2594,280 @@
             this.label39.TabIndex = 40;
             this.label39.Text = "Page selection :";
             // 
-            // Tab_OpGhost
+            // Tab_EAInvasion
             // 
-            this.Tab_OpGhost.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Tab_OpGhost.Controls.Add(this.label67);
-            this.Tab_OpGhost.Controls.Add(this.groupBox18);
-            this.Tab_OpGhost.Controls.Add(this.Btn_Save_OpGhost);
-            this.Tab_OpGhost.Controls.Add(this.Gbox_OpGhost_Buttons);
-            this.Tab_OpGhost.Location = new System.Drawing.Point(4, 5);
-            this.Tab_OpGhost.Name = "Tab_OpGhost";
-            this.Tab_OpGhost.Size = new System.Drawing.Size(581, 334);
-            this.Tab_OpGhost.TabIndex = 18;
-            this.Tab_OpGhost.Text = "Operation G.H.O.S.T";
-            this.Tab_OpGhost.UseVisualStyleBackColor = true;
+            this.Tab_EAInvasion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_EAInvasion.Controls.Add(this.groupBox17);
+            this.Tab_EAInvasion.Controls.Add(this.groupBox16);
+            this.Tab_EAInvasion.Controls.Add(this.label68);
+            this.Tab_EAInvasion.Location = new System.Drawing.Point(4, 5);
+            this.Tab_EAInvasion.Name = "Tab_EAInvasion";
+            this.Tab_EAInvasion.Size = new System.Drawing.Size(581, 334);
+            this.Tab_EAInvasion.TabIndex = 20;
+            this.Tab_EAInvasion.Text = "Elevator Action Invasion";
+            this.Tab_EAInvasion.UseVisualStyleBackColor = true;
             // 
-            // Tab_LethalEnforcer3
+            // label68
             // 
-            this.Tab_LethalEnforcer3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Tab_LethalEnforcer3.Controls.Add(this.Btn_Save_Le3);
-            this.Tab_LethalEnforcer3.Controls.Add(this.label58);
-            this.Tab_LethalEnforcer3.Controls.Add(this.groupBox14);
-            this.Tab_LethalEnforcer3.Controls.Add(this.groupBox15);
-            this.Tab_LethalEnforcer3.Location = new System.Drawing.Point(4, 5);
-            this.Tab_LethalEnforcer3.Name = "Tab_LethalEnforcer3";
-            this.Tab_LethalEnforcer3.Size = new System.Drawing.Size(581, 334);
-            this.Tab_LethalEnforcer3.TabIndex = 19;
-            this.Tab_LethalEnforcer3.Text = "Lethal Enforcers 3";
-            this.Tab_LethalEnforcer3.UseVisualStyleBackColor = true;
+            this.label68.AutoSize = true;
+            this.label68.Location = new System.Drawing.Point(40, 126);
+            this.label68.Name = "label68";
+            this.label68.Size = new System.Drawing.Size(0, 16);
+            this.label68.TabIndex = 68;
             // 
-            // Btn_Save_Le3
+            // Btn_EAI_Save
             // 
-            this.Btn_Save_Le3.Location = new System.Drawing.Point(410, 259);
-            this.Btn_Save_Le3.Name = "Btn_Save_Le3";
-            this.Btn_Save_Le3.Size = new System.Drawing.Size(145, 37);
-            this.Btn_Save_Le3.TabIndex = 60;
-            this.Btn_Save_Le3.Text = "Save Config";
-            this.Btn_Save_Le3.UseVisualStyleBackColor = true;
-            this.Btn_Save_Le3.Click += new System.EventHandler(this.Btn_Save_Le3_Click);
+            this.Btn_EAI_Save.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Btn_EAI_Save.Location = new System.Drawing.Point(157, 157);
+            this.Btn_EAI_Save.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_EAI_Save.Name = "Btn_EAI_Save";
+            this.Btn_EAI_Save.Size = new System.Drawing.Size(251, 37);
+            this.Btn_EAI_Save.TabIndex = 67;
+            this.Btn_EAI_Save.Text = "Save Key config";
+            this.Btn_EAI_Save.UseVisualStyleBackColor = true;
+            this.Btn_EAI_Save.Click += new System.EventHandler(this.Btn_EAI_Save_Click);
             // 
-            // label58
+            // groupBox16
             // 
-            this.label58.AutoSize = true;
-            this.label58.Location = new System.Drawing.Point(9, 200);
-            this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(318, 96);
-            this.label58.TabIndex = 59;
-            this.label58.Text = "Default : \r\nHide in game by pointing the gun out of screen.\r\n\r\nPedal-Mode :\r\nUse " +
-                "a supplementary button to hide, like Time Crisis.\r\nPointing the gun out of scree" +
-                "n won\'t hide anymore.";
+            this.groupBox16.Controls.Add(this.Btn_EAI_Patch);
+            this.groupBox16.Controls.Add(this.Txt_EAI_FolderPath);
+            this.groupBox16.Controls.Add(this.Btn_EAI_Open);
+            this.groupBox16.Location = new System.Drawing.Point(5, 3);
+            this.groupBox16.Name = "groupBox16";
+            this.groupBox16.Size = new System.Drawing.Size(569, 100);
+            this.groupBox16.TabIndex = 71;
+            this.groupBox16.TabStop = false;
+            this.groupBox16.Text = "Select \"ESGame-Win64-Shipping.exe\" directory to patch the files :";
             // 
-            // groupBox14
+            // groupBox17
             // 
-            this.groupBox14.Controls.Add(this.label59);
-            this.groupBox14.Controls.Add(this.TXT_LE3_PEDAL_2);
-            this.groupBox14.Controls.Add(this.Chk_Le3_EnablePedal2);
-            this.groupBox14.Location = new System.Drawing.Point(12, 103);
-            this.groupBox14.Name = "groupBox14";
-            this.groupBox14.Size = new System.Drawing.Size(562, 75);
-            this.groupBox14.TabIndex = 58;
-            this.groupBox14.TabStop = false;
-            this.groupBox14.Text = "Player 2 :";
+            this.groupBox17.Controls.Add(this.Txt_EAI_Settings);
+            this.groupBox17.Controls.Add(this.label76);
+            this.groupBox17.Controls.Add(this.Txt_EAI_P1_Start);
+            this.groupBox17.Controls.Add(this.Btn_EAI_Save);
+            this.groupBox17.Controls.Add(this.Txt_EAI_P1_Credits);
+            this.groupBox17.Controls.Add(this.label69);
+            this.groupBox17.Controls.Add(this.Txt_EAI_Enter);
+            this.groupBox17.Controls.Add(this.label70);
+            this.groupBox17.Controls.Add(this.Txt_EAI_Up);
+            this.groupBox17.Controls.Add(this.Txt_EAI_Down);
+            this.groupBox17.Controls.Add(this.label71);
+            this.groupBox17.Controls.Add(this.label72);
+            this.groupBox17.Controls.Add(this.label73);
+            this.groupBox17.Controls.Add(this.Txt_EAI_P2_Start);
+            this.groupBox17.Controls.Add(this.label74);
+            this.groupBox17.Controls.Add(this.label75);
+            this.groupBox17.Controls.Add(this.Txt_EAI_P2_Credits);
+            this.groupBox17.Location = new System.Drawing.Point(5, 126);
+            this.groupBox17.Name = "groupBox17";
+            this.groupBox17.Size = new System.Drawing.Size(569, 201);
+            this.groupBox17.TabIndex = 72;
+            this.groupBox17.TabStop = false;
+            this.groupBox17.Text = "To set a key, click a box then push the key on your keyboard :";
             // 
-            // label59
+            // Txt_EAI_Settings
             // 
-            this.label59.AutoSize = true;
-            this.label59.Location = new System.Drawing.Point(228, 36);
-            this.label59.Name = "label59";
-            this.label59.Size = new System.Drawing.Size(118, 16);
-            this.label59.TabIndex = 54;
-            this.label59.Text = "Set the pedal key :";
+            this.Txt_EAI_Settings.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_Settings.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_Settings.Location = new System.Drawing.Point(403, 36);
+            this.Txt_EAI_Settings.Name = "Txt_EAI_Settings";
+            this.Txt_EAI_Settings.ReadOnly = true;
+            this.Txt_EAI_Settings.Size = new System.Drawing.Size(127, 21);
+            this.Txt_EAI_Settings.TabIndex = 85;
+            this.Txt_EAI_Settings.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_Settings.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
             // 
-            // TXT_LE3_PEDAL_2
+            // label76
             // 
-            this.TXT_LE3_PEDAL_2.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_LE3_PEDAL_2.Enabled = false;
-            this.TXT_LE3_PEDAL_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TXT_LE3_PEDAL_2.Location = new System.Drawing.Point(352, 34);
-            this.TXT_LE3_PEDAL_2.Name = "TXT_LE3_PEDAL_2";
-            this.TXT_LE3_PEDAL_2.ReadOnly = true;
-            this.TXT_LE3_PEDAL_2.Size = new System.Drawing.Size(127, 21);
-            this.TXT_LE3_PEDAL_2.TabIndex = 54;
-            this.TXT_LE3_PEDAL_2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_LE3_PEDAL_2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            this.label76.AutoSize = true;
+            this.label76.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label76.Location = new System.Drawing.Point(330, 39);
+            this.label76.Name = "label76";
+            this.label76.Size = new System.Drawing.Size(72, 15);
+            this.label76.TabIndex = 86;
+            this.label76.Text = "SETTINGS :";
             // 
-            // Chk_Le3_EnablePedal2
+            // Txt_EAI_P1_Start
             // 
-            this.Chk_Le3_EnablePedal2.AutoSize = true;
-            this.Chk_Le3_EnablePedal2.Location = new System.Drawing.Point(9, 36);
-            this.Chk_Le3_EnablePedal2.Name = "Chk_Le3_EnablePedal2";
-            this.Chk_Le3_EnablePedal2.Size = new System.Drawing.Size(158, 20);
-            this.Chk_Le3_EnablePedal2.TabIndex = 53;
-            this.Chk_Le3_EnablePedal2.Text = "Enable \"Pedal-Mode\"";
-            this.Chk_Le3_EnablePedal2.UseVisualStyleBackColor = true;
-            this.Chk_Le3_EnablePedal2.CheckedChanged += new System.EventHandler(this.Chk_Le3_EnablePedal2_CheckedChanged);
+            this.Txt_EAI_P1_Start.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_P1_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_P1_Start.Location = new System.Drawing.Point(109, 36);
+            this.Txt_EAI_P1_Start.Name = "Txt_EAI_P1_Start";
+            this.Txt_EAI_P1_Start.ReadOnly = true;
+            this.Txt_EAI_P1_Start.Size = new System.Drawing.Size(127, 21);
+            this.Txt_EAI_P1_Start.TabIndex = 71;
+            this.Txt_EAI_P1_Start.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_P1_Start.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
             // 
-            // groupBox15
+            // Txt_EAI_P1_Credits
             // 
-            this.groupBox15.Controls.Add(this.label60);
-            this.groupBox15.Controls.Add(this.TXT_LE3_PEDAL_1);
-            this.groupBox15.Controls.Add(this.Chk_Le3_EnablePedal1);
-            this.groupBox15.Location = new System.Drawing.Point(12, 22);
-            this.groupBox15.Name = "groupBox15";
-            this.groupBox15.Size = new System.Drawing.Size(562, 75);
-            this.groupBox15.TabIndex = 57;
-            this.groupBox15.TabStop = false;
-            this.groupBox15.Text = "Player 1 :";
+            this.Txt_EAI_P1_Credits.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_P1_Credits.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_P1_Credits.Location = new System.Drawing.Point(109, 63);
+            this.Txt_EAI_P1_Credits.Name = "Txt_EAI_P1_Credits";
+            this.Txt_EAI_P1_Credits.ReadOnly = true;
+            this.Txt_EAI_P1_Credits.Size = new System.Drawing.Size(127, 21);
+            this.Txt_EAI_P1_Credits.TabIndex = 72;
+            this.Txt_EAI_P1_Credits.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_P1_Credits.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
             // 
-            // label60
+            // label69
             // 
-            this.label60.AutoSize = true;
-            this.label60.Location = new System.Drawing.Point(228, 36);
-            this.label60.Name = "label60";
-            this.label60.Size = new System.Drawing.Size(118, 16);
-            this.label60.TabIndex = 53;
-            this.label60.Text = "Set the pedal key :";
+            this.label69.AutoSize = true;
+            this.label69.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label69.Location = new System.Drawing.Point(330, 120);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(54, 15);
+            this.label69.TabIndex = 84;
+            this.label69.Text = "ENTER :";
             // 
-            // TXT_LE3_PEDAL_1
+            // Txt_EAI_Enter
             // 
-            this.TXT_LE3_PEDAL_1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_LE3_PEDAL_1.Enabled = false;
-            this.TXT_LE3_PEDAL_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TXT_LE3_PEDAL_1.Location = new System.Drawing.Point(352, 34);
-            this.TXT_LE3_PEDAL_1.Name = "TXT_LE3_PEDAL_1";
-            this.TXT_LE3_PEDAL_1.ReadOnly = true;
-            this.TXT_LE3_PEDAL_1.Size = new System.Drawing.Size(127, 21);
-            this.TXT_LE3_PEDAL_1.TabIndex = 52;
-            this.TXT_LE3_PEDAL_1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_LE3_PEDAL_1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            this.Txt_EAI_Enter.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_Enter.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_Enter.Location = new System.Drawing.Point(403, 117);
+            this.Txt_EAI_Enter.Name = "Txt_EAI_Enter";
+            this.Txt_EAI_Enter.ReadOnly = true;
+            this.Txt_EAI_Enter.Size = new System.Drawing.Size(128, 21);
+            this.Txt_EAI_Enter.TabIndex = 73;
+            this.Txt_EAI_Enter.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_Enter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
             // 
-            // Chk_Le3_EnablePedal1
+            // label70
             // 
-            this.Chk_Le3_EnablePedal1.AutoSize = true;
-            this.Chk_Le3_EnablePedal1.Location = new System.Drawing.Point(9, 36);
-            this.Chk_Le3_EnablePedal1.Name = "Chk_Le3_EnablePedal1";
-            this.Chk_Le3_EnablePedal1.Size = new System.Drawing.Size(158, 20);
-            this.Chk_Le3_EnablePedal1.TabIndex = 0;
-            this.Chk_Le3_EnablePedal1.Text = "Enable \"Pedal-Mode\"";
-            this.Chk_Le3_EnablePedal1.UseVisualStyleBackColor = true;
-            this.Chk_Le3_EnablePedal1.CheckedChanged += new System.EventHandler(this.Chk_Le3_EnablePedal1_CheckedChanged);
+            this.label70.AutoSize = true;
+            this.label70.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label70.Location = new System.Drawing.Point(330, 93);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(51, 15);
+            this.label70.TabIndex = 83;
+            this.label70.Text = "DOWN :";
             // 
-            // Btn_Save_OpGhost
+            // Txt_EAI_Up
             // 
-            this.Btn_Save_OpGhost.Location = new System.Drawing.Point(376, 149);
-            this.Btn_Save_OpGhost.Name = "Btn_Save_OpGhost";
-            this.Btn_Save_OpGhost.Size = new System.Drawing.Size(145, 37);
-            this.Btn_Save_OpGhost.TabIndex = 64;
-            this.Btn_Save_OpGhost.Text = "Save Config";
-            this.Btn_Save_OpGhost.UseVisualStyleBackColor = true;
-            this.Btn_Save_OpGhost.Click += new System.EventHandler(this.Btn_Save_OpGhost_Click);
+            this.Txt_EAI_Up.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_Up.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_Up.Location = new System.Drawing.Point(403, 63);
+            this.Txt_EAI_Up.Name = "Txt_EAI_Up";
+            this.Txt_EAI_Up.ReadOnly = true;
+            this.Txt_EAI_Up.Size = new System.Drawing.Size(127, 21);
+            this.Txt_EAI_Up.TabIndex = 78;
+            this.Txt_EAI_Up.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_Up.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
             // 
-            // Gbox_OpGhost_Buttons
+            // Txt_EAI_Down
             // 
-            this.Gbox_OpGhost_Buttons.Controls.Add(this.label61);
-            this.Gbox_OpGhost_Buttons.Controls.Add(this.TXT_OPGHOST_ACTION_P2);
-            this.Gbox_OpGhost_Buttons.Controls.Add(this.label63);
-            this.Gbox_OpGhost_Buttons.Controls.Add(this.TXT_OPGHOST_ACTION_P1);
-            this.Gbox_OpGhost_Buttons.Controls.Add(this.Chk_OpGhost_SeparateButton);
-            this.Gbox_OpGhost_Buttons.Location = new System.Drawing.Point(301, 15);
-            this.Gbox_OpGhost_Buttons.Name = "Gbox_OpGhost_Buttons";
-            this.Gbox_OpGhost_Buttons.Size = new System.Drawing.Size(267, 103);
-            this.Gbox_OpGhost_Buttons.TabIndex = 61;
-            this.Gbox_OpGhost_Buttons.TabStop = false;
+            this.Txt_EAI_Down.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_Down.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_Down.Location = new System.Drawing.Point(403, 90);
+            this.Txt_EAI_Down.Name = "Txt_EAI_Down";
+            this.Txt_EAI_Down.ReadOnly = true;
+            this.Txt_EAI_Down.Size = new System.Drawing.Size(128, 21);
+            this.Txt_EAI_Down.TabIndex = 74;
+            this.Txt_EAI_Down.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_Down.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
             // 
-            // label63
+            // label71
             // 
-            this.label63.AutoSize = true;
-            this.label63.Location = new System.Drawing.Point(27, 40);
-            this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(78, 16);
-            this.label63.TabIndex = 53;
-            this.label63.Text = "Set P1 key :";
+            this.label71.AutoSize = true;
+            this.label71.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label71.Location = new System.Drawing.Point(35, 66);
+            this.label71.Name = "label71";
+            this.label71.Size = new System.Drawing.Size(69, 15);
+            this.label71.TabIndex = 79;
+            this.label71.Text = "P1 Credits :";
             // 
-            // TXT_OPGHOST_ACTION_P1
+            // label72
             // 
-            this.TXT_OPGHOST_ACTION_P1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_OPGHOST_ACTION_P1.Enabled = false;
-            this.TXT_OPGHOST_ACTION_P1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TXT_OPGHOST_ACTION_P1.Location = new System.Drawing.Point(111, 37);
-            this.TXT_OPGHOST_ACTION_P1.Name = "TXT_OPGHOST_ACTION_P1";
-            this.TXT_OPGHOST_ACTION_P1.ReadOnly = true;
-            this.TXT_OPGHOST_ACTION_P1.Size = new System.Drawing.Size(127, 21);
-            this.TXT_OPGHOST_ACTION_P1.TabIndex = 52;
-            this.TXT_OPGHOST_ACTION_P1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_OPGHOST_ACTION_P1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            this.label72.AutoSize = true;
+            this.label72.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label72.Location = new System.Drawing.Point(330, 66);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(27, 15);
+            this.label72.TabIndex = 82;
+            this.label72.Text = "UP:";
             // 
-            // Chk_OpGhost_SeparateButton
+            // label73
             // 
-            this.Chk_OpGhost_SeparateButton.AutoSize = true;
-            this.Chk_OpGhost_SeparateButton.Location = new System.Drawing.Point(9, 0);
-            this.Chk_OpGhost_SeparateButton.Name = "Chk_OpGhost_SeparateButton";
-            this.Chk_OpGhost_SeparateButton.Size = new System.Drawing.Size(175, 20);
-            this.Chk_OpGhost_SeparateButton.TabIndex = 0;
-            this.Chk_OpGhost_SeparateButton.Text = "Separate ACTION button";
-            this.Chk_OpGhost_SeparateButton.UseVisualStyleBackColor = true;
-            this.Chk_OpGhost_SeparateButton.CheckedChanged += new System.EventHandler(this.Chk_OpGhost_SeparateButton_CheckedChanged);
+            this.label73.AutoSize = true;
+            this.label73.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label73.Location = new System.Drawing.Point(35, 39);
+            this.label73.Name = "label73";
+            this.label73.Size = new System.Drawing.Size(56, 15);
+            this.label73.TabIndex = 77;
+            this.label73.Text = "P1 Start :";
             // 
-            // groupBox18
+            // Txt_EAI_P2_Start
             // 
-            this.groupBox18.Controls.Add(this.Cbox_OpGhost_CreditsToContinue);
-            this.groupBox18.Controls.Add(this.label66);
-            this.groupBox18.Controls.Add(this.Cbox_OpGhost_CreditsToStart);
-            this.groupBox18.Controls.Add(this.label65);
-            this.groupBox18.Controls.Add(this.Cbox_OpGhost_CreditsByCoin);
-            this.groupBox18.Controls.Add(this.label64);
-            this.groupBox18.Controls.Add(this.Cbox_OpGhost_Freeplay);
-            this.groupBox18.Controls.Add(this.label62);
-            this.groupBox18.Location = new System.Drawing.Point(10, 15);
-            this.groupBox18.Name = "groupBox18";
-            this.groupBox18.Size = new System.Drawing.Size(280, 163);
-            this.groupBox18.TabIndex = 65;
-            this.groupBox18.TabStop = false;
-            this.groupBox18.Text = "Coin Settings";
+            this.Txt_EAI_P2_Start.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_P2_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_P2_Start.Location = new System.Drawing.Point(109, 90);
+            this.Txt_EAI_P2_Start.Name = "Txt_EAI_P2_Start";
+            this.Txt_EAI_P2_Start.ReadOnly = true;
+            this.Txt_EAI_P2_Start.Size = new System.Drawing.Size(127, 21);
+            this.Txt_EAI_P2_Start.TabIndex = 75;
+            this.Txt_EAI_P2_Start.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_P2_Start.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
             // 
-            // label61
+            // label74
             // 
-            this.label61.AutoSize = true;
-            this.label61.Location = new System.Drawing.Point(27, 69);
-            this.label61.Name = "label61";
-            this.label61.Size = new System.Drawing.Size(78, 16);
-            this.label61.TabIndex = 56;
-            this.label61.Text = "Set P2 key :";
+            this.label74.AutoSize = true;
+            this.label74.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label74.Location = new System.Drawing.Point(35, 93);
+            this.label74.Name = "label74";
+            this.label74.Size = new System.Drawing.Size(56, 15);
+            this.label74.TabIndex = 80;
+            this.label74.Text = "P2 Start :";
             // 
-            // TXT_OPGHOST_ACTION_P2
+            // label75
             // 
-            this.TXT_OPGHOST_ACTION_P2.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TXT_OPGHOST_ACTION_P2.Enabled = false;
-            this.TXT_OPGHOST_ACTION_P2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TXT_OPGHOST_ACTION_P2.Location = new System.Drawing.Point(111, 66);
-            this.TXT_OPGHOST_ACTION_P2.Name = "TXT_OPGHOST_ACTION_P2";
-            this.TXT_OPGHOST_ACTION_P2.ReadOnly = true;
-            this.TXT_OPGHOST_ACTION_P2.Size = new System.Drawing.Size(127, 21);
-            this.TXT_OPGHOST_ACTION_P2.TabIndex = 57;
-            this.TXT_OPGHOST_ACTION_P2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TXT_OPGHOST_ACTION_P2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            this.label75.AutoSize = true;
+            this.label75.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label75.Location = new System.Drawing.Point(35, 120);
+            this.label75.Name = "label75";
+            this.label75.Size = new System.Drawing.Size(69, 15);
+            this.label75.TabIndex = 81;
+            this.label75.Text = "P2 Credits :";
             // 
-            // label62
+            // Txt_EAI_P2_Credits
             // 
-            this.label62.AutoSize = true;
-            this.label62.Location = new System.Drawing.Point(7, 44);
-            this.label62.Name = "label62";
-            this.label62.Size = new System.Drawing.Size(84, 16);
-            this.label62.TabIndex = 1;
-            this.label62.Text = "FREEPLAY :";
+            this.Txt_EAI_P2_Credits.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_P2_Credits.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_P2_Credits.Location = new System.Drawing.Point(109, 117);
+            this.Txt_EAI_P2_Credits.Name = "Txt_EAI_P2_Credits";
+            this.Txt_EAI_P2_Credits.ReadOnly = true;
+            this.Txt_EAI_P2_Credits.Size = new System.Drawing.Size(127, 21);
+            this.Txt_EAI_P2_Credits.TabIndex = 76;
+            this.Txt_EAI_P2_Credits.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_P2_Credits.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
             // 
-            // Cbox_OpGhost_Freeplay
+            // Btn_EAI_Open
             // 
-            this.Cbox_OpGhost_Freeplay.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.Cbox_OpGhost_Freeplay.FormattingEnabled = true;
-            this.Cbox_OpGhost_Freeplay.Items.AddRange(new object[] {
-            "OFF",
-            "ON"});
-            this.Cbox_OpGhost_Freeplay.Location = new System.Drawing.Point(183, 41);
-            this.Cbox_OpGhost_Freeplay.Name = "Cbox_OpGhost_Freeplay";
-            this.Cbox_OpGhost_Freeplay.Size = new System.Drawing.Size(77, 24);
-            this.Cbox_OpGhost_Freeplay.TabIndex = 2;
+            this.Btn_EAI_Open.Location = new System.Drawing.Point(526, 29);
+            this.Btn_EAI_Open.Name = "Btn_EAI_Open";
+            this.Btn_EAI_Open.Size = new System.Drawing.Size(37, 23);
+            this.Btn_EAI_Open.TabIndex = 0;
+            this.Btn_EAI_Open.Text = "...";
+            this.Btn_EAI_Open.UseVisualStyleBackColor = true;
+            this.Btn_EAI_Open.Click += new System.EventHandler(this.Btn_EAI_Open_Click);
             // 
-            // Cbox_OpGhost_CreditsByCoin
+            // Txt_EAI_FolderPath
             // 
-            this.Cbox_OpGhost_CreditsByCoin.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.Cbox_OpGhost_CreditsByCoin.FormattingEnabled = true;
-            this.Cbox_OpGhost_CreditsByCoin.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9"});
-            this.Cbox_OpGhost_CreditsByCoin.Location = new System.Drawing.Point(183, 71);
-            this.Cbox_OpGhost_CreditsByCoin.Name = "Cbox_OpGhost_CreditsByCoin";
-            this.Cbox_OpGhost_CreditsByCoin.Size = new System.Drawing.Size(77, 24);
-            this.Cbox_OpGhost_CreditsByCoin.TabIndex = 4;
+            this.Txt_EAI_FolderPath.Location = new System.Drawing.Point(6, 30);
+            this.Txt_EAI_FolderPath.Name = "Txt_EAI_FolderPath";
+            this.Txt_EAI_FolderPath.Size = new System.Drawing.Size(514, 22);
+            this.Txt_EAI_FolderPath.TabIndex = 1;
             // 
-            // label64
+            // Btn_EAI_Patch
             // 
-            this.label64.AutoSize = true;
-            this.label64.Location = new System.Drawing.Point(7, 74);
-            this.label64.Name = "label64";
-            this.label64.Size = new System.Drawing.Size(147, 16);
-            this.label64.TabIndex = 3;
-            this.label64.Text = "CREDIT(S) PER COIN :";
-            // 
-            // Cbox_OpGhost_CreditsToStart
-            // 
-            this.Cbox_OpGhost_CreditsToStart.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.Cbox_OpGhost_CreditsToStart.FormattingEnabled = true;
-            this.Cbox_OpGhost_CreditsToStart.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9"});
-            this.Cbox_OpGhost_CreditsToStart.Location = new System.Drawing.Point(183, 101);
-            this.Cbox_OpGhost_CreditsToStart.Name = "Cbox_OpGhost_CreditsToStart";
-            this.Cbox_OpGhost_CreditsToStart.Size = new System.Drawing.Size(77, 24);
-            this.Cbox_OpGhost_CreditsToStart.TabIndex = 6;
-            // 
-            // label65
-            // 
-            this.label65.AutoSize = true;
-            this.label65.Location = new System.Drawing.Point(9, 104);
-            this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(144, 16);
-            this.label65.TabIndex = 5;
-            this.label65.Text = "CREDITS TO START :";
-            // 
-            // Cbox_OpGhost_CreditsToContinue
-            // 
-            this.Cbox_OpGhost_CreditsToContinue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.Cbox_OpGhost_CreditsToContinue.FormattingEnabled = true;
-            this.Cbox_OpGhost_CreditsToContinue.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9"});
-            this.Cbox_OpGhost_CreditsToContinue.Location = new System.Drawing.Point(183, 131);
-            this.Cbox_OpGhost_CreditsToContinue.Name = "Cbox_OpGhost_CreditsToContinue";
-            this.Cbox_OpGhost_CreditsToContinue.Size = new System.Drawing.Size(77, 24);
-            this.Cbox_OpGhost_CreditsToContinue.TabIndex = 8;
-            // 
-            // label66
-            // 
-            this.label66.AutoSize = true;
-            this.label66.Location = new System.Drawing.Point(9, 134);
-            this.label66.Name = "label66";
-            this.label66.Size = new System.Drawing.Size(168, 16);
-            this.label66.TabIndex = 7;
-            this.label66.Text = "CREDITS TO CONTINUE :";
-            // 
-            // label67
-            // 
-            this.label67.AutoSize = true;
-            this.label67.Location = new System.Drawing.Point(7, 239);
-            this.label67.Name = "label67";
-            this.label67.Size = new System.Drawing.Size(529, 80);
-            this.label67.TabIndex = 66;
-            this.label67.Text = resources.GetString("label67.Text");
+            this.Btn_EAI_Patch.Enabled = false;
+            this.Btn_EAI_Patch.Location = new System.Drawing.Point(209, 58);
+            this.Btn_EAI_Patch.Name = "Btn_EAI_Patch";
+            this.Btn_EAI_Patch.Size = new System.Drawing.Size(131, 36);
+            this.Btn_EAI_Patch.TabIndex = 2;
+            this.Btn_EAI_Patch.Text = "Patch !";
+            this.Btn_EAI_Patch.UseVisualStyleBackColor = true;
+            this.Btn_EAI_Patch.Click += new System.EventHandler(this.Btn_EAI_Patch_Click);
             // 
             // Wnd_DemulShooterGui
             // 
@@ -2609,10 +2917,22 @@
             ((System.ComponentModel.ISupportInitialize)(this.TrackBar_HF4_Cover)).EndInit();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
+            this.Tab_LethalEnforcer3.ResumeLayout(false);
+            this.Tab_LethalEnforcer3.PerformLayout();
+            this.groupBox14.ResumeLayout(false);
+            this.groupBox14.PerformLayout();
+            this.groupBox15.ResumeLayout(false);
+            this.groupBox15.PerformLayout();
             this.Tab_M2.ResumeLayout(false);
             this.Tab_M2.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.Tab_OpGhost.ResumeLayout(false);
+            this.Tab_OpGhost.PerformLayout();
+            this.groupBox18.ResumeLayout(false);
+            this.groupBox18.PerformLayout();
+            this.Gbox_OpGhost_Buttons.ResumeLayout(false);
+            this.Gbox_OpGhost_Buttons.PerformLayout();
             this.Tab_RabbidsHollywod.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
             this.groupBox11.PerformLayout();
@@ -2631,18 +2951,12 @@
             this.Tab_Outputs.PerformLayout();
             this.Grp_Outputs.ResumeLayout(false);
             this.Grp_Outputs.PerformLayout();
-            this.Tab_OpGhost.ResumeLayout(false);
-            this.Tab_OpGhost.PerformLayout();
-            this.Tab_LethalEnforcer3.ResumeLayout(false);
-            this.Tab_LethalEnforcer3.PerformLayout();
-            this.groupBox14.ResumeLayout(false);
-            this.groupBox14.PerformLayout();
-            this.groupBox15.ResumeLayout(false);
-            this.groupBox15.PerformLayout();
-            this.Gbox_OpGhost_Buttons.ResumeLayout(false);
-            this.Gbox_OpGhost_Buttons.PerformLayout();
-            this.groupBox18.ResumeLayout(false);
-            this.groupBox18.PerformLayout();
+            this.Tab_EAInvasion.ResumeLayout(false);
+            this.Tab_EAInvasion.PerformLayout();
+            this.groupBox16.ResumeLayout(false);
+            this.groupBox16.PerformLayout();
+            this.groupBox17.ResumeLayout(false);
+            this.groupBox17.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2850,6 +3164,30 @@
         private System.Windows.Forms.ComboBox Cbox_OpGhost_Freeplay;
         private System.Windows.Forms.Label label62;
         private System.Windows.Forms.Label label67;
+        private System.Windows.Forms.TabPage Tab_EAInvasion;
+        private System.Windows.Forms.Label label68;
+        private System.Windows.Forms.Button Btn_EAI_Save;
+        private System.Windows.Forms.GroupBox groupBox17;
+        private System.Windows.Forms.TextBox Txt_EAI_Settings;
+        private System.Windows.Forms.Label label76;
+        private System.Windows.Forms.TextBox Txt_EAI_P1_Start;
+        private System.Windows.Forms.TextBox Txt_EAI_P1_Credits;
+        private System.Windows.Forms.Label label69;
+        private System.Windows.Forms.TextBox Txt_EAI_Enter;
+        private System.Windows.Forms.Label label70;
+        private System.Windows.Forms.TextBox Txt_EAI_Up;
+        private System.Windows.Forms.TextBox Txt_EAI_Down;
+        private System.Windows.Forms.Label label71;
+        private System.Windows.Forms.Label label72;
+        private System.Windows.Forms.Label label73;
+        private System.Windows.Forms.TextBox Txt_EAI_P2_Start;
+        private System.Windows.Forms.Label label74;
+        private System.Windows.Forms.Label label75;
+        private System.Windows.Forms.TextBox Txt_EAI_P2_Credits;
+        private System.Windows.Forms.GroupBox groupBox16;
+        private System.Windows.Forms.Button Btn_EAI_Patch;
+        private System.Windows.Forms.TextBox Txt_EAI_FolderPath;
+        private System.Windows.Forms.Button Btn_EAI_Open;
     }
 }
 

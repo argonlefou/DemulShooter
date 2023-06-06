@@ -135,6 +135,16 @@ namespace DemulShooter_GUI
             TXT_SERVICE.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Sha_Service);
             TXT_TEST.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Sha_Test);
 
+            //Fill Elevator Action Invasion tab
+            Txt_EAI_P1_Start.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_P1_Start);
+            Txt_EAI_P2_Start.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_P2_Start);
+            Txt_EAI_P1_Credits.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_P1_Credits);
+            Txt_EAI_P2_Credits.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_P2_Credits);
+            Txt_EAI_Settings.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_Settings);
+            Txt_EAI_Up.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_MenuUp);
+            Txt_EAI_Down.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_MenuDown);
+            Txt_EAI_Enter.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_MenuEnter);
+
             //Fill Gundam tab
             Logger.WriteLog("Initializing GUI [Gundam] pages...");
             Chk_GundamP1Pedal.Checked = _Configurator.Gsoz_Pedal_P1_Enabled;
@@ -165,9 +175,9 @@ namespace DemulShooter_GUI
                 Cbox_OpGhost_Freeplay.SelectedIndex = 1;
             else
                 Cbox_OpGhost_Freeplay.SelectedIndex = 0;
-            Cbox_OpGhost_CreditsByCoin.SelectedIndex = _Configurator.OpGhost_CoinsByCredits;
-            Cbox_OpGhost_CreditsToStart.SelectedIndex = _Configurator.OpGhost_CreditsToStart;
-            Cbox_OpGhost_CreditsToContinue.SelectedIndex = _Configurator.OpGhost_CreditsToContinue;
+            Cbox_OpGhost_CreditsByCoin.SelectedIndex = _Configurator.OpGhost_CoinsPerCredits - 1;
+            Cbox_OpGhost_CreditsToStart.SelectedIndex = _Configurator.OpGhost_CreditsToStart - 1;
+            Cbox_OpGhost_CreditsToContinue.SelectedIndex = _Configurator.OpGhost_CreditsToContinue - 1;
             Chk_OpGhost_SeparateButton.Checked = _Configurator.OpGhost_SeparateButtons;
             TXT_OPGHOST_ACTION_P1.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_OpGhost_Action_P1);
             TXT_OPGHOST_ACTION_P2.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_OpGhost_Action_P2);
@@ -557,6 +567,125 @@ namespace DemulShooter_GUI
 
         #endregion
 
+        #region Elevator Action Invasion
+
+        private string _EAI_ExeFilename = "ESGame-Win64-Shipping.exe";
+        private string _EAI_UsbDllFilename = "UsbPluginsDll.dll";
+
+        private void Btn_EAI_Open_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+            {
+                fbd.Description = "Select your " + _EAI_ExeFilename + " location :";
+                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    if (fbd.SelectedPath != string.Empty)
+                    {
+                        if (File.Exists(fbd.SelectedPath + "\\" + _EAI_ExeFilename))
+                        {
+                            Txt_EAI_FolderPath.Text = fbd.SelectedPath;
+                            Btn_EAI_Patch.Enabled = true;
+                        }
+                        else
+                        {
+                            MessageBox.Show(_EAI_ExeFilename + " not found in following folder : " + fbd.SelectedPath, this.Text,  MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void Btn_EAI_Patch_Click(object sender, EventArgs e)
+        {
+            string ExeFilePath = Txt_EAI_FolderPath.Text + "\\" + _EAI_ExeFilename;
+            string UsbDllFilePath = Txt_EAI_FolderPath.Text + "\\..\\..\\Plugins\\" + _EAI_UsbDllFilename;
+
+            //Main exe patching
+            try
+            {
+                using (BinaryWriter bw = new BinaryWriter(File.Open(ExeFilePath, FileMode.Open, FileAccess.ReadWrite)))
+                {
+                    //Force overriding read data from the COM port by our own
+                    //Creating codecave
+                    bw.BaseStream.Seek(0x292C9D4, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0x4C, 0x8D, 0x35, 0x95, 0x44, 0x16, 0x01, 0x41, 0x0F, 0xB6, 0x9E, 0xCE, 0x02, 0x00, 0x00, 0xE9, 0xF6, 0x50, 0xE6, 0xFD });
+                    //Injection
+                    bw.BaseStream.Seek(0x791AD6, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xE9, 0xF9, 0xAE, 0x19, 0x02, 0x90, 0x90, 0x90 });
+
+
+                    //For Credits we will force the game to read our own value
+                    //Codecave space too short at the end of the code page, so we will use some 21-byte long Align space between 2 functions
+                    bw.BaseStream.Seek(0x24B12EB, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0x48, 0x8D, 0x05, 0x6A, 0xFB, 0x5D, 0x01, 0x48, 0xC1, 0xE1, 0x04, 0x48, 0x01, 0xC8, 0x8B, 0x00, 0xE9, 0xAC, 0x0A, 0x2E, 0xFE });
+                    //Injection
+                    bw.BaseStream.Seek(0x791DA7, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xE9, 0x3F, 0xF5, 0xD1, 0x01 });
+
+                    //Force overriding bad read values from GUN api with good flag, and force values to be read from another memory location
+                    //which then will be written by any tool to feed data
+                    //Creating codecave
+                    bw.BaseStream.Seek(0x292C97F, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xCC, 0xCC, 0xCC, 0x50, 0x53, 0x48, 0xC1, 0xE3, 0x04, 0x48, 0x31, 0xC0, 0x42, 0xC7, 0x44, 0x39, 0x34, 0x01, 0x00, 0x00, 0x00, 0x48, 0x8D, 0x05, 0xB5, 0x44, 0x16, 0x01, 0x48, 0x01, 0xD8, 0x8B, 0x00, 0x42, 0x89, 0x44, 0x39, 0x14, 0x48, 0x8D, 0x05, 0xA8, 0x44, 0x16, 0x01, 0x48, 0x01, 0xD8, 0x8B, 0x00, 0x42, 0x89, 0x44, 0x39, 0x18, 0x48, 0x8D, 0x05, 0x9B, 0x44, 0x16, 0x01, 0x48, 0x01, 0xD8, 0x8B, 0x00, 0x42, 0x89, 0x44, 0x39, 0x51, 0x5B, 0x58, 0x42, 0x83, 0x7C, 0x39, 0x34, 0x00, 0xE9, 0xD9, 0x60, 0xE8, 0xFD });
+                    //Injection
+                    bw.BaseStream.Seek(0x7B2AA7, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xE9, 0xD6, 0x9E, 0x17, 0x02, 0x90 });
+
+                    //Force return OK to IsGunCalibrated call
+                    bw.BaseStream.Seek(0x772D17, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xB0, 0x01 });
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show("Error patching " + ExeFilePath + " : \n" + Ex.Message.ToString(), this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            //USB dll patching
+            try
+            {
+                using (BinaryWriter bw = new BinaryWriter(File.Open(UsbDllFilePath, FileMode.Open, FileAccess.ReadWrite)))
+                {
+
+                    //Force return true for BIND_InitDongle()
+                    bw.BaseStream.Seek(0x134CB, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0x90, 0x90, });
+                    //Force return true for BIND_IsDongleVerify()
+                    bw.BaseStream.Seek(0x136F7, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xB0, 0x01 });
+
+                    //Force return true to BIND_OpenESIODevice without opening COM port at all
+                    bw.BaseStream.Seek(0x137B0, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3 });
+
+                    //Force return true for BIND_IsExistESIODevice()                    
+                    bw.BaseStream.Seek(0xA5A0, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xB8, 0x01, 0x00, 0x00, 0x00, 0x90, 0x90 });
+
+                    //Force return true for BIND_GetESIoData()
+                    //That way the game will constantly call the ABPGameState::PArseIoData where we will inject our values
+                    bw.BaseStream.Seek(0x12F10, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3 });
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show("Error patching " + UsbDllFilePath + " : \n" + Ex.Message.ToString(), this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            MessageBox.Show("Patch Complete !", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void Btn_EAI_Save_Click(object sender, EventArgs e)
+        {
+            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+                MessageBox.Show("Configuration saved !");
+            else
+                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        #endregion
+
         #region Model2 Emulator tab
 
         private void Btn_M2Scripts_Click(object sender, EventArgs e)
@@ -884,6 +1013,29 @@ namespace DemulShooter_GUI
         #endregion
 
         #region Operation Ghost Tab
+
+        private void Cbox_OpGhost_Freeplay_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (Cbox_OpGhost_Freeplay.SelectedIndex == 0)
+                _Configurator.OpGhost_EnableFreeplay = false;
+            else
+                _Configurator.OpGhost_EnableFreeplay = true;
+        }
+
+        private void Cbox_OpGhost_CreditsByCoin_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _Configurator.OpGhost_CoinsPerCredits = Cbox_OpGhost_CreditsByCoin.SelectedIndex + 1;
+        }
+
+        private void Cbox_OpGhost_CreditsToStart_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _Configurator.OpGhost_CreditsToStart = Cbox_OpGhost_CreditsToStart.SelectedIndex + 1;
+        }
+
+        private void Cbox_OpGhost_CreditsToContinue_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _Configurator.OpGhost_CreditsToContinue = Cbox_OpGhost_CreditsToContinue.SelectedIndex + 1;
+        } 
 
         private void Chk_OpGhost_SeparateButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -1249,6 +1401,22 @@ namespace DemulShooter_GUI
                             _Configurator.DIK_OpGhost_Action_P1 = s.scanCode;
                         else if (_SelectedTextBox == TXT_OPGHOST_ACTION_P2)
                             _Configurator.DIK_OpGhost_Action_P2 = s.scanCode;
+                        else if (_SelectedTextBox == Txt_EAI_P1_Start)
+                            _Configurator.DIK_Eai_P1_Start = s.scanCode;
+                        else if (_SelectedTextBox == Txt_EAI_P2_Start)
+                            _Configurator.DIK_Eai_P2_Start = s.scanCode;
+                        else if (_SelectedTextBox == Txt_EAI_P1_Credits)
+                            _Configurator.DIK_Eai_P1_Credits = s.scanCode;
+                        else if (_SelectedTextBox == Txt_EAI_P2_Credits)
+                            _Configurator.DIK_Eai_P2_Credits = s.scanCode;
+                        else if (_SelectedTextBox == Txt_EAI_Settings)
+                            _Configurator.DIK_Eai_Settings = s.scanCode;
+                        else if (_SelectedTextBox == Txt_EAI_Up)
+                            _Configurator.DIK_Eai_MenuUp = s.scanCode;
+                        else if (_SelectedTextBox == Txt_EAI_Down)
+                            _Configurator.DIK_Eai_MenuDown = s.scanCode;
+                        else if (_SelectedTextBox == Txt_EAI_Enter)
+                            _Configurator.DIK_Eai_MenuEnter = s.scanCode;
                         
                         _SelectedTextBox = null;
                         _Start_KeyRecord = false;
@@ -1337,6 +1505,6 @@ namespace DemulShooter_GUI
                 return false;
             }
             return true;
-        }     
+        }
     }        
 }

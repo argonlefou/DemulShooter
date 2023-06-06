@@ -136,6 +136,10 @@ namespace DsCore.MameOutput
         public static readonly String P2_Fan = "P2_Fan";
         public static readonly String VibrationSeat = "VibrationSeat";
 
+        public static readonly String DoorB = "DoorB";
+        public static readonly String DoorA = "DoorA";
+        public static readonly String ElevatorLedsStatus = "ElevatorLedsStatus";
+
 
         //Custom Outputs
         public static readonly String P1_CtmLmpStart = "P1_CtmLmpStart";

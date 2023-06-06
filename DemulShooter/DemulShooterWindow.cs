@@ -531,7 +531,7 @@ namespace DemulShooter
                             } break;
                         case "og":
                             {
-                                _Game = new Game_RwOpGhost(_Rom.ToLower(), _Configurator.OpGhost_EnableFreeplay, _Configurator.OpGhost_CreditsToStart, _Configurator.OpGhost_CreditsToContinue, _Configurator.OpGhost_CoinsByCredits, _Configurator.OpGhost_SeparateButtons, _Configurator.DIK_OpGhost_Action_P1, _Configurator.DIK_OpGhost_Action_P2, _NoInput, isVerbose);
+                                _Game = new Game_RwOpGhost(_Rom.ToLower(), _Configurator.OpGhost_EnableFreeplay, _Configurator.OpGhost_CreditsToStart, _Configurator.OpGhost_CreditsToContinue, _Configurator.OpGhost_CoinsPerCredits, _Configurator.OpGhost_SeparateButtons, _Configurator.DIK_OpGhost_Action_P1, _Configurator.DIK_OpGhost_Action_P2, _NoInput, isVerbose);
                             } break;
                         case "sdr":
                             {

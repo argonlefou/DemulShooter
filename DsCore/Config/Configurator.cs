@@ -109,6 +109,81 @@ namespace DsCore.Config
         }
         #endregion
 
+        //Dolphin Data
+        private HardwareScanCode _DIK_Dolphin_P2_LClick = HardwareScanCode.DIK_S;
+        private HardwareScanCode _DIK_Dolphin_P2_MClick = HardwareScanCode.DIK_D;
+        private HardwareScanCode _DIK_Dolphin_P2_RClick = HardwareScanCode.DIK_F;
+        #region Accessors
+        public HardwareScanCode DIK_Dolphin_P2_LClick
+        {
+            get { return _DIK_Dolphin_P2_LClick; }
+            set { _DIK_Dolphin_P2_LClick = value; }
+        }
+        public HardwareScanCode DIK_Dolphin_P2_MClick
+        {
+            get { return _DIK_Dolphin_P2_MClick; }
+            set { _DIK_Dolphin_P2_MClick = value; }
+        }
+        public HardwareScanCode DIK_Dolphin_P2_RClick
+        {
+            get { return _DIK_Dolphin_P2_RClick; }
+            set { _DIK_Dolphin_P2_RClick = value; }
+        }
+        #endregion
+
+        //Elevator Action Invasion Keys
+        private HardwareScanCode _DIK_Eai_Settings = HardwareScanCode.DIK_9;
+        private HardwareScanCode _DIK_Eai_P1_Start = HardwareScanCode.DIK_1;
+        private HardwareScanCode _DIK_Eai_P2_Start = HardwareScanCode.DIK_2;
+        private HardwareScanCode _DIK_Eai_P1_Credits = HardwareScanCode.DIK_5;
+        private HardwareScanCode _DIK_Eai_P2_Credits = HardwareScanCode.DIK_6;
+        private HardwareScanCode _DIK_Eai_MenuUp = HardwareScanCode.DIK_NUMPAD8;
+        private HardwareScanCode _DIK_Eai_MenuDown = HardwareScanCode.DIK_NUMPAD2;
+        private HardwareScanCode _DIK_Eai_MenuEnter = HardwareScanCode.DIK_RETURN;
+        #region Accessors
+        public HardwareScanCode DIK_Eai_Settings
+        {
+            get { return _DIK_Eai_Settings; }
+            set { _DIK_Eai_Settings = value; }
+        }
+        public HardwareScanCode DIK_Eai_P1_Start
+        {
+            get { return _DIK_Eai_P1_Start; }
+            set { _DIK_Eai_P1_Start = value; }
+        }
+        public HardwareScanCode DIK_Eai_P2_Start
+        {
+            get { return _DIK_Eai_P2_Start; }
+            set { _DIK_Eai_P2_Start = value; }
+        }
+        public HardwareScanCode DIK_Eai_P1_Credits
+        {
+            get { return _DIK_Eai_P1_Credits; }
+            set { _DIK_Eai_P1_Credits = value; }
+        }
+        public HardwareScanCode DIK_Eai_P2_Credits
+        {
+            get { return _DIK_Eai_P2_Credits; }
+            set { _DIK_Eai_P2_Credits = value; }
+        }
+
+        public HardwareScanCode DIK_Eai_MenuUp
+        {
+            get { return _DIK_Eai_MenuUp; }
+            set { _DIK_Eai_MenuUp = value; }
+        }
+        public HardwareScanCode DIK_Eai_MenuDown
+        {
+            get { return _DIK_Eai_MenuDown; }
+            set { _DIK_Eai_MenuDown = value; }
+        }
+        public HardwareScanCode DIK_Eai_MenuEnter
+        {
+            get { return _DIK_Eai_MenuEnter; }
+            set { _DIK_Eai_MenuEnter = value; }
+        }
+        #endregion
+
         //Gundam Data
         private HardwareScanCode _DIK_Gsoz_Pedal_P1 = HardwareScanCode.DIK_G;
         private HardwareScanCode _DIK_Gsoz_Pedal_P2 = HardwareScanCode.DIK_H;
@@ -135,29 +210,7 @@ namespace DsCore.Config
             get { return _DIK_Gsoz_Pedal_P2; }
             set { _DIK_Gsoz_Pedal_P2 = value; }
         }
-        #endregion
-
-        //Dolphin Data
-        private HardwareScanCode _DIK_Dolphin_P2_LClick = HardwareScanCode.DIK_S;
-        private HardwareScanCode _DIK_Dolphin_P2_MClick = HardwareScanCode.DIK_D;
-        private HardwareScanCode _DIK_Dolphin_P2_RClick = HardwareScanCode.DIK_F;
-        #region Accessors
-        public HardwareScanCode DIK_Dolphin_P2_LClick
-        {
-            get { return _DIK_Dolphin_P2_LClick; }
-            set { _DIK_Dolphin_P2_LClick = value; }
-        }
-        public HardwareScanCode DIK_Dolphin_P2_MClick
-        {
-            get { return _DIK_Dolphin_P2_MClick; }
-            set { _DIK_Dolphin_P2_MClick = value; }
-        }
-        public HardwareScanCode DIK_Dolphin_P2_RClick
-        {
-            get { return _DIK_Dolphin_P2_RClick; }
-            set { _DIK_Dolphin_P2_RClick = value; }
-        }
-        #endregion
+        #endregion        
 
         //HeavyFire games need to get Path and cover sensibility settings
         private String _HF3_Path = string.Empty;
@@ -186,7 +239,6 @@ namespace DsCore.Config
             set { _HF4_CoverSensibility = value; }
         }
         #endregion
-
 
         //Gundam Data
         private HardwareScanCode _DIK_Le3_Pedal_P1 = HardwareScanCode.DIK_G;
@@ -305,7 +357,7 @@ namespace DsCore.Config
         private bool _OpGHost_EnableFreeplay = false;
         private int _OpGhost_CreditsToStart = 2;
         private int _OpGhost_CreditsToContinue = 1;
-        private int _OpGhost_CoinsByCredits = 2;
+        private int _OpGhost_CoinsPerCredits = 2;
         //Other options
         private bool _OpGhost_SeparateButtons = false;
         private HardwareScanCode _DIK_OpGhost_Action_P1 = HardwareScanCode.DIK_G;
@@ -326,10 +378,10 @@ namespace DsCore.Config
             get { return _OpGhost_CreditsToContinue; }
             set { _OpGhost_CreditsToContinue = value; }
         }
-        public int OpGhost_CoinsByCredits
+        public int OpGhost_CoinsPerCredits
         {
-            get { return _OpGhost_CoinsByCredits; }
-            set { _OpGhost_CoinsByCredits = value; }
+            get { return _OpGhost_CoinsPerCredits; }
+            set { _OpGhost_CoinsPerCredits = value; }
         }
         public bool OpGhost_SeparateButtons
         {
@@ -609,7 +661,7 @@ namespace DsCore.Config
                                 }
                                 else if (StrKey.ToLower().Equals("opghost_coinsbycredits"))
                                 {
-                                    if (!int.TryParse(StrValue, out _OpGhost_CoinsByCredits))
+                                    if (!int.TryParse(StrValue, out _OpGhost_CoinsPerCredits))
                                         Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
                                 else if (StrKey.ToLower().Equals("opghost_separatebuttons"))
@@ -712,6 +764,72 @@ namespace DsCore.Config
                                     try
                                     {
                                         _DIK_Le3_Pedal_P2 = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+
+
+                                else if (StrKey.ToLower().Equals("eai_p1_start_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Eai_P1_Start = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("eai_p2_start_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Eai_P2_Start = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("eai_p1_credits_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Eai_P1_Credits = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("eai_p2_credits_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Eai_P2_Credits = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("eai_settings_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Eai_Settings = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("eai_menu_up_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Eai_MenuUp = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("eai_menu_down_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Eai_MenuDown = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
+                                    }
+                                    catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("eai_menu_enter_key"))
+                                {
+                                    try
+                                    {
+                                        _DIK_Eai_MenuEnter = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
                                     }
                                     catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
                                 }
@@ -907,7 +1025,7 @@ namespace DsCore.Config
                     sr.WriteLine("OpGhost_EnableFreeplay = " + _OpGHost_EnableFreeplay.ToString());
                     sr.WriteLine("OpGhost_CreditsToStart = " + _OpGhost_CreditsToStart.ToString());
                     sr.WriteLine("OpGhost_CreditsToContinue = " + _OpGhost_CreditsToContinue.ToString());
-                    sr.WriteLine("OpGhost_CoinsByCredits = " + _OpGhost_CoinsByCredits.ToString());
+                    sr.WriteLine("OpGhost_CoinsByCredits = " + _OpGhost_CoinsPerCredits.ToString());
                     sr.WriteLine("OpGhost_SeparateButtons = " + _OpGhost_SeparateButtons.ToString());
                     sr.WriteLine("OpGhost_P1_ACTION_KEY = " + _DIK_OpGhost_Action_P1.ToString());
                     sr.WriteLine("OpGhost_P2_ACTION_KEY = " + _DIK_OpGhost_Action_P2.ToString());
@@ -926,6 +1044,16 @@ namespace DsCore.Config
                     sr.WriteLine("LE3_P1_PEDAL_KEY = " + _DIK_Le3_Pedal_P1.ToString());
                     sr.WriteLine("LE3_P2_PEDAL_ENABLE = " + _Le3_Pedal_P2_Enabled.ToString());
                     sr.WriteLine("LE3_P2_PEDAL_KEY = " + _DIK_Le3_Pedal_P2.ToString());
+                    sr.WriteLine("");
+                    sr.WriteLine(";Elevator Action Invasion Keys");
+                    sr.WriteLine("EAI_P1_START_KEY = " + _DIK_Eai_P1_Start.ToString());
+                    sr.WriteLine("EAI_P2_START_KEY = " + _DIK_Eai_P2_Start.ToString());
+                    sr.WriteLine("EAI_P1_CREDITS_KEY = " + _DIK_Eai_P1_Credits.ToString());
+                    sr.WriteLine("EAI_P2_CREDITS_KEY = " + _DIK_Eai_P2_Credits.ToString());
+                    sr.WriteLine("EAI_SETTINGS_KEY = " + _DIK_Eai_Settings.ToString());
+                    sr.WriteLine("EAI_MENU_UP_KEY = " + _DIK_Eai_MenuUp.ToString());
+                    sr.WriteLine("EAI_MENU_DOWN_KEY = " + _DIK_Eai_MenuDown.ToString());
+                    sr.WriteLine("EAI_MENU_ENTER_KEY = " + _DIK_Eai_MenuEnter.ToString());
                     sr.WriteLine("");
                     sr.WriteLine(";Output Settings");
                     sr.WriteLine("OutputEnabled = " + _OutputEnabled.ToString());

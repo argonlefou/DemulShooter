@@ -92,6 +92,7 @@ namespace DemulShooterX64
             };
 
             Dictionary<String, String> _UnisRoms = new Dictionary<String, String>(){
+                {"eai","Elevator Action invasion"},
                 {"nha","Night Hunter"}
             };
 
