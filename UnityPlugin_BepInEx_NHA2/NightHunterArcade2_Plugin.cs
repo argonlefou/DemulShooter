@@ -4,6 +4,7 @@ using BepInEx;
 using HarmonyLib;
 using UnityEngine;
 using System.IO;
+using System.Timers;
 
 namespace UnityPlugin_BepInEx_NHA2
 {
@@ -12,7 +13,7 @@ namespace UnityPlugin_BepInEx_NHA2
     {
         public const String pluginGuid = "argonlefou.input.nha2";
         public const String pluginName = "NHA Input Plugin2";
-        public const String pluginVersion = "1.0.0.0";
+        public const String pluginVersion = "2.0.0.0";
 
         static String MAPPED_FILE_NAME = "DemulShooter_MMF_Nha2";
         static String MUTEX_NAME = "DemulShooter_Mutex_Nha2";
@@ -87,7 +88,10 @@ namespace UnityPlugin_BepInEx_NHA2
             harmony.PatchAll();
         }
 
+        public static void ButtonTimerElaped(object sender, EventArgs e)
+        {
 
+        }
 
         // Update() called every Frame, FixedUpdate() called every 0.02sec.
         // Loop function to get data from the Game and pass them to Demulshooter:
@@ -95,7 +99,7 @@ namespace UnityPlugin_BepInEx_NHA2
         // - Credits
         // - Recoil
         public void Update()
-        {    
+        {
             if (Configurator.InputMode == InputMode.DemulShooter)
             {
                 int r = NHA2_Mmf.ReadAll();
@@ -109,16 +113,17 @@ namespace UnityPlugin_BepInEx_NHA2
                     DemulShooter_Buttons[i].UpdateChangeWeapon(NHA2_Mmf.Payload[NHA2_MemoryMappedFile_Controller.INDEX_P1_WEAPON + i * 4]);
                     DemulShooter_Buttons[i].UpdateSpecial(NHA2_Mmf.Payload[NHA2_MemoryMappedFile_Controller.INDEX_P1_SPECIAL + i * 4]);
 
+                    //Resetting button state
+                    NHA2_Mmf.Payload[NHA2_MemoryMappedFile_Controller.INDEX_P1_TRIGGER + i * 4] = 0;
+                    NHA2_Mmf.Payload[NHA2_MemoryMappedFile_Controller.INDEX_P1_WEAPON + i * 4] = 0;
+                    NHA2_Mmf.Payload[NHA2_MemoryMappedFile_Controller.INDEX_P1_SPECIAL + i * 4] = 0;
+
                     if (DemulShooter_Buttons[i].IsChangeWeaponPressed())
                         input_obj_change_bullet.change_weapon(i + 1); // PlayerNum is 1 or 2
 
                     if (DemulShooter_Buttons[i].IsSpecialPressed())
                         input_obj_big_power.big_power_work(i + 1); // PlayerNum is 1 or 2
-
-                    //Resetting button state
-                    NHA2_Mmf.Payload[NHA2_MemoryMappedFile_Controller.INDEX_P1_TRIGGER + i * 4] = 0;
-                    NHA2_Mmf.Payload[NHA2_MemoryMappedFile_Controller.INDEX_P1_WEAPON + i * 4] = 0;
-                    NHA2_Mmf.Payload[NHA2_MemoryMappedFile_Controller.INDEX_P1_SPECIAL + i * 4] = 0;
+                    
 
                     //_LifebarArray[i] = game_run_core.my_static_game_run.mygame_players.get_game_player(i + 1).get_curr_blood();
                     //Array.Copy(BitConverter.GetBytes(_LifebarArray[i]), 0, NHA2_Mmf.Payload, NHA2_MemoryMappedFile_Controller.INDEX_P1_LIFE + i * 4, 4);
@@ -244,6 +249,8 @@ namespace UnityPlugin_BepInEx_NHA2
         {
             private bool _ButtonDown;
             private bool _ButtonPressed;
+            //Used to prevent the game from registering many times the same buttons in a row if not released
+            private int _LastButtonValue = 0;
 
             public DemulShooter_ButtonState()
             {
@@ -253,15 +260,19 @@ namespace UnityPlugin_BepInEx_NHA2
 
             public void UpdateButton(int NewButtonValue)
             {
-                if (NewButtonValue == 1)
+                if (NewButtonValue != _LastButtonValue)
                 {
-                    _ButtonPressed = true;
-                    _ButtonDown = true;
-                }
-                if (NewButtonValue == 2)
-                {
-                    _ButtonPressed = false;
-                    _ButtonDown = false;
+                    if (NewButtonValue == 1)
+                    {
+                        _ButtonPressed = true;
+                        _ButtonDown = true;
+                    }
+                    if (NewButtonValue == 2)
+                    {
+                        _ButtonPressed = false;
+                        _ButtonDown = false;
+                    }
+                    _LastButtonValue = NewButtonValue;
                 }
             }
 

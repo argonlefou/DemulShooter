@@ -348,6 +348,15 @@ namespace DemulShooterX64
                             c++;
                             WriteBytes((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _P2_Credits_Offset), BitConverter.GetBytes(c));
                         }
+
+                        /*else if (s.scanCode == HardwareScanCode.DIK_F)
+                            SetDoorSensor(SensorDoor.A, DoorState.ClosedOn);
+                        else if (s.scanCode == HardwareScanCode.DIK_G)
+                            SetDoorSensor(SensorDoor.B, DoorState.ClosedOn);
+                        else if (s.scanCode == HardwareScanCode.DIK_V)
+                            SetDoorSensor(SensorDoor.A, DoorState.InfraredSwitchOn);
+                        else if (s.scanCode == HardwareScanCode.DIK_B)
+                            SetDoorSensor(SensorDoor.B, DoorState.InfraredSwitchOn);*/
                     }
                     else if ((UInt32)wParam == Win32Define.WM_KEYUP)
                     {
@@ -363,10 +372,64 @@ namespace DemulShooterX64
                             Apply_AND_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0xFD);
                         else if (s.scanCode == _Configurator.DIK_Eai_MenuEnter)
                             Apply_AND_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0xFE);
+
+                        /*else if (s.scanCode == HardwareScanCode.DIK_F)
+                            SetDoorSensor(SensorDoor.A, DoorState.ClosedOff);
+                        else if (s.scanCode == HardwareScanCode.DIK_G)
+                            SetDoorSensor(SensorDoor.B, DoorState.ClosedOff);
+                        else if (s.scanCode == HardwareScanCode.DIK_V)
+                            SetDoorSensor(SensorDoor.A, DoorState.InfraredSwitchOff);
+                        else if (s.scanCode == HardwareScanCode.DIK_B)
+                            SetDoorSensor(SensorDoor.B, DoorState.InfraredSwitchOff);*/
                     }
                 }
             }
             return Win32API.CallNextHookEx(KeyboardHookID, nCode, wParam, lParam);
+        }
+
+        //Door A (Left) = 1 / Door B (Right = 0)
+        //State 
+        public enum SensorDoor
+        {
+            B=0,
+            A
+        }
+        public enum DoorState
+        {
+            InfraredSwitchOn,
+            InfraredSwitchOff,
+            ErrorOn,
+            ErrorOff,
+            ClosedOn,
+            ClosedOff,
+        }
+        private void SetDoorSensor(SensorDoor DoorNumber, DoorState State)
+        {
+            if (State == DoorState.InfraredSwitchOn)
+            {
+                Apply_OR_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 3 + (uint)DoorNumber), 0x80);
+            }
+            else if (State == DoorState.ErrorOn)
+            {
+                Apply_OR_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 3 + (uint)DoorNumber), 0x40);
+            }
+            else if (State == DoorState.ClosedOn)
+            {
+                Apply_OR_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 3 + (uint)DoorNumber), 0x0F);
+            }
+
+            else if (State == DoorState.InfraredSwitchOff)
+            {
+                Apply_AND_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 3 + (uint)DoorNumber), 0x7F);
+            }
+            else if (State == DoorState.ErrorOff)
+            {
+                Apply_AND_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 3 + (uint)DoorNumber), 0xBF);
+            }
+            else if (State == DoorState.ClosedOff)
+            {
+                Apply_AND_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 3 + (uint)DoorNumber), 0xF0);
+            }
         }
 
         #endregion

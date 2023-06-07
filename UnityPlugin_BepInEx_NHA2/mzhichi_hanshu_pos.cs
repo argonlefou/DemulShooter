@@ -21,6 +21,6 @@ namespace UnityPlugin_BepInEx_NHA2
                 return false;
             }
         }
-        
+
     }
 }
