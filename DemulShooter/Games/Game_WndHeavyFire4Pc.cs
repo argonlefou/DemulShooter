@@ -68,6 +68,7 @@ namespace DemulShooter
 
         protected float _Axis_X_Min;
         protected float _Axis_X_Max;
+        protected bool _Reversecover = false;
         protected float _CoverDelta = 0.3f;
         protected bool _CoverLeftEnabled = false;
         protected bool _CoverBottomEnabled = false;
@@ -78,7 +79,7 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndHeavyFire4Pc(String RomName, String GamePath, int CoverSensibility, bool EnableP2, bool DisableInputHack, bool Verbose) 
+        public Game_WndHeavyFire4Pc(String RomName, String GamePath, int CoverSensibility, bool Reversecover, bool EnableP2, bool DisableInputHack, bool Verbose) 
             : base(RomName, "HeavyFire4", DisableInputHack, Verbose)
         {
             _ExecutableFilePath = GamePath + @"\" + HFA_FILENAME;
@@ -96,6 +97,7 @@ namespace DemulShooter
             _KnownMd5Prints.Add("Heavy Fire 4 - MASTIFF", "9476f9bba48aea6ca04d06158be07f1c");
             _KnownMd5Prints.Add("Heavy Fire 4 - STEAM", "7f8bf20aaba80ac1239efc553d94a53f");
 
+            _Reversecover = Reversecover;
             _EnableP2 = EnableP2;
             _CoverDelta = (float)CoverSensibility / 10.0f;
             Logger.WriteLog("Setting Cover delta to screen border to " + _CoverDelta.ToString());
@@ -446,24 +448,40 @@ namespace DemulShooter
                 {
                     //If the player is aiming on the left side of the screen before pressing the button
                     //=> Cover Left
-                    if (_P1_X_Value < _Axis_X_Min + _CoverDelta)
+                    if ((_P1_X_Value < _Axis_X_Min + _CoverDelta) && !_Reversecover)
                     {
                         Send_VK_KeyDown(_P1_CoverLeft_VK);
                         _CoverLeftEnabled = true;
                     }
+                    //If the player is aiming on the right side of the screen before pressing the button
+                    //=> Cover Left
+                    else if ((_P1_X_Value > _Axis_X_Max - _CoverDelta) && _Reversecover)
+                    {
+                        Send_VK_KeyDown(_P1_CoverLeft_VK);
+                        _CoverLeftEnabled = true;
+                    }
+
+                    //If the player is aiming on the right side of the screen before pressing the button
+                    //=> Cover Right
+                    else if ((_P1_X_Value > _Axis_X_Max - _CoverDelta) && !_Reversecover)
+                    {
+                        Send_VK_KeyDown(_P1_CoverRight_VK);
+                        _CoverRightEnabled = true;
+                    }
+                    //If the player is aiming on the left side of the screen before pressing the button
+                    //=> Cover Right
+                    else if ((_P1_X_Value < _Axis_X_Min + _CoverDelta) && _Reversecover)
+                    {
+                        Send_VK_KeyDown(_P1_CoverRight_VK);
+                        _CoverRightEnabled = true;
+                    }
+
                     //If the player is aiming on the bottom side of the screen before pressing the button
                     //=> Cover Down
                     else if (_P1_Y_Value > (1.0f - _CoverDelta))
                     {
                         Send_VK_KeyDown(_P1_CoverBottom_VK);
                         _CoverBottomEnabled = true;
-                    }
-                    //If the player is aiming on the right side of the screen before pressing the button
-                    //=> Cover Right
-                    else if (_P1_X_Value > _Axis_X_Max - _CoverDelta)
-                    {
-                        Send_VK_KeyDown(_P1_CoverRight_VK);
-                        _CoverRightEnabled = true;
                     }
                     //If the player is aiming on the top side of the screen before pressing the button
                     //=> W [QTE]
@@ -530,18 +548,26 @@ namespace DemulShooter
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0) 
                 {
-                    if (_P2_X_Value < _Axis_X_Min + _CoverDelta)
+                    if ((_P2_X_Value < _Axis_X_Min + _CoverDelta) && !_Reversecover)
                     {
                         SendKeyDown(_P2_CoverLeft_DIK);
+                    }
+                    else if ((_P2_X_Value > _Axis_X_Max - _CoverDelta) && !_Reversecover)
+                    {
+                        SendKeyDown(_P2_CoverLeft_DIK);
+                    }
+                    else if ((_P2_X_Value > _Axis_X_Max - _CoverDelta) && _Reversecover)
+                    {
+                        SendKeyDown(_P2_CoverRight_DIK);
+                    }
+                    else if ((_P2_X_Value < _Axis_X_Min + _CoverDelta) && _Reversecover)
+                    {
+                        SendKeyDown(_P2_CoverRight_DIK);
                     }
                     else if (_P2_Y_Value > (1.0f - _CoverDelta))
                     {
                         SendKeyDown(_P2_CoverDown_DIK);
-                    }
-                    else if (_P2_X_Value > _Axis_X_Max - _CoverDelta)
-                    {
-                        SendKeyDown(_P2_CoverRight_DIK);
-                    }
+                    }        
                 }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0) 
                 {

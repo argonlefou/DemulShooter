@@ -197,9 +197,9 @@ namespace UnityPlugin_BepInEx_NHA2
 
             public DemulShooter_PlayerButtonState()
             {
-                _Button_Fire = new DemulShooter_ButtonState();
-                _Button_ChangeWeapon = new DemulShooter_ButtonState();
-                _Button_Special = new DemulShooter_ButtonState();
+                _Button_Fire = new DemulShooter_ButtonState(false);
+                _Button_ChangeWeapon = new DemulShooter_ButtonState(true);
+                _Button_Special = new DemulShooter_ButtonState(false);
             }
 
             //Set
@@ -252,28 +252,55 @@ namespace UnityPlugin_BepInEx_NHA2
             //Used to prevent the game from registering many times the same buttons in a row if not released
             private int _LastButtonValue = 0;
 
-            public DemulShooter_ButtonState()
+            private Timer _TmrButton;
+            private bool _IsLocked = false;
+
+
+            public DemulShooter_ButtonState(bool IsTimerLocked)
             {
                 _ButtonDown = false;
                 _ButtonPressed = false;
+                if (IsTimerLocked)
+                {
+                    _TmrButton = new Timer();
+                    _TmrButton.Interval = 100.0;
+                    _TmrButton.Elapsed += TmrButton_Elapsed;
+                }
             }
 
             public void UpdateButton(int NewButtonValue)
             {
                 if (NewButtonValue != _LastButtonValue)
                 {
-                    if (NewButtonValue == 1)
-                    {
-                        _ButtonPressed = true;
-                        _ButtonDown = true;
-                    }
                     if (NewButtonValue == 2)
                     {
                         _ButtonPressed = false;
                         _ButtonDown = false;
+                        _LastButtonValue = NewButtonValue;
                     }
-                    _LastButtonValue = NewButtonValue;
+                    else if (NewButtonValue == 1)
+                    {
+                        if (_TmrButton != null)
+                        {
+                            if (!_IsLocked)
+                            {
+                                _ButtonPressed = true;
+                                _ButtonDown = true;
+                                _LastButtonValue = NewButtonValue;
+                                _IsLocked = true;
+                                _TmrButton.Start();
+                            }
+                        }
+                        else
+                        {
+                            _ButtonPressed = true;
+                            _ButtonDown = true;
+                            _LastButtonValue = NewButtonValue;
+                        }
+                        
+                    }
                 }
+                
             }
 
             //Return maintained button status
@@ -288,6 +315,13 @@ namespace UnityPlugin_BepInEx_NHA2
                 bool result = _ButtonPressed;
                 _ButtonPressed = false;
                 return result;
+            }
+
+            private void TmrButton_Elapsed(object sender, EventArgs e)
+            {
+                MyLogger.LogWarning("Timer Stop");
+                _IsLocked = false;
+                _TmrButton.Stop();
             }
         }
 

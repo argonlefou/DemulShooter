@@ -156,11 +156,13 @@ namespace DemulShooter_GUI
             Logger.WriteLog("Initializing GUI [Heavy Fire Afghanistan] pages...");
             Txt_HF3_Browse.Text = _Configurator.HF3_Path;
             TrackBar_HF3_Cover.Value = _Configurator.HF3_CoverSensibility;
+            Chk_HF3_ReverseCover.Checked = _Configurator.HF3_ReverseCover;
 
             //Fill Heavy Fire Shattered Spear tab
             Logger.WriteLog("Initializing GUI [Heavy Fire S.S] pages...");
             Txt_HF4_Browse.Text = _Configurator.HF4_Path;
             TrackBar_HF4_Cover.Value = _Configurator.HF4_CoverSensibility;
+            Chk_HF4_ReverseCover.Checked = _Configurator.HF4_ReverseCover;
 
             //Fill Lethal Enforcers 3 tab
             Logger.WriteLog("Initializing GUI [Lethal Enforcers 3] pages...");
@@ -842,6 +844,10 @@ namespace DemulShooter_GUI
         {
             _Configurator.HF4_CoverSensibility = TrackBar_HF3_Cover.Value;
         }
+        private void Chk_HF3_ReverseCover_CheckedChanged(object sender, EventArgs e)
+        {
+            _Configurator.HF3_ReverseCover = Chk_HF3_ReverseCover.Checked;
+        }
         private void Btn_HF3_Save_Click(object sender, EventArgs e)
         {
             if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
@@ -972,6 +978,10 @@ namespace DemulShooter_GUI
         {
             _Configurator.HF4_CoverSensibility = TrackBar_HF4_Cover.Value;
         }
+        private void Chk_HF4_ReverseCover_CheckedChanged(object sender, EventArgs e)
+        {
+            _Configurator.HF4_ReverseCover = Chk_HF4_ReverseCover.Checked;
+        }        
         private void Btn_HF4_Save_Click(object sender, EventArgs e)
         {
             if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
@@ -1506,5 +1516,7 @@ namespace DemulShooter_GUI
             }
             return true;
         }
+
+        
     }        
 }

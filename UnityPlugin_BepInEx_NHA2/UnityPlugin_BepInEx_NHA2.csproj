@@ -63,6 +63,7 @@
     <Compile Include="mgame_player_is_hit.cs" />
     <Compile Include="mgun_body.cs" />
     <Compile Include="mgun_body_tx_wuti.cs" />
+    <Compile Include="minput_obj_change_bullet.cs" />
     <Compile Include="mnew_game_gui_connect_player_slider.cs" />
     <Compile Include="mzzp_houtai_manage_check_control.cs" />
     <Compile Include="minput_manage.cs" />

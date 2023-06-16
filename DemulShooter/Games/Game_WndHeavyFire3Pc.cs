@@ -45,11 +45,11 @@ namespace DemulShooter
         //Cover Bottom = S
         //Cover Right = D
         //QTE = Space
-        private const VirtualKeyCode P1_QTE_W_VK = VirtualKeyCode.VK_W;
-        private const VirtualKeyCode P1_COVERLEFT_VK = VirtualKeyCode.VK_A;
-        private const VirtualKeyCode P1_COVERRIGHT_VK = VirtualKeyCode.VK_D;
-        private const VirtualKeyCode P1_COVERBOTTOM_VK = VirtualKeyCode.VK_S;
-        private const VirtualKeyCode P1_QTE_SPACE_VK = VirtualKeyCode.VK_SPACE;
+        private const VirtualKeyCode _P1_QTE_W_VK = VirtualKeyCode.VK_W;
+        private const VirtualKeyCode _P1_COVERLEFT_VK = VirtualKeyCode.VK_A;
+        private const VirtualKeyCode _P1_COVERRIGHT_VK = VirtualKeyCode.VK_D;
+        private const VirtualKeyCode _P1_COVERBOTTOM_VK = VirtualKeyCode.VK_S;
+        private const VirtualKeyCode _P1_QTE_SPACE_VK = VirtualKeyCode.VK_SPACE;
         //For player 2 if used, keys are choosed for x360kb.ini:
         //I usually prefer to send VirtualKeycodes (less troublesome when no physical Keyboard is plugged)
         //But with x360kb only DIK keycodes are working
@@ -70,6 +70,7 @@ namespace DemulShooter
 
         protected float _Axis_X_Min;
         protected float _Axis_X_Max;
+        protected bool _Reversecover = false;
         protected float _CoverDelta = 0.3f;
         protected bool _CoverLeftEnabled = false;
         protected bool _CoverBottomEnabled = false;
@@ -80,7 +81,7 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndHeavyFire3Pc(String RomName, String GamePath, int CoverSensibility, bool EnableP2, bool DisableInputHack, bool Verbose) 
+        public Game_WndHeavyFire3Pc(String RomName, String GamePath, int CoverSensibility, bool Reversecover, bool EnableP2, bool DisableInputHack, bool Verbose) 
             : base(RomName, "HeavyFire3", DisableInputHack, Verbose)
         {
             _ExecutableFilePath = GamePath + @"\" + HFA_FILENAME;
@@ -98,6 +99,7 @@ namespace DemulShooter
             _KnownMd5Prints.Add("Heavy Fire 3 - MASTIFF", "3f49951ae8232817a91ef5503374d6b3");
             _KnownMd5Prints.Add("Heavy Fire 3 - STEAM", "1841e571286acb17a98546a439c08e57");
 
+            _Reversecover = Reversecover;
             _EnableP2 = EnableP2;
             _CoverDelta = (float)CoverSensibility / 10.0f;
             Logger.WriteLog("Setting Cover delta to screen border to " + _CoverDelta.ToString());
@@ -445,37 +447,53 @@ namespace DemulShooter
                 {
                     //If the player is aiming on the left side of the screen before pressing the button
                     //=> Cover Left
-                    if (_P1_X_Value < _Axis_X_Min + _CoverDelta)
+                    if ((_P1_X_Value < _Axis_X_Min + _CoverDelta) && !_Reversecover)
                     {
-                        Send_VK_KeyDown(P1_COVERLEFT_VK);
+                        Send_VK_KeyDown(_P1_COVERLEFT_VK);
                         _CoverLeftEnabled = true;
                     }
+                    //If the player is aiming on the right side of the screen before pressing the button
+                    //=> Cover Left
+                    else if ((_P1_X_Value > _Axis_X_Max - _CoverDelta) && _Reversecover)
+                    {
+                        Send_VK_KeyDown(_P1_COVERLEFT_VK);
+                        _CoverLeftEnabled = true;
+                    }
+
+                    //If the player is aiming on the right side of the screen before pressing the button
+                    //=> Cover Right
+                    else if ((_P1_X_Value > _Axis_X_Max - _CoverDelta) && !_Reversecover)
+                    {
+                        Send_VK_KeyDown(_P1_COVERRIGHT_VK);
+                        _CoverRightEnabled = true;
+                    }
+                    //If the player is aiming on the left side of the screen before pressing the button
+                    //=> Cover Right
+                    else if ((_P1_X_Value < _Axis_X_Min + _CoverDelta) && _Reversecover)
+                    {
+                        Send_VK_KeyDown(_P1_COVERRIGHT_VK);
+                        _CoverRightEnabled = true;
+                    }
+
                     //If the player is aiming on the bottom side of the screen before pressing the button
                     //=> Cover Down
                     else if (_P1_Y_Value > (1.0f - _CoverDelta))
                     {
-                        Send_VK_KeyDown(P1_COVERBOTTOM_VK);
+                        Send_VK_KeyDown(_P1_COVERBOTTOM_VK);
                         _CoverBottomEnabled = true;
-                    }
-                    //If the player is aiming on the right side of the screen before pressing the button
-                    //=> Cover Right
-                    else if (_P1_X_Value > _Axis_X_Max - _CoverDelta)
-                    {
-                        Send_VK_KeyDown(P1_COVERRIGHT_VK);
-                        _CoverRightEnabled = true;
-                    }
+                    }                    
                     //If the player is aiming on the top side of the screen before pressing the button
                     //=> W [QTE]
                     else if (_P1_Y_Value < (-1.0f + _CoverDelta))
                     {
-                        Send_VK_KeyDown(P1_QTE_W_VK);
+                        Send_VK_KeyDown(_P1_QTE_W_VK);
                         _QTE_W_Enabled = true;
                     }
                     //If nothing above
                     //=> Spacebar [QTE]
                     else
                     {
-                        Send_VK_KeyDown(P1_QTE_SPACE_VK);
+                        Send_VK_KeyDown(_P1_QTE_SPACE_VK);
                         _QTE_Spacebar_Enabled = true;
                     }
                 }
@@ -483,27 +501,27 @@ namespace DemulShooter
                 {
                     if (_CoverLeftEnabled)
                     {
-                        Send_VK_KeyUp(P1_COVERLEFT_VK);
+                        Send_VK_KeyUp(_P1_COVERLEFT_VK);
                         _CoverLeftEnabled = false;
                     }
                     if (_CoverBottomEnabled)
                     {
-                        Send_VK_KeyUp(P1_COVERBOTTOM_VK);
+                        Send_VK_KeyUp(_P1_COVERBOTTOM_VK);
                         _CoverBottomEnabled = false;
                     }
                     if (_CoverRightEnabled)
                     {
-                        Send_VK_KeyUp(P1_COVERRIGHT_VK);
+                        Send_VK_KeyUp(_P1_COVERRIGHT_VK);
                         _CoverRightEnabled = false;
                     }
                     if (_QTE_W_Enabled)
                     {
-                        Send_VK_KeyUp(P1_QTE_W_VK);
+                        Send_VK_KeyUp(_P1_QTE_W_VK);
                         _QTE_W_Enabled = false;
                     }
                     if (_QTE_Spacebar_Enabled)
                     {
-                        Send_VK_KeyUp(P1_QTE_SPACE_VK);
+                        Send_VK_KeyUp(_P1_QTE_SPACE_VK);
                         _QTE_Spacebar_Enabled = false;
                     }
                 }
@@ -529,18 +547,26 @@ namespace DemulShooter
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
                 {
-                    if (_P2_X_Value < _Axis_X_Min + _CoverDelta)
+                    if ((_P2_X_Value < _Axis_X_Min + _CoverDelta) && !_Reversecover)
                     {
                         SendKeyDown(_P2_CoverLeft_DIK);
+                    }
+                    else if ((_P2_X_Value > _Axis_X_Max - _CoverDelta) && !_Reversecover)
+                    {
+                        SendKeyDown(_P2_CoverLeft_DIK);
+                    }
+                    else if ((_P2_X_Value > _Axis_X_Max - _CoverDelta) && _Reversecover)
+                    {
+                        SendKeyDown(_P2_CoverRight_DIK);
+                    }
+                    else if ((_P2_X_Value < _Axis_X_Min + _CoverDelta) && _Reversecover)
+                    {
+                        SendKeyDown(_P2_CoverRight_DIK);
                     }
                     else if (_P2_Y_Value > (1.0f - _CoverDelta))
                     {
                         SendKeyDown(_P2_CoverDown_DIK);
-                    }
-                    else if (_P2_X_Value > _Axis_X_Max - _CoverDelta)
-                    {
-                        SendKeyDown(_P2_CoverRight_DIK);
-                    }
+                    }                    
                 }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
                 {

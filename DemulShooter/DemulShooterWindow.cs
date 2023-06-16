@@ -605,19 +605,19 @@ namespace DemulShooter
                             } break;
                         case "hfa":
                             {
-                                _Game = new Game_WndHeavyFire3Pc("hfa", _Configurator.HF3_Path, _Configurator.HF3_CoverSensibility, _NoInput, false, isVerbose);
+                                _Game = new Game_WndHeavyFire3Pc("hfa", _Configurator.HF3_Path, _Configurator.HF3_CoverSensibility, _Configurator.HF3_ReverseCover, _NoInput, false, isVerbose);
                             }; break;
                         case "hfa2p":
                             {
-                                _Game = new Game_WndHeavyFire3Pc("hfa", _Configurator.HF3_Path, _Configurator.HF3_CoverSensibility, _NoInput, true, isVerbose);
+                                _Game = new Game_WndHeavyFire3Pc("hfa", _Configurator.HF3_Path, _Configurator.HF3_CoverSensibility, _Configurator.HF4_ReverseCover, _NoInput, true, isVerbose);
                             }; break;
                         case "hfss":
                             {
-                                _Game = new Game_WndHeavyFire4Pc("hfss", _Configurator.HF4_Path, _Configurator.HF4_CoverSensibility, _NoInput, false, isVerbose);
+                                _Game = new Game_WndHeavyFire4Pc("hfss", _Configurator.HF4_Path, _Configurator.HF4_CoverSensibility, _Configurator.HF3_ReverseCover, _NoInput, false, isVerbose);
                             }; break;
                         case "hfss2p":
                             {
-                                _Game = new Game_WndHeavyFire4Pc("hfss", _Configurator.HF4_Path, _Configurator.HF4_CoverSensibility, _NoInput, true, isVerbose);
+                                _Game = new Game_WndHeavyFire4Pc("hfss", _Configurator.HF4_Path, _Configurator.HF4_CoverSensibility, _Configurator.HF4_ReverseCover, _NoInput, true, isVerbose);
                             }; break;
                         case "hod2pc":
                             {
@@ -816,7 +816,6 @@ namespace DemulShooter
                                     Player.RIController.Computed_Y += Player.Act_Labs_Offset_Y;
                                     Logger.WriteLog("ActLabs adaptated OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
                                 }
-
 
                                 //Change X asxis scaling based on user requirements
                                 if (_ForceScalingX != 1.0)

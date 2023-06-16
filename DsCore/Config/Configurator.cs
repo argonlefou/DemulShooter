@@ -215,8 +215,10 @@ namespace DsCore.Config
         //HeavyFire games need to get Path and cover sensibility settings
         private String _HF3_Path = string.Empty;
         private int _HF3_CoverSensibility = 3;
+        private bool _HF3_ReverseCover = false;
         private String _HF4_Path = string.Empty;
         private int _HF4_CoverSensibility = 3;
+        private bool _HF4_ReverseCover = false;
         #region Accessors
         public String HF3_Path
         {
@@ -228,6 +230,11 @@ namespace DsCore.Config
             get { return _HF3_CoverSensibility; }
             set { _HF3_CoverSensibility = value; }
         }
+        public bool HF3_ReverseCover
+        {
+            get { return _HF3_ReverseCover; }
+            set { _HF3_ReverseCover = value; }
+        }
         public String HF4_Path
         {
             get { return _HF4_Path; }
@@ -237,6 +244,11 @@ namespace DsCore.Config
         {
             get { return _HF4_CoverSensibility; }
             set { _HF4_CoverSensibility = value; }
+        }
+        public bool HF4_ReverseCover
+        {
+            get { return _HF4_ReverseCover; }
+            set { _HF4_ReverseCover = value; }
         }
         #endregion
 
@@ -600,6 +612,11 @@ namespace DsCore.Config
                                     if (!int.TryParse(StrValue, out _HF3_CoverSensibility))
                                         Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
+                                else if (StrKey.ToLower().Equals("hf3_reversecover"))
+                                {
+                                    if (!bool.TryParse(StrValue, out _HF3_ReverseCover))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
                                 else if (StrKey.ToLower().Equals("hf4_path"))
                                 {
                                     _HF4_Path = StrValue;
@@ -607,6 +624,11 @@ namespace DsCore.Config
                                 else if (StrKey.ToLower().Equals("hf4_coversensibility"))
                                 {
                                     if (!int.TryParse(StrValue, out _HF4_CoverSensibility))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
+                                else if (StrKey.ToLower().Equals("hf4_reversecover"))
+                                {
+                                    if (!bool.TryParse(StrValue, out _HF4_ReverseCover))
                                         Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
 
@@ -1007,10 +1029,12 @@ namespace DsCore.Config
                     sr.WriteLine(";Heavy Fire Afghanistan settings");
                     sr.WriteLine("HF3_Path = " + _HF3_Path);
                     sr.WriteLine("HF3_CoverSensibility = " + _HF3_CoverSensibility.ToString());
+                    sr.WriteLine("HF3_ReverseCover = " + _HF3_ReverseCover.ToString());
                     sr.WriteLine("");
                     sr.WriteLine(";Heavy Fire Shattered Spear settings");
                     sr.WriteLine("HF4_Path = " + _HF4_Path);
                     sr.WriteLine("HF4_CoverSensibility = " + _HF4_CoverSensibility.ToString());
+                    sr.WriteLine("HF4_ReverseCover = " + _HF4_ReverseCover.ToString());
                     sr.WriteLine("");
                     sr.WriteLine(";Wild West Shoutout settings");
                     sr.WriteLine("WWS_Path = " + _Wws_Path);

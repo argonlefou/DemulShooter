@@ -66,6 +66,30 @@
             this.Tab_Dolphin = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
             this.Btn_Dolphin5 = new System.Windows.Forms.Button();
+            this.Tab_EAInvasion = new System.Windows.Forms.TabPage();
+            this.groupBox17 = new System.Windows.Forms.GroupBox();
+            this.Txt_EAI_Settings = new System.Windows.Forms.TextBox();
+            this.label76 = new System.Windows.Forms.Label();
+            this.Txt_EAI_P1_Start = new System.Windows.Forms.TextBox();
+            this.Btn_EAI_Save = new System.Windows.Forms.Button();
+            this.Txt_EAI_P1_Credits = new System.Windows.Forms.TextBox();
+            this.label69 = new System.Windows.Forms.Label();
+            this.Txt_EAI_Enter = new System.Windows.Forms.TextBox();
+            this.label70 = new System.Windows.Forms.Label();
+            this.Txt_EAI_Up = new System.Windows.Forms.TextBox();
+            this.Txt_EAI_Down = new System.Windows.Forms.TextBox();
+            this.label71 = new System.Windows.Forms.Label();
+            this.label72 = new System.Windows.Forms.Label();
+            this.label73 = new System.Windows.Forms.Label();
+            this.Txt_EAI_P2_Start = new System.Windows.Forms.TextBox();
+            this.label74 = new System.Windows.Forms.Label();
+            this.label75 = new System.Windows.Forms.Label();
+            this.Txt_EAI_P2_Credits = new System.Windows.Forms.TextBox();
+            this.groupBox16 = new System.Windows.Forms.GroupBox();
+            this.Btn_EAI_Patch = new System.Windows.Forms.Button();
+            this.Txt_EAI_FolderPath = new System.Windows.Forms.TextBox();
+            this.Btn_EAI_Open = new System.Windows.Forms.Button();
+            this.label68 = new System.Windows.Forms.Label();
             this.Tab_GSOZ = new System.Windows.Forms.TabPage();
             this.Btn_Save_Gsoz = new System.Windows.Forms.Button();
             this.label34 = new System.Windows.Forms.Label();
@@ -229,30 +253,8 @@
             this.Bgw_XInput = new System.ComponentModel.BackgroundWorker();
             this.Cbo_PageSettings = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
-            this.Tab_EAInvasion = new System.Windows.Forms.TabPage();
-            this.label68 = new System.Windows.Forms.Label();
-            this.Btn_EAI_Save = new System.Windows.Forms.Button();
-            this.groupBox16 = new System.Windows.Forms.GroupBox();
-            this.groupBox17 = new System.Windows.Forms.GroupBox();
-            this.Txt_EAI_Settings = new System.Windows.Forms.TextBox();
-            this.label76 = new System.Windows.Forms.Label();
-            this.Txt_EAI_P1_Start = new System.Windows.Forms.TextBox();
-            this.Txt_EAI_P1_Credits = new System.Windows.Forms.TextBox();
-            this.label69 = new System.Windows.Forms.Label();
-            this.Txt_EAI_Enter = new System.Windows.Forms.TextBox();
-            this.label70 = new System.Windows.Forms.Label();
-            this.Txt_EAI_Up = new System.Windows.Forms.TextBox();
-            this.Txt_EAI_Down = new System.Windows.Forms.TextBox();
-            this.label71 = new System.Windows.Forms.Label();
-            this.label72 = new System.Windows.Forms.Label();
-            this.label73 = new System.Windows.Forms.Label();
-            this.Txt_EAI_P2_Start = new System.Windows.Forms.TextBox();
-            this.label74 = new System.Windows.Forms.Label();
-            this.label75 = new System.Windows.Forms.Label();
-            this.Txt_EAI_P2_Credits = new System.Windows.Forms.TextBox();
-            this.Btn_EAI_Open = new System.Windows.Forms.Button();
-            this.Txt_EAI_FolderPath = new System.Windows.Forms.TextBox();
-            this.Btn_EAI_Patch = new System.Windows.Forms.Button();
+            this.Chk_HF3_ReverseCover = new System.Windows.Forms.CheckBox();
+            this.Chk_HF4_ReverseCover = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.Tab_P1.SuspendLayout();
             this.Tab_P2.SuspendLayout();
@@ -262,6 +264,9 @@
             this.Tab_ActLAbs.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.Tab_Dolphin.SuspendLayout();
+            this.Tab_EAInvasion.SuspendLayout();
+            this.groupBox17.SuspendLayout();
+            this.groupBox16.SuspendLayout();
             this.Tab_GSOZ.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -292,9 +297,6 @@
             this.groupBox1.SuspendLayout();
             this.Tab_Outputs.SuspendLayout();
             this.Grp_Outputs.SuspendLayout();
-            this.Tab_EAInvasion.SuspendLayout();
-            this.groupBox16.SuspendLayout();
-            this.groupBox17.SuspendLayout();
             this.SuspendLayout();
             // 
             // Btn_Save_P1
@@ -750,6 +752,281 @@
             this.Btn_Dolphin5.UseVisualStyleBackColor = true;
             this.Btn_Dolphin5.Click += new System.EventHandler(this.Btn_Dolphin5_Click);
             // 
+            // Tab_EAInvasion
+            // 
+            this.Tab_EAInvasion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_EAInvasion.Controls.Add(this.groupBox17);
+            this.Tab_EAInvasion.Controls.Add(this.groupBox16);
+            this.Tab_EAInvasion.Controls.Add(this.label68);
+            this.Tab_EAInvasion.Location = new System.Drawing.Point(4, 5);
+            this.Tab_EAInvasion.Name = "Tab_EAInvasion";
+            this.Tab_EAInvasion.Size = new System.Drawing.Size(581, 334);
+            this.Tab_EAInvasion.TabIndex = 20;
+            this.Tab_EAInvasion.Text = "Elevator Action Invasion";
+            this.Tab_EAInvasion.UseVisualStyleBackColor = true;
+            // 
+            // groupBox17
+            // 
+            this.groupBox17.Controls.Add(this.Txt_EAI_Settings);
+            this.groupBox17.Controls.Add(this.label76);
+            this.groupBox17.Controls.Add(this.Txt_EAI_P1_Start);
+            this.groupBox17.Controls.Add(this.Btn_EAI_Save);
+            this.groupBox17.Controls.Add(this.Txt_EAI_P1_Credits);
+            this.groupBox17.Controls.Add(this.label69);
+            this.groupBox17.Controls.Add(this.Txt_EAI_Enter);
+            this.groupBox17.Controls.Add(this.label70);
+            this.groupBox17.Controls.Add(this.Txt_EAI_Up);
+            this.groupBox17.Controls.Add(this.Txt_EAI_Down);
+            this.groupBox17.Controls.Add(this.label71);
+            this.groupBox17.Controls.Add(this.label72);
+            this.groupBox17.Controls.Add(this.label73);
+            this.groupBox17.Controls.Add(this.Txt_EAI_P2_Start);
+            this.groupBox17.Controls.Add(this.label74);
+            this.groupBox17.Controls.Add(this.label75);
+            this.groupBox17.Controls.Add(this.Txt_EAI_P2_Credits);
+            this.groupBox17.Location = new System.Drawing.Point(5, 126);
+            this.groupBox17.Name = "groupBox17";
+            this.groupBox17.Size = new System.Drawing.Size(569, 201);
+            this.groupBox17.TabIndex = 72;
+            this.groupBox17.TabStop = false;
+            this.groupBox17.Text = "To set a key, click a box then push the key on your keyboard :";
+            // 
+            // Txt_EAI_Settings
+            // 
+            this.Txt_EAI_Settings.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_Settings.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_Settings.Location = new System.Drawing.Point(403, 36);
+            this.Txt_EAI_Settings.Name = "Txt_EAI_Settings";
+            this.Txt_EAI_Settings.ReadOnly = true;
+            this.Txt_EAI_Settings.Size = new System.Drawing.Size(127, 21);
+            this.Txt_EAI_Settings.TabIndex = 85;
+            this.Txt_EAI_Settings.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_Settings.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label76
+            // 
+            this.label76.AutoSize = true;
+            this.label76.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label76.Location = new System.Drawing.Point(330, 39);
+            this.label76.Name = "label76";
+            this.label76.Size = new System.Drawing.Size(72, 15);
+            this.label76.TabIndex = 86;
+            this.label76.Text = "SETTINGS :";
+            // 
+            // Txt_EAI_P1_Start
+            // 
+            this.Txt_EAI_P1_Start.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_P1_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_P1_Start.Location = new System.Drawing.Point(109, 36);
+            this.Txt_EAI_P1_Start.Name = "Txt_EAI_P1_Start";
+            this.Txt_EAI_P1_Start.ReadOnly = true;
+            this.Txt_EAI_P1_Start.Size = new System.Drawing.Size(127, 21);
+            this.Txt_EAI_P1_Start.TabIndex = 71;
+            this.Txt_EAI_P1_Start.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_P1_Start.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Btn_EAI_Save
+            // 
+            this.Btn_EAI_Save.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Btn_EAI_Save.Location = new System.Drawing.Point(157, 157);
+            this.Btn_EAI_Save.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_EAI_Save.Name = "Btn_EAI_Save";
+            this.Btn_EAI_Save.Size = new System.Drawing.Size(251, 37);
+            this.Btn_EAI_Save.TabIndex = 67;
+            this.Btn_EAI_Save.Text = "Save Key config";
+            this.Btn_EAI_Save.UseVisualStyleBackColor = true;
+            this.Btn_EAI_Save.Click += new System.EventHandler(this.Btn_EAI_Save_Click);
+            // 
+            // Txt_EAI_P1_Credits
+            // 
+            this.Txt_EAI_P1_Credits.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_P1_Credits.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_P1_Credits.Location = new System.Drawing.Point(109, 63);
+            this.Txt_EAI_P1_Credits.Name = "Txt_EAI_P1_Credits";
+            this.Txt_EAI_P1_Credits.ReadOnly = true;
+            this.Txt_EAI_P1_Credits.Size = new System.Drawing.Size(127, 21);
+            this.Txt_EAI_P1_Credits.TabIndex = 72;
+            this.Txt_EAI_P1_Credits.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_P1_Credits.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label69
+            // 
+            this.label69.AutoSize = true;
+            this.label69.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label69.Location = new System.Drawing.Point(330, 120);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(54, 15);
+            this.label69.TabIndex = 84;
+            this.label69.Text = "ENTER :";
+            // 
+            // Txt_EAI_Enter
+            // 
+            this.Txt_EAI_Enter.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_Enter.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_Enter.Location = new System.Drawing.Point(403, 117);
+            this.Txt_EAI_Enter.Name = "Txt_EAI_Enter";
+            this.Txt_EAI_Enter.ReadOnly = true;
+            this.Txt_EAI_Enter.Size = new System.Drawing.Size(128, 21);
+            this.Txt_EAI_Enter.TabIndex = 73;
+            this.Txt_EAI_Enter.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_Enter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label70
+            // 
+            this.label70.AutoSize = true;
+            this.label70.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label70.Location = new System.Drawing.Point(330, 93);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(51, 15);
+            this.label70.TabIndex = 83;
+            this.label70.Text = "DOWN :";
+            // 
+            // Txt_EAI_Up
+            // 
+            this.Txt_EAI_Up.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_Up.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_Up.Location = new System.Drawing.Point(403, 63);
+            this.Txt_EAI_Up.Name = "Txt_EAI_Up";
+            this.Txt_EAI_Up.ReadOnly = true;
+            this.Txt_EAI_Up.Size = new System.Drawing.Size(127, 21);
+            this.Txt_EAI_Up.TabIndex = 78;
+            this.Txt_EAI_Up.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_Up.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // Txt_EAI_Down
+            // 
+            this.Txt_EAI_Down.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_Down.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_Down.Location = new System.Drawing.Point(403, 90);
+            this.Txt_EAI_Down.Name = "Txt_EAI_Down";
+            this.Txt_EAI_Down.ReadOnly = true;
+            this.Txt_EAI_Down.Size = new System.Drawing.Size(128, 21);
+            this.Txt_EAI_Down.TabIndex = 74;
+            this.Txt_EAI_Down.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_Down.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label71
+            // 
+            this.label71.AutoSize = true;
+            this.label71.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label71.Location = new System.Drawing.Point(35, 66);
+            this.label71.Name = "label71";
+            this.label71.Size = new System.Drawing.Size(69, 15);
+            this.label71.TabIndex = 79;
+            this.label71.Text = "P1 Credits :";
+            // 
+            // label72
+            // 
+            this.label72.AutoSize = true;
+            this.label72.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label72.Location = new System.Drawing.Point(330, 66);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(27, 15);
+            this.label72.TabIndex = 82;
+            this.label72.Text = "UP:";
+            // 
+            // label73
+            // 
+            this.label73.AutoSize = true;
+            this.label73.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label73.Location = new System.Drawing.Point(35, 39);
+            this.label73.Name = "label73";
+            this.label73.Size = new System.Drawing.Size(56, 15);
+            this.label73.TabIndex = 77;
+            this.label73.Text = "P1 Start :";
+            // 
+            // Txt_EAI_P2_Start
+            // 
+            this.Txt_EAI_P2_Start.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_P2_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_P2_Start.Location = new System.Drawing.Point(109, 90);
+            this.Txt_EAI_P2_Start.Name = "Txt_EAI_P2_Start";
+            this.Txt_EAI_P2_Start.ReadOnly = true;
+            this.Txt_EAI_P2_Start.Size = new System.Drawing.Size(127, 21);
+            this.Txt_EAI_P2_Start.TabIndex = 75;
+            this.Txt_EAI_P2_Start.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_P2_Start.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // label74
+            // 
+            this.label74.AutoSize = true;
+            this.label74.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label74.Location = new System.Drawing.Point(35, 93);
+            this.label74.Name = "label74";
+            this.label74.Size = new System.Drawing.Size(56, 15);
+            this.label74.TabIndex = 80;
+            this.label74.Text = "P2 Start :";
+            // 
+            // label75
+            // 
+            this.label75.AutoSize = true;
+            this.label75.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label75.Location = new System.Drawing.Point(35, 120);
+            this.label75.Name = "label75";
+            this.label75.Size = new System.Drawing.Size(69, 15);
+            this.label75.TabIndex = 81;
+            this.label75.Text = "P2 Credits :";
+            // 
+            // Txt_EAI_P2_Credits
+            // 
+            this.Txt_EAI_P2_Credits.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Txt_EAI_P2_Credits.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_EAI_P2_Credits.Location = new System.Drawing.Point(109, 117);
+            this.Txt_EAI_P2_Credits.Name = "Txt_EAI_P2_Credits";
+            this.Txt_EAI_P2_Credits.ReadOnly = true;
+            this.Txt_EAI_P2_Credits.Size = new System.Drawing.Size(127, 21);
+            this.Txt_EAI_P2_Credits.TabIndex = 76;
+            this.Txt_EAI_P2_Credits.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Txt_EAI_P2_Credits.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
+            // 
+            // groupBox16
+            // 
+            this.groupBox16.Controls.Add(this.Btn_EAI_Patch);
+            this.groupBox16.Controls.Add(this.Txt_EAI_FolderPath);
+            this.groupBox16.Controls.Add(this.Btn_EAI_Open);
+            this.groupBox16.Location = new System.Drawing.Point(5, 3);
+            this.groupBox16.Name = "groupBox16";
+            this.groupBox16.Size = new System.Drawing.Size(569, 100);
+            this.groupBox16.TabIndex = 71;
+            this.groupBox16.TabStop = false;
+            this.groupBox16.Text = "Select \"ESGame-Win64-Shipping.exe\" directory to patch the files :";
+            // 
+            // Btn_EAI_Patch
+            // 
+            this.Btn_EAI_Patch.Enabled = false;
+            this.Btn_EAI_Patch.Location = new System.Drawing.Point(209, 58);
+            this.Btn_EAI_Patch.Name = "Btn_EAI_Patch";
+            this.Btn_EAI_Patch.Size = new System.Drawing.Size(131, 36);
+            this.Btn_EAI_Patch.TabIndex = 2;
+            this.Btn_EAI_Patch.Text = "Patch !";
+            this.Btn_EAI_Patch.UseVisualStyleBackColor = true;
+            this.Btn_EAI_Patch.Click += new System.EventHandler(this.Btn_EAI_Patch_Click);
+            // 
+            // Txt_EAI_FolderPath
+            // 
+            this.Txt_EAI_FolderPath.Location = new System.Drawing.Point(6, 30);
+            this.Txt_EAI_FolderPath.Name = "Txt_EAI_FolderPath";
+            this.Txt_EAI_FolderPath.Size = new System.Drawing.Size(514, 22);
+            this.Txt_EAI_FolderPath.TabIndex = 1;
+            // 
+            // Btn_EAI_Open
+            // 
+            this.Btn_EAI_Open.Location = new System.Drawing.Point(526, 29);
+            this.Btn_EAI_Open.Name = "Btn_EAI_Open";
+            this.Btn_EAI_Open.Size = new System.Drawing.Size(37, 23);
+            this.Btn_EAI_Open.TabIndex = 0;
+            this.Btn_EAI_Open.Text = "...";
+            this.Btn_EAI_Open.UseVisualStyleBackColor = true;
+            this.Btn_EAI_Open.Click += new System.EventHandler(this.Btn_EAI_Open_Click);
+            // 
+            // label68
+            // 
+            this.label68.AutoSize = true;
+            this.label68.Location = new System.Drawing.Point(40, 126);
+            this.label68.Name = "label68";
+            this.label68.Size = new System.Drawing.Size(0, 16);
+            this.label68.TabIndex = 68;
+            // 
             // Tab_GSOZ
             // 
             this.Tab_GSOZ.BackColor = System.Drawing.SystemColors.Control;
@@ -890,6 +1167,7 @@
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.Chk_HF3_ReverseCover);
             this.groupBox7.Controls.Add(this.Lbl_HFA_Command);
             this.groupBox7.Controls.Add(this.Lbl_HFA_Version);
             this.groupBox7.Controls.Add(this.Btn_HF3_Save);
@@ -1036,6 +1314,7 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.Chk_HF4_ReverseCover);
             this.groupBox8.Controls.Add(this.Lbl_HF4_Command);
             this.groupBox8.Controls.Add(this.Lbl_HF4_Version);
             this.groupBox8.Controls.Add(this.Btn_HF4_Save);
@@ -2594,280 +2873,27 @@
             this.label39.TabIndex = 40;
             this.label39.Text = "Page selection :";
             // 
-            // Tab_EAInvasion
+            // Chk_HF3_ReverseCover
             // 
-            this.Tab_EAInvasion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Tab_EAInvasion.Controls.Add(this.groupBox17);
-            this.Tab_EAInvasion.Controls.Add(this.groupBox16);
-            this.Tab_EAInvasion.Controls.Add(this.label68);
-            this.Tab_EAInvasion.Location = new System.Drawing.Point(4, 5);
-            this.Tab_EAInvasion.Name = "Tab_EAInvasion";
-            this.Tab_EAInvasion.Size = new System.Drawing.Size(581, 334);
-            this.Tab_EAInvasion.TabIndex = 20;
-            this.Tab_EAInvasion.Text = "Elevator Action Invasion";
-            this.Tab_EAInvasion.UseVisualStyleBackColor = true;
+            this.Chk_HF3_ReverseCover.AutoSize = true;
+            this.Chk_HF3_ReverseCover.Location = new System.Drawing.Point(10, 152);
+            this.Chk_HF3_ReverseCover.Name = "Chk_HF3_ReverseCover";
+            this.Chk_HF3_ReverseCover.Size = new System.Drawing.Size(145, 20);
+            this.Chk_HF3_ReverseCover.TabIndex = 14;
+            this.Chk_HF3_ReverseCover.Text = "Reverse cover side";
+            this.Chk_HF3_ReverseCover.UseVisualStyleBackColor = true;
+            this.Chk_HF3_ReverseCover.CheckedChanged += new System.EventHandler(this.Chk_HF3_ReverseCover_CheckedChanged);
             // 
-            // label68
+            // Chk_HF4_ReverseCover
             // 
-            this.label68.AutoSize = true;
-            this.label68.Location = new System.Drawing.Point(40, 126);
-            this.label68.Name = "label68";
-            this.label68.Size = new System.Drawing.Size(0, 16);
-            this.label68.TabIndex = 68;
-            // 
-            // Btn_EAI_Save
-            // 
-            this.Btn_EAI_Save.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.Btn_EAI_Save.Location = new System.Drawing.Point(157, 157);
-            this.Btn_EAI_Save.Margin = new System.Windows.Forms.Padding(4);
-            this.Btn_EAI_Save.Name = "Btn_EAI_Save";
-            this.Btn_EAI_Save.Size = new System.Drawing.Size(251, 37);
-            this.Btn_EAI_Save.TabIndex = 67;
-            this.Btn_EAI_Save.Text = "Save Key config";
-            this.Btn_EAI_Save.UseVisualStyleBackColor = true;
-            this.Btn_EAI_Save.Click += new System.EventHandler(this.Btn_EAI_Save_Click);
-            // 
-            // groupBox16
-            // 
-            this.groupBox16.Controls.Add(this.Btn_EAI_Patch);
-            this.groupBox16.Controls.Add(this.Txt_EAI_FolderPath);
-            this.groupBox16.Controls.Add(this.Btn_EAI_Open);
-            this.groupBox16.Location = new System.Drawing.Point(5, 3);
-            this.groupBox16.Name = "groupBox16";
-            this.groupBox16.Size = new System.Drawing.Size(569, 100);
-            this.groupBox16.TabIndex = 71;
-            this.groupBox16.TabStop = false;
-            this.groupBox16.Text = "Select \"ESGame-Win64-Shipping.exe\" directory to patch the files :";
-            // 
-            // groupBox17
-            // 
-            this.groupBox17.Controls.Add(this.Txt_EAI_Settings);
-            this.groupBox17.Controls.Add(this.label76);
-            this.groupBox17.Controls.Add(this.Txt_EAI_P1_Start);
-            this.groupBox17.Controls.Add(this.Btn_EAI_Save);
-            this.groupBox17.Controls.Add(this.Txt_EAI_P1_Credits);
-            this.groupBox17.Controls.Add(this.label69);
-            this.groupBox17.Controls.Add(this.Txt_EAI_Enter);
-            this.groupBox17.Controls.Add(this.label70);
-            this.groupBox17.Controls.Add(this.Txt_EAI_Up);
-            this.groupBox17.Controls.Add(this.Txt_EAI_Down);
-            this.groupBox17.Controls.Add(this.label71);
-            this.groupBox17.Controls.Add(this.label72);
-            this.groupBox17.Controls.Add(this.label73);
-            this.groupBox17.Controls.Add(this.Txt_EAI_P2_Start);
-            this.groupBox17.Controls.Add(this.label74);
-            this.groupBox17.Controls.Add(this.label75);
-            this.groupBox17.Controls.Add(this.Txt_EAI_P2_Credits);
-            this.groupBox17.Location = new System.Drawing.Point(5, 126);
-            this.groupBox17.Name = "groupBox17";
-            this.groupBox17.Size = new System.Drawing.Size(569, 201);
-            this.groupBox17.TabIndex = 72;
-            this.groupBox17.TabStop = false;
-            this.groupBox17.Text = "To set a key, click a box then push the key on your keyboard :";
-            // 
-            // Txt_EAI_Settings
-            // 
-            this.Txt_EAI_Settings.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Txt_EAI_Settings.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Txt_EAI_Settings.Location = new System.Drawing.Point(403, 36);
-            this.Txt_EAI_Settings.Name = "Txt_EAI_Settings";
-            this.Txt_EAI_Settings.ReadOnly = true;
-            this.Txt_EAI_Settings.Size = new System.Drawing.Size(127, 21);
-            this.Txt_EAI_Settings.TabIndex = 85;
-            this.Txt_EAI_Settings.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Txt_EAI_Settings.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // label76
-            // 
-            this.label76.AutoSize = true;
-            this.label76.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label76.Location = new System.Drawing.Point(330, 39);
-            this.label76.Name = "label76";
-            this.label76.Size = new System.Drawing.Size(72, 15);
-            this.label76.TabIndex = 86;
-            this.label76.Text = "SETTINGS :";
-            // 
-            // Txt_EAI_P1_Start
-            // 
-            this.Txt_EAI_P1_Start.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Txt_EAI_P1_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Txt_EAI_P1_Start.Location = new System.Drawing.Point(109, 36);
-            this.Txt_EAI_P1_Start.Name = "Txt_EAI_P1_Start";
-            this.Txt_EAI_P1_Start.ReadOnly = true;
-            this.Txt_EAI_P1_Start.Size = new System.Drawing.Size(127, 21);
-            this.Txt_EAI_P1_Start.TabIndex = 71;
-            this.Txt_EAI_P1_Start.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Txt_EAI_P1_Start.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // Txt_EAI_P1_Credits
-            // 
-            this.Txt_EAI_P1_Credits.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Txt_EAI_P1_Credits.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Txt_EAI_P1_Credits.Location = new System.Drawing.Point(109, 63);
-            this.Txt_EAI_P1_Credits.Name = "Txt_EAI_P1_Credits";
-            this.Txt_EAI_P1_Credits.ReadOnly = true;
-            this.Txt_EAI_P1_Credits.Size = new System.Drawing.Size(127, 21);
-            this.Txt_EAI_P1_Credits.TabIndex = 72;
-            this.Txt_EAI_P1_Credits.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Txt_EAI_P1_Credits.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // label69
-            // 
-            this.label69.AutoSize = true;
-            this.label69.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label69.Location = new System.Drawing.Point(330, 120);
-            this.label69.Name = "label69";
-            this.label69.Size = new System.Drawing.Size(54, 15);
-            this.label69.TabIndex = 84;
-            this.label69.Text = "ENTER :";
-            // 
-            // Txt_EAI_Enter
-            // 
-            this.Txt_EAI_Enter.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Txt_EAI_Enter.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Txt_EAI_Enter.Location = new System.Drawing.Point(403, 117);
-            this.Txt_EAI_Enter.Name = "Txt_EAI_Enter";
-            this.Txt_EAI_Enter.ReadOnly = true;
-            this.Txt_EAI_Enter.Size = new System.Drawing.Size(128, 21);
-            this.Txt_EAI_Enter.TabIndex = 73;
-            this.Txt_EAI_Enter.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Txt_EAI_Enter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // label70
-            // 
-            this.label70.AutoSize = true;
-            this.label70.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label70.Location = new System.Drawing.Point(330, 93);
-            this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(51, 15);
-            this.label70.TabIndex = 83;
-            this.label70.Text = "DOWN :";
-            // 
-            // Txt_EAI_Up
-            // 
-            this.Txt_EAI_Up.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Txt_EAI_Up.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Txt_EAI_Up.Location = new System.Drawing.Point(403, 63);
-            this.Txt_EAI_Up.Name = "Txt_EAI_Up";
-            this.Txt_EAI_Up.ReadOnly = true;
-            this.Txt_EAI_Up.Size = new System.Drawing.Size(127, 21);
-            this.Txt_EAI_Up.TabIndex = 78;
-            this.Txt_EAI_Up.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Txt_EAI_Up.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // Txt_EAI_Down
-            // 
-            this.Txt_EAI_Down.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Txt_EAI_Down.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Txt_EAI_Down.Location = new System.Drawing.Point(403, 90);
-            this.Txt_EAI_Down.Name = "Txt_EAI_Down";
-            this.Txt_EAI_Down.ReadOnly = true;
-            this.Txt_EAI_Down.Size = new System.Drawing.Size(128, 21);
-            this.Txt_EAI_Down.TabIndex = 74;
-            this.Txt_EAI_Down.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Txt_EAI_Down.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // label71
-            // 
-            this.label71.AutoSize = true;
-            this.label71.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label71.Location = new System.Drawing.Point(35, 66);
-            this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(69, 15);
-            this.label71.TabIndex = 79;
-            this.label71.Text = "P1 Credits :";
-            // 
-            // label72
-            // 
-            this.label72.AutoSize = true;
-            this.label72.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label72.Location = new System.Drawing.Point(330, 66);
-            this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(27, 15);
-            this.label72.TabIndex = 82;
-            this.label72.Text = "UP:";
-            // 
-            // label73
-            // 
-            this.label73.AutoSize = true;
-            this.label73.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label73.Location = new System.Drawing.Point(35, 39);
-            this.label73.Name = "label73";
-            this.label73.Size = new System.Drawing.Size(56, 15);
-            this.label73.TabIndex = 77;
-            this.label73.Text = "P1 Start :";
-            // 
-            // Txt_EAI_P2_Start
-            // 
-            this.Txt_EAI_P2_Start.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Txt_EAI_P2_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Txt_EAI_P2_Start.Location = new System.Drawing.Point(109, 90);
-            this.Txt_EAI_P2_Start.Name = "Txt_EAI_P2_Start";
-            this.Txt_EAI_P2_Start.ReadOnly = true;
-            this.Txt_EAI_P2_Start.Size = new System.Drawing.Size(127, 21);
-            this.Txt_EAI_P2_Start.TabIndex = 75;
-            this.Txt_EAI_P2_Start.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Txt_EAI_P2_Start.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // label74
-            // 
-            this.label74.AutoSize = true;
-            this.label74.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label74.Location = new System.Drawing.Point(35, 93);
-            this.label74.Name = "label74";
-            this.label74.Size = new System.Drawing.Size(56, 15);
-            this.label74.TabIndex = 80;
-            this.label74.Text = "P2 Start :";
-            // 
-            // label75
-            // 
-            this.label75.AutoSize = true;
-            this.label75.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label75.Location = new System.Drawing.Point(35, 120);
-            this.label75.Name = "label75";
-            this.label75.Size = new System.Drawing.Size(69, 15);
-            this.label75.TabIndex = 81;
-            this.label75.Text = "P2 Credits :";
-            // 
-            // Txt_EAI_P2_Credits
-            // 
-            this.Txt_EAI_P2_Credits.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Txt_EAI_P2_Credits.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Txt_EAI_P2_Credits.Location = new System.Drawing.Point(109, 117);
-            this.Txt_EAI_P2_Credits.Name = "Txt_EAI_P2_Credits";
-            this.Txt_EAI_P2_Credits.ReadOnly = true;
-            this.Txt_EAI_P2_Credits.Size = new System.Drawing.Size(127, 21);
-            this.Txt_EAI_P2_Credits.TabIndex = 76;
-            this.Txt_EAI_P2_Credits.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Txt_EAI_P2_Credits.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TXT_DirectInput_MouseClick);
-            // 
-            // Btn_EAI_Open
-            // 
-            this.Btn_EAI_Open.Location = new System.Drawing.Point(526, 29);
-            this.Btn_EAI_Open.Name = "Btn_EAI_Open";
-            this.Btn_EAI_Open.Size = new System.Drawing.Size(37, 23);
-            this.Btn_EAI_Open.TabIndex = 0;
-            this.Btn_EAI_Open.Text = "...";
-            this.Btn_EAI_Open.UseVisualStyleBackColor = true;
-            this.Btn_EAI_Open.Click += new System.EventHandler(this.Btn_EAI_Open_Click);
-            // 
-            // Txt_EAI_FolderPath
-            // 
-            this.Txt_EAI_FolderPath.Location = new System.Drawing.Point(6, 30);
-            this.Txt_EAI_FolderPath.Name = "Txt_EAI_FolderPath";
-            this.Txt_EAI_FolderPath.Size = new System.Drawing.Size(514, 22);
-            this.Txt_EAI_FolderPath.TabIndex = 1;
-            // 
-            // Btn_EAI_Patch
-            // 
-            this.Btn_EAI_Patch.Enabled = false;
-            this.Btn_EAI_Patch.Location = new System.Drawing.Point(209, 58);
-            this.Btn_EAI_Patch.Name = "Btn_EAI_Patch";
-            this.Btn_EAI_Patch.Size = new System.Drawing.Size(131, 36);
-            this.Btn_EAI_Patch.TabIndex = 2;
-            this.Btn_EAI_Patch.Text = "Patch !";
-            this.Btn_EAI_Patch.UseVisualStyleBackColor = true;
-            this.Btn_EAI_Patch.Click += new System.EventHandler(this.Btn_EAI_Patch_Click);
+            this.Chk_HF4_ReverseCover.AutoSize = true;
+            this.Chk_HF4_ReverseCover.Location = new System.Drawing.Point(10, 152);
+            this.Chk_HF4_ReverseCover.Name = "Chk_HF4_ReverseCover";
+            this.Chk_HF4_ReverseCover.Size = new System.Drawing.Size(145, 20);
+            this.Chk_HF4_ReverseCover.TabIndex = 16;
+            this.Chk_HF4_ReverseCover.Text = "Reverse cover side";
+            this.Chk_HF4_ReverseCover.UseVisualStyleBackColor = true;
+            this.Chk_HF4_ReverseCover.CheckedChanged += new System.EventHandler(this.Chk_HF4_ReverseCover_CheckedChanged);
             // 
             // Wnd_DemulShooterGui
             // 
@@ -2898,6 +2924,12 @@
             this.groupBox3.PerformLayout();
             this.Tab_Dolphin.ResumeLayout(false);
             this.Tab_Dolphin.PerformLayout();
+            this.Tab_EAInvasion.ResumeLayout(false);
+            this.Tab_EAInvasion.PerformLayout();
+            this.groupBox17.ResumeLayout(false);
+            this.groupBox17.PerformLayout();
+            this.groupBox16.ResumeLayout(false);
+            this.groupBox16.PerformLayout();
             this.Tab_GSOZ.ResumeLayout(false);
             this.Tab_GSOZ.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -2951,12 +2983,6 @@
             this.Tab_Outputs.PerformLayout();
             this.Grp_Outputs.ResumeLayout(false);
             this.Grp_Outputs.PerformLayout();
-            this.Tab_EAInvasion.ResumeLayout(false);
-            this.Tab_EAInvasion.PerformLayout();
-            this.groupBox16.ResumeLayout(false);
-            this.groupBox16.PerformLayout();
-            this.groupBox17.ResumeLayout(false);
-            this.groupBox17.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3188,6 +3214,8 @@
         private System.Windows.Forms.Button Btn_EAI_Patch;
         private System.Windows.Forms.TextBox Txt_EAI_FolderPath;
         private System.Windows.Forms.Button Btn_EAI_Open;
+        private System.Windows.Forms.CheckBox Chk_HF3_ReverseCover;
+        private System.Windows.Forms.CheckBox Chk_HF4_ReverseCover;
     }
 }
 

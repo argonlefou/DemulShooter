@@ -8,6 +8,7 @@ using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.RawInput;
 using DsCore.Win32;
+using System.Globalization;
 
 namespace DemulShooterX64
 {
@@ -52,6 +53,7 @@ namespace DemulShooterX64
         private string _Rom = String.Empty;
         private string _Target = String.Empty;
         private bool _NoInput = false;
+        private double _ForceScalingX = 1.0;
 
         //InterProcessCommunication (Memory Mapped Files)
         private const String DEMULSHOOTER_INPUTS_MMF_NAME = "DemulShooter_MMF_Inputs";
@@ -93,8 +95,27 @@ namespace DemulShooterX64
             for (int i = 0; i < Args.Length; i++)
             {
                 Logger.WriteLog("Cmdline arg " + i + " : " + Args[i]);
-
-                if (Args[i].ToLower().Equals("-ipcinputs"))
+                if (Args[i].ToLower().StartsWith("-forcescalingx"))
+                {
+                    String sX = (Args[i].Split('='))[1].Trim();
+                    try
+                    {
+                        if (sX.Contains("/") && sX.Split('/').Length > 1)
+                        {
+                            double d1 = Double.Parse(sX.Split('/')[0]);
+                            double d2 = Double.Parse(sX.Split('/')[1]);
+                            _ForceScalingX = d1 / d2;
+                        }
+                        else 
+                            _ForceScalingX = Double.Parse(sX, CultureInfo.InvariantCulture);
+                        Logger.WriteLog("-ForceScalingX parameter set to " + _ForceScalingX.ToString());
+                    }
+                    catch
+                    {
+                        Logger.WriteLog("Can't set -ForceScalingX option : " + sX + " is not a valid value");
+                    }                        
+                }
+                else if (Args[i].ToLower().Equals("-ipcinputs"))
                 {
                     _EnableInputsIpc = true;
                 }
@@ -536,6 +557,7 @@ namespace DemulShooterX64
                                     Player.RIController.Computed_X = _Game.ScreenWidth - Player.RIController.Computed_X;
                                 if (Player.InvertAxis_Y)
                                     Player.RIController.Computed_Y = _Game.ScreenHeight - Player.RIController.Computed_Y;
+
                                 Logger.WriteLog("OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
 
                                 if (_Configurator.Act_Labs_Offset_Enable)
@@ -543,6 +565,16 @@ namespace DemulShooterX64
                                     Player.RIController.Computed_X += Player.Act_Labs_Offset_X;
                                     Player.RIController.Computed_Y += Player.Act_Labs_Offset_Y;
                                     Logger.WriteLog("ActLabs adaptated OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
+                                }
+
+                                //Change X asxis scaling based on user requirements
+                                if (_ForceScalingX != 1.0)
+                                {
+                                    Logger.WriteLog("Forcing X Scaling = " + _ForceScalingX.ToString());
+                                    double HalfScreenSize = (double)_Game.ScreenWidth / 2.0;
+                                    double NewX = (((double)Player.RIController.Computed_X - HalfScreenSize) * _ForceScalingX) + HalfScreenSize;
+                                    Player.RIController.Computed_X = Convert.ToInt32(NewX);
+                                    Logger.WriteLog("Forced scaled OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
                                 }
 
                                 if (!_Game.ClientScale(Player))
