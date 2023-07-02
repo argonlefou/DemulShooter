@@ -97,6 +97,7 @@ namespace DemulShooter
                                 _PadDemul_ModuleBaseAddress = m.BaseAddress;
                                 if (_PadDemul_ModuleBaseAddress != IntPtr.Zero)
                                 {
+                                    _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog("Demul.exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8") + ", padDemul.dll = 0x" + _PadDemul_ModuleBaseAddress.ToString("X8"));
                                     CheckExeMd5();
@@ -265,13 +266,9 @@ namespace DemulShooter
             {
                 try
                 {
-                    //Demul Window size
-                    Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                    double TotalResX = TotalRes.Right - TotalRes.Left;
-                    double TotalResY = TotalRes.Bottom - TotalRes.Top;
-
-                    Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                     /*
                     //pX and pY in width/heigt % of window

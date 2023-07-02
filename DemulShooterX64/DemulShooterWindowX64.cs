@@ -54,6 +54,7 @@ namespace DemulShooterX64
         private string _Target = String.Empty;
         private bool _NoInput = false;
         private double _ForceScalingX = 1.0;
+        private bool _UseSingleMouse = false;
 
         //InterProcessCommunication (Memory Mapped Files)
         private const String DEMULSHOOTER_INPUTS_MMF_NAME = "DemulShooter_MMF_Inputs";
@@ -138,7 +139,11 @@ namespace DemulShooterX64
                 else if (Args[i].ToLower().StartsWith("-target"))
                 {
                     _Target = (Args[i].Split('='))[1].Trim();
-                }                
+                }
+                else if (Args[i].ToLower().Equals("-usesinglemouse"))
+                {
+                    _UseSingleMouse = true;
+                }
             }
             if (_TrayIcon != null)
                 _TrayIcon.Text += "[" + _Target + "] [" + _Rom + "]";
@@ -533,38 +538,62 @@ namespace DemulShooterX64
 
                                 Logger.WriteLog("RawData event for Player #" + Player.ID.ToString() + ":");
                                 Logger.WriteLog("Device rawinput data (Hex) = [ " + Player.RIController.Computed_X.ToString("X8") + ", " + Player.RIController.Computed_Y.ToString("X8") + " ]");
+
+                                //Overrriding RAWINPUT data (relative movement) for single mouse by a call to GetCursorPos WIN32 API
+                                //That way we can get mouse position as if it's Absolute position
+                                if (_UseSingleMouse)
+                                {
+                                    Logger.WriteLog("Switching to Single Mouse procedure :");
+                                    POINT p = new POINT();
+                                    if (Win32API.GetCursorPos(out p))
+                                    {
+                                        Logger.WriteLog("WM_MOUSEMOVE Cursor position = [ " + p.X + "," + p.Y + " ]");
+                                        Player.RIController.Computed_X = p.X;
+                                        Player.RIController.Computed_Y = p.Y;
+                                        Logger.WriteLog("OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
+                                    }
+                                    else
+                                    {
+                                        Logger.WriteLog("WM_MOUSEMOVE : GetCursorPos() returned error");
+                                        return;
+                                    }
+                                }                                
+
                                 if (_EnableInputsIpc)
                                     _MMF_Inputs.UpdateRawPlayerData(Player.ID, (UInt32)Player.RIController.Computed_X, (UInt32)Player.RIController.Computed_Y);
 
                                 _Game.GetScreenResolution();
                                 Logger.WriteLog("PrimaryScreen Size (Px) = [ " + _Game.ScreenWidth + "x" + _Game.ScreenHeight + " ]");
 
-                                //If manual calibration override for analog guns
-                                if (Player.RIController.DeviceType == RawInputDeviceType.RIM_TYPEHID && Player.AnalogAxisRangeOverride)
+                                if (!_UseSingleMouse)
                                 {
-                                    Logger.WriteLog("Overriding player axis range values : X => [ " + Player.AnalogManual_Xmin.ToString() + ", " + Player.AnalogManual_Xmax.ToString() + " ], Y => [ " + Player.AnalogManual_Ymin.ToString() + ", " + Player.AnalogManual_Ymax.ToString() + " ]");                                   
-                                    Player.RIController.Computed_X = _Game.ScreenScale(Player.RIController.Computed_X, Player.AnalogManual_Xmin, Player.AnalogManual_Xmax, 0, _Game.ScreenWidth);
-                                    Player.RIController.Computed_Y = _Game.ScreenScale(Player.RIController.Computed_Y, Player.AnalogManual_Ymin, Player.AnalogManual_Ymax, 0, _Game.ScreenHeight);
-                                }
-                                else
-                                {
-                                    Player.RIController.Computed_X = _Game.ScreenScale(Player.RIController.Computed_X, Player.RIController.Axis_X_Min, Player.RIController.Axis_X_Max, 0, _Game.ScreenWidth);
-                                    Player.RIController.Computed_Y = _Game.ScreenScale(Player.RIController.Computed_Y, Player.RIController.Axis_Y_Min, Player.RIController.Axis_Y_Max, 0, _Game.ScreenHeight);
-                                }
+                                    //If manual calibration override for analog guns
+                                    if (Player.RIController.DeviceType == RawInputDeviceType.RIM_TYPEHID && Player.AnalogAxisRangeOverride)
+                                    {
+                                        Logger.WriteLog("Overriding player axis range values : X => [ " + Player.AnalogManual_Xmin.ToString() + ", " + Player.AnalogManual_Xmax.ToString() + " ], Y => [ " + Player.AnalogManual_Ymin.ToString() + ", " + Player.AnalogManual_Ymax.ToString() + " ]");
+                                        Player.RIController.Computed_X = _Game.ScreenScale(Player.RIController.Computed_X, Player.AnalogManual_Xmin, Player.AnalogManual_Xmax, 0, _Game.ScreenWidth);
+                                        Player.RIController.Computed_Y = _Game.ScreenScale(Player.RIController.Computed_Y, Player.AnalogManual_Ymin, Player.AnalogManual_Ymax, 0, _Game.ScreenHeight);
+                                    }
+                                    else
+                                    {
+                                        Player.RIController.Computed_X = _Game.ScreenScale(Player.RIController.Computed_X, Player.RIController.Axis_X_Min, Player.RIController.Axis_X_Max, 0, _Game.ScreenWidth);
+                                        Player.RIController.Computed_Y = _Game.ScreenScale(Player.RIController.Computed_Y, Player.RIController.Axis_Y_Min, Player.RIController.Axis_Y_Max, 0, _Game.ScreenHeight);
+                                    }
 
-                                //Optionnal invert axis
-                                if (Player.InvertAxis_X)
-                                    Player.RIController.Computed_X = _Game.ScreenWidth - Player.RIController.Computed_X;
-                                if (Player.InvertAxis_Y)
-                                    Player.RIController.Computed_Y = _Game.ScreenHeight - Player.RIController.Computed_Y;
+                                    //Optionnal invert axis
+                                    if (Player.InvertAxis_X)
+                                        Player.RIController.Computed_X = _Game.ScreenWidth - Player.RIController.Computed_X;
+                                    if (Player.InvertAxis_Y)
+                                        Player.RIController.Computed_Y = _Game.ScreenHeight - Player.RIController.Computed_Y;
 
-                                Logger.WriteLog("OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
+                                    Logger.WriteLog("OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");                              
 
-                                if (_Configurator.Act_Labs_Offset_Enable)
-                                {
-                                    Player.RIController.Computed_X += Player.Act_Labs_Offset_X;
-                                    Player.RIController.Computed_Y += Player.Act_Labs_Offset_Y;
-                                    Logger.WriteLog("ActLabs adaptated OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
+                                    if (_Configurator.Act_Labs_Offset_Enable)
+                                    {
+                                        Player.RIController.Computed_X += Player.Act_Labs_Offset_X;
+                                        Player.RIController.Computed_Y += Player.Act_Labs_Offset_Y;
+                                        Logger.WriteLog("ActLabs adaptated OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
+                                    }
                                 }
 
                                 //Change X asxis scaling based on user requirements
@@ -577,18 +606,49 @@ namespace DemulShooterX64
                                     Logger.WriteLog("Forced scaled OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
                                 }
 
-                                if (!_Game.ClientScale(Player))
+                                _Game.IsFullscreen = _Game.GetFullscreenStatus();
+                                if (!_Game.IsFullscreen)
                                 {
-                                    Logger.WriteLog("Error converting screen location to client location");
-                                    return;
+                                    Logger.WriteLog("ClientWindow Style = Windowed");
+
+                                    //Retrieve info for debug/replay purpose
+                                    _Game.GetClientwindowInfo();
+
+                                    if (!_Game.ClientScale(Player))
+                                    {
+                                        Logger.WriteLog("Error converting screen location to client location");
+                                        return;
+                                    }
+                                    Logger.WriteLog("ClientWindow Location (px) = [ " + _Game.clientWindowLocation.X.ToString() + ", " + _Game.clientWindowLocation.Y.ToString() + " ]");
+                                    Logger.WriteLog("ClientWindow Size (px) = [ " + (_Game.WindowRect.Right - _Game.WindowRect.Left).ToString() + "x" + (_Game.WindowRect.Bottom - _Game.WindowRect.Top).ToString() + " ]");
+                                    Logger.WriteLog("OnClient Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
+
+                                    if (!_Game.GetClientRect())
+                                    {
+                                        Logger.WriteLog("Error getting client Rect");
+                                        return;
+                                    }                                
                                 }
-                                Logger.WriteLog("OnClient Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
+                                else
+                                {
+                                    Logger.WriteLog("ClientWindow Style = FullScreen");
+                                    
+                                    //No need to translate coordinates from screen -> client and risk error.
+                                    //As fuulscreen, we will consider window size = screen size
+
+                                    Rect r = new Rect();
+                                    r.Top = 0;
+                                    r.Left = 0;
+                                    r.Bottom = _Game.ScreenHeight;
+                                    r.Right = _Game.ScreenWidth;
+                                    _Game.ClientRect = r;
+                                }
 
                                 if (!_Game.GameScale(Player))
                                 {
                                     Logger.WriteLog("Error converting client location to game location");
                                     return;
-                                }
+                                }                                
 
                                 Logger.WriteLog("Game Position (Hex) = [ " + Player.RIController.Computed_X.ToString("X4") + ", " + Player.RIController.Computed_Y.ToString("X4") + " ]");
                                 Logger.WriteLog("Game Position (Dec) = [ " + Player.RIController.Computed_X.ToString() + ", " + Player.RIController.Computed_Y.ToString() + " ]");

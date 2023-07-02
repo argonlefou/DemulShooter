@@ -71,6 +71,7 @@ namespace DemulShooter
 
                             if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                             {
+                                _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
@@ -118,9 +119,9 @@ namespace DemulShooter
             {
                 try
                 {
-                    //Window size
-                    Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                     byte[] buffer = ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameResolutionWidth_Offset, 4);
                     double GameResX = (double)BitConverter.ToUInt32(buffer, 0);

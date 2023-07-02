@@ -101,6 +101,7 @@ namespace DemulShooter
                             byte[] buffer = ReadBytes(_RomLoaded_Check_Instruction, 5);
                             if (buffer[0] == 0xE8 && buffer[1] == 0x76 && buffer[2] == 0x01 && buffer[3] == 0x00 && buffer[4] == 0x00)
                             {
+                                _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
 
@@ -153,12 +154,10 @@ namespace DemulShooter
             {
                 try
                 {
-                    Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                    double TotalResX = TotalRes.Right - TotalRes.Left;
-                    double TotalResY = TotalRes.Bottom - TotalRes.Top;
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
-                    Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
                     //X and Y axis => 0x00 - 0xFF                    
                     double dMaxX = 256.0;
                     double dMaxY = 256.0;

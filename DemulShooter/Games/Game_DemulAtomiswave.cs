@@ -102,6 +102,7 @@ namespace DemulShooter
 
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero && _GpuModuleBaseAddress != IntPtr.Zero && _PadDemul_ModuleBaseAddress != IntPtr.Zero)
                         {
+                            _GameWindowHandle = _TargetProcess.MainWindowHandle;
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             if (!_DisableInputHack)
@@ -151,13 +152,9 @@ namespace DemulShooter
                 {
                     try
                     {
-                        //Demul Window size
-                        Rect TotalRes = new Rect();
-                        Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                        double TotalResX = TotalRes.Right - TotalRes.Left;
-                        double TotalResY = TotalRes.Bottom - TotalRes.Top;
-
-                        Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+                        double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                        double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                        Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                         double dMaxX = 640;
                         double dMaxY = 480;
@@ -189,13 +186,9 @@ namespace DemulShooter
                         byte DisplayType = ReadByte((UInt32)_GpuModuleBaseAddress + _GpuDisplayType_Offset); ;
                         Logger.WriteLog("Demul display type is : " + DisplayType.ToString());
 
-                        //Demul Window size
-                        Rect TotalRes = new Rect();
-                        Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                        double TotalResX = TotalRes.Right - TotalRes.Left;
-                        double TotalResY = TotalRes.Bottom - TotalRes.Top;
-
-                        Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+                        double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                        double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                        Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                         //If stretch the whole window is used so, no change 
                         //If 4:3 we keep correct Y but have to change X because of black borders

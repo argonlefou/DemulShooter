@@ -72,6 +72,7 @@
     <Compile Include="Games\Game_LindberghLgjsp.cs" />
     <Compile Include="Games\Game_RtAliensArmageddon.cs" />
     <Compile Include="Games\Game_RtTerminatorSalvation.cs" />
+    <Compile Include="Games\Game_TtxGundam_V2.cs" />
     <Compile Include="Games\Game_WndFriction.cs" />
     <Compile Include="Games\Game_Model2Vcop.cs" />
     <Compile Include="Games\Game_Model2Hotd.cs" />

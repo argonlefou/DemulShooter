@@ -63,6 +63,7 @@ namespace DemulShooter
                             byte[] buffer = ReadBytes(_RomLoaded_check_Instruction_v390, 3);
                             if (buffer[0] == 0x83 && buffer[1] == 0xEA && buffer[2] == 0x01)
                             {
+                                _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                 Logger.WriteLog("Aliens Arageddon - 03.90 USA binary detected");
                                 _TargetProcess_Md5Hash = _KnownMd5Prints["Aliens Armageddon - 03.90 USA"];
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);

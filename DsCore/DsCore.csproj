@@ -115,6 +115,7 @@
     <Compile Include="Win32\MemoryFreeType.cs" />
     <Compile Include="Win32\Input.cs" />
     <Compile Include="Win32\MsLlHookStruct.cs" />
+    <Compile Include="Win32\QueryUserNotificationState.cs" />
     <Compile Include="Win32\Rect.cs" />
     <Compile Include="Win32\SystemMetricsIndex.cs" />
     <Compile Include="Win32\VirtualKeyCode.cs" />

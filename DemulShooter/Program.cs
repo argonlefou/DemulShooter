@@ -209,15 +209,15 @@ namespace DemulShooter
                         DisplayDictionnaryList(_WindowsRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
+                        Console.WriteLine(" -ddinumber \tDolphin's DirectInput number for P2 device");
+                        Console.WriteLine(" -hardffl \tAlternative gameplay for Fright Fear Land / Haunted Museum 2(see README.TXT)");
+                        Console.WriteLine(" -noautofire \tDisable in-game autofire for SEGA Golden Gun");
+                        Console.WriteLine(" -nocrosshair \tHide in-game crosshair (Only for \"Reload\" on Windows and \"Rambo\" on Lindbergh");
                         Console.WriteLine(" -noinput \tDisable any input hack");
                         Console.WriteLine(" -noresize \tFix Demul exit fullscreen bug, when shooting upper left corner");
                         Console.WriteLine(" \t\tNote : Demul GUI will not respond anymore to clicks");
-                        Console.WriteLine(" -widescreen \tDemul Widescreen hack");
-                        Console.WriteLine(" -ddinumber \tDolphin's DirectInput number for P2 device");
-                        Console.WriteLine(" -noautofire \tDisable in-game autofire for SEGA Golden Gun");
-                        Console.WriteLine(" -nocrosshair \tHide in-game crosshair (Only for \"Reload\" on Windows and \"Rambo\" on Lindbergh");
-                        Console.WriteLine(" -hardffl \tAlternative gameplay for Fright Fear Land / Haunted Museum 2(see README.TXT)");
-
+                        Console.WriteLine(" -usesinglemouse \tUse standard mouse instead of Lightguns");
+                        Console.WriteLine(" -widescreen \tDemul Widescreen hack");                        
                         Console.WriteLine(" -? -h --help\tShow this help");
                         Console.WriteLine(" -v --verbose\tEnable output to log file");
 

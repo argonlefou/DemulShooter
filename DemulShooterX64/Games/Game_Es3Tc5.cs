@@ -128,6 +128,7 @@ namespace DemulShooterX64
                                 Process[] procs = Process.GetProcessesByName("rslauncher");
                                 if (procs.Length > 0)
                                     _IsStandalone = false;
+                                _GameWindowHandle = _TargetProcess.MainWindowHandle;
 
                                 Logger.WriteLog("Screen size detected by game = [ " + x.ToString() + " x " + y.ToString() + " ]");
                                 Logger.WriteLog("Maximum axis values = [ " + _Gun_Max_X.ToString() + " ; " + _Gun_Max_Y.ToString() + " ]");
@@ -216,16 +217,14 @@ namespace DemulShooterX64
                 {
                     try
                     {
-                        //Window size
-                        Rect TotalRes = new Rect();
-                        Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                        float TotalResX = TotalRes.Right - TotalRes.Left;
-                        float TotalResY = TotalRes.Bottom - TotalRes.Top;
+                        double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                        double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                        Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                         Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
-                        _FloatXvalue = PlayerData.RIController.Computed_X / TotalResX;
-                        _FloatYvalue = PlayerData.RIController.Computed_Y / TotalResY;
+                        _FloatXvalue = PlayerData.RIController.Computed_X / (float)TotalResX;
+                        _FloatYvalue = PlayerData.RIController.Computed_Y / (float)TotalResY;
                         Logger.WriteLog("Game scale result (float) = [ " + _FloatXvalue.ToString() + "; " + _FloatYvalue.ToString() + " ]");
 
                         return true;

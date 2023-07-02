@@ -111,6 +111,7 @@ namespace DemulShooter
                             //Wait for game to load settings
                             if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets) != 0)
                             {
+                                _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                 //Force Calibration values to get fixed and maximum range
                                 WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets + 0x44, new byte[] { 0x00, 0x06, 0x00, 0x0A });
                                 WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets + 0x4C, new byte[] { 0x00, 0xFA, 0x00, 0xF6 });
@@ -164,12 +165,9 @@ namespace DemulShooter
             {
                 try
                 {
-                    Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                    double TotalResX = TotalRes.Right - TotalRes.Left;
-                    double TotalResY = TotalRes.Bottom - TotalRes.Top;
-
-                    Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                     //We can't access the TEST menu to do calibration
                     //Choosen solution is to force Calibration Values for Min-Max axis to [0x00-0xFF] when we write axis values in memory

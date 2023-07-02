@@ -12,6 +12,7 @@ using DsCore.MemoryX64;
 using DsCore.Win32;
 using System.Reflection;
 using System.Globalization;
+using System.Text;
 
 namespace DemulShooterX64
 {
@@ -27,7 +28,8 @@ namespace DemulShooterX64
         protected Process _TargetProcess;        
         protected String _Target_Process_Name = String.Empty;
         protected IntPtr _TargetProcess_MemoryBaseAddress = IntPtr.Zero;        
-        protected IntPtr _ProcessHandle = IntPtr.Zero; 
+        protected IntPtr _ProcessHandle = IntPtr.Zero;
+        protected IntPtr _GameWindowHandle = IntPtr.Zero;
         protected bool _VerboseEnable;
         protected bool _DisableWindow = false;
         protected bool _DisableInputHack = false;
@@ -61,6 +63,7 @@ namespace DemulShooterX64
         {
             _KnownMd5Prints = new Dictionary<string, string>();
             GetScreenResolution();
+            Logger.WriteLog("Windows screen scaling : " + GetScreenScaling());
 
             _RomName = RomName;
             _DisableInputHack = DisableInputHack;
@@ -184,6 +187,109 @@ namespace DemulShooterX64
             get { return _screenCursorPosY; }
             set { _screenCursorPosY = value; }
         }
+        protected Rect _WindowRect;
+        public Rect WindowRect
+        {
+            get { return _WindowRect; }
+            set { _WindowRect = value; }
+        }
+        protected POINT _clientWindowLocation;
+        public POINT clientWindowLocation
+        {
+            get { return _clientWindowLocation; }
+            set { _clientWindowLocation = value; }
+        }
+        protected Rect _ClientRect;
+        public Rect ClientRect
+        {
+            get { return _ClientRect; }
+            set { _ClientRect = value; }
+        }
+        protected bool _IsFullscreen;
+        public bool IsFullscreen
+        {
+            get { return _IsFullscreen; }
+            set { _IsFullscreen = value; }
+        }
+
+        /// <summary>
+        /// HKEY_CURRENT_USER\Control Panel\Desktop\
+        ///Key: LogPixels
+        ///Values:
+        ///96   –  Smaller 100%
+        ///120  –  Medium 125%
+        ///144  -  Larger 150%
+        ///192  –  Extra Large 200%
+        ///240  –  Custom 250%
+        ///288  –  Custom 300%
+        ///384  –  Custom 400%
+        ///480  –  Custom 500%*/
+        /// </summary>
+        private string GetScreenScaling()
+        {
+            IntPtr desktopDc = Win32API.GetDC(IntPtr.Zero);
+            // Get native resolution
+            //#DEFINE LOGPIXELSX       88
+            //#DEFINE LOGPIXELSY       90
+            int horizontalDPI = Win32API.GetDeviceCaps(desktopDc, 88);
+            int verticalDPI = Win32API.GetDeviceCaps(desktopDc, 90);
+
+            return (horizontalDPI * 100 / 96).ToString() + "% (HorizontalDPI=" + horizontalDPI + ", VerticalDPI=" + verticalDPI + ")";
+
+            /*switch (horizontalDPI.ToString())
+            {
+                case "96": return "100%";
+                case "120": return "125%";
+                case "144": return "150%";
+                case "192": return "200%";
+                case "240": return "250%";
+                case "288": return "300%";
+                case "384": return "400%";
+                case "480": return "500%";
+                default: return @"Unknown value : " + horizontalDPI.ToString();
+
+            }*/
+        }
+
+        public virtual bool GetFullscreenStatus()
+        {
+            QUERY_USER_NOTIFICATION_STATE state;
+            int r = Win32API.SHQueryUserNotificationState(out state);
+            if (r == 0)
+            {
+                Logger.WriteLog("NotificationState: " + state.ToString());
+                switch (state)
+                {
+                    // A screen saver is displayed, the machine is locked, or a nonactive Fast User Switching session is in progress.
+                    case QUERY_USER_NOTIFICATION_STATE.QUNS_NOT_PRESENT: return false;
+
+                    // A full-screen application is running or Presentation Settings are applied. Presentation Settings allow a user to put their machine into a state fit for an uninterrupted presentation, such as a set of PowerPoint slides, with a single click.
+                    case QUERY_USER_NOTIFICATION_STATE.QUNS_BUSY: return true;
+
+                    // A full-screen (exclusive mode) Direct3D application is running.
+                    case QUERY_USER_NOTIFICATION_STATE.QUNS_RUNNING_D3D_FULL_SCREEN: return true;
+
+                    // The user has activated Windows presentation settings to block notifications and pop-up messages.
+                    case QUERY_USER_NOTIFICATION_STATE.QUNS_PRESENTATION_MODE: return false;
+
+                    // None of the other states are found, notifications can be freely sent.
+                    case QUERY_USER_NOTIFICATION_STATE.QUNS_ACCEPTS_NOTIFICATIONS: return false;
+
+                    // We are in OOBE quiet period
+                    case QUERY_USER_NOTIFICATION_STATE.QUNS_QUIET_TIME: return false;
+
+                    // A Windows Store app is running.
+                    case QUERY_USER_NOTIFICATION_STATE.QUNS_APP: return false;
+
+                    default: return false;
+                }
+            }
+            else
+            {
+                Logger.WriteLog("Error running SHQueryUserNotificationState: " + r.ToString());
+                return false;
+            }
+        }
 
         public virtual void GetScreenResolution()
         {
@@ -288,7 +394,7 @@ namespace DemulShooterX64
             if (_TargetProcess != null)
             {
                 POINT p = new POINT(PlayerData.RIController.Computed_X, PlayerData.RIController.Computed_Y);
-                if (Win32API.ScreenToClient(_TargetProcess.MainWindowHandle, ref p))
+                if (Win32API.ScreenToClient(_GameWindowHandle, ref p))
                 {
                     PlayerData.RIController.Computed_X = (p.X);
                     PlayerData.RIController.Computed_Y = (p.Y);
@@ -300,7 +406,39 @@ namespace DemulShooterX64
             else
                 return false;
         }
-        
+
+        public void GetClientwindowInfo()
+        {
+            if (_TargetProcess != null)
+            {
+                if (Win32API.GetWindowRect(_GameWindowHandle, ref _WindowRect))
+                {
+                    _clientWindowLocation.X = _WindowRect.Left;
+                    _clientWindowLocation.Y = _WindowRect.Top;                    
+                }
+                else
+                {
+                    _clientWindowLocation.X = 0;
+                    _clientWindowLocation.Y = 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get the Client rect to translate axis coordinate to game coordinates
+        /// Only used in windowed Mode
+        /// </summary>
+        public virtual bool GetClientRect()
+        {
+
+            //Window size
+            _ClientRect = new Rect();
+            if (Win32API.GetClientRect(_GameWindowHandle, ref _ClientRect))
+                return true;
+            else
+                return false;
+        }
+
         /// <summary>
         /// Convert client area pointer location to Game speciffic data for memory injection
         /// </summary>
@@ -310,12 +448,9 @@ namespace DemulShooterX64
             {
                 try
                 {
-                    //Window size
-                    Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-
-                    double TotalResX = TotalRes.Right - TotalRes.Left;
-                    double TotalResY = TotalRes.Bottom - TotalRes.Top;
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                     if (PlayerData.RIController.Computed_X < 0)
                         PlayerData.RIController.Computed_X = 0;
@@ -416,8 +551,7 @@ namespace DemulShooterX64
             }
         }
         
-        #endregion
-       
+        #endregion       
 
         #region MemoryHack x64
 
@@ -804,5 +938,82 @@ namespace DemulShooterX64
 
         #endregion
 
+        /// <summary>
+        /// Select a specific window from the target process where the title contains a wanted string
+        /// </summary>
+        /// <param name="TargetWindowTitle"></param>
+        /// <returns></returns>
+        protected bool FindGameWindow_Contains(string TargetWindowTitle)
+        {
+            foreach (IntPtr handle in EnumerateProcessWindowHandles(_TargetProcess.Id))
+            {
+                int length = Win32API.GetWindowTextLength(handle);
+                if (length >= 0)
+                {
+                    StringBuilder builder = new StringBuilder(length);
+                    Win32API.GetWindowText(handle, builder, length + 1);
+                    string WindowTitle = builder.ToString();
+                    Logger.WriteLog("Found a window : Handle = 0x" + handle.ToString("X8") + ", Title = " + WindowTitle);
+                    if (WindowTitle.StartsWith("FPS:") || WindowTitle.Contains(TargetWindowTitle))
+                    {
+                        _GameWindowHandle = handle;
+                        Logger.WriteLog("=> Selecting 0x" + handle.ToString("X8") + " as game Window Handle");
+                        Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
+                        Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X16"));
+                        Logger.WriteLog("MainWindowHandle = 0x" + _TargetProcess.MainWindowHandle.ToString("X16"));
+                        Logger.WriteLog("MainWindowTitle" + _TargetProcess.MainWindowTitle);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Select a specific window from the target process where the title is excatly the specific string
+        /// </summary>
+        /// <param name="TargetWindowTitle"></param>
+        /// <returns></returns>
+        protected bool FindGameWindow_Equals(string TargetWindowTitle)
+        {
+            foreach (IntPtr handle in EnumerateProcessWindowHandles(_TargetProcess.Id))
+            {
+                int length = Win32API.GetWindowTextLength(handle);
+                if (length >= 0)
+                {
+                    StringBuilder builder = new StringBuilder(length);
+                    Win32API.GetWindowText(handle, builder, length + 1);
+                    string WindowTitle = builder.ToString();
+                    Logger.WriteLog("Found a window : Handle = 0x" + handle.ToString("X8") + ", Title = " + WindowTitle);
+                    if (WindowTitle.StartsWith("FPS:") || WindowTitle.Equals(TargetWindowTitle))
+                    {
+                        _GameWindowHandle = handle;
+                        Logger.WriteLog("=> Selecting 0x" + handle.ToString("X8") + " as game Window Handle");
+                        Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
+                        Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X16"));
+                        Logger.WriteLog("MainWindowHandle = 0x" + _TargetProcess.MainWindowHandle.ToString("X16"));
+                        Logger.WriteLog("MainWindowTitle" + _TargetProcess.MainWindowTitle);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Get the list of Windows for a given process
+        /// </summary>
+        protected static IEnumerable<IntPtr> EnumerateProcessWindowHandles(int processId)
+        {
+            List<IntPtr> handles = new List<IntPtr>();
+
+            foreach (ProcessThread thread in Process.GetProcessById(processId).Threads)
+            {
+                Win32API.EnumThreadWindows(thread.Id, (hWnd, lParam) => { handles.Add(hWnd); return true; }, IntPtr.Zero);
+            }
+            return handles;
+        }
     }
 }

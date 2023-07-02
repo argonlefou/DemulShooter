@@ -1,7 +1,7 @@
 ﻿using System;
 
-namespace DsCore.Win32{
-
+namespace DsCore.Win32
+{
     [Flags]
     public enum MemoryPageProtect
     {

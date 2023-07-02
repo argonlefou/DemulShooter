@@ -63,6 +63,7 @@ namespace DemulShooter
                             byte[] buffer = ReadBytes(_RomLoaded_check_Instruction, 5);
                             if (buffer[0] == 0x0D && buffer[1] == 0x80 && buffer[2] == 0x00 && buffer[3] == 0x00 && buffer[4] == 0x00)
                             {
+                                _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));                                
                                 _ProcessHooked = true;

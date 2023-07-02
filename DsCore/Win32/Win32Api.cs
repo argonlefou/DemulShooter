@@ -141,6 +141,9 @@ namespace DsCore.Win32
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool GetClientRect(IntPtr hWnd, ref Rect rectangle);
 
+        [DllImport("user32.dll")]
+        public static extern bool GetCursorPos(out POINT point);
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr GetDesktopWindow();
 
@@ -187,6 +190,9 @@ namespace DsCore.Win32
         [DllImport("user32.dll")]
         public static extern bool UpdateWindow(IntPtr hWnd);
 
+        [DllImport("shell32.dll")]
+        public static extern int SHQueryUserNotificationState(out QUERY_USER_NOTIFICATION_STATE pquns);
+
         #endregion
 
         #region Windows Messages
@@ -207,15 +213,16 @@ namespace DsCore.Win32
         /** Used for Operation Ghost which have hardcoded Numpad Keys that are not working with DIK if no keyboard plugged **/
         [DllImport("user32.dll", SetLastError = true)]
         public static extern void keybd_event(VirtualKeyCode bVk, byte bScan, KeybdInputFlags dwFlags, int dwExtraInfo);
-
         
-
         /** DIRECTINPUT SendKey **/
         [DllImport("user32.dll", SetLastError = true)]
         public static extern UInt32 SendInput(UInt32 nInputs, [MarshalAs(UnmanagedType.LPArray, SizeConst = 1)] INPUT[] pInputs, Int32 cbSize);
 
         [DllImport("user32.dll")]
         public static extern int ShowCursor(bool bShow);
+
+        [DllImport("USER32.dll")]
+        public static extern short GetKeyState(VirtualKeyCode nVirtKey);
 
         #endregion
 

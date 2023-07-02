@@ -76,6 +76,7 @@ namespace DemulShooter
                             byte[] buffer = ReadBytes(_RomLoaded_check_Instruction_v125, 5);
                             if (buffer[0] == 0x83 && buffer[1] == 0x2C && buffer[2] == 0xB5 && buffer[3] == 0x68 && buffer[4] == 0xBF)
                             {
+                                _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                 Logger.WriteLog("Terminator Salvation - 01.25 USA binary detected");
                                 _TargetProcess_Md5Hash = _KnownMd5Prints["Terminator Salvation - 01.25 USA"];
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);

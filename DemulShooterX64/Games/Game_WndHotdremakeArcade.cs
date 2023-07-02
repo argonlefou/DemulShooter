@@ -8,6 +8,7 @@ using DsCore.IPC;
 using DsCore.MameOutput;
 using DsCore.RawInput;
 using DsCore.Win32;
+using System.Text;
 
 namespace DemulShooterX64
 {
@@ -49,14 +50,14 @@ namespace DemulShooterX64
                         _ProcessHandle = _TargetProcess.Handle;
                         _TargetProcess_MemoryBaseAddress = _TargetProcess.MainModule.BaseAddress;
 
+                        //Looking for the game's window based on it's Title
+                        _GameWindowHandle = IntPtr.Zero;
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
                             // The game may start with other Windows than the main one (BepInEx console, other stuff.....) so we need to filter
                             // the displayed window according to the Title, if DemulShooter is started before the game,  to hook the correct one
-                            if (_TargetProcess.MainWindowHandle != IntPtr.Zero && _TargetProcess.MainWindowTitle == GAME_WINDOW_TITLE)
+                            if (FindGameWindow_Equals(GAME_WINDOW_TITLE))
                             {
-                                Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
-                                Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 String AssemblyDllPath = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", @"The House of the Dead Remake_Data\Managed\Assembly-CSharp.dll");
                                 CheckMd5(AssemblyDllPath);
                                 if (!_DisableInputHack)
@@ -66,6 +67,11 @@ namespace DemulShooterX64
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
+                            else
+                            {
+                                Logger.WriteLog("Game Window not found");
+                                return;
+                            } 
                         }
                     }
                 }
@@ -102,14 +108,8 @@ namespace DemulShooterX64
             {
                 try
                 {
-                    //Game Window size
-                    Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                    //Win32API.GetWindowRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                    double TotalResX = TotalRes.Right - TotalRes.Left;
-                    double TotalResY = TotalRes.Bottom - TotalRes.Top;
-
-                    //Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
                     Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                     //Just need to invert Y axis (0 is bottom)

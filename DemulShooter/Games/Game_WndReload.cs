@@ -93,6 +93,7 @@ namespace DemulShooter
                                 _RldGameDll_ModuleBaseAddress = m.BaseAddress;
                                 if (_RldGameDll_ModuleBaseAddress != IntPtr.Zero)
                                 {
+                                    _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                     Logger.WriteLog("rld_game.dll Module Base Address = 0x " + _RldGameDll_ModuleBaseAddress.ToString("X8"));
@@ -142,12 +143,9 @@ namespace DemulShooter
             {
                 try
                 {
-                    Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                    int TotalResX = TotalRes.Right - TotalRes.Left;
-                    int TotalResY = TotalRes.Bottom - TotalRes.Top;
-
-                    Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                     //During Menus :
                     //Y => [0; RezY] en float
@@ -168,8 +166,8 @@ namespace DemulShooter
                     //In Game, Shoot :
                     //Y => [-1;1] en float
                     //X => [-1;1] en float
-                    _P1_X_Shoot_Value = (2.0f * PlayerData.RIController.Computed_X / TotalResX) - 1.0f;
-                    _P1_Y_Shoot_Value = (2.0f * PlayerData.RIController.Computed_Y / TotalResY) - 1.0f;
+                    _P1_X_Shoot_Value = (2.0f * PlayerData.RIController.Computed_X / (float)TotalResX) - 1.0f;
+                    _P1_Y_Shoot_Value = (2.0f * PlayerData.RIController.Computed_Y / (float)TotalResY) - 1.0f;
 
                     if (_P1_X_Shoot_Value < -1.0f)
                         _P1_X_Shoot_Value = -1.0f;

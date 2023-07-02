@@ -93,6 +93,7 @@ namespace DemulShooter
                             byte[] buffer = ReadBytes(_RomLoaded_check_Instruction_RevA, 5);
                             if (buffer[0] == 0xE8 && buffer[1] == 0x42 && buffer[2] == 0x0D && buffer[3] == 0x00 && buffer[4] == 0x00)
                             {
+                                _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                 Logger.WriteLog("House Of The Dead 4 - Rev. A binary detected");
                                 _TargetProcess_Md5Hash = _KnownMd5Prints["House of The Dead 4 - Rev.A"];
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
@@ -110,6 +111,7 @@ namespace DemulShooter
                                 buffer = ReadBytes(_RomLoaded_check_Instruction_RevC, 5);
                                 if (buffer[0] == 0xE8 && buffer[1] == 0x42 && buffer[2] == 0x0D && buffer[3] == 0x00 && buffer[4] == 0x00)
                                 {
+                                    _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                     Logger.WriteLog("House Of The Dead 4 - Rev.C binary detected");
                                     _TargetProcess_Md5Hash = _KnownMd5Prints["House of The Dead 4 - Rev.C"];
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
@@ -161,12 +163,10 @@ namespace DemulShooter
             {
                 try
                 {
-                    Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                    double TotalResX = TotalRes.Right - TotalRes.Left;
-                    double TotalResY = TotalRes.Bottom - TotalRes.Top;
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
-                    Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
                     //X and Y axis => 0x00 - 0xFF                    
                     double dMaxX = 255.0;
                     double dMaxY = 255.0;

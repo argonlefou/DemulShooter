@@ -121,14 +121,8 @@ namespace DemulShooter
             {
                 try
                 {
-                    //Model2 Window size
-                    Rect TotalRes = new Rect();
-                    //Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                    Win32API.GetWindowRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                    double TotalResX = TotalRes.Right - TotalRes.Left;
-                    double TotalResY = TotalRes.Bottom - TotalRes.Top;
-
-                    //Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
                     Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                     //X => [0x0000 - > 0x01EF]

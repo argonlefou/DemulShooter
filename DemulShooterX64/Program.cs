@@ -148,6 +148,7 @@ namespace DemulShooterX64
                         Console.WriteLine("Supported [options] :");
                         Console.WriteLine(" -noinput \tDisable any input hack");
                         Console.WriteLine(" -nocrosshair \tHide in-game crosshair (Only for Unity-based Games");
+                        Console.WriteLine(" -usesinglemouse \tUse standard mouse instead of Lightguns");
                         Console.WriteLine(" -? -h --help\tShow this help");
                         Console.WriteLine(" -v --verbose\tEnable output to log file");
 

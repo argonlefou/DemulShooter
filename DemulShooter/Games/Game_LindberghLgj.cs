@@ -96,6 +96,7 @@ namespace DemulShooter
 
                                 if (_Player1_InputStruct_Address != 0 && _Player2_InputStruct_Address != 0)
                                 {
+                                    _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));                                    
 
@@ -149,18 +150,15 @@ namespace DemulShooter
             {
                 try
                 {
-                    Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                    int TotalResX = TotalRes.Right - TotalRes.Left;
-                    int TotalResY = TotalRes.Bottom - TotalRes.Top;
-
-                    Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                     //X => [-1 ; 1] float
                     //Y => [-1 ; 1] float
 
-                    float X_Value = (2.0f * PlayerData.RIController.Computed_X / TotalResX) - 1.0f;
-                    float Y_Value = 1.0f - (2.0f * PlayerData.RIController.Computed_Y / TotalResY);
+                    float X_Value = (2.0f * PlayerData.RIController.Computed_X / (float)TotalResX) - 1.0f;
+                    float Y_Value = 1.0f - (2.0f * PlayerData.RIController.Computed_Y / (float)TotalResY);
 
                     if (X_Value < -1.0f)
                         X_Value = -1.0f;

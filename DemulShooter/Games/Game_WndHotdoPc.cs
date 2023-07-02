@@ -56,6 +56,7 @@ namespace DemulShooter
 
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
+                            _GameWindowHandle = _TargetProcess.MainWindowHandle;
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();

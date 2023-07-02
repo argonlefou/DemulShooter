@@ -92,7 +92,8 @@ namespace DemulShooter
                             {
                                 _VsIOBoard_Module_BaseAddress = m.BaseAddress;
                                 if (_VsIOBoard_Module_BaseAddress != IntPtr.Zero)
-                                {                                    
+                                {
+                                    _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog("Friction.exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8") + ", vsIOBoard.dll = 0x" + _VsIOBoard_Module_BaseAddress.ToString("X8"));
                                     String VsIoBoardDll_Path = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", "vsioboard.dll");                                  
@@ -142,13 +143,9 @@ namespace DemulShooter
             {
                 try
                 {
-                    //Window size
-                    Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                    double TotalResX = TotalRes.Right - TotalRes.Left;
-                    double TotalResY = TotalRes.Bottom - TotalRes.Top;
-
-                    Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                     //X => 160 - 480 ==> 321
                     //Y => 120 - 360 ==> 241                 

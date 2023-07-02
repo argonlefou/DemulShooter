@@ -70,7 +70,8 @@ namespace DemulShooterX64
                             _P1_MouseDeltaX_Address = BitConverter.ToUInt64(bBuffer, 0) + 8;
 
                             if (_P1_StructAddress != 0 && _P1_MouseDeltaX_Address != 0)
-                            {                                
+                            {
+                                _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X16"));
                                 Logger.WriteLog("P1_StructAddress = 0x" + _P1_StructAddress.ToString("X16"));
@@ -119,7 +120,7 @@ namespace DemulShooterX64
                 {
                     //Window size
                     Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
+                    Win32API.GetClientRect(_GameWindowHandle, ref TotalRes);
                     double TotalResX = TotalRes.Right - TotalRes.Left;
                     double TotalResY = TotalRes.Bottom - TotalRes.Top;
 

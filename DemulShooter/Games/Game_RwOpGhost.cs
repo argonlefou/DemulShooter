@@ -139,6 +139,7 @@ namespace DemulShooter
                                 _Jvs_Data_BaseAddress = ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + _Jvs_Data_Ptr_Offset);
                                 if (_Jvs_Data_BaseAddress != 0)
                                 {
+                                    _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                     Logger.WriteLog("AmLib data base address = 0x" + _AmLibData_BaseAddress.ToString("X8"));
@@ -160,6 +161,7 @@ namespace DemulShooter
 
                                 if (Calc_Addr != 0)
                                 {
+                                    _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                     _P2_X_Address = Calc_Addr + 0x28;
                                     _P2_Y_Address = Calc_Addr + 0x2C;
 
@@ -213,12 +215,9 @@ namespace DemulShooter
             {
                 try
                 {
-                    Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_TargetProcess.MainWindowHandle, ref TotalRes);
-                    double TotalResX = TotalRes.Right - TotalRes.Left;
-                    double TotalResY = TotalRes.Bottom - TotalRes.Top;
-
-                    Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                     //X => [0-1024]
                     //Y => [0-600]

@@ -30,9 +30,6 @@ namespace DemulShooterX64
         private int _P1_LastRumble = 0;
         private int _P2_LastRumble = 0;
 
-        //MultiWindow process, so we can't use MAinWindowHandle
-        private IntPtr _hWnd_GameWindow = IntPtr.Zero;
-
         //Configurator, used to acces User-designed Key code
         private Configurator _Configurator;
 
@@ -65,45 +62,25 @@ namespace DemulShooterX64
                         _TargetProcess_MemoryBaseAddress = _TargetProcess.MainModule.BaseAddress;
 
                         //Looking for the game's window based on it's Title
-                        _hWnd_GameWindow = IntPtr.Zero;
-
+                        _GameWindowHandle = IntPtr.Zero;
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
-                            foreach (IntPtr handle in EnumerateProcessWindowHandles(_TargetProcess.Id))
+                            // The game may start with other Windows than the main one (BepInEx console, other stuff.....) so we need to filter
+                            // the displayed window according to the Title, if DemulShooter is started before the game,  to hook the correct one
+                            if (FindGameWindow_Contains("Deadstorm Pirates Special Edition"))
                             {
-                                int length = Win32API.GetWindowTextLength(handle);
-                                if (length >= 0)
-                                {
-                                    StringBuilder builder = new StringBuilder(length);
-                                    Win32API.GetWindowText(handle, builder, length + 1);
-                                    string WindowTitle = builder.ToString();
-                                    Logger.WriteLog("Found a window : Handle = 0x" + handle.ToString("X8") + ", Title = " + WindowTitle);
-                                    if (WindowTitle.StartsWith("FPS:") || WindowTitle.Contains("Deadstorm Pirates Special Edition"))
-                                    {
-                                        _hWnd_GameWindow = handle;
-                                        Logger.WriteLog("=> Selecting 0x" + handle.ToString("X8") + " as game Window Handle");
-
-                                        Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
-                                        Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X16"));
-                                        Logger.WriteLog("MainWindowHandle = 0x" + _TargetProcess.MainWindowHandle.ToString("X16"));
-                                        Logger.WriteLog("MainWindowTitle" + _TargetProcess.MainWindowTitle);
-
-                                        Check_PatchedFiles_Ok();
-                                        CheckExeMd5();
-                                        if (_DisableInputHack)
-                                            Logger.WriteLog("Input Hack disabled");
-                                        _ProcessHooked = true;
-                                        RaiseGameHookedEvent();
-                                        break;
-                                    }
-                                }
+                                Check_PatchedFiles_Ok();
+                                CheckExeMd5();
+                                if (_DisableInputHack)
+                                    Logger.WriteLog("Input Hack disabled");
+                                _ProcessHooked = true;
+                                RaiseGameHookedEvent();
                             }
-
-                            if (_hWnd_GameWindow == IntPtr.Zero)
+                            else
                             {
                                 Logger.WriteLog("Game Window not found");
                                 return;
-                            }
+                            }                        
 
                             /*_GameCode_Address = ReadPtrChain((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _GameCode_Ptr_Offset), new UInt64[] { 0x230, 0x00, 0x00, 0x30, 0x00 });
                             if (_GameCode_Address != 0)
@@ -240,10 +217,9 @@ namespace DemulShooterX64
         #endregion
 
         #region Screen
-        
+
         /// <summary>
-        /// Fullscreen mode causes issue with windows size, so for now this will only work with fullscreen mode
-        /// Game resolution will be read in memory
+        /// Replacing original function using TargetProcess main window handle by this one, using a specific window handle
         /// </summary>
         /// <param name="PlayerData"></param>
         /// <returns></returns>
@@ -254,7 +230,7 @@ namespace DemulShooterX64
             {
                 //Window size
                 Rect TotalRes = new Rect();
-                Win32API.GetWindowRect(_hWnd_GameWindow, ref TotalRes);
+                Win32API.GetWindowRect(_GameWindowHandle, ref TotalRes);
 
                 Logger.WriteLog("Window position (Px) = [ " + TotalRes.Left + ";" + TotalRes.Top + " ]");
 
@@ -275,12 +251,9 @@ namespace DemulShooterX64
             {
                 try
                 {
-                    Rect TotalRes = new Rect();
-                    Win32API.GetClientRect(_hWnd_GameWindow, ref TotalRes);
-                    double TotalResX = TotalRes.Right - TotalRes.Left;
-                    double TotalResY = TotalRes.Bottom - TotalRes.Top;
-
-                    Logger.WriteLog("Game client window resolution (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
                     double dMaxX = 1280.0;
                     double dMaxY = 720.0;
@@ -490,19 +463,6 @@ namespace DemulShooterX64
         }
 
         #endregion
-
-        /// <summary>
-        /// Get the list of Windows for a given process
-        /// </summary>
-        static IEnumerable<IntPtr> EnumerateProcessWindowHandles(int processId)
-        {
-            List<IntPtr> handles = new List<IntPtr>();
-
-            foreach (ProcessThread thread in Process.GetProcessById(processId).Threads)
-            {
-                Win32API.EnumThreadWindows(thread.Id, (hWnd, lParam) => { handles.Add(hWnd); return true; }, IntPtr.Zero);
-            }
-            return handles;
-        }
+        
     }
 }
