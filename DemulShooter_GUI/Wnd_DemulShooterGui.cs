@@ -615,14 +615,14 @@ namespace DemulShooter_GUI
                     bw.BaseStream.Seek(0x791AD6, SeekOrigin.Begin);
                     bw.Write(new byte[] { 0xE9, 0xF9, 0xAE, 0x19, 0x02, 0x90, 0x90, 0x90 });
 
-
-                    //For Credits we will force the game to read our own value
-                    //Codecave space too short at the end of the code page, so we will use some 21-byte long Align space between 2 functions
-                    bw.BaseStream.Seek(0x24B12EB, SeekOrigin.Begin);
-                    bw.Write(new byte[] { 0x48, 0x8D, 0x05, 0x6A, 0xFB, 0x5D, 0x01, 0x48, 0xC1, 0xE1, 0x04, 0x48, 0x01, 0xC8, 0x8B, 0x00, 0xE9, 0xAC, 0x0A, 0x2E, 0xFE });
-                    //Injection
-                    bw.BaseStream.Seek(0x791DA7, SeekOrigin.Begin);
-                    bw.Write(new byte[] { 0xE9, 0x3F, 0xF5, 0xD1, 0x01 });
+                    //Calls to the usb dll credits function will not return any good values (pointer not existing, no data to write/read)
+                    //There are values that can be used in the main .exe :
+                    //For Credits we will force the game to read our own value    
+                    bw.BaseStream.Seek(0x7B77BF, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0x48, 0x8B, 0xF9, 0x48, 0x8D, 0x05, 0x93, 0x96, 0x2D, 0x03, 0x48, 0xC1, 0xE7, 0x04, 0x48, 0x01, 0xF8, 0x8B, 0x00, 0xE9, 0x81, 0x00, 0x00, 0x00, 0x00 });
+                    //For Credits we will force the game to write to our own values
+                    bw.BaseStream.Seek(0x7B767E, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0x48, 0x8D, 0x05, 0xD7, 0x97, 0x2D, 0x03, 0xC1, 0xE5, 0x04, 0x48, 0x01, 0xE8, 0x8B, 0x28, 0x29, 0xD5, 0x89, 0x28, 0xE9, 0x91, 0x00, 0x00, 0x00, 0x90 });
 
                     //Force overriding bad read values from GUN api with good flag, and force values to be read from another memory location
                     //which then will be written by any tool to feed data
