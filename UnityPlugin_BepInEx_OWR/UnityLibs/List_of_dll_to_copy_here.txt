@@ -1,0 +1,12 @@
+Copy the following files from the original game :
+
+ Assembly-CSharp.dll  
+ Unity.InputSystem.dll  
+ UnityEngine.AnimationModule.dll  
+ UnityEngine.CoreModule.dll  
+ UnityEngine.InputLegacyModule.dll  
+ UnityEngine.UI.dll  
+ UnityEngine.dll  
+ Virtuallyz.VRShooter.dll  
+ Virtuallyz.dll  
+

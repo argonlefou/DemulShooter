@@ -98,7 +98,8 @@ namespace DemulShooterX64
 
             Dictionary<String, String> _WindowsRoms = new Dictionary<String, String>(){
                 //{"bha","Buck Hunt Arcade PC"}
-                {"hotdra","House of the Dead Remake - Arcade Mod"}
+                {"hotdra","House of the Dead Remake - Arcade Mod"},
+                {"opwolfr", "Operation Wolf Returns First Mission"}
             };
             
             if (args.Length > 0)

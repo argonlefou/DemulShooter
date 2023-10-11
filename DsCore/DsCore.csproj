@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Config\Configurator.cs" />
     <Compile Include="Config\PlayerSettings.cs" />
+    <Compile Include="IPC\DsTcp_InputData_OpwolfReturn.cs" />
     <Compile Include="IPC\MappedMemoryFileHelper.cs" />
     <Compile Include="IPC\MappedMemoryFile_Helper_old.cs" />
     <Compile Include="IPC\MMFH_HotdRemakeArcade.cs" />
@@ -68,6 +69,9 @@
     <Compile Include="IPC\MMFH_TombRaider.cs" />
     <Compile Include="IPC\MMF_DataStruct.cs" />
     <Compile Include="IPC\MMFH_WildWestShoutout.cs" />
+    <Compile Include="IPC\DsTcp_Client.cs" />
+    <Compile Include="IPC\DsTcp_OutputData_OpWolfReturn.cs" />
+    <Compile Include="IPC\DsTcp_TcpPacket.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MameOutput\AsyncGameOutput.cs" />
     <Compile Include="MameOutput\BlinkGameOutput.cs" />

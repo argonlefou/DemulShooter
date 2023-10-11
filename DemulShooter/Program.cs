@@ -253,7 +253,7 @@ namespace DemulShooter
                     if (args[i].ToLower().StartsWith("-rom"))
                     {
                         strRom = (args[i].ToLower().Split('='))[1].Trim();
-                       if (strTarget.StartsWith("chihiro"))
+                        if (strTarget.StartsWith("chihiro"))
                         {
                             if (!CheckParameter(strRom, _ChihiroRoms))
                             {

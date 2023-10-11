@@ -170,5 +170,9 @@ namespace DsCore.MameOutput
         public static readonly String P2_Damaged = "P2_Damaged";
         public static readonly String P3_Damaged = "P3_Damaged";
         public static readonly String P4_Damaged = "P4_Damaged";
+
+        //Mame inner data
+        public static readonly String MameOrientation = @"Orientation(\\.\DISPLAY1)";
+        public static readonly String MamePause = "pause"; 
     }
 }

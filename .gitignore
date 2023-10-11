@@ -17,6 +17,8 @@ Assembly-CSharp.dll
 UnityEngine.dll
 UnityEngine.Networking.dll
 UnityEngine.UI.dll
+UnityEngine*.dll
+Virtuallyz*.dll
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

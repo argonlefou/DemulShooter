@@ -1009,5 +1009,20 @@ namespace DemulShooter
             }
             return handles;
         }
+
+        /// <summary>
+        /// Create a minimal output list with only orientation and pause
+        /// </summary>
+        public void CreatePauseOutputList()
+        {
+            _Outputs.Clear();
+            _Outputs = new List<GameOutput>();
+
+            _Outputs.Add(new GameOutput(OutputDesciption.MameOrientation, OutputId.MameOrientation));
+            _Outputs.Add(new GameOutput(OutputDesciption.MamePause, OutputId.MamePause));
+
+            SetOutputValue(OutputId.MameOrientation, 0);
+            SetOutputValue(OutputId.MamePause, 1);
+        }
     }
 }

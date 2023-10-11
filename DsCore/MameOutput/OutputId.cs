@@ -158,6 +158,8 @@ namespace DsCore.MameOutput
         P1_Credit,
         P2_Credit,
         P3_Credit,
-        P4_Credit
+        P4_Credit,
+        MameOrientation = 12345,
+        MamePause
     }
 }

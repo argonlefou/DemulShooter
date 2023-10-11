@@ -87,6 +87,7 @@
     <Compile Include="Games\Game_UnisElevatorActionInvasion.cs" />
     <Compile Include="Games\Game_UnisNightHunterArcade.cs" />
     <Compile Include="Games\Game_WndHotdremakeArcade.cs" />
+    <Compile Include="Games\Game_WndOpWolfReturn.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

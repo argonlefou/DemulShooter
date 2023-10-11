@@ -9,6 +9,7 @@ using DsCore.MameOutput;
 using DsCore.RawInput;
 using DsCore.Win32;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace DemulShooterX64
 {
@@ -384,13 +385,17 @@ namespace DemulShooterX64
                             {
                                 _Game = new Game_WndHotdremakeArcade(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
+                        case "opwolfr":
+                            {
+                                _Game = new Game_WndOpWolfReturn(_Rom.ToLower(), _NoInput, isVerbose);
+                            }; break;
                     }
                 }                
 
                 //Wip Games
                 else if (_Target.Equals("wip"))
                 {
-
+                    
                 }
 
                 _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);
@@ -506,8 +511,11 @@ namespace DemulShooterX64
                     {
                         ProcessRawInputMessage(lParam);
                     }
-                    break;             
-
+                    break;
+                case Win32Define.WM_QUIT :
+                    {
+                        Logger.WriteLog("myWndProc() => WM_QUIT message received !");
+                    }break;
                 default:
                     break;
             }
@@ -747,7 +755,17 @@ namespace DemulShooterX64
                 _OutputUpdateLoop.Abort();
 
             if (_OutputHelper != null)
+            {
+                //Simply sending MameStop may cause MameHooker to not release dll properly
+                //MAME goes from MameStop to MameStart with PAUSE enabled and "__empty" rom
+                //Which is not possible here due to the WndProc quitting before getting MameHooker request ??
+                // Solution would be to Send a new MameStart with no values before MAmeStopping again
                 _OutputHelper.Stop();
+                _Game.CreatePauseOutputList();
+                _OutputHelper.Start();
+                _OutputHelper.SendValues(_Game.Outputs);
+                _OutputHelper.Stop();
+            }
 
             //Cleanup so that the icon will be removed when the application is closed
             if (_TrayIcon != null)

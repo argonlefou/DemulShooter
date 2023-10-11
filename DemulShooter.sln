@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityPlugin_BepInEx_NHA2", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityPlugin_BepInEx_NHA2_Configurator", "UnityPlugin_BepInEx_NHA2_Configurator\UnityPlugin_BepInEx_NHA2_Configurator.csproj", "{FB7FF287-8EFA-4EA0-8C6F-4867B15DB1FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityPlugin_BepInEx_OWR", "UnityPlugin_BepInEx_OWR\UnityPlugin_BepInEx_OWR.csproj", "{FD40F71B-69C4-477F-9B9E-80D523586FA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -157,6 +159,18 @@ Global
 		{FB7FF287-8EFA-4EA0-8C6F-4867B15DB1FB}.Release|x64.ActiveCfg = Release|x86
 		{FB7FF287-8EFA-4EA0-8C6F-4867B15DB1FB}.Release|x86.ActiveCfg = Release|x86
 		{FB7FF287-8EFA-4EA0-8C6F-4867B15DB1FB}.Release|x86.Build.0 = Release|x86
+		{FD40F71B-69C4-477F-9B9E-80D523586FA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD40F71B-69C4-477F-9B9E-80D523586FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD40F71B-69C4-477F-9B9E-80D523586FA7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FD40F71B-69C4-477F-9B9E-80D523586FA7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FD40F71B-69C4-477F-9B9E-80D523586FA7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FD40F71B-69C4-477F-9B9E-80D523586FA7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FD40F71B-69C4-477F-9B9E-80D523586FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD40F71B-69C4-477F-9B9E-80D523586FA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD40F71B-69C4-477F-9B9E-80D523586FA7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FD40F71B-69C4-477F-9B9E-80D523586FA7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FD40F71B-69C4-477F-9B9E-80D523586FA7}.Release|x64.ActiveCfg = Release|Any CPU
+		{FD40F71B-69C4-477F-9B9E-80D523586FA7}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

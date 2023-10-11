@@ -198,6 +198,10 @@ namespace DsCore.MameOutput
         {
             if (_FirstOutputs)
             {
+                //For MameHooker compatibility : Sending orientation once
+                Outputs.Insert(0, new GameOutput(OutputDesciption.MameOrientation, OutputId.MameOrientation));
+                Outputs[0].OutputValue = 0;
+
                 //Cloning the output list without references to the GameOutput object
                 _OutputsBefore = Outputs.ConvertAll(x => new GameOutput(x));
                 for (int i = 0; i < Outputs.Count; i++)

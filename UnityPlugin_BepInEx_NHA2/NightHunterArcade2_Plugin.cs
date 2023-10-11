@@ -12,8 +12,8 @@ namespace UnityPlugin_BepInEx_NHA2
     public class NightHunterArcade2_Plugin : BaseUnityPlugin
     {
         public const String pluginGuid = "argonlefou.input.nha2";
-        public const String pluginName = "NHA Input Plugin2";
-        public const String pluginVersion = "2.0.0.0";
+        public const String pluginName = "NHA Input Plugi2n";
+        public const String pluginVersion = "3.0.0.0";
 
         static String MAPPED_FILE_NAME = "DemulShooter_MMF_Nha2";
         static String MUTEX_NAME = "DemulShooter_Mutex_Nha2";
@@ -100,6 +100,10 @@ namespace UnityPlugin_BepInEx_NHA2
         // - Recoil
         public void Update()
         {
+            //Quit
+            if (Input.GetKeyDown(KeyCode.Escape))
+                Application.Quit();
+
             if (Configurator.InputMode == InputMode.DemulShooter)
             {
                 int r = NHA2_Mmf.ReadAll();
