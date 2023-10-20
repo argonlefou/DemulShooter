@@ -16,8 +16,9 @@ namespace DsCore.IPC
         public byte P2_Reload;
         public byte P2_Grenade;
         public byte P2_ChangeWeapon;
+        public byte HideCrosshair;
 
-        public static readonly int DATA_LENGTH = 9;
+        public static readonly int DATA_LENGTH = 10;
 
         public DsTcp_InputData_OpwolfReturn()
         {
@@ -33,6 +34,7 @@ namespace DsCore.IPC
             P2_Reload = 0;
             P2_Grenade = 0;
             P2_ChangeWeapon = 0;
+            HideCrosshair = 0;
         }
 
         public void Update(byte[] ReceivedData)
@@ -49,6 +51,7 @@ namespace DsCore.IPC
             P2_Reload = (byte)(ReceivedData[8] >> 5 & 0x01);
             P2_Grenade = (byte)(ReceivedData[8] >> 6 & 0x01);
             P2_ChangeWeapon = (byte)(ReceivedData[8] >> 7 & 0x01);
+            HideCrosshair = ReceivedData[9];
         }
 
         public byte[] ToByteArray()
@@ -66,8 +69,20 @@ namespace DsCore.IPC
             bArray[8] |= (byte)(P2_Reload << 5);
             bArray[8] |= (byte)(P2_Grenade << 6);
             bArray[8] |= (byte)(P2_ChangeWeapon << 7);
+            bArray[9] = HideCrosshair;
 
             return bArray;
+        }
+
+        public override string ToString()
+        {
+            string r = string.Empty;
+            byte[] b = this.ToByteArray();
+            for (int i = 0; i < b.Length; i++)
+            {
+                r += "0x" + b[i].ToString("X2");
+            }
+            return r;
         }
     }
 }

@@ -10,6 +10,7 @@ using DsCore.RawInput;
 using DsCore.Win32;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Security.Principal;
 
 namespace DemulShooterX64
 {
@@ -148,6 +149,8 @@ namespace DemulShooterX64
             }
             if (_TrayIcon != null)
                 _TrayIcon.Text += "[" + _Target + "] [" + _Rom + "]";
+
+            Logger.WriteLog("Running as Administrator : " + IsRunningAsAdmin().ToString());
 
             //Finding plugged devices
             _AvailableControllers = RawInputHelper.GetRawInputDevices(new RawInputDeviceType[] { RawInputDeviceType.RIM_TYPEHID, RawInputDeviceType.RIM_TYPEMOUSE });
@@ -387,7 +390,7 @@ namespace DemulShooterX64
                             } break;
                         case "opwolfr":
                             {
-                                _Game = new Game_WndOpWolfReturn(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_WndOpWolfReturn(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             }; break;
                     }
                 }                
@@ -419,6 +422,29 @@ namespace DemulShooterX64
                     _TimerHookTimeout.Interval = (_Configurator.HookTimeout * 1000);
                     _TimerHookTimeout.Start();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Check if user has Elevated rights (Admin)
+        /// </summary>
+        /// <returns></returns>
+        private bool IsRunningAsAdmin()
+        {
+            bool isElevated = false;
+            try
+            {
+                using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+                {
+                    WindowsPrincipal principal = new WindowsPrincipal(identity);
+                    isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
+                }
+                return isElevated;
+            }
+            catch (Exception Ex)
+            {
+                Logger.WriteLog("Error checking Admin rights for current user : " + Ex.Message.ToString());
+                return false;
             }
         }
 

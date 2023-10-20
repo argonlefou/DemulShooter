@@ -34,7 +34,9 @@ namespace UnityPlugin_BepInEx_OWR
                 if (OpWolf_Plugin.IsMouseLockedRequired)
                 {
                     //Custom option to hide Crosshairs
-                    if (OpWolf_Plugin.DisableCrosshair)
+                    if (OpWolf_Plugin.DisableCrosshair == 0)
+                        __instance.Target.SetActive(true);
+                    else
                         __instance.Target.SetActive(false);
 
                     //Vector3 MouseAxis = Input.mousePosition;

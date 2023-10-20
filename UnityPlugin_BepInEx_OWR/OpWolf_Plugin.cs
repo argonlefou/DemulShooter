@@ -57,7 +57,7 @@ namespace UnityPlugin_BepInEx_OWR
 
         public static readonly KeyCode P2_Grenade_KeyCode = KeyCode.F;
 
-        public static bool DisableCrosshair = false;
+        public static byte DisableCrosshair = 0;
 
         public void Awake()
         {
@@ -83,6 +83,12 @@ namespace UnityPlugin_BepInEx_OWR
             _TcpListenerThread.Start();
 
             harmony.PatchAll();
+        }
+
+        public void Start()
+        {
+            MyLogger.LogMessage("OpwOlfPlugin.Start() => Removing mouse cursor");
+            Cursor.visible = false;
         }
 
         public void Update()
@@ -136,7 +142,7 @@ namespace UnityPlugin_BepInEx_OWR
                                     byte[] InputBuffer = new byte[Length];
                                     Array.Copy(bytes, 0, InputBuffer, 0, Length);
                                     _InputData.Update(InputBuffer);
-                                    //MyLogger.LogMessage("OpWolf_Plugin.TcpClientThreadLoop() => client message received as: " + _InputData.ToString());
+                                    MyLogger.LogMessage("OpWolf_Plugin.TcpClientThreadLoop() => client message received as: " + _InputData.ToString());
 
                                     lock (MutexLocker_Inputs)
                                     {
@@ -148,6 +154,7 @@ namespace UnityPlugin_BepInEx_OWR
                                         PluginControllers[(int)PlayerType.Player2].SetButton(PluginController.PluginButton.Trigger, _InputData.P2_Trigger);
                                         PluginControllers[(int)PlayerType.Player2].SetButton(PluginController.PluginButton.Reload, _InputData.P2_Reload);
                                         PluginControllers[(int)PlayerType.Player2].SetButton(PluginController.PluginButton.Action, _InputData.P2_ChangeWeapon);
+                                        DisableCrosshair = _InputData.HideCrosshair;
                                     }
                                 }
                                 catch

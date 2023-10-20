@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Collections.Generic;
-
 namespace DemulShooter
 {
     class Program

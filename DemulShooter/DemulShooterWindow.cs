@@ -9,6 +9,7 @@ using DsCore.MameOutput;
 using DsCore.RawInput;
 using DsCore.Win32;
 using System.Threading;
+using System.Security.Principal;
 
 namespace DemulShooter
 {
@@ -179,6 +180,8 @@ namespace DemulShooter
             }
             if (_TrayIcon != null)
                 _TrayIcon.Text += "[" + _Target + "] [" + _Rom + "]";
+
+            Logger.WriteLog("Running as Administrator : " + IsRunningAsAdmin().ToString());
 
             //Finding plugged devices
             _AvailableControllers = RawInputHelper.GetRawInputDevices(new RawInputDeviceType[] { RawInputDeviceType.RIM_TYPEHID, RawInputDeviceType.RIM_TYPEMOUSE });
@@ -663,7 +666,30 @@ namespace DemulShooter
                     _TimerHookTimeout.Start();
                 }
             }
-        }       
+        }
+
+        /// <summary>
+        /// Check if user has Elevated rights (Admin)
+        /// </summary>
+        /// <returns></returns>
+        private bool IsRunningAsAdmin()
+        {
+            bool isElevated;
+            try
+            {
+                using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+                {
+                    WindowsPrincipal principal = new WindowsPrincipal(identity);
+                    isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
+                }
+                return isElevated;
+            }
+            catch (Exception Ex)
+            {
+                Logger.WriteLog("Error checking Admin rights for current user : " + Ex.Message.ToString());
+                return false;
+            }
+        }
 
         /// <summary>
         /// Create a messageLoop-only Window (invsible) to treat WM_* messages

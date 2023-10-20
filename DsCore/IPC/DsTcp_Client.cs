@@ -93,6 +93,7 @@ namespace DsCore.IPC
             {
                 if (_TcpClient == null)
                 {
+                    Logger.WriteLog("DspTcp_Client.SendMessage() => TcpClient is NULL, skipping.");
                     return;
                 }
                 if (_TcpClient.Connected)
@@ -102,7 +103,7 @@ namespace DsCore.IPC
                     if (stream.CanWrite)
                     {
                         stream.Write(DataToSend, 0, DataToSend.Length);
-                        //Logger.WriteLog("DspTcp_Client.SendMessage() => Succesfully sent data to TCP server");
+                        Logger.WriteLog("DspTcp_Client.SendMessage() => Succesfully sent data (size=" + DataToSend.Length + " bytes) to TCP server");
                     }
                 }
             }

@@ -52,7 +52,7 @@ namespace DsCore.MameOutput
                 _AsyncResetTimer.Period = _AsyncResetTimerOffInterval;
                 _OutputValue = _OffValue;
                 Logger.WriteLog("[Tick=" + Environment.TickCount + "] Forcing " + this._Name + " OutputTimer with value = " + _OffValue);
-                MameOutputHelper.Instance().SendValue(this._Id, this._OutputValue);
+                //MameOutputHelper.Instance().SendValue(this._Id, this._OutputValue);
             }
             else
             {

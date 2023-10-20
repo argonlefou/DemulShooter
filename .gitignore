@@ -19,6 +19,7 @@ UnityEngine.Networking.dll
 UnityEngine.UI.dll
 UnityEngine*.dll
 Virtuallyz*.dll
+Unity*.dll
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
