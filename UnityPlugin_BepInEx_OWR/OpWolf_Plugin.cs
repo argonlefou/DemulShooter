@@ -20,7 +20,7 @@ namespace UnityPlugin_BepInEx_OWR
     {
         public const String pluginGuid = "argonlefou.demulshooter.owr";
         public const String pluginName = "OWR DemulShooter Plugin";
-        public const String pluginVersion = "1.0.0.0";
+        public const String pluginVersion = "2.0.0.0";
 
         public static BepInEx.Logging.ManualLogSource MyLogger;
 

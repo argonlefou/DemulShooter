@@ -401,20 +401,7 @@ namespace DemulShooterX64
                     
                 }
 
-                _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);
-
-                //Quit if not hook after a while (depending on the configuration)
-                if (_Configurator.HookTimeout != 0)
-                {
-                    System.Threading.Thread.Sleep(_Configurator.HookTimeout * 1000);
-                    if (!_Game.ProcessHooked)
-                    {
-                        Logger.WriteLog("Hook timeout expired, exiting application.");
-
-                        CleanAppBeforeExit();
-                        Environment.Exit(0);
-                    }
-                }
+                _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);                
 
                 //starting the TimeOut Timer
                 if (_Configurator.HookTimeout != 0)
