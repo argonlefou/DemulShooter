@@ -452,6 +452,10 @@ namespace DemulShooter
                             {
                                 _Game = new Game_LindberghHotd4Sp(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
+                        case "jpark":
+                            {
+                                _Game = new Game_LindberhJurassicPark(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            } break;
                         case "lgj":
                             {
                                 _Game = new Game_LindberghLgj(_Rom.ToLower(), _NoInput, isVerbose);

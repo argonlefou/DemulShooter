@@ -22,7 +22,20 @@ namespace DsCore.MameOutput
         public static readonly String LmpPanel = "LmpPanel";
         public static readonly String LmpBillboard = "LmpBillboard";
         public static readonly String LmpSpeaker = "LmpSpeaker"; //Time Crisis 5
-        
+        public static readonly String LmpDinoHead = "LmpDinoHead";      //
+        public static readonly String LmpLogo = "LmpLogo";              //
+        public static readonly String LmpDinoEyes = "LmpDinoEyes";      //
+        public static readonly String LmpRoof = "LmpRoof";              //
+        public static readonly String LmpMarquee = "LmpMarquee";        //
+        public static readonly String LmpDash = "LmpDash";              //
+        public static readonly String LmpFoliage = "LmpFoliage";        //
+        public static readonly String LmpSeat_R = "LmpSeat_R";          //Jurassic Park (Lidbergh)
+        public static readonly String LmpSeat_G = "LmpSeat_G";          //
+        public static readonly String LmpSeat_B = "LmpSeat_B";          //
+        public static readonly String LmpBenchLogo = "LmpBenchLogo";    //
+        public static readonly String LmpSeatBase = "LmpSeatBase";      //
+        public static readonly String LmpEstop = "LmpEstop";            //
+        public static readonly String LmpCompressor = "LmpCompressor";  //
         
         public static readonly String Lmp1 = "Lmp1";    //
         public static readonly String Lmp2 = "Lmp2";    //
