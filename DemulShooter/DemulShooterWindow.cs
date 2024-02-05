@@ -464,9 +464,9 @@ namespace DemulShooter
                             {
                                 _Game = new Game_LindberghHotd4Sp(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
-                        case "hotd4ex":
+                        case "hotdex":
                             {
-                                _Game = new Game_LindberghHotd4Ex(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_LindberghHotdEx(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;   
                         case "lgj":
                             {

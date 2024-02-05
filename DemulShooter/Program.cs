@@ -101,7 +101,7 @@ namespace DemulShooter
                 {"2spicy","Too Spicy"},
                 {"hotd4","House of The Dead 4"},
                 {"hotd4sp","House of The Dead 4 : Special"},
-                {"hotd4ex","House of The Dead 4 EX"},
+                {"hotdex","House of The Dead : EX"},
                 {"lgj","Let's Go Jungle"},
                 {"lgjsp","Let's Go Jungle Special"},
                 {"rambo","Rambo Arcade"}
