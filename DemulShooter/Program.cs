@@ -40,6 +40,7 @@ namespace DemulShooter
                 {"demul058","Demul v0.582"},
                 {"demul07a","Demul v0.7a 180428"},
                 {"dolphin5","Dolphin v5.0"},
+                {"gamewax","Gamewax Arcade"},
                 {"globalvr","Global VR"},
                 {"konami","Konami Arcade"},
                 {"lindbergh","TeknoParrot Loader"},
@@ -80,6 +81,10 @@ namespace DemulShooter
                 {"xtrmhnt2","Extreme Hunting 2"}
             };
 
+            Dictionary<String, String> _GamewaxRoms = new Dictionary<String, String>(){
+                {"akuma","Akuma Mortis Immortal"}
+            };
+
             Dictionary<String, String> _GlobalVrRoms = new Dictionary<String, String>(){
                 {"aliens","Aliens Extermination Dehasped (2nd dump, x86 and x64, no need for VM)"},
                 {"farcry","Far Cry : Paradise Lost"},
@@ -96,7 +101,7 @@ namespace DemulShooter
                 {"2spicy","Too Spicy"},
                 {"hotd4","House of The Dead 4"},
                 {"hotd4sp","House of The Dead 4 : Special"},
-                {"jpark","Jurassic Park"},
+                {"hotd4ex","House of The Dead 4 EX"},
                 {"lgj","Let's Go Jungle"},
                 {"lgjsp","Let's Go Jungle Special"},
                 {"rambo","Rambo Arcade"}
@@ -114,6 +119,7 @@ namespace DemulShooter
 
             Dictionary<String, String> _RawThrillRoms = new Dictionary<String, String>(){
                 {"aa","Aliens Armageddon"},
+                {"jpark","Jurassic Park"},
                 {"ts","Terminator Salvation"}
             };
 
@@ -186,6 +192,9 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("Global VR Games :");
                         DisplayDictionnaryList(_GlobalVrRoms);
+                        Console.WriteLine("");
+                        Console.WriteLine("Gamewax Games :");
+                        DisplayDictionnaryList(_GamewaxRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Konami Games :");
                         DisplayDictionnaryList(_KonamiRoms);
@@ -274,6 +283,14 @@ namespace DemulShooter
                             if (!CheckParameter(strRom, _DemulRoms))
                             {
                                 Console.WriteLine("Unsupported Demul rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
+                        else if (strTarget.Equals("gamewax"))
+                        {
+                            if (!CheckParameter(strRom, _GamewaxRoms))
+                            {
+                                Console.WriteLine("Unsupported Gamewax rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
                         }

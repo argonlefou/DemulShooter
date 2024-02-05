@@ -5,35 +5,27 @@ using HarmonyLib;
 using System.Net.Sockets;
 using System.Threading;
 using System.Net;
+using System.Text;
 using UnityEngine;
 using UnityPlugin_BepInEx_Core;
 using System.Collections.Generic;
+using Artoncode.Core;
 
-namespace UnityPlugin_BepInEx_OWR
+namespace UnityPlugin_BepInEx_PBX
 {
-    /*
-    /// Need to change HideManagerGameObject = true in BepInEx.cfg, or Unity is destroying the Plugin after Awake()
-    */
     [BepInPlugin(pluginGuid, pluginName, pluginVersion)]
-    public class OpWolf_Plugin : BaseUnityPlugin
+    public class PointBlankX_Plugin : BaseUnityPlugin
     {
-        public const String pluginGuid = "argonlefou.demulshooter.owr";
-        public const String pluginName = "OWR DemulShooter Plugin";
-        public const String pluginVersion = "2.0.0.0";
+        public const String pluginGuid = "argonlefou.demulshooter.pbx";
+        public const String pluginName = "PBX DemulShooter Plugin";
+        public const String pluginVersion = "1.0.0.0";
 
         public static BepInEx.Logging.ManualLogSource MyLogger;
 
-        public static OpWolf_Plugin Instance = null;
+        public static PointBlankX_Plugin Instance = null;
 
-        public enum PlayerType : int
-        {
-            Player1 = 0,
-            Player2
-        }
-
-        //Thread-safe operation on input/output data
-        public static System.Object MutexLocker_Outputs;
-        public static System.Object MutexLocker_Inputs;
+        public static readonly string PLAYER_1_NAME = "P1";
+        public static readonly string PLAYER_2_NAME = "P2";
 
         //Custom Outputs data
         public static byte P1_LastLife = 0;
@@ -41,7 +33,10 @@ namespace UnityPlugin_BepInEx_OWR
         public static ushort P2_LastAmmo = 0;
 
         //custom Input Data
-        public static List<PluginController> PluginControllers;
+        public static Vector2 P1_Axis = new Vector2(0,0);
+        public static Vector2 P2_Axis = new Vector2(0,0);
+        public static byte P1_Trigger_ButtonState = 0;
+        public static byte P2_Trigger_ButtonState = 0;
 
         //TCP server data for Inputs/Outputs
         private TcpListener _TcpListener;
@@ -52,29 +47,26 @@ namespace UnityPlugin_BepInEx_OWR
 
         public static bool IsMouseLockedRequired = false;
         public static TcpOutputData OutputData;
+        private TcpOutputData _OutputDataBefore;
         private TcpInputData _InputData;
 
-        public static readonly KeyCode P2_Grenade_KeyCode = KeyCode.F;
+        public static readonly KeyCode P1_Start_KeyCode = KeyCode.Alpha1;
+        public static readonly KeyCode P2_Start_KeyCode = KeyCode.Alpha2;
+        public static readonly KeyCode Credits_KeyCode = KeyCode.Alpha5;
 
-        public static byte DisableCrosshair = 0;
+        public static bool CrossHairVisibility = true;
 
         public void Awake()
         {
             Instance = this;
-
-            MutexLocker_Outputs = new System.Object();
-            MutexLocker_Inputs = new System.Object();
 
             MyLogger = Logger;
             MyLogger.LogMessage("Plugin Loaded");
             Harmony harmony = new Harmony(pluginGuid);
 
             OutputData = new TcpOutputData();
+            _OutputDataBefore = new TcpOutputData();
             _InputData = new TcpInputData();
-
-            PluginControllers = new List<PluginController>();
-            PluginControllers.Add(new PluginController(1));
-            PluginControllers.Add(new PluginController(2));
 
             // Start TcpServer	
             _TcpListenerThread = new Thread(new ThreadStart(TcpClientThreadLoop));
@@ -86,17 +78,67 @@ namespace UnityPlugin_BepInEx_OWR
 
         public void Start()
         {
-            MyLogger.LogMessage("OpwOlfPlugin.Start() => Removing mouse cursor");
+            MyLogger.LogMessage("PointBlankX_Plugin.Start() => Removing mouse cursor");
             Cursor.visible = false;
         }
 
         public void Update()
         {
+            Singleton<GlobalData>.shared().isCrosshairVisible = CrossHairVisibility;
+
+            //Updating Credits
+            int iCredits = (int)Singleton<GlobalData>.shared().coinPool + (int)Singleton<GlobalData>.shared().serviceCredit;
+            OutputData.Credits = (byte)iCredits;
+
+            //Updating Life and Bullets            
+            OutputData.P1_Life = 0;
+            OutputData.P2_Life = 0;
+            OutputData.P1_Ammo = 0;
+            OutputData.P1_Ammo = 0;
+            Player p = Player.getPlayer(PLAYER_1_NAME);
+            if (p != null && p.playerData.state == PlayerData.PlayerState.Active)
+            {
+                OutputData.P1_Life = (byte)p.getHealth();
+                int Ammo = p.getAmmo();
+                if (Ammo > 0)
+                    OutputData.P1_Ammo = (ushort)Ammo;
+            }
+            p = Player.getPlayer(PLAYER_2_NAME);
+            if (p != null && p.playerData.state == PlayerData.PlayerState.Active)
+            {
+                OutputData.P2_Life = (byte)p.getHealth();
+                int Ammo = p.getAmmo();
+                if (Ammo > 0)
+                    OutputData.P2_Ammo = (ushort)Ammo;
+            }
+
+            //Checking for a change in output to send or not
+            byte[] bOutputData = OutputData.ToByteArray();
+            byte[] bOutputDataBefore = _OutputDataBefore.ToByteArray();
+            for (int i = 0; i < bOutputData.Length; i++)
+            {
+                if (bOutputData[i] != bOutputDataBefore[i])
+                {
+                    SendOutputs();
+                    break;
+                }
+            }              
+
+            //Save current state
+            _OutputDataBefore.Update(bOutputData);
+
+
+            //Debug Keys
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                MyLogger.LogWarning("PointBlankX_Plugin.Update() =>  isCrosshairVisible : " + Singleton<GlobalData>.shared().isCrosshairVisible);
+                Singleton<GlobalData>.shared().isCrosshairVisible = true;
+            }
         }
 
         public void OnDestroy()
         {
-            Logger.LogMessage("OpwOlfPlugin.OnDestroy() => Closing TCP Server....");
+            Logger.LogMessage("PointBlankX_Plugin.OnDestroy() => Closing TCP Server....");
             _TcpListener.Server.Close();
         }
 
@@ -117,18 +159,18 @@ namespace UnityPlugin_BepInEx_OWR
                 // Create listener on localhost port 8052. 			
                 _TcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), _TcpPort);
                 _TcpListener.Start();
-                MyLogger.LogMessage("OpWolf_Plugin.TcpClientThreadLoop() => TCP Server is listening on Port " + _TcpPort);
+                MyLogger.LogMessage("PointBlankX_Plugin.TcpClientThreadLoop() => TCP Server is listening on Port " + _TcpPort);
 
                 Byte[] bytes = new Byte[1024];
                 while (true)
                 {
                     using (_TcpClient = _TcpListener.AcceptTcpClient())
                     {
-                        MyLogger.LogMessage("OpWolf_Plugin.TcpClientThreadLoop() => TCP Client connected !");
+                        MyLogger.LogMessage("PointBlankX_Plugin.TcpClientThreadLoop() => TCP Client connected !");
                         using (_TcpStream = _TcpClient.GetStream())
                         {
                             //Send outputs at connection, if DemulShooter connects during game, between events
-                            SendOutputs();                        
+                            SendOutputs();
                             while (true)
                             {
                                 int Length = 0;
@@ -141,20 +183,16 @@ namespace UnityPlugin_BepInEx_OWR
                                     byte[] InputBuffer = new byte[Length];
                                     Array.Copy(bytes, 0, InputBuffer, 0, Length);
                                     _InputData.Update(InputBuffer);
-                                    MyLogger.LogMessage("OpWolf_Plugin.TcpClientThreadLoop() => client message received as: " + _InputData.ToString());
+                                    MyLogger.LogMessage("PointBlankX_Plugin.TcpClientThreadLoop() => client message received as: " + _InputData.ToString());
 
-                                    lock (MutexLocker_Inputs)
-                                    {
-                                        PluginControllers[(int)PlayerType.Player1].SetAxis(_InputData.P1_X, _InputData.P1_Y);
-                                        PluginControllers[(int)PlayerType.Player1].SetButton(PluginController.PluginButton.Trigger, _InputData.P1_Trigger);
-                                        PluginControllers[(int)PlayerType.Player1].SetButton(PluginController.PluginButton.Reload, _InputData.P1_Reload);
-                                        PluginControllers[(int)PlayerType.Player1].SetButton(PluginController.PluginButton.Action, _InputData.P1_ChangeWeapon);
-                                        PluginControllers[(int)PlayerType.Player2].SetAxis(_InputData.P2_X, _InputData.P2_Y);
-                                        PluginControllers[(int)PlayerType.Player2].SetButton(PluginController.PluginButton.Trigger, _InputData.P2_Trigger);
-                                        PluginControllers[(int)PlayerType.Player2].SetButton(PluginController.PluginButton.Reload, _InputData.P2_Reload);
-                                        PluginControllers[(int)PlayerType.Player2].SetButton(PluginController.PluginButton.Action, _InputData.P2_ChangeWeapon);
-                                        DisableCrosshair = _InputData.HideCrosshair;
-                                    }
+                                    //lock (MutexLocker_Inputs)
+                                    //{
+                                        P1_Axis = new Vector2(_InputData.P1_X, _InputData.P1_Y);
+                                        P1_Trigger_ButtonState = _InputData.P1_Trigger;
+                                        P2_Axis = new Vector2(_InputData.P2_X, _InputData.P2_Y);
+                                        P2_Trigger_ButtonState = _InputData.P2_Trigger;
+                                        CrossHairVisibility = _InputData.HideCrosshairs == 1 ? false : true;
+                                    //}
                                 }
                                 catch
                                 {
@@ -168,7 +206,7 @@ namespace UnityPlugin_BepInEx_OWR
             }
             catch (SocketException socketException)
             {
-                MyLogger.LogError("OpWolf_Plugin.TcpClientThreadLoop() => SocketException " + socketException.ToString());
+                MyLogger.LogError("PointBlankX_Plugin.TcpClientThreadLoop() => SocketException " + socketException.ToString());
             }
         }
 
@@ -181,7 +219,7 @@ namespace UnityPlugin_BepInEx_OWR
             try
             {
                 if (Instance._TcpClient == null)
-                    return;                
+                    return;
 
                 if (_TcpStream == null)
                     return;
@@ -192,20 +230,18 @@ namespace UnityPlugin_BepInEx_OWR
                     TcpPacket p = new TcpPacket(OutputData.ToByteArray(), TcpPacket.PacketHeader.Outputs);
                     byte[] Buffer = p.GetFullPacket();
                     //Resetting event flags for next packets
-                    MyLogger.LogMessage("OpWolf_Plugin.SendOutputs() => Sending data : " + p.ToString());
-                    lock (MutexLocker_Outputs)
-                    {
+                    MyLogger.LogMessage("PointBlankX_Plugin.SendOutputs() => Sending data : " + p.ToString());
+                    //lock (MutexLocker_Outputs)
+                    //{
                         OutputData.P1_Recoil = 0;
-                        OutputData.P1_Damage = 0;
                         OutputData.P2_Recoil = 0;
-                        OutputData.P2_Damage = 0;
-                    }
+                    //}
                     _TcpStream.Write(Buffer, 0, Buffer.Length);
                 }
             }
             catch (Exception Ex)
             {
-                MyLogger.LogError("OpWolf_Plugin.SendOutputs() => Socket exception: " + Ex);
+                MyLogger.LogError("PointBlankX_Plugin.SendOutputs() => Socket exception: " + Ex);
             }
         }
     }

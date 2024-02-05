@@ -68,12 +68,15 @@
     <Compile Include="Games\Game_KonamiLethalEnforcer3.cs" />
     <Compile Include="Games\Game_KonamiWartran.cs" />
     <Compile Include="Games\Game_Lindbergh2spicy.cs" />
+    <Compile Include="Games\Game_LindberghHotd4Ex.cs" />
     <Compile Include="Games\Game_LindberghHotd4Sp.cs" />
     <Compile Include="Games\Game_LindberghLgjsp.cs" />
     <Compile Include="Games\Game_LindberhJurassicPark.cs" />
+    <Compile Include="Games\Game_Re2Transformers2.cs" />
     <Compile Include="Games\Game_RtAliensArmageddon.cs" />
     <Compile Include="Games\Game_RtTerminatorSalvation.cs" />
     <Compile Include="Games\Game_TtxGundam_V2.cs" />
+    <Compile Include="Games\Game_WaxAkuma.cs" />
     <Compile Include="Games\Game_WndFriction.cs" />
     <Compile Include="Games\Game_Model2Vcop.cs" />
     <Compile Include="Games\Game_Model2Hotd.cs" />
@@ -105,6 +108,7 @@
     <Compile Include="Games\Game_LindberghHotd4.cs" />
     <Compile Include="Games\Game_LindberghLgj.cs" />
     <Compile Include="Games\Game_LindberghRambo.cs" />
+    <Compile Include="Games\Game_WndPointBlankX.cs" />
     <Compile Include="Games\Game_WndProjectGreenBeat.cs" />
     <Compile Include="Games\Game_WndReload.cs" />
     <Compile Include="Games\Game_RwLGI.cs" />

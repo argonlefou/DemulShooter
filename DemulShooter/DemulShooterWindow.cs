@@ -393,6 +393,18 @@ namespace DemulShooter
                     _Game = new Game_Dolphin5(_Rom.ToLower(), _Ddinumber, _Configurator.DIK_Dolphin_P2_LClick, _Configurator.DIK_Dolphin_P2_MClick, _Configurator.DIK_Dolphin_P2_RClick, _NoInput, isVerbose);
                 }
 
+                //Gamewax game
+                else if (_Target.Equals("gamewax"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "akuma":
+                            {
+                                _Game = new Game_WaxAkuma(_Rom.ToLower(), _NoInput, isVerbose);
+                            }break;
+                    }
+                }
+
                 //GlobalVR game
                 else if (_Target.Equals("globalvr"))
                 {
@@ -452,10 +464,10 @@ namespace DemulShooter
                             {
                                 _Game = new Game_LindberghHotd4Sp(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
-                        case "jpark":
+                        case "hotd4ex":
                             {
-                                _Game = new Game_LindberhJurassicPark(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
-                            } break;
+                                _Game = new Game_LindberghHotd4Ex(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;   
                         case "lgj":
                             {
                                 _Game = new Game_LindberghLgj(_Rom.ToLower(), _NoInput, isVerbose);
@@ -511,14 +523,18 @@ namespace DemulShooter
                 else if (_Target.Equals("rawthrill"))
                 {
                     switch (_Rom.ToLower())
-                    {
-                        case "ts":
-                            {
-                                _Game = new Game_RtTerminatorSalvation(_Rom.ToLower(), _NoInput, isVerbose);
-                            } break;
+                    {                        
                         case "aa":
                             {
                                 _Game = new Game_RtAliensArmageddon(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;
+                        case "jpark":
+                            {
+                                _Game = new Game_LindberhJurassicPark(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            } break;
+                        case "ts":
+                            {
+                                _Game = new Game_RtTerminatorSalvation(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
                     }
                 }
@@ -658,10 +674,22 @@ namespace DemulShooter
 
                 //W.I.P Games
                 else if (_Target.Equals("wip"))
-                {                    
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "pblankx":
+                            {
+                                _Game = new Game_WndPointBlankX(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            }; break;
+                        case "tsr":
+                            {
+                                _Game = new Game_Re2Transformers2(_Rom.ToLower(), _Configurator, _HideGameCrosshair, _NoInput, isVerbose);
+                            }; break;
+                    }
                 }
 
-                _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);
+                if (_Game != null)
+                    _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);
 
                 //starting the TimeOut Timer
                 if (_Configurator.HookTimeout != 0)

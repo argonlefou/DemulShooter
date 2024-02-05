@@ -413,6 +413,40 @@ namespace DsCore.Config
 
         #endregion
 
+        //Transformer Shadow Rising Keys
+        private HardwareScanCode _DIK_Tsr_Start_P1 = HardwareScanCode.DIK_1;
+        private HardwareScanCode _DIK_Tsr_Start_P2 = HardwareScanCode.DIK_2;
+        private HardwareScanCode _DIK_Tsr_LeverFront = HardwareScanCode.DIK_NUMPAD8;    //DIK_UP doesn't work !!
+        private HardwareScanCode _DIK_Tsr_LeverBack = HardwareScanCode.DIK_NUMPAD2;     //DIK_DOWN doesn't work !!
+        private HardwareScanCode _DIK_Tsr_Credits = HardwareScanCode.DIK_5;
+        #region Accessors
+        public HardwareScanCode DIK_Tsr_Start_P1
+        {
+            get { return _DIK_Tsr_Start_P1; }
+            set { _DIK_Tsr_Start_P1 = value; }
+        }
+        public HardwareScanCode DIK_Tsr_Start_P2
+        {
+            get { return _DIK_Tsr_Start_P2; }
+            set { _DIK_Tsr_Start_P2 = value; }
+        }
+        public HardwareScanCode DIK_Tsr_LeverFront
+        {
+            get { return _DIK_Tsr_LeverFront; }
+            set { _DIK_Tsr_LeverFront = value; }
+        }
+        public HardwareScanCode DIK_Tsr_LeverBack
+        {
+            get { return _DIK_Tsr_LeverBack; }
+            set { _DIK_Tsr_LeverBack = value; }
+        }
+        public HardwareScanCode DIK_Tsr_Credits
+        {
+            get { return _DIK_Tsr_Credits; }
+            set { _DIK_Tsr_Credits = value; }
+        }
+        #endregion
+        
         //Outputs settings
         private bool _OutputEnabled = false;
         private int _OutputPollingDelay = 1;

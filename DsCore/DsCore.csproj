@@ -60,7 +60,9 @@
   <ItemGroup>
     <Compile Include="Config\Configurator.cs" />
     <Compile Include="Config\PlayerSettings.cs" />
+    <Compile Include="IPC\DsTcp_InputData_PointBlankX.cs" />
     <Compile Include="IPC\DsTcp_InputData_OpwolfReturn.cs" />
+    <Compile Include="IPC\DsTcp_OutputData_PointBlankX.cs" />
     <Compile Include="IPC\MappedMemoryFileHelper.cs" />
     <Compile Include="IPC\MappedMemoryFile_Helper_old.cs" />
     <Compile Include="IPC\MMFH_HotdRemakeArcade.cs" />

@@ -140,6 +140,8 @@ namespace DsCore.MameOutput
         P2_LmpFoot,
         P1_LmpFront,  
         P2_LmpFront,
+        LmpLever,
+        Lmp_Downlight,
         Credits = 1000,
         P1_CtmLmpStart,
         P2_CtmLmpStart,

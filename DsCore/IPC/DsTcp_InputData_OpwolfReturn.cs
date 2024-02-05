@@ -80,7 +80,7 @@ namespace DsCore.IPC
             byte[] b = this.ToByteArray();
             for (int i = 0; i < b.Length; i++)
             {
-                r += "0x" + b[i].ToString("X2");
+                r += "0x" + b[i].ToString("X2") + " ";
             }
             return r;
         }

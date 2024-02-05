@@ -29,7 +29,7 @@ namespace DsCore.MameOutput
         public static readonly String LmpMarquee = "LmpMarquee";        //
         public static readonly String LmpDash = "LmpDash";              //
         public static readonly String LmpFoliage = "LmpFoliage";        //
-        public static readonly String LmpSeat_R = "LmpSeat_R";          //Jurassic Park (Lidbergh)
+        public static readonly String LmpSeat_R = "LmpSeat_R";          //Jurassic Park (RawThrill)
         public static readonly String LmpSeat_G = "LmpSeat_G";          //
         public static readonly String LmpSeat_B = "LmpSeat_B";          //
         public static readonly String LmpBenchLogo = "LmpBenchLogo";    //
@@ -39,7 +39,7 @@ namespace DsCore.MameOutput
         
         public static readonly String Lmp1 = "Lmp1";    //
         public static readonly String Lmp2 = "Lmp2";    //
-        public static readonly String Lmp3 = "Lmp3";    //2Spicy
+        public static readonly String Lmp3 = "Lmp3";    //2Spicy, HOD EX
         public static readonly String Lmp4 = "Lmp4";    //
         public static readonly String Lmp5 = "Lmp5";    //
         public static readonly String Lmp6 = "Lmp6";    //
@@ -123,12 +123,16 @@ namespace DsCore.MameOutput
         public static readonly String P2_Whip_R = "P2_Whip_R";    //
         public static readonly String P2_Whip_G = "P2_Whip_G";    //
         public static readonly String P2_Whip_B = "P2_Whip_B";    ///
-        public static readonly String P1_LmpHead = "P1_LmpHead";    //\    
-        public static readonly String P1_LmpFoot = "P1_LmpFoot";  // 
-        public static readonly String P1_LmpFront = "P1_LmpFront";    // LEthal Enforcers 3
-        public static readonly String P2_LmpHead = "P2_LmpHead";    //
-        public static readonly String P2_LmpFoot = "P2_LmpFoot";  //
-        public static readonly String P2_LmpFront = "P2_LmpFront";    ///
+        public static readonly String P1_LmpHead = "P1_LmpHead";        //\    
+        public static readonly String P1_LmpFoot = "P1_LmpFoot";        // 
+        public static readonly String P1_LmpFront = "P1_LmpFront";      // LEthal Enforcers 3
+        public static readonly String P2_LmpHead = "P2_LmpHead";        //
+        public static readonly String P2_LmpFoot = "P2_LmpFoot";        //
+        public static readonly String P2_LmpFront = "P2_LmpFront";      ///
+        public static readonly String LmpLever = "Lmp_Lever";      //Transformers Shadow Rising
+        public static readonly String LmpDownlight = "Lmp_Downlight";  //Transformers Shadow Rising
+
+
 
         public static readonly String P1_GunMotor = "P1_GunMotor";
         public static readonly String P2_GunMotor = "P2_GunMotor";
