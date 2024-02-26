@@ -528,7 +528,7 @@ namespace DemulShooter
                             {
                                 _Game = new Game_RtAliensArmageddon(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
-                        case "jpark":
+                        case "jp":
                             {
                                 _Game = new Game_LindberhJurassicPark(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             } break;
@@ -628,6 +628,10 @@ namespace DemulShooter
                         case "artdead":
                             {
                                 _Game = new Game_WndArtIsDead(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;
+                        case "bbusters":
+                            {
+                                _Game = new Game_WndBugBusters(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             } break;
                         case "friction":
                             {

@@ -18,11 +18,20 @@ namespace DemulShooter
         private Configurator _Configurator;
 
         //Memory values
+        private UInt32 _pPlayerManager_Address = 0x200F7CD8;
+        private UInt32 _pCreditsManager_Address = 0x200E9750;
+        private UInt32 _CPlayer1_Offset = 0x34;
+        private UInt32 _CPlayer2_Offset = 0x38;
+        private UInt32 _Cplayer_ID_Offset = 0x60;
+        private UInt32 _Cplayer_Mode_Offset = 0x64;
+        private UInt32 _Cplayer_Life_Offset = 0x68;
+
         private UInt32 _CreditMgr_IncCoin_Function_Offset = 0x00066DE0;
         private UInt32 _FrameRateMgr_ExecServer_Function_Offset = 0x00D70D0;
         private UInt32 _GmMgr_GetGameMode_Function_Offset = 0x000E43C0;
         private UInt32 _GetResolution_Function_Offset = 0x002608B0;
         private UInt32 _LaserSight_Patch_Offset = 0x002E558A;
+        private UInt32 _PlayerInputMode_Patch_Offset = 0x000F751A;
         private UInt32 _Axis_Injection_Offset = 0x000F75CD;
         private UInt32 _Axis_Injection_Return_Offset = 0x000F75D3;
         private UInt32 _Buttons_Injection_Offset = 0x000F787F;
@@ -31,11 +40,14 @@ namespace DemulShooter
         private UInt32 _NoCrosshair_Injection_Return_Offset = 0x000F6DB5;
         private UInt32 _Credits_Injection_Offset = 0x00240BCB;
         private UInt32 _Credits_Injection_Return_Offset = 0x00240BD0;
-
         private UInt32 _StartLamps_Injection_Offset = 0x00067159;
         private UInt32 _StartLamps_Injection_Return_Offset = 0x0006715E;
         private UInt32 _GunLamps_Injection_Offset = 0x000FC124;
         private UInt32 _GunLamps_Injection_Return_Offset = 0x000FC129;
+        private UInt32 _Recoil_Injection_Offset = 0x0024AAFF;
+        private UInt32 _Recoil_Injection_Return_Offset = 0x0024AB05;
+        private UInt32 _Damage_Injection_Offset = 0x00246C69;
+        private UInt32 _Damage_Injection_Return_Offset = 0x00246C6F;
 
 
         //Custom Input Address
@@ -60,9 +72,13 @@ namespace DemulShooter
         private UInt32 _P2_LmpStart_Address;
         private UInt32 _P1_LmpGun_Address;
         private UInt32 _P2_LmpGun_Address;
+        private UInt32 _P1_Recoil_Address;
+        private UInt32 _P2_Recoil_Address;
+        private UInt32 _P1_Damage_Address;
+        private UInt32 _P2_Damage_Address;
 
         bool _HideCrosshairs = false;
-                
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -190,9 +206,9 @@ namespace DemulShooter
         {
             CreateDataBank();
             SetHack_Axis();
-            SetHack_Buttons();   
+            SetHack_Buttons();
             SetHack_Credits();
-                        
+
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
         }
@@ -236,7 +252,7 @@ namespace DemulShooter
         private void SetHack_Axis()
         {
             //Forcing The InputMode to "1" (mouse) in the switch check in CGunMgr::MainProc loop
-            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x4F751A, new byte[] { 0xB8, 0x01, 0x00, 0x00, 0x00, 0x90, 0x90, 0x90, 0x90 });
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _PlayerInputMode_Patch_Offset, new byte[] { 0xB8, 0x01, 0x00, 0x00, 0x00, 0x90, 0x90, 0x90, 0x90 });
 
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
@@ -258,7 +274,7 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 05");
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Y_Address));
             //mov [esi+5], al
-            CaveMemory.Write_StrBytes("88 46 05");            
+            CaveMemory.Write_StrBytes("88 46 05");
             //jmp exit
             CaveMemory.Write_StrBytes("EB 12");
             //mov eax,[_P2_X_Address]
@@ -270,7 +286,7 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 05");
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Y_Address));
             //mov [esi+5], al
-            CaveMemory.Write_StrBytes("88 46 05");   
+            CaveMemory.Write_StrBytes("88 46 05");
             //Jump back
             CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Axis_Injection_Return_Offset);
 
@@ -347,7 +363,7 @@ namespace DemulShooter
 
             //mov eax, _LeverFrontPress_Address
             CaveMemory.Write_StrBytes("B8");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes(_LeverFrontPress_Address));            
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_LeverFrontPress_Address));
             //mov edi, [eax]
             CaveMemory.Write_StrBytes("8B 38");
             //mov [esi+30],edi
@@ -459,7 +475,9 @@ namespace DemulShooter
             Create_OutputsDataBank();
             SetHack_Output_StartLamp();
             SetHack_Output_GunLamp();
-            
+            SetHack_Recoil();
+            SetHack_Damage();
+
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
         }
@@ -476,6 +494,10 @@ namespace DemulShooter
             _P2_LmpStart_Address = InputMemory.CaveAddress + 0x04;
             _P1_LmpGun_Address = InputMemory.CaveAddress + 0x08;
             _P2_LmpGun_Address = InputMemory.CaveAddress + 0x0C;
+            _P1_Recoil_Address = InputMemory.CaveAddress + 0x10;
+            _P2_Recoil_Address = InputMemory.CaveAddress + 0x14;
+            _P1_Damage_Address = InputMemory.CaveAddress + 0x18;
+            _P2_Damage_Address = InputMemory.CaveAddress + 0x1C;
 
             Logger.WriteLog("Custom Output data will be stored at : 0x" + InputMemory.CaveAddress.ToString("X8"));
         }
@@ -555,17 +577,101 @@ namespace DemulShooter
         }
 
         /// <summary>
+        /// When a bullet is fired, the game sends a message to the  Shell executable and increment a bullet counter
+        /// Intercepting the call allow us to put our own flag
+        /// </summary>
+        private void SetHack_Recoil()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+
+            //movsx eax,byte ptr [esi+60]
+            CaveMemory.Write_StrBytes("0F BE 46 60");
+            //shl eax,02
+            CaveMemory.Write_StrBytes("C1 E0 02");
+            //add eax, _P1_Recoil_Address
+            CaveMemory.Write_StrBytes("05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Recoil_Address));
+            //mov [eax], 1
+            CaveMemory.Write_StrBytes("C7 00 01 00 00 00");
+            //movsx eax,byte ptr [esi+60]
+            CaveMemory.Write_StrBytes("0F BE 46 60");
+            //push 00
+            CaveMemory.Write_StrBytes("6A 00");
+            //Jump back
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_Injection_Return_Offset);
+
+            Logger.WriteLog("Adding Recoil CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+        /// <summary>
+        /// When a player takes dammage, the game sends a command to the Shell executable.
+        /// Intercepting the call allow us to put our own flag
+        /// </summary>
+        private void SetHack_Damage()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+
+            //mov [ebp+15],al
+            CaveMemory.Write_StrBytes("88 45 15");
+            //xor eax,eax
+            CaveMemory.Write_StrBytes("31 C0");
+            //mov al,[edi+60]
+            CaveMemory.Write_StrBytes("8A 47 60");
+            //shl eax,02
+            CaveMemory.Write_StrBytes("C1 E0 02");
+            //add eax, _P1_Damage_Address
+            CaveMemory.Write_StrBytes("05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Damage_Address));
+            //mov [eax], 1
+            CaveMemory.Write_StrBytes("C7 00 01 00 00 00");
+            //lea eax,[ebp+14]
+            CaveMemory.Write_StrBytes("8D 45 14");
+            //Jump back
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Damage_Injection_Return_Offset);
+
+            Logger.WriteLog("Adding Damage CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+
+            //Code injection
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _Damage_Injection_Offset) - 5;
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Damage_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+        /// <summary>
         /// The game is checking if Recoil is enabled for each bullet fired.
         /// Using this request call, we can generate the start of our own CustomRecoil output event
         /// </summary>
         private void SetHack_RecoilP1()
-        {            
-       
+        {
+
         }
 
         private void SetHack_RecoilP2()
         {
-            
+
         }
 
         /// <summary>
@@ -608,9 +714,9 @@ namespace DemulShooter
 
 
             //mov [esi],C1F00000
-            CaveMemory.Write_StrBytes("C7 06 00 00 F0 C1"); 
+            CaveMemory.Write_StrBytes("C7 06 00 00 F0 C1");
             //mov [edi],C1F00000
-            CaveMemory.Write_StrBytes("C7 07 00 00 F0 C1"); 
+            CaveMemory.Write_StrBytes("C7 07 00 00 F0 C1");
             //Originalcode:
             //pop eax
             CaveMemory.Write_StrBytes("58");
@@ -770,13 +876,74 @@ namespace DemulShooter
         /// </summary>
         public override void UpdateOutputValues()
         {
+            //Genuine Outputs
             SetOutputValue(OutputId.P1_LmpStart, ReadByte(_P1_LmpStart_Address));
             SetOutputValue(OutputId.P2_LmpStart, ReadByte(_P2_LmpStart_Address));
             SetOutputValue(OutputId.P1_LmpGun, ReadByte(_P1_LmpGun_Address));
             SetOutputValue(OutputId.P2_LmpGun, ReadByte(_P2_LmpGun_Address));
-            
-            
-            SetOutputValue(OutputId.Credits,0); 
+
+            //To-do : 
+            //Lamp side, Lever and recoil ??
+
+            //Custom Outputs
+            int P1_Life = 0;
+            int P2_Life = 0;
+            int Credits = 0;
+
+            //Life is read in a struct that is only created when a game has started
+            UInt32 PlayerManager = ReadPtr(_pPlayerManager_Address);
+            if (PlayerManager != 0)
+            {
+                UInt32 CPlayer1 = ReadPtr(PlayerManager + _CPlayer1_Offset);
+                if (CPlayer1 != 0)
+                {
+                    if (ReadByte(CPlayer1 + _Cplayer_Mode_Offset) == 3 && ReadByte(CPlayer1 + _Cplayer_ID_Offset) == 0)
+                    {
+                        P1_Life = BitConverter.ToInt32(ReadBytes(CPlayer1 + _Cplayer_Life_Offset, 4), 0);
+                    }
+                }
+
+                UInt32 CPlayer2 = ReadPtr(PlayerManager + _CPlayer2_Offset);
+                if (CPlayer2 != 0)
+                {
+                    if (ReadByte(CPlayer2 + _Cplayer_Mode_Offset) == 3 && ReadByte(CPlayer2 + _Cplayer_ID_Offset) == 1)
+                    {
+                        P2_Life = BitConverter.ToInt32(ReadBytes(CPlayer2 + _Cplayer_Life_Offset, 4), 0);
+                    }
+                }
+            }
+
+            //Reading our own flags and resetting them
+            if (ReadByte(_P1_Recoil_Address) == 1)
+            {
+                SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                WriteByte(_P1_Recoil_Address, 0);
+            }
+            if (ReadByte(_P2_Recoil_Address) == 1)
+            {
+                SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                WriteByte(_P2_Recoil_Address, 0);
+            }
+            if (ReadByte(_P1_Damage_Address) == 1)
+            {
+                SetOutputValue(OutputId.P1_Damaged, 1);
+                WriteByte(_P1_Damage_Address, 0);
+            }
+            if (ReadByte(_P2_Damage_Address) == 1)
+            {
+                SetOutputValue(OutputId.P2_Damaged, 1);
+                WriteByte(_P2_Damage_Address, 0);
+            }
+
+            SetOutputValue(OutputId.P1_Life, P1_Life);
+            SetOutputValue(OutputId.P2_Life, P2_Life);
+
+            UInt32 CCreditsManager = ReadPtr(_pCreditsManager_Address);
+            if (CCreditsManager != 0)
+            {
+                Credits = ReadByte(CCreditsManager + 0x38);
+            }
+            SetOutputValue(OutputId.Credits, Credits);
         }
 
         #endregion

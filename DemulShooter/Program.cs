@@ -119,7 +119,7 @@ namespace DemulShooter
 
             Dictionary<String, String> _RawThrillRoms = new Dictionary<String, String>(){
                 {"aa","Aliens Armageddon"},
-                {"jpark","Jurassic Park"},
+                {"jp","Jurassic Park"},
                 {"ts","Terminator Salvation"}
             };
 
@@ -146,6 +146,7 @@ namespace DemulShooter
 
             Dictionary<String, String> _WindowsRoms = new Dictionary<String, String>(){
                 {"artdead","Art Is Dead"},
+                {"bbusters","Bug Busters"},
                 {"friction","Friction"},
                 {"hfa", "Heavy Fire Afghanistan"},
                 {"hfa2p","Heavy Fire Afghanistan (dual Player)"},

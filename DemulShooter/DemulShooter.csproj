@@ -77,6 +77,7 @@
     <Compile Include="Games\Game_RtTerminatorSalvation.cs" />
     <Compile Include="Games\Game_TtxGundam_V2.cs" />
     <Compile Include="Games\Game_WaxAkuma.cs" />
+    <Compile Include="Games\Game_WndBugBusters.cs" />
     <Compile Include="Games\Game_WndFriction.cs" />
     <Compile Include="Games\Game_Model2Vcop.cs" />
     <Compile Include="Games\Game_Model2Hotd.cs" />
