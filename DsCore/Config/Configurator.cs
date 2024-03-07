@@ -7,8 +7,17 @@ using DsCore.Win32;
 
 namespace DsCore.Config
 {
-    public class Configurator
+    public sealed class Configurator
     {
+        private static Configurator _Instance;
+
+        public static Configurator GetInstance(){
+            if (_Instance == null)
+                _Instance = new Configurator();
+
+            return _Instance;
+        }
+
         //Maximum number of player allowed for DemulShooter to handle
         public const int MAX_PLAYERS = 4;
 
@@ -449,6 +458,8 @@ namespace DsCore.Config
         
         //Outputs settings
         private bool _OutputEnabled = false;
+        private bool _Wm_OutputEnabled = true;
+        private bool _Net_OutputEnabled = false;
         private int _OutputPollingDelay = 1;
         private int _OutputCustomDamagedDelay = 200;
         private int _OutputCustomRecoilOnDelay = 10;
@@ -458,6 +469,16 @@ namespace DsCore.Config
         { 
             get { return _OutputEnabled; } 
             set {_OutputEnabled = value;}
+        }
+        public bool Wm_OutputEnabled
+        {
+            get { return _Wm_OutputEnabled; }
+            set { _Wm_OutputEnabled = value; }
+        }
+        public bool Net_OutputEnabled
+        {
+            get { return _Net_OutputEnabled; }
+            set { _Net_OutputEnabled = value; }
         }
         public int OutputPollingDelay
         {
@@ -484,7 +505,7 @@ namespace DsCore.Config
         /// <summary>
         /// This class is used to acces/modify all players/games settings
         /// </summary>        
-        public Configurator()
+        private Configurator()
         {
             _PlayersSettings = new PlayerSettings[MAX_PLAYERS];
             for (int i = 0; i < _PlayersSettings.Length; i++)
@@ -894,6 +915,16 @@ namespace DsCore.Config
                                     if (!bool.TryParse(StrValue, out _OutputEnabled))
                                         Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
+                                else if (StrKey.ToLower().Equals("wm_outputsenabled"))
+                                {
+                                    if (!bool.TryParse(StrValue, out _Wm_OutputEnabled))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
+                                else if (StrKey.ToLower().Equals("net_outputsenabled"))
+                                {
+                                    if (!bool.TryParse(StrValue, out _Net_OutputEnabled))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
                                 else if (StrKey.ToLower().Equals("outputpollingdelay"))
                                 {
                                     if (!int.TryParse(StrValue, out _OutputPollingDelay))
@@ -1115,6 +1146,8 @@ namespace DsCore.Config
                     sr.WriteLine("");
                     sr.WriteLine(";Output Settings");
                     sr.WriteLine("OutputEnabled = " + _OutputEnabled.ToString());
+                    sr.WriteLine("WM_OutputsEnabled = " + _Wm_OutputEnabled.ToString());
+                    sr.WriteLine("Net_OutputsEnabled = " + _Net_OutputEnabled.ToString());
                     sr.WriteLine("OutputPollingDelay = " + _OutputPollingDelay.ToString());
                     sr.WriteLine("OutputCustomDamagedDelay = " + _OutputCustomDamagedDelay.ToString());
                     sr.WriteLine("OutputCustomRecoilOnDelay = " + _OutputCustomRecoilOnDelay.ToString());

@@ -5,7 +5,6 @@ using DsCore;
 using DsCore.Config;
 using DsCore.Memory;
 using DsCore.RawInput;
-using DsCore.Win32;
 
 namespace DemulShooter
 {
@@ -27,10 +26,6 @@ namespace DemulShooter
         private const UInt32 ATRAK_Y_Offset = 0x48;
         private NopStruct _Nop_Atrak_Axis = new NopStruct(0x004E587C, 4);
 
-        private HardwareScanCode _DIK_P2_Key_LClick = HardwareScanCode.DIK_S;
-        private HardwareScanCode _DIK_P2_Key_MClick = HardwareScanCode.DIK_D;
-        private HardwareScanCode _DIK_P2_Key_RClick = HardwareScanCode.DIK_F;
-
         /*** Process variables **/
         private UInt32 _DinputNumber = 0;
         private UInt32 _BasePtr = 0;
@@ -40,13 +35,10 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Dolphin5(String RomName, UInt32 DinputNumber, HardwareScanCode DIK_P2_LClick, HardwareScanCode DIK_P2_MClick, HardwareScanCode DIK_P2_RClick, bool DisableInputHack, bool Verbose)
+        public Game_Dolphin5(String RomName, UInt32 DinputNumber, bool DisableInputHack, bool Verbose)
             : base(RomName, "Dolphin", DisableInputHack, Verbose)
         {
             _DinputNumber = DinputNumber;
-            _DIK_P2_Key_LClick = DIK_P2_LClick;
-            _DIK_P2_Key_MClick = DIK_P2_MClick;
-            _DIK_P2_Key_RClick = DIK_P2_RClick;
             _KnownMd5Prints.Add("Dolphin_x86 v5.0", "9660ec7cddf093a1807cb25fe0946b8e");
             _tProcess.Start();
             Logger.WriteLog("Waiting for Dolphin " + _RomName + " game to hook.....");
@@ -266,19 +258,19 @@ namespace DemulShooter
                 WriteBytes(_ATRAK_BaseAddress + ATRAK_Y_Offset, bufferY);
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0) 
-                    SendKeyDown(_DIK_P2_Key_LClick);
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0) 
-                    SendKeyUp(_DIK_P2_Key_LClick);
+                    SendKeyDown(Configurator.GetInstance().DIK_Dolphin_P2_LClick);
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
+                    SendKeyUp(Configurator.GetInstance().DIK_Dolphin_P2_LClick);
                 
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0) 
-                    SendKeyDown(_DIK_P2_Key_MClick);
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0) 
-                    SendKeyUp(_DIK_P2_Key_MClick);
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
+                    SendKeyDown(Configurator.GetInstance().DIK_Dolphin_P2_MClick);
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionUp) != 0)
+                    SendKeyUp(Configurator.GetInstance().DIK_Dolphin_P2_MClick);
                 
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0) 
-                    SendKeyDown(_DIK_P2_Key_RClick);
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0) 
-                    SendKeyUp(_DIK_P2_Key_RClick);
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
+                    SendKeyDown(Configurator.GetInstance().DIK_Dolphin_P2_RClick);
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
+                    SendKeyUp(Configurator.GetInstance().DIK_Dolphin_P2_RClick);
             }
         }
 

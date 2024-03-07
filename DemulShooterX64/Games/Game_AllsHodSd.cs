@@ -6,7 +6,6 @@ using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.MemoryX64;
-using DsCore.RawInput;
 using DsCore.Win32;
 
 namespace DemulShooterX64
@@ -18,31 +17,28 @@ namespace DemulShooterX64
         private InjectionStruct _Jvs_P1Y_Injection = new InjectionStruct(0x001E28F5, 15);
         private InjectionStruct _Jvs_P2X_Injection = new InjectionStruct(0x001E291C, 15);
         private InjectionStruct _Jvs_P2Y_Injection = new InjectionStruct(0x001E293F, 15);
-
-        //Custom Outputs
-        private int _P1_LastLife = 0;
-        private int _P2_LastLife = 0;
-        private int _P1_LastAmmo = 0;
-        private int _P2_LastAmmo = 0;
-        private int _P1_Life = 0;
-        private int _P2_Life = 0;
-        private int _P1_Ammo = 0;
-        private int _P2_Ammo = 0;       
+        private InjectionStruct _MenuFlag_Injection = new InjectionStruct(0x00DA3050, 17);
+        private InjectionStruct _AxisCorrection_Injection = new InjectionStruct(0x001DED89, 17);
+        private UInt32 _RemoveMenuCorrection_Offset = 0x00DA3041;
+        private UInt64 _PlayerStatusPointer_Offset = 0x03087750;     
 
         //Custom Values
+        private UInt64 _Databank_WindowWidth_Address = 0;
+        private UInt64 _Databank_WindowHeight_Address = 0;
         private UInt64 _Databank_JVS_P1X_Address = 0;
         private UInt64 _Databank_JVS_P1Y_Address = 0;
         private UInt64 _Databank_JVS_P2X_Address = 0;
         private UInt64 _Databank_JVS_P2Y_Address = 0;
+        private UInt64 _Databank_InMenu_Address = 0;
 
-        
+
 
         /// <summary>
         /// Constructor
         /// </summary>
         public Game_AllsHodSd(String RomName, bool DisableInputHack, bool Verbose) : base(RomName, "Hodzero-Win64-Shipping", DisableInputHack, Verbose)
         {
-            _DisableInputHack = true; //Still WIP
+            //_DisableInputHack = true; //Still WIP
 
             _KnownMd5Prints.Add("Hodzero-Win64-Shipping.exe - Original Dump", "cde48c217d04caa64ee24a72f73dcce4");
             //Add amdaemon check ? (difference between original/Jconfig)
@@ -131,27 +127,7 @@ namespace DemulShooterX64
 
                     //X => [0x000 - 0x3FF]
                     //Y => [0x000 - 0x3FF]
-                    
-                    
-                    
-                    
-                    /*double dMinX = 132.0;
-                    double dMaxX = 916.0;
-                    double dMaxY = 1023.0;
-
-                    double deltaX = dMaxX - dMinX;
-                    PlayerData.RIController.Computed_X = Convert.ToInt16(dMinX + Math.Round(deltaX * PlayerData.RIController.Computed_X / TotalResX));
-                    PlayerData.RIController.Computed_Y = Convert.ToInt16(dMaxY - Math.Round(dMaxY * PlayerData.RIController.Computed_Y / TotalResY));
-                    if (PlayerData.RIController.Computed_X < 0)
-                        PlayerData.RIController.Computed_X = 0;
-                    if (PlayerData.RIController.Computed_Y < 0)
-                        PlayerData.RIController.Computed_Y = 0;
-                    if (PlayerData.RIController.Computed_X > (int)dMaxX)
-                        PlayerData.RIController.Computed_X = (int)dMaxX;
-                    if (PlayerData.RIController.Computed_Y > (int)dMaxY)
-                        PlayerData.RIController.Computed_Y = (int)dMaxY;*/
-
-                    /*double dMaxX = 1024.0;
+                    double dMaxX = 1024.0;
                     double dMaxY = 1024.0;
                     PlayerData.RIController.Computed_X = Convert.ToInt16(Math.Round(dMaxX * PlayerData.RIController.Computed_X / TotalResX));
                     PlayerData.RIController.Computed_Y = Convert.ToInt16(dMaxY - Math.Round(dMaxY * PlayerData.RIController.Computed_Y / TotalResY));
@@ -162,23 +138,11 @@ namespace DemulShooterX64
                     if (PlayerData.RIController.Computed_X > (int)dMaxX)
                         PlayerData.RIController.Computed_X = (int)dMaxX;
                     if (PlayerData.RIController.Computed_Y > (int)dMaxY)
-                        PlayerData.RIController.Computed_Y = (int)dMaxY;
-                     * */
-
-                    double dMaxX = (double)TotalResX;
-                    double dMaxY = (double)TotalResY;
-                    PlayerData.RIController.Computed_X = Convert.ToInt16(Math.Round(dMaxX * PlayerData.RIController.Computed_X / TotalResX));
-                    PlayerData.RIController.Computed_Y = Convert.ToInt16(Math.Round(dMaxY * PlayerData.RIController.Computed_Y / TotalResY));
-                    if (PlayerData.RIController.Computed_X < 0)
-                        PlayerData.RIController.Computed_X = 0;
-                    if (PlayerData.RIController.Computed_Y < 0)
-                        PlayerData.RIController.Computed_Y = 0;
-                    if (PlayerData.RIController.Computed_X > (int)dMaxX)
-                        PlayerData.RIController.Computed_X = (int)dMaxX;
-                    if (PlayerData.RIController.Computed_Y > (int)dMaxY)
-                        PlayerData.RIController.Computed_Y = (int)dMaxY;
-
-                   
+                        PlayerData.RIController.Computed_Y = (int)dMaxY;     
+              
+                    //Need to store data for InGame dynamic correction
+                    WriteBytes((IntPtr)_Databank_WindowWidth_Address, BitConverter.GetBytes((UInt32)TotalResX));
+                    WriteBytes((IntPtr)_Databank_WindowHeight_Address, BitConverter.GetBytes((UInt32)TotalResY));
 
                     return true;
                 }
@@ -196,53 +160,75 @@ namespace DemulShooterX64
 
         private void SetHack()
         {
+            CreateDataBank();
+
             //First part is to set our own JVS base values when the game is reading them in the JVS data array
-            /*SetHack_JVS_P1_X();
+            SetHack_JVS_P1_X();
             SetHack_JVS_P1_Y();
             SetHack_JVS_P2_X();
-            SetHack_JVS_P2_Y();*/
-            SetHack_JVS_Test();
+            SetHack_JVS_P2_Y();
 
             //Then to correct offsets between the cursors on menu screens and real data, we need to change the cursor position so that it's correct
             //whatever the window size is (otherwise, only aligned in 1920x1080)
+            //Based on [0-1024] JVS data, the game calculates in-menu coordinates based on 1920x1080 range, whereas in-game it is based on window size
+            //This also removes the 1.5x multiplier offset between cursor and aim in menu
+            SetHack_AxisCorrection();
 
-
+            //LAstly, forcing jump to not use the in-game part screwing the menus aim with screen multiplier according to resolution Height
+            //WriteByte((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _RemoveMenuCorrection_Offset), 0xEB);
+            
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
         }
 
-        private void SetHack_JVS_Test()
+        /// <summary>
+        /// Space for our own axis data
+        /// </summary>
+        private void CreateDataBank()
         {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
 
-            /* Because of 64bit asm, I dont know how to load a 64bit data segment address into a register.
-             * But there is an instruction to load address with an offset from RIP (instruction pointer) 
-             * That's why data are stored just after the code (to know the offset)
-             * */
-            _Databank_JVS_P1X_Address = CaveMemory.CaveAddress + 0x30;
-            _Databank_JVS_P1Y_Address = CaveMemory.CaveAddress + 0x38;
-            Logger.WriteLog("_Databank_JVS_P1X_Address = 0x" + _Databank_JVS_P1X_Address.ToString("X16"));
+            _Databank_WindowWidth_Address = CaveMemory.CaveAddress;
+            _Databank_WindowHeight_Address = CaveMemory.CaveAddress + 0x08;
+            _Databank_InMenu_Address = CaveMemory.CaveAddress + 0x10;            
 
-            //mov eax, [RIP+0x2A] (==> _Databank_JVS_P1X_Address)
-            CaveMemory.Write_StrBytes("8B 05 2A 00 00 00");
-            //mov [rdi+00000BB8],eax
-            CaveMemory.Write_StrBytes("89 87 B8 0B 00 00");
-            //mov eax, [RIP+0x26] (==> _Databank_JVS_P1X_Address)
-            CaveMemory.Write_StrBytes("8B 05 26 00 00 00");
-            //mov [rdi+00000BBC],eax
-            CaveMemory.Write_StrBytes("89 87 BC 0B 00 00");
+            Logger.WriteLog("Custom data will be stored at : 0x" + CaveMemory.CaveAddress.ToString("X16"));
+        }
 
-            //comis xmm4, xmm0
-            CaveMemory.Write_StrBytes("0F 2F E0");
-            //mov eax,[rdi+00000BC0]
-            CaveMemory.Write_StrBytes("8B 87 C0 0B 00 00");
+        /// <summary>
+        /// At this point the game uses that code only when in-menu
+        /// We can :
+        /// 1 - Remove the 1.5x multiplier applied to the cursor hand in menu
+        /// 2 - Set a flag to tell we are in menu for later use (settle the offset)
+        /// </summary>
+        private void SetHack_InMenuFlag()
+        {            
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //xorps xmm0,xmm0
+            CaveMemory.Write_StrBytes("0F 57 C0");
+            //movaps xmm1,xmm2
+            CaveMemory.Write_StrBytes("0F 28 CA");
+            //mulss xmm2,[rsp+24]
+            CaveMemory.Write_StrBytes("F3 0F 59 54 24 24");
+            //push rax
+            CaveMemory.Write_StrBytes("50");
+            //movabs rax, [_Databank_InMenu_Address]
+            CaveMemory.Write_StrBytes("48 B8");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_Databank_InMenu_Address));
+            //mov byte ptr[rax], 1
+            CaveMemory.Write_StrBytes("C6 00 01");
+            //pop rax
+            CaveMemory.Write_StrBytes("58");
 
             //Jump back
-            CaveMemory.Write_jmp((UInt64)_TargetProcess_MemoryBaseAddress + 0x1deee4);
+            CaveMemory.Write_jmp((UInt64)_TargetProcess_MemoryBaseAddress + _MenuFlag_Injection.InjectionReturnOffset);
 
-            Logger.WriteLog("Adding JVS_P1X Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X16"));
+            Logger.WriteLog("Adding InMenuFlag Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X16"));
 
             //Code Injection
             List<Byte> Buffer = new List<Byte>();
@@ -257,10 +243,126 @@ namespace DemulShooterX64
             Buffer.Add(0x00);
             Buffer.AddRange(BitConverter.GetBytes(CaveMemory.CaveAddress));
             Buffer.Add(0x90);
-            Win32API.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x1deed5), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _MenuFlag_Injection.InjectionOffset), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
         }
 
+        /// <summary>
+        /// At this point the game uses the Raw JVS values (0-1024) to compute real position of the gun in game
+        /// We can :
+        /// 1 - Remove the gun calibration values that are screwing our aim
+        /// 2 - Look at the InMenu flag to change the calculation accordingly : in-menu range is 1920x1080 whereas in-game is WindowWidth x WindowHeight
+        /// </summary>
+        private void SetHack_AxisCorrection()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
 
+            //push rax
+            CaveMemory.Write_StrBytes("50");
+
+            //mov rax, _PlayerstatusPointer_Offset
+            CaveMemory.Write_StrBytes("48 B8");
+            UInt64 uAddress = (UInt64)_TargetProcess_MemoryBaseAddress + _PlayerStatusPointer_Offset;
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(uAddress));
+            //mov rax, [rax]
+            CaveMemory.Write_StrBytes("48 8B 00");
+            //add rax, 0x231
+            CaveMemory.Write_StrBytes("48 05 31 02 00 00"); 
+            //cmp dword ptr [rax],01
+            CaveMemory.Write_StrBytes("83 38 01");
+            //je InGame
+            CaveMemory.Write_StrBytes("0F 84 26 00 00 00");
+            //add rax, 1
+            CaveMemory.Write_StrBytes("48 83 C0 01");
+            //cmp dword ptr [rax],01
+            CaveMemory.Write_StrBytes("83 38 01");
+            //je InGame
+            CaveMemory.Write_StrBytes("0F 84 19 00 00 00");
+
+            //InMenu:
+            //mov [rdi+00000D4C],00000780   //1920
+            CaveMemory.Write_StrBytes("C7 87 4C 0D 00 00 80 07 00 00");
+            //mov [rdi+00000D50],00000438   //1080
+            CaveMemory.Write_StrBytes("C7 87 50 0D 00 00 38 04 00 00");
+            //jmp Next
+            CaveMemory.Write_StrBytes("E9 26 00 00 00");
+            
+            //InGame:
+            //mov rax, _Databank_windowWidth
+            CaveMemory.Write_StrBytes("48 B8");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_Databank_WindowWidth_Address));
+            //mov rax,[rax]
+            CaveMemory.Write_StrBytes("48 8B 00");
+            //mov [rdi+00000D4C],rax
+            CaveMemory.Write_StrBytes("89 87 4C 0D 00 00");
+
+            //mov rax, _Databank_windowHeight
+            CaveMemory.Write_StrBytes("48 B8");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_Databank_WindowHeight_Address));
+            //mov rax,[rax]
+            CaveMemory.Write_StrBytes("48 8B 00");
+            //mov [rdi+00000D50],rax
+            CaveMemory.Write_StrBytes("89 87 50 0D 00 00");
+
+            //Next:
+            //pop rax
+            CaveMemory.Write_StrBytes("58");
+            //mov [rdi+00000D04],00000000
+            CaveMemory.Write_StrBytes("C7 87 04 0D 00 00 00 00 00 00");
+            //mov [rdi+00000D0C],00000400
+            CaveMemory.Write_StrBytes("C7 87 0C 0D 00 00 00 04 00 00");
+            //mov [rdi+00000D14],00000200
+            CaveMemory.Write_StrBytes("C7 87 14 0D 00 00 00 02 00 00");
+            //mov [rdi+00000D44],00000000
+            CaveMemory.Write_StrBytes("C7 87 44 0D 00 00 00 00 00 00");
+            //movd xmm8,[rdi+00000D4C]
+            CaveMemory.Write_StrBytes("66 44 0F 6E 87 4C 0D 00 00");
+            //movd xmm0,[rdi+00000D0C]
+            CaveMemory.Write_StrBytes("66 0F 6E 87 0C 0D 00 00");
+
+            //mov [rdi+00000CF8],00000000
+            CaveMemory.Write_StrBytes("C7 87 F8 0C 00 00 00 00 00 00");
+            //mov [rdi+00000D00],00000400
+            CaveMemory.Write_StrBytes("C7 87 00 0D 00 00 00 04 00 00");
+            //mov [rdi+00000D18],00000200
+            CaveMemory.Write_StrBytes("C7 87 18 0D 00 00 00 02 00 00");
+            //mov [rdi+00000D48],00000000
+            CaveMemory.Write_StrBytes("C7 87 48 0D 00 00 00 00 00 00");
+
+            //movd xmm8,[rdi+00000D4C]
+            CaveMemory.Write_StrBytes("66 44 0F 6E 87 4C 0D 00 00");
+            //movd xmm0,[rdi+00000D0C]
+            CaveMemory.Write_StrBytes("66 0F 6E 87 0C 0D 00 00");
+
+            //Jump back
+            CaveMemory.Write_jmp((UInt64)_TargetProcess_MemoryBaseAddress + _AxisCorrection_Injection.InjectionReturnOffset);
+
+            Logger.WriteLog("Adding AxisCorrection Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X16"));
+
+            //Code Injection
+            List<Byte> Buffer = new List<Byte>();
+            IntPtr ProcessHandle = _TargetProcess.Handle;
+            UIntPtr bytesWritten = UIntPtr.Zero;
+            Buffer = new List<byte>();
+            Buffer.Add(0xFF);
+            Buffer.Add(0x25);
+            Buffer.Add(0x00);
+            Buffer.Add(0x00);
+            Buffer.Add(0x00);
+            Buffer.Add(0x00);
+            Buffer.AddRange(BitConverter.GetBytes(CaveMemory.CaveAddress));
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Buffer.Add(0x90);
+            Win32API.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _AxisCorrection_Injection.InjectionOffset), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
+        }
+
+        /**/
+        /* Overwrite raw JVS values with our own
+        /**/
         private void SetHack_JVS_P1_X()
         {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
@@ -300,7 +402,6 @@ namespace DemulShooterX64
             Buffer.Add(0x90);
             Win32API.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _Jvs_P1X_Injection.InjectionOffset), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
         }
-
         private void SetHack_JVS_P1_Y()
         {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
@@ -342,7 +443,6 @@ namespace DemulShooterX64
             Buffer.Add(0x90);
             Win32API.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _Jvs_P1Y_Injection.InjectionOffset), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
         }
-
         private void SetHack_JVS_P2_X()
         {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
@@ -382,7 +482,6 @@ namespace DemulShooterX64
             Buffer.Add(0x90);
             Win32API.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _Jvs_P2X_Injection.InjectionOffset), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
         }
-
         private void SetHack_JVS_P2_Y()
         {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
@@ -423,8 +522,7 @@ namespace DemulShooterX64
             Buffer.AddRange(BitConverter.GetBytes(CaveMemory.CaveAddress));
             Buffer.Add(0x90);
             Win32API.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _Jvs_P2Y_Injection.InjectionOffset), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
-        }
-       
+        }       
 
         #endregion
 
@@ -458,7 +556,7 @@ namespace DemulShooterX64
         /// Create the Output list that we will be looking for and forward to MameHooker
         /// </summary>
         protected override void CreateOutputList()
-        {
+        {            
             //Gun motor : Is activated for every bullet fired AND when player gets
             _Outputs = new List<GameOutput>();
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpStart, OutputId.P1_LmpStart));
@@ -467,12 +565,12 @@ namespace DemulShooterX64
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));            
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));            
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
@@ -496,14 +594,14 @@ namespace DemulShooterX64
                 //SetOutputValue(OutputId.P2_CoinBlocker, ReadByte((IntPtr)(PtrOutput1 + 0x478)) >> 2 & 0x01);
             }
 
-            _P1_Life = 0;
-            _P2_Life = 0;
-            _P1_Ammo = 0;
-            _P2_Ammo = 0;
+            int P1_Life = 0;
+            int P2_Life = 0;
+            int P1_Ammo = 0;
+            int P2_Ammo = 0;
             int P1_Clip = 0;
             int P2_Clip = 0;
 
-            UInt64 Ptr1 = ReadPtr((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x03087750));            
+            UInt64 Ptr1 = ReadPtr((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _PlayerStatusPointer_Offset));            
             if (Ptr1 != 0)
             {
                 //Customs Outputs
@@ -520,19 +618,19 @@ namespace DemulShooterX64
                     PtrAmmo = ReadPtr((IntPtr)(PtrAmmo + 0xB0));
                     PtrAmmo = ReadPtr((IntPtr)(PtrAmmo + 0x90));*/
                     UInt64 PtrAmmo = ReadPtrChain((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x032B5B88), new UInt64[] { 0x30, 0xB0, 0x90 });
-                    _P1_Ammo = ReadByte((IntPtr)(PtrAmmo + 0x378));
-                    _P1_Life = ReadByte((IntPtr)(Ptr1 + 0x364));
+                    P1_Ammo = ReadByte((IntPtr)(PtrAmmo + 0x378));
+                    P1_Life = ReadByte((IntPtr)(Ptr1 + 0x364));
 
                     //Custom Recoil
-                    if (_P1_Ammo < _P1_LastAmmo)
+                    if (P1_Ammo < _P1_LastAmmo)
                         SetOutputValue(OutputId.P1_CtmRecoil, 1);
 
                     //[Clip Empty] custom Output
-                    if (_P1_Ammo > 0)
+                    if (P1_Ammo > 0)
                         P1_Clip = 1;
 
                     //[Damaged] custom Output                
-                    if (_P1_Life < _P1_LastLife)
+                    if (P1_Life < _P1_LastLife)
                         SetOutputValue(OutputId.P1_Damaged, 1);
                 }
 
@@ -543,34 +641,34 @@ namespace DemulShooterX64
                     PtrAmmo = ReadPtr((IntPtr)(PtrAmmo + 0xB0));
                     PtrAmmo = ReadPtr((IntPtr)(PtrAmmo + 0x98));*/
                     UInt64 PtrAmmo = ReadPtrChain((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x032B5B88), new UInt64[] { 0x30, 0xB0, 0x98 });                    
-                    _P2_Ammo = ReadByte((IntPtr)(PtrAmmo + 0x378));
-                    _P2_Life = ReadByte((IntPtr)(Ptr1 + 0x43C));
+                    P2_Ammo = ReadByte((IntPtr)(PtrAmmo + 0x378));
+                    P2_Life = ReadByte((IntPtr)(Ptr1 + 0x43C));
 
                     //Custom Recoil
-                    if (_P2_Ammo < _P2_LastAmmo)
+                    if (P2_Ammo < _P2_LastAmmo)
                         SetOutputValue(OutputId.P2_CtmRecoil, 1);
 
                     //[Clip Empty] custom Output
-                    if (_P2_Ammo > 0)
+                    if (P2_Ammo > 0)
                         P2_Clip = 1;
 
                     //[Damaged] custom Output  
-                    if (_P2_Life < _P2_LastLife)
+                    if (P2_Life < _P2_LastLife)
                         SetOutputValue(OutputId.P2_Damaged, 1);
                 }   
             }
 
-            _P1_LastAmmo = _P1_Ammo;
-            _P1_LastLife = _P1_Life;
-            _P2_LastAmmo = _P2_Ammo;
-            _P2_LastLife = _P2_Life;
+            _P1_LastAmmo = P1_Ammo;
+            _P1_LastLife = P1_Life;
+            _P2_LastAmmo = P2_Ammo;
+            _P2_LastLife = P2_Life;
 
-            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
-            SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
+            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
+            SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
             SetOutputValue(OutputId.P1_Clip, P1_Clip);
             SetOutputValue(OutputId.P2_Clip, P2_Clip);
-            SetOutputValue(OutputId.P1_Life, _P1_Life);
-            SetOutputValue(OutputId.P2_Life, _P2_Life);
+            SetOutputValue(OutputId.P1_Life, P1_Life);
+            SetOutputValue(OutputId.P2_Life, P2_Life);
 
             /*UInt64 PtrCredits = ReadPtr((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x032FC700));
             PtrCredits = ReadPtr((IntPtr)(PtrCredits + 0x88));

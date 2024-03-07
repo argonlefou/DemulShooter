@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
@@ -8,7 +9,6 @@ using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
 using DsCore.Win32;
-using System.Runtime.InteropServices;
 
 namespace DemulShooter
 {
@@ -79,29 +79,17 @@ namespace DemulShooter
 
         //Credits settings (these are defaults values)
         private int _Credits_Freeplay = 0;   //0 or 1
-        private int _Credits_CreditsToStart = 2;
-        private int _Credits_CreditsToContinue = 1;
-        private int _Credits_CoinsByCredits = 2;
 
-        //Separating Action button
-        private bool _SeparateActionButton = false;
-        private HardwareScanCode _P1_Action_Key = HardwareScanCode.DIK_G;
         private HardwareScanCode _P2_Action_Key = HardwareScanCode.DIK_H;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwOpGhost(String RomName, bool EnableFreeplay, int StartCredits, int ContinueCredits, int CoinsCredit, bool SeparateButtons, HardwareScanCode P1_Action_Key, HardwareScanCode P2_Action_Key, bool DisableInputHack, bool Verbose)
+        public Game_RwOpGhost(String RomName, bool DisableInputHack, bool Verbose)
             : base(RomName, "gs2", DisableInputHack, Verbose)
         {
-            if (EnableFreeplay)
+            if (Configurator.GetInstance().OpGhost_EnableFreeplay)
                 _Credits_Freeplay = 1;
-            _Credits_CreditsToStart = StartCredits;
-            _Credits_CreditsToContinue = ContinueCredits;
-            _Credits_CoinsByCredits = CoinsCredit;
-            _SeparateActionButton = SeparateButtons;
-            _P1_Action_Key = P1_Action_Key;
-            _P2_Action_Key = P2_Action_Key;
             _KnownMd5Prints.Add("Operation Ghost - For TeknoParrot", "40f795933abc4f441c98acc778610aa2");
             _KnownMd5Prints.Add("Operation Ghost - For JConfig", "19a949581145ed8478637d286a4b85a0");
             _tProcess.Start();
@@ -127,9 +115,9 @@ namespace DemulShooter
                         _AmLibData_BaseAddress = ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + _AmLibData_Ptr_Offset);
                         //Modifying Credits parameters :
                         WriteBytes(_AmLibData_BaseAddress + 0x1C8, BitConverter.GetBytes(_Credits_Freeplay));
-                        WriteBytes(_AmLibData_BaseAddress + 0x1CC, BitConverter.GetBytes(_Credits_CreditsToStart));
-                        WriteBytes(_AmLibData_BaseAddress + 0x1D0, BitConverter.GetBytes(_Credits_CreditsToContinue));
-                        WriteBytes(_AmLibData_BaseAddress + 0x1D4, BitConverter.GetBytes(_Credits_CoinsByCredits));
+                        WriteBytes(_AmLibData_BaseAddress + 0x1CC, BitConverter.GetBytes(Configurator.GetInstance().OpGhost_CreditsToStart));
+                        WriteBytes(_AmLibData_BaseAddress + 0x1D0, BitConverter.GetBytes(Configurator.GetInstance().OpGhost_CreditsToContinue));
+                        WriteBytes(_AmLibData_BaseAddress + 0x1D4, BitConverter.GetBytes(Configurator.GetInstance().OpGhost_CoinsPerCredits));
 
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero && _AmLibData_BaseAddress != 0)
                         {
@@ -486,13 +474,13 @@ namespace DemulShooter
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                     {
                         Apply_OR_ByteMask(_Buttons_CaveAddress, 0x01);
-                        if (!_SeparateActionButton)
+                        if (!Configurator.GetInstance().OpGhost_SeparateButtons)
                             Apply_OR_ByteMask(_Buttons_CaveAddress + 1, 0x80);                       
                     }
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                     {
                         Apply_AND_ByteMask(_Buttons_CaveAddress, 0xFE);
-                        if (!_SeparateActionButton)
+                        if (!Configurator.GetInstance().OpGhost_SeparateButtons)
                             Apply_AND_ByteMask(_Buttons_CaveAddress + 1, 0x7F); 
                     }
                 }
@@ -513,7 +501,7 @@ namespace DemulShooter
 
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                     {
-                        if (!_SeparateActionButton)
+                        if (!Configurator.GetInstance().OpGhost_SeparateButtons)
                             WriteByte(_P1_Action_CaveAddress, 0x80);
                         PlayerData.RIController.Computed_X = 2000;
                         byte[] bufferX_R = { (byte)(PlayerData.RIController.Computed_X & 0xFF), (byte)(PlayerData.RIController.Computed_X >> 8), 0, 0 };
@@ -522,7 +510,7 @@ namespace DemulShooter
                     }
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                     {
-                        if (!_SeparateActionButton)
+                        if (!Configurator.GetInstance().OpGhost_SeparateButtons)
                             WriteByte(_P1_Action_CaveAddress, 0x00);
                     }
                 }                
@@ -550,13 +538,13 @@ namespace DemulShooter
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                     {
                         Apply_OR_ByteMask(_Buttons_CaveAddress + 2, 0x01);
-                        if (!_SeparateActionButton)
+                        if (!Configurator.GetInstance().OpGhost_SeparateButtons)
                             Apply_OR_ByteMask(_Buttons_CaveAddress + 3, 0x80);
                     }
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                     {
                         Apply_AND_ByteMask(_Buttons_CaveAddress + 2, 0xFE);
-                        if (!_SeparateActionButton)
+                        if (!Configurator.GetInstance().OpGhost_SeparateButtons)
                             Apply_AND_ByteMask(_Buttons_CaveAddress + 3, 0x7F);
                     }
                 }
@@ -597,13 +585,13 @@ namespace DemulShooter
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                     {
                         Send_VK_KeyDown(_P2_Reload_VK);
-                        if (!_SeparateActionButton)
+                        if (!Configurator.GetInstance().OpGhost_SeparateButtons)
                             Send_VK_KeyDown(_P2_Action_VK);
                     }
                     if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                     {
                         Send_VK_KeyUp(_P2_Reload_VK);
-                        if (!_SeparateActionButton)
+                        if (!Configurator.GetInstance().OpGhost_SeparateButtons)
                             Send_VK_KeyUp(_P2_Action_VK);
                     }
                 }
@@ -631,9 +619,9 @@ namespace DemulShooter
                         {
                             Apply_OR_ByteMask(_Buttons_CaveAddress + 4, 0x80);
                         }
-                        if (_SeparateActionButton)
+                        if (Configurator.GetInstance().OpGhost_SeparateButtons)
                         {
-                            if (s.scanCode == _P1_Action_Key)
+                            if (s.scanCode == Configurator.GetInstance().DIK_OpGhost_Action_P1)
                             {
                                 Apply_OR_ByteMask(_Buttons_CaveAddress + 1, 0x80);
                             }
@@ -645,9 +633,9 @@ namespace DemulShooter
                     }
                     else
                     {
-                        if (_SeparateActionButton)
+                        if (Configurator.GetInstance().OpGhost_SeparateButtons)
                         {
-                            if (s.scanCode == _P1_Action_Key)
+                            if (s.scanCode == Configurator.GetInstance().DIK_OpGhost_Action_P1)
                             {
                                 WriteByte(_P1_Action_CaveAddress, 0x80);
                             }
@@ -670,9 +658,9 @@ namespace DemulShooter
                         {
                             Apply_AND_ByteMask(_Buttons_CaveAddress + 4, 0x7F);
                         }
-                        if (_SeparateActionButton)
+                        if (Configurator.GetInstance().OpGhost_SeparateButtons)
                         {
-                            if (s.scanCode == _P1_Action_Key)
+                            if (s.scanCode == Configurator.GetInstance().DIK_OpGhost_Action_P1)
                             {
                                 Apply_AND_ByteMask(_Buttons_CaveAddress + 1, 0x7F);
                             }
@@ -684,9 +672,9 @@ namespace DemulShooter
                     }
                     else
                     {
-                        if (_SeparateActionButton)
+                        if (Configurator.GetInstance().OpGhost_SeparateButtons)
                         {
-                            if (s.scanCode == _P1_Action_Key)
+                            if (s.scanCode == Configurator.GetInstance().DIK_OpGhost_Action_P1)
                             {
                                 WriteByte(_P1_Action_CaveAddress, 0x00);
                             }
@@ -720,8 +708,8 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpHolder, OutputId.P2_LmpHolder));            
             _Outputs.Add(new GameOutput(OutputDesciption.P1_GunRecoil, OutputId.P1_GunRecoil));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunRecoil, OutputId.P2_GunRecoil));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 

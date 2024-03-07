@@ -103,6 +103,7 @@
             this.Chk_GundamP1Pedal = new System.Windows.Forms.CheckBox();
             this.Tab_HeavyFire3 = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.Chk_HF3_ReverseCover = new System.Windows.Forms.CheckBox();
             this.Lbl_HFA_Command = new System.Windows.Forms.Label();
             this.Lbl_HFA_Version = new System.Windows.Forms.Label();
             this.Btn_HF3_Save = new System.Windows.Forms.Button();
@@ -117,6 +118,7 @@
             this.label41 = new System.Windows.Forms.Label();
             this.Tab_HeavyFire4 = new System.Windows.Forms.TabPage();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.Chk_HF4_ReverseCover = new System.Windows.Forms.CheckBox();
             this.Lbl_HF4_Command = new System.Windows.Forms.Label();
             this.Lbl_HF4_Version = new System.Windows.Forms.Label();
             this.Btn_HF4_Save = new System.Windows.Forms.Button();
@@ -248,13 +250,13 @@
             this.Txt_OutputDamaged = new System.Windows.Forms.TextBox();
             this.label26 = new System.Windows.Forms.Label();
             this.Txt_OutputDelay = new System.Windows.Forms.TextBox();
-            this.label27 = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.Bgw_XInput = new System.ComponentModel.BackgroundWorker();
             this.Cbo_PageSettings = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
-            this.Chk_HF3_ReverseCover = new System.Windows.Forms.CheckBox();
-            this.Chk_HF4_ReverseCover = new System.Windows.Forms.CheckBox();
+            this.groupBox19 = new System.Windows.Forms.GroupBox();
+            this.Cbox_WmOutputs = new System.Windows.Forms.CheckBox();
+            this.Cbox_NetOutputs = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.Tab_P1.SuspendLayout();
             this.Tab_P2.SuspendLayout();
@@ -297,6 +299,7 @@
             this.groupBox1.SuspendLayout();
             this.Tab_Outputs.SuspendLayout();
             this.Grp_Outputs.SuspendLayout();
+            this.groupBox19.SuspendLayout();
             this.SuspendLayout();
             // 
             // Btn_Save_P1
@@ -1182,6 +1185,17 @@
             this.groupBox7.TabIndex = 5;
             this.groupBox7.TabStop = false;
             // 
+            // Chk_HF3_ReverseCover
+            // 
+            this.Chk_HF3_ReverseCover.AutoSize = true;
+            this.Chk_HF3_ReverseCover.Location = new System.Drawing.Point(10, 152);
+            this.Chk_HF3_ReverseCover.Name = "Chk_HF3_ReverseCover";
+            this.Chk_HF3_ReverseCover.Size = new System.Drawing.Size(145, 20);
+            this.Chk_HF3_ReverseCover.TabIndex = 14;
+            this.Chk_HF3_ReverseCover.Text = "Reverse cover side";
+            this.Chk_HF3_ReverseCover.UseVisualStyleBackColor = true;
+            this.Chk_HF3_ReverseCover.CheckedChanged += new System.EventHandler(this.Chk_HF3_ReverseCover_CheckedChanged);
+            // 
             // Lbl_HFA_Command
             // 
             this.Lbl_HFA_Command.AutoSize = true;
@@ -1328,6 +1342,17 @@
             this.groupBox8.Size = new System.Drawing.Size(569, 202);
             this.groupBox8.TabIndex = 7;
             this.groupBox8.TabStop = false;
+            // 
+            // Chk_HF4_ReverseCover
+            // 
+            this.Chk_HF4_ReverseCover.AutoSize = true;
+            this.Chk_HF4_ReverseCover.Location = new System.Drawing.Point(10, 152);
+            this.Chk_HF4_ReverseCover.Name = "Chk_HF4_ReverseCover";
+            this.Chk_HF4_ReverseCover.Size = new System.Drawing.Size(145, 20);
+            this.Chk_HF4_ReverseCover.TabIndex = 16;
+            this.Chk_HF4_ReverseCover.Text = "Reverse cover side";
+            this.Chk_HF4_ReverseCover.UseVisualStyleBackColor = true;
+            this.Chk_HF4_ReverseCover.CheckedChanged += new System.EventHandler(this.Chk_HF4_ReverseCover_CheckedChanged);
             // 
             // Lbl_HF4_Command
             // 
@@ -2651,9 +2676,9 @@
             // Tab_Outputs
             // 
             this.Tab_Outputs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_Outputs.Controls.Add(this.groupBox19);
             this.Tab_Outputs.Controls.Add(this.Btn_SaveOutput);
             this.Tab_Outputs.Controls.Add(this.Grp_Outputs);
-            this.Tab_Outputs.Controls.Add(this.label27);
             this.Tab_Outputs.Location = new System.Drawing.Point(4, 5);
             this.Tab_Outputs.Name = "Tab_Outputs";
             this.Tab_Outputs.Size = new System.Drawing.Size(581, 334);
@@ -2681,7 +2706,6 @@
             this.Grp_Outputs.Controls.Add(this.label23);
             this.Grp_Outputs.Controls.Add(this.label20);
             this.Grp_Outputs.Controls.Add(this.label10);
-            this.Grp_Outputs.Controls.Add(this.Cbox_Outputs);
             this.Grp_Outputs.Controls.Add(this.label22);
             this.Grp_Outputs.Controls.Add(this.Txt_OutputRecoilOn);
             this.Grp_Outputs.Controls.Add(this.label25);
@@ -2693,7 +2717,6 @@
             this.Grp_Outputs.Size = new System.Drawing.Size(569, 173);
             this.Grp_Outputs.TabIndex = 56;
             this.Grp_Outputs.TabStop = false;
-            this.Grp_Outputs.Text = "                                          ";
             // 
             // label21
             // 
@@ -2754,7 +2777,7 @@
             // Cbox_Outputs
             // 
             this.Cbox_Outputs.AutoSize = true;
-            this.Cbox_Outputs.Location = new System.Drawing.Point(13, -2);
+            this.Cbox_Outputs.Location = new System.Drawing.Point(13, -1);
             this.Cbox_Outputs.Name = "Cbox_Outputs";
             this.Cbox_Outputs.Size = new System.Drawing.Size(118, 20);
             this.Cbox_Outputs.TabIndex = 1;
@@ -2822,18 +2845,6 @@
             this.Txt_OutputDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.Txt_OutputDelay.TextChanged += new System.EventHandler(this.Txt_OutputDelay_TextChanged);
             // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label27.Location = new System.Drawing.Point(15, 12);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(500, 60);
-            this.label27.TabIndex = 55;
-            this.label27.Text = "Enable this option to retrieve various Output data from the game to control exter" +
-                "nal harware\r\nlike lamps, motors, etc...\r\n\r\nOutputs are compatible with MAME Hook" +
-                "er.";
-            // 
             // Cbo_PageSettings
             // 
             this.Cbo_PageSettings.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -2873,27 +2884,40 @@
             this.label39.TabIndex = 40;
             this.label39.Text = "Page selection :";
             // 
-            // Chk_HF3_ReverseCover
+            // groupBox19
             // 
-            this.Chk_HF3_ReverseCover.AutoSize = true;
-            this.Chk_HF3_ReverseCover.Location = new System.Drawing.Point(10, 152);
-            this.Chk_HF3_ReverseCover.Name = "Chk_HF3_ReverseCover";
-            this.Chk_HF3_ReverseCover.Size = new System.Drawing.Size(145, 20);
-            this.Chk_HF3_ReverseCover.TabIndex = 14;
-            this.Chk_HF3_ReverseCover.Text = "Reverse cover side";
-            this.Chk_HF3_ReverseCover.UseVisualStyleBackColor = true;
-            this.Chk_HF3_ReverseCover.CheckedChanged += new System.EventHandler(this.Chk_HF3_ReverseCover_CheckedChanged);
+            this.groupBox19.Controls.Add(this.Cbox_NetOutputs);
+            this.groupBox19.Controls.Add(this.Cbox_WmOutputs);
+            this.groupBox19.Controls.Add(this.Cbox_Outputs);
+            this.groupBox19.Location = new System.Drawing.Point(5, 3);
+            this.groupBox19.Name = "groupBox19";
+            this.groupBox19.Size = new System.Drawing.Size(568, 101);
+            this.groupBox19.TabIndex = 57;
+            this.groupBox19.TabStop = false;
             // 
-            // Chk_HF4_ReverseCover
+            // Cbox_WmOutputs
             // 
-            this.Chk_HF4_ReverseCover.AutoSize = true;
-            this.Chk_HF4_ReverseCover.Location = new System.Drawing.Point(10, 152);
-            this.Chk_HF4_ReverseCover.Name = "Chk_HF4_ReverseCover";
-            this.Chk_HF4_ReverseCover.Size = new System.Drawing.Size(145, 20);
-            this.Chk_HF4_ReverseCover.TabIndex = 16;
-            this.Chk_HF4_ReverseCover.Text = "Reverse cover side";
-            this.Chk_HF4_ReverseCover.UseVisualStyleBackColor = true;
-            this.Chk_HF4_ReverseCover.CheckedChanged += new System.EventHandler(this.Chk_HF4_ReverseCover_CheckedChanged);
+            this.Cbox_WmOutputs.AutoSize = true;
+            this.Cbox_WmOutputs.Enabled = false;
+            this.Cbox_WmOutputs.Location = new System.Drawing.Point(38, 41);
+            this.Cbox_WmOutputs.Name = "Cbox_WmOutputs";
+            this.Cbox_WmOutputs.Size = new System.Drawing.Size(315, 20);
+            this.Cbox_WmOutputs.TabIndex = 56;
+            this.Cbox_WmOutputs.Text = "Window Messages outputs (MameHooker, etc...)";
+            this.Cbox_WmOutputs.UseVisualStyleBackColor = true;
+            this.Cbox_WmOutputs.CheckedChanged += new System.EventHandler(this.Cbox_WmOutputs_CheckedChanged);
+            // 
+            // Cbox_NetOutputs
+            // 
+            this.Cbox_NetOutputs.AutoSize = true;
+            this.Cbox_NetOutputs.Enabled = false;
+            this.Cbox_NetOutputs.Location = new System.Drawing.Point(38, 67);
+            this.Cbox_NetOutputs.Name = "Cbox_NetOutputs";
+            this.Cbox_NetOutputs.Size = new System.Drawing.Size(124, 20);
+            this.Cbox_NetOutputs.TabIndex = 57;
+            this.Cbox_NetOutputs.Text = "Network Outputs";
+            this.Cbox_NetOutputs.UseVisualStyleBackColor = true;
+            this.Cbox_NetOutputs.CheckedChanged += new System.EventHandler(this.Cbox_NetOutputs_CheckedChanged);
             // 
             // Wnd_DemulShooterGui
             // 
@@ -2980,9 +3004,10 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.Tab_Outputs.ResumeLayout(false);
-            this.Tab_Outputs.PerformLayout();
             this.Grp_Outputs.ResumeLayout(false);
             this.Grp_Outputs.PerformLayout();
+            this.groupBox19.ResumeLayout(false);
+            this.groupBox19.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3103,7 +3128,6 @@
         private System.Windows.Forms.TextBox Txt_OutputDamaged;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.TextBox Txt_OutputDelay;
-        private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label10;
@@ -3216,6 +3240,9 @@
         private System.Windows.Forms.Button Btn_EAI_Open;
         private System.Windows.Forms.CheckBox Chk_HF3_ReverseCover;
         private System.Windows.Forms.CheckBox Chk_HF4_ReverseCover;
+        private System.Windows.Forms.GroupBox groupBox19;
+        private System.Windows.Forms.CheckBox Cbox_NetOutputs;
+        private System.Windows.Forms.CheckBox Cbox_WmOutputs;
     }
 }
 

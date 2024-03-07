@@ -923,12 +923,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -946,11 +946,11 @@ namespace DemulShooter
             //Gun motor is activated on shoot and dammage, and stays activated on dammaged untill the player hides
             //So Custom outputs will be based on game values (ammo, life)
 
-            int P1_Life = 0;
-            int P1_Ammo = 0;
+            _P1_Life = 0;
+            _P1_Ammo = 0;
             int P1_Clip = 0;
-            int P2_Life = 0;
-            int P2_Ammo = 0;
+            _P2_Life = 0;
+            _P2_Ammo = 0;
             int P2_Clip = 0;
 
             if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Playing_Offset) == 1)
@@ -967,8 +967,8 @@ namespace DemulShooter
                     WriteByte(_P1_DamagedEnabled_CustomAddress, 0x00);
                 }
 
-                P1_Ammo = ReadByte(_P1_Ammo_CustomAddress);
-                P1_Life = ReadByte(_P1_Life_CustomAddress);
+                _P1_Ammo = ReadByte(_P1_Ammo_CustomAddress);
+                _P1_Life = ReadByte(_P1_Life_CustomAddress);
             }
 
             if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Playing_Offset) == 1)
@@ -985,8 +985,8 @@ namespace DemulShooter
                     WriteByte(_P2_DamagedEnabled_CustomAddress, 0x00);
                 }
 
-                P2_Ammo = ReadByte(_P2_Ammo_CustomAddress);
-                P2_Life = ReadByte(_P2_Life_CustomAddress);
+                _P2_Ammo = ReadByte(_P2_Ammo_CustomAddress);
+                _P2_Life = ReadByte(_P2_Life_CustomAddress);
             }
 
 
@@ -994,12 +994,12 @@ namespace DemulShooter
             //Pointer address + 2c = ammo
             //pointer address + c0 = player ID
             //Need to separate betwen gameplay and attract mode :(
-            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
-            SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
+            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
+            SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
             SetOutputValue(OutputId.P1_Clip, P1_Clip);
             SetOutputValue(OutputId.P2_Clip, P2_Clip);
-            SetOutputValue(OutputId.P1_Life, P1_Life);
-            SetOutputValue(OutputId.P2_Life, P2_Life);
+            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P2_Life, _P2_Life);
 
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0026FB88));
         }

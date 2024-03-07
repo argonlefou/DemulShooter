@@ -397,12 +397,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunMotor, OutputId.P2_GunMotor));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
         }
 
         /// <summary>
@@ -450,31 +450,31 @@ namespace DemulShooter
             //Ammo + Life
             UInt32 PlayersStatusPtr_Offset = 0x00212CD4;
             UInt32 iTemp = ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + PlayersStatusPtr_Offset);
-            int P1_Life = 0;
-            int P2_Life = 0;
-            int P1_Ammo = 0;
-            int P2_Ammo = 0;
+            _P1_Life = 0;
+            _P2_Life = 0;
+            _P1_Ammo = 0;
+            _P2_Ammo = 0;
 
             if (iTemp != 0)
             {
                 //Status Byte, 0x01 if playing, else 0x00
                 if (ReadByte(ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + 0x210A80) + 0x1794C) != 0)
                 {
-                    P1_Ammo = ReadByte(ReadPtr(iTemp + 0x54) + 0x150);
-                    P1_Life = ReadByte(ReadPtr(iTemp + 0x4C) + 0x150);
+                    _P1_Ammo = ReadByte(ReadPtr(iTemp + 0x54) + 0x150);
+                    _P1_Life = ReadByte(ReadPtr(iTemp + 0x4C) + 0x150);
                 }
 
                 if (ReadByte(ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + 0x210A80) + 0x17A38) != 0)
                 {
-                    P2_Ammo = ReadByte(ReadPtr(iTemp + 0x58) + 0x150);
-                    P2_Life = ReadByte(ReadPtr(iTemp + 0x50) + 0x150);
+                    _P2_Ammo = ReadByte(ReadPtr(iTemp + 0x58) + 0x150);
+                    _P2_Life = ReadByte(ReadPtr(iTemp + 0x50) + 0x150);
                 }
             }
 
-            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
-            SetOutputValue(OutputId.P1_Life, P1_Life);
-            SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
-            SetOutputValue(OutputId.P2_Life, P2_Life); 
+            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
+            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
+            SetOutputValue(OutputId.P2_Life, _P2_Life); 
         }
 
         #endregion

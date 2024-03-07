@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
+using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
 using DsCore.Win32;
-using DsCore.MameOutput;
-using System.Runtime.InteropServices;
 
 namespace DemulShooter
 {
@@ -56,12 +56,6 @@ namespace DemulShooter
         private NopStruct _Nop_HidLoopTrigger_2 = new NopStruct(0x000113AE, 10);
         private NopStruct _Nop_InitCoinsCounter = new NopStruct(0x0004091F, 10);
         private NopStruct _Nop_ShowCrosshairInGame = new NopStruct(0x000263C1, 2);
-
-        //Output Data
-        private int _P1_LastLife = 0;
-        private int _P1_LastAmmo = 0;
-        private int _P2_LastLife = 0;
-        private int _P2_LastAmmo = 0;
 
         private bool _HideGameCrosshair = false;
 
@@ -374,8 +368,8 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunMotor, OutputId.P2_GunMotor));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
 
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
@@ -391,10 +385,10 @@ namespace DemulShooter
             SetOutputValue(OutputId.P1_AirFront, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Air_Offset));
             SetOutputValue(OutputId.P2_AirFront, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Air_Offset));
 
-            int P1_Life = 0;
-            int P2_Life = 0;
-            int P1_Ammo = 0;
-            int P2_Ammo = 0;
+            _P1_Life = 0;
+            _P2_Life = 0;
+            _P1_Ammo = 0;
+            _P2_Ammo = 0;
             int P1_Clip = 0;
             int P2_Clip = 0;
 
@@ -402,48 +396,48 @@ namespace DemulShooter
             {
                 if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Playing_Offset) == 1)
                 {
-                    P1_Ammo = (int)(BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Ammo_Offset, 4), 0) * 100);
-                    P1_Life = (int)(BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Life_Offset, 4), 0) * 100);
-                    if (P1_Life < 0)
-                        P1_Life = 0;
+                    _P1_Ammo = (int)(BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Ammo_Offset, 4), 0) * 100);
+                    _P1_Life = (int)(BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Life_Offset, 4), 0) * 100);
+                    if (_P1_Life < 0)
+                        _P1_Life = 0;
 
                     //[Clip Empty] custom Output
-                    if (P1_Ammo > 0)
+                    if (_P1_Ammo > 0)
                         P1_Clip = 1;
 
                     //[Damaged] custom Output                
-                    if (P1_Life < _P1_LastLife)
+                    if (_P1_Life < _P1_LastLife)
                         SetOutputValue(OutputId.P1_Damaged, 1);
                 }
 
                 if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Playing_Offset) == 1)
                 {
-                    P2_Ammo = (int)(BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Ammo_Offset, 4), 0) * 100);
-                    P2_Life = (int)(BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Life_Offset, 4), 0) * 100);
-                    if (P2_Life < 0)
-                        P2_Life = 0;
+                    _P2_Ammo = (int)(BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Ammo_Offset, 4), 0) * 100);
+                    _P2_Life = (int)(BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Life_Offset, 4), 0) * 100);
+                    if (_P2_Life < 0)
+                        _P2_Life = 0;
 
                     //[Clip Empty] custom Output
-                    if (P2_Ammo > 0)
+                    if (_P2_Ammo > 0)
                         P2_Clip = 1;
 
                     //[Damaged] custom Output                
-                    if (P2_Life < _P2_LastLife)
+                    if (_P2_Life < _P2_LastLife)
                         SetOutputValue(OutputId.P2_Damaged, 1);
                 }
             }
 
-            _P1_LastAmmo = P1_Ammo;
-            _P1_LastLife = P1_Life;
-            _P2_LastAmmo = P2_Ammo;
-            _P2_LastLife = P2_Life;
+            _P1_LastAmmo = _P1_Ammo;
+            _P1_LastLife = _P1_Life;
+            _P2_LastAmmo = _P2_Ammo;
+            _P2_LastLife = _P2_Life;
 
-            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
-            SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
+            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
+            SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
             SetOutputValue(OutputId.P1_Clip, P1_Clip);
             SetOutputValue(OutputId.P2_Clip, P2_Clip);
-            SetOutputValue(OutputId.P1_Life, P1_Life);
-            SetOutputValue(OutputId.P2_Life, P2_Life);
+            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P2_Life, _P2_Life);
             //Rumble created based on Air activation
             //Fan value can be 0 or 2 (when fire spary is activated), so for rumble we will convert it to 0/1
             if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Air_Offset) != 0)

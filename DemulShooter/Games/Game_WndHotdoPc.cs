@@ -5,6 +5,7 @@ using System.Media;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DsCore;
+using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Win32;
 
@@ -16,12 +17,6 @@ namespace DemulShooter
         /*** MEMORY ADDRESSES **/
         private UInt32 _Credits_Address = 0x2F9D5B3C;
         private UInt32 _PlayerInfoPtr_Offset = 0x00599688;
-
-        //Custom Outputs
-        private int _P1_LastLife = 0;
-        private int _P1_LastAmmo = 0;
-        private int _P1_Life = 0;
-        private int _P1_Ammo = 0;
 
         //Play the "Coins" sound when adding coin
         SoundPlayer _SndPlayer;
@@ -137,9 +132,9 @@ namespace DemulShooter
             _Outputs = new List<GameOutput>();
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 

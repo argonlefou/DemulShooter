@@ -8,7 +8,6 @@ using DsCore.IPC;
 using DsCore.MameOutput;
 using DsCore.RawInput;
 using DsCore.Win32;
-using System.Text;
 
 namespace DemulShooterX64
 {
@@ -28,14 +27,10 @@ namespace DemulShooterX64
         private POINT[] _PlayerCrosshairAxis;
 
         //Outputs
-        private float _P1_LastLife = 0.0f;
-        private float _P2_LastLife = 0.0f;
-        private float _P3_LastLife = 0.0f;
-        private float _P4_LastLife = 0.0f;
-        private float _P1_Life = 0.0f;
-        private float _P2_Life = 0.0f;
-        private float _P3_Life = 0.0f;
-        private float _P4_Life = 0.0f;
+        private float _fP1_LastLife = 0.0f;
+        private float _fP2_LastLife = 0.0f;
+        private float _fP3_LastLife = 0.0f;
+        private float _fP4_LastLife = 0.0f;
 
         private bool _HackEnabled = false;
         private MMFH_TombRaider _Mmfh;
@@ -267,18 +262,18 @@ namespace DemulShooterX64
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
             _Outputs.Add(new GameOutput(OutputDesciption.P3_Clip, OutputId.P3_Clip));
             _Outputs.Add(new GameOutput(OutputDesciption.P4_Clip, OutputId.P4_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P3_CtmRecoil, OutputId.P3_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P4_CtmRecoil, OutputId.P4_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P3_CtmRecoil, OutputId.P3_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P4_CtmRecoil, OutputId.P4_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P3_Life, OutputId.P3_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P4_Life, OutputId.P4_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P3_Damaged, OutputId.P3_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P4_Damaged, OutputId.P4_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P3_Damaged, OutputId.P3_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P4_Damaged, OutputId.P4_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Credits, OutputId.P1_Credit));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Credits, OutputId.P2_Credit));
             _Outputs.Add(new GameOutput(OutputDesciption.P3_Credits, OutputId.P3_Credit));
@@ -290,17 +285,17 @@ namespace DemulShooterX64
         /// </summary>
         public override void UpdateOutputValues()
         {
-            _P1_Life = 0.0f;
-            _P2_Life = 0.0f;
-            _P3_Life = 0.0f;
-            _P4_Life = 0.0f;
+            float fP1_Life = 0.0f;
+            float fP2_Life = 0.0f;
+            float fP3_Life = 0.0f;
+            float fP4_Life = 0.0f;
 
             int r = _Mmfh.ReadAll();
             if (r == 0)
             {
-                _P1_Life = BitConverter.ToSingle(_Mmfh.Payload, MMFH_TombRaider.INDEX_P1_LIFE);
+                fP1_Life = BitConverter.ToSingle(_Mmfh.Payload, MMFH_TombRaider.INDEX_P1_LIFE);
                 //[Damaged] custom Output                
-                if (_P1_Life < _P1_LastLife)
+                if (fP1_Life < _fP1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);
 
                 int P1_Ammo = _Mmfh.Payload[MMFH_TombRaider.INDEX_P1_AMMO];
@@ -317,9 +312,9 @@ namespace DemulShooterX64
                     _Mmfh.Payload[MMFH_TombRaider.INDEX_P1_MOTOR] = 0;
                 }
 
-                _P2_Life = BitConverter.ToSingle(_Mmfh.Payload, MMFH_TombRaider.INDEX_P2_LIFE);
+                fP2_Life = BitConverter.ToSingle(_Mmfh.Payload, MMFH_TombRaider.INDEX_P2_LIFE);
                 //[Damaged] custom Output                
-                if (_P2_Life < _P2_LastLife)
+                if (fP2_Life < _fP2_LastLife)
                     SetOutputValue(OutputId.P2_Damaged, 1);
 
                 int P2_Ammo = _Mmfh.Payload[MMFH_TombRaider.INDEX_P2_AMMO];
@@ -336,9 +331,9 @@ namespace DemulShooterX64
                     _Mmfh.Payload[MMFH_TombRaider.INDEX_P2_MOTOR] = 0;
                 }
 
-                _P3_Life = BitConverter.ToSingle(_Mmfh.Payload, MMFH_TombRaider.INDEX_P3_LIFE);
+                fP3_Life = BitConverter.ToSingle(_Mmfh.Payload, MMFH_TombRaider.INDEX_P3_LIFE);
                 //[Damaged] custom Output                
-                if (_P3_Life < _P3_LastLife)
+                if (fP3_Life < _fP3_LastLife)
                     SetOutputValue(OutputId.P3_Damaged, 1);
 
                 int P3_Ammo = _Mmfh.Payload[MMFH_TombRaider.INDEX_P3_AMMO];
@@ -355,9 +350,9 @@ namespace DemulShooterX64
                     _Mmfh.Payload[MMFH_TombRaider.INDEX_P3_MOTOR] = 0;
                 }
 
-                _P4_Life = BitConverter.ToSingle(_Mmfh.Payload, MMFH_TombRaider.INDEX_P4_LIFE);
+                fP4_Life = BitConverter.ToSingle(_Mmfh.Payload, MMFH_TombRaider.INDEX_P4_LIFE);
                 //[Damaged] custom Output                
-                if (_P4_Life < _P4_LastLife)
+                if (fP4_Life < _fP4_LastLife)
                     SetOutputValue(OutputId.P4_Damaged, 1);
 
                 int P4_Ammo = _Mmfh.Payload[MMFH_TombRaider.INDEX_P4_AMMO];
@@ -374,14 +369,14 @@ namespace DemulShooterX64
                     _Mmfh.Payload[MMFH_TombRaider.INDEX_P4_MOTOR] = 0;
                 }
 
-                _P1_LastLife = _P1_Life;
-                _P2_LastLife = _P2_Life;
-                _P3_LastLife = _P3_Life;
-                _P4_LastLife = _P4_Life;
-                SetOutputValue(OutputId.P1_Life, (int)_P1_Life);
-                SetOutputValue(OutputId.P2_Life, (int)_P2_Life);
-                SetOutputValue(OutputId.P3_Life, (int)_P3_Life);
-                SetOutputValue(OutputId.P4_Life, (int)_P4_Life);
+                _fP1_LastLife = fP1_Life;
+                _fP2_LastLife = fP2_Life;
+                _fP3_LastLife = fP3_Life;
+                _fP4_LastLife = fP4_Life;
+                SetOutputValue(OutputId.P1_Life, (int)fP1_Life);
+                SetOutputValue(OutputId.P2_Life, (int)fP2_Life);
+                SetOutputValue(OutputId.P3_Life, (int)fP3_Life);
+                SetOutputValue(OutputId.P4_Life, (int)fP4_Life);
 
                 SetOutputValue(OutputId.P1_Credit, BitConverter.ToInt32(_Mmfh.Payload, MMFH_TombRaider.INDEX_P1_CREDITS));
                 SetOutputValue(OutputId.P2_Credit, BitConverter.ToInt32(_Mmfh.Payload, MMFH_TombRaider.INDEX_P2_CREDITS));

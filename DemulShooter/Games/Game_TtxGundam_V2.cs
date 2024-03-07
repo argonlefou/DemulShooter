@@ -39,9 +39,6 @@ namespace DemulShooter
         private bool _isPedal1_Pushed = false;
         private bool _isPedal2_Pushed = false;
 
-        //Configurator, used to acces User-designed Key code
-        private Configurator _Configurator;
-
         //Hardcoded Keys
         private HardwareScanCode _Test_Key = HardwareScanCode.DIK_F2;
         private HardwareScanCode _Service_Key = HardwareScanCode.DIK_F7;
@@ -86,11 +83,9 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxGundam_V2(String RomName, Configurator Myconfigurator, bool DisableInputHack, bool Verbose)
+        public Game_TtxGundam_V2(String RomName, bool DisableInputHack, bool Verbose)
             : base(RomName, "game", DisableInputHack, Verbose)
         {
-            _Configurator = Myconfigurator;
-
             _KnownMd5Prints.Add("Gundam : SoZ v1.01 - Dual Player, Unpatched I/O", "70af03a21a42d9042065fc65b7eb56f9");
             _KnownMd5Prints.Add("Gundam : SoZ v1.01 - Single Player, Pathched I/O", "d8cd539967cc3c23f620139ab4669d30");
             _KnownMd5Prints.Add("Gundam : SoZ v1.01 - Dual Player, Patched I/O", "c31187a57fd5ab6864b78eaa755ae3f0");
@@ -290,7 +285,7 @@ namespace DemulShooter
              * Else, We need to make 2 codecave for the 2 checking procedure (X-Y min-max)
              * Each one will have to be split for P1 and P2 separatelly
              ***/
-            if (_Configurator.Gsoz_Pedal_P1_Enabled || _Configurator.Gsoz_Pedal_P2_Enabled)
+            if (Configurator.GetInstance().Gsoz_Pedal_P1_Enabled || Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
             {
                 _Cave_Check1 = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
                 _Cave_Check1.Open();
@@ -305,7 +300,7 @@ namespace DemulShooter
                 _Cave_Check1.Write_StrBytes("0F 84 33 00 00 00");
 
                 //player1:
-                if (_Configurator.Gsoz_Pedal_P1_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P1_Enabled)
                     //cmp di, 00
                     _Cave_Check1.Write_StrBytes("66 83 FF 00");
                 else
@@ -313,7 +308,7 @@ namespace DemulShooter
                     _Cave_Check1.Write_StrBytes("66 83 FF 10");
                 //jng game.exe+A7B85
                 _Cave_Check1.Write_jng((UInt32)_TargetProcess_MemoryBaseAddress + 0xA7B85);
-                if (_Configurator.Gsoz_Pedal_P1_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P1_Enabled)
                     //cmp di, 00
                     _Cave_Check1.Write_StrBytes("66 81 FF 00 00");
                 else
@@ -325,7 +320,7 @@ namespace DemulShooter
                 _Cave_Check1.Write_StrBytes("8B C7");
                 //shr eax, 10
                 _Cave_Check1.Write_StrBytes("C1 E8 10");
-                if (_Configurator.Gsoz_Pedal_P1_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P1_Enabled)
                     //cmp ax, 00
                     _Cave_Check1.Write_StrBytes("66 3D 00 00");
                 else
@@ -333,7 +328,7 @@ namespace DemulShooter
                     _Cave_Check1.Write_StrBytes("66 3D 10 00");
                 //jng game.exe+A7B85
                 _Cave_Check1.Write_jng((UInt32)_TargetProcess_MemoryBaseAddress + 0xA7B85);
-                if (_Configurator.Gsoz_Pedal_P1_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P1_Enabled)
                     //cmp ax, 00
                     _Cave_Check1.Write_StrBytes("66 3D E0 01");
                 else
@@ -345,7 +340,7 @@ namespace DemulShooter
                 _Cave_Check1.Write_StrBytes("E9 2E 00 00 00");
 
                 //player2:
-                if (_Configurator.Gsoz_Pedal_P2_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
                     //cmp di, 00
                     _Cave_Check1.Write_StrBytes("66 83 FF 00");
                 else
@@ -353,7 +348,7 @@ namespace DemulShooter
                     _Cave_Check1.Write_StrBytes("66 83 FF 10");
                 //jng game.exe+A7B85
                 _Cave_Check1.Write_jng((UInt32)_TargetProcess_MemoryBaseAddress + 0xA7B85);
-                if (_Configurator.Gsoz_Pedal_P2_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
                     //cmp di, 00
                     _Cave_Check1.Write_StrBytes("66 81 FF 00 00");
                 else
@@ -365,7 +360,7 @@ namespace DemulShooter
                 _Cave_Check1.Write_StrBytes("8B C7");
                 //shr eax, 10
                 _Cave_Check1.Write_StrBytes("C1 E8 10");
-                if (_Configurator.Gsoz_Pedal_P2_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
                     //cmp ax, 00
                     _Cave_Check1.Write_StrBytes("66 3D 00 00");
                 else
@@ -373,7 +368,7 @@ namespace DemulShooter
                     _Cave_Check1.Write_StrBytes("66 3D 10 00");
                 //jng game.exe+A7B85
                 _Cave_Check1.Write_jng((UInt32)_TargetProcess_MemoryBaseAddress + 0xA7B85);
-                if (_Configurator.Gsoz_Pedal_P2_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
                     //cmp ax, 00
                     _Cave_Check1.Write_StrBytes("66 3D E0 01");
                 else
@@ -407,7 +402,7 @@ namespace DemulShooter
                 //je @player2
                 _Cave_Check2.Write_StrBytes("0F 84 33 00 00 00");
                 //player1:
-                if (_Configurator.Gsoz_Pedal_P1_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P1_Enabled)
                     //cmp di, 00
                     _Cave_Check2.Write_StrBytes("66 83 FF 00");
                 else
@@ -415,7 +410,7 @@ namespace DemulShooter
                     _Cave_Check2.Write_StrBytes("66 83 FF 10");
                 //jl game.exe+A7B85
                 _Cave_Check2.Write_jl((UInt32)_TargetProcess_MemoryBaseAddress + 0xA7B0C);
-                if (_Configurator.Gsoz_Pedal_P1_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P1_Enabled)
                     //cmp di, 00
                     _Cave_Check2.Write_StrBytes("66 81 FF 00 00");
                 else
@@ -425,7 +420,7 @@ namespace DemulShooter
                 _Cave_Check2.Write_jg((UInt32)_TargetProcess_MemoryBaseAddress + 0xA7B0C);
                 //mov eax, [esp+26]
                 _Cave_Check2.Write_StrBytes("66 8B 44 24 26");
-                if (_Configurator.Gsoz_Pedal_P1_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P1_Enabled)
                     //cmp ax, 00
                     _Cave_Check2.Write_StrBytes("66 3D 00 00");
                 else
@@ -433,7 +428,7 @@ namespace DemulShooter
                     _Cave_Check2.Write_StrBytes("66 3D 10 00");
                 //jl game.exe+A7B85
                 _Cave_Check2.Write_jl((UInt32)_TargetProcess_MemoryBaseAddress + 0xA7B0C);
-                if (_Configurator.Gsoz_Pedal_P1_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P1_Enabled)
                     //cmp ax, 00
                     _Cave_Check2.Write_StrBytes("66 3D E0 01");
                 else
@@ -445,7 +440,7 @@ namespace DemulShooter
                 _Cave_Check2.Write_StrBytes("E9 2E 00 00 00");
 
                 //player2:
-                if (_Configurator.Gsoz_Pedal_P2_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
                     //cmp di, 00
                     _Cave_Check2.Write_StrBytes("66 83 FF 00");
                 else
@@ -453,7 +448,7 @@ namespace DemulShooter
                     _Cave_Check2.Write_StrBytes("66 83 FF 10");
                 //jl game.exe+A7B85
                 _Cave_Check2.Write_jl((UInt32)_TargetProcess_MemoryBaseAddress + 0xA7B0C);
-                if (_Configurator.Gsoz_Pedal_P2_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
                     //cmp di, 00
                     _Cave_Check2.Write_StrBytes("66 81 FF 00 00");
                 else
@@ -463,7 +458,7 @@ namespace DemulShooter
                 _Cave_Check2.Write_jg((UInt32)_TargetProcess_MemoryBaseAddress + 0xA7B0C);
                 //mov eax, [esp+26]
                 _Cave_Check2.Write_StrBytes("66 8B 44 24 26");
-                if (_Configurator.Gsoz_Pedal_P2_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
                     //cmp ax, 00
                     _Cave_Check2.Write_StrBytes("66 3D 00 00");
                 else
@@ -471,7 +466,7 @@ namespace DemulShooter
                     _Cave_Check2.Write_StrBytes("66 3D 10 00");
                 //jl game.exe+A7B85
                 _Cave_Check2.Write_jl((UInt32)_TargetProcess_MemoryBaseAddress + 0xA7B0C);
-                if (_Configurator.Gsoz_Pedal_P2_Enabled)
+                if (Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
                     //cmp ax, 00
                     _Cave_Check2.Write_StrBytes("66 3D E0 01");
                 else
@@ -751,7 +746,7 @@ namespace DemulShooter
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                 {
                     //With "Pedal mode", enable right-click to shoot only when hiding
-                    if (_Configurator.Gsoz_Pedal_P1_Enabled)
+                    if (Configurator.GetInstance().Gsoz_Pedal_P1_Enabled)
                     {
                         if (!_isPedal1_Pushed)
                         {
@@ -794,7 +789,7 @@ namespace DemulShooter
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                 {
                     //With "Pedal mode", enable right-click to shoot only when hiding
-                    if (_Configurator.Gsoz_Pedal_P2_Enabled)
+                    if (Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
                     {
                         if (!_isPedal2_Pushed)
                         {
@@ -824,13 +819,13 @@ namespace DemulShooter
                 KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
                 if ((UInt32)wParam == Win32Define.WM_KEYDOWN)
                 {
-                    if (s.scanCode == _Configurator.DIK_Gsoz_Pedal_P1 && _Configurator.Gsoz_Pedal_P1_Enabled)
+                    if (s.scanCode == Configurator.GetInstance().DIK_Gsoz_Pedal_P1 && Configurator.GetInstance().Gsoz_Pedal_P1_Enabled)
                     {
                         _isPedal1_Pushed = true;
                         WriteBytes((UInt32)_Cave_Check1.CaveAddress + 0x21, new byte[] { 0x80, 0x02 }); //640
                         WriteBytes((UInt32)_Cave_Check2.CaveAddress + 0x21, new byte[] { 0x80, 0x02 }); //640
                     }
-                    else if (s.scanCode == _Configurator.DIK_Gsoz_Pedal_P2 && _Configurator.Gsoz_Pedal_P2_Enabled)
+                    else if (s.scanCode == Configurator.GetInstance().DIK_Gsoz_Pedal_P2 && Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
                     {
                         _isPedal2_Pushed = true;
                         WriteBytes((UInt32)_Cave_Check1.CaveAddress + 0x54, new byte[] { 0x80, 0x02 }); //640
@@ -866,13 +861,13 @@ namespace DemulShooter
                 }
                 else if ((UInt32)wParam == Win32Define.WM_KEYUP)
                 {
-                    if (s.scanCode == _Configurator.DIK_Gsoz_Pedal_P1 && _Configurator.Gsoz_Pedal_P1_Enabled)
+                    if (s.scanCode == Configurator.GetInstance().DIK_Gsoz_Pedal_P1 && Configurator.GetInstance().Gsoz_Pedal_P1_Enabled)
                     {
                         _isPedal1_Pushed = false;
                         WriteBytes((UInt32)_Cave_Check1.CaveAddress + 0x21, new byte[] { 0x00, 0x00 }); //0
                         WriteBytes((UInt32)_Cave_Check2.CaveAddress + 0x21, new byte[] { 0x00, 0x00 }); //0
                     }
-                    else if (s.scanCode == _Configurator.DIK_Gsoz_Pedal_P2 && _Configurator.Gsoz_Pedal_P2_Enabled)
+                    else if (s.scanCode == Configurator.GetInstance().DIK_Gsoz_Pedal_P2 && Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
                     {
                         _isPedal2_Pushed = false;
                         WriteBytes((UInt32)_Cave_Check1.CaveAddress + 0x54, new byte[] { 0x00, 0x00 }); //0
@@ -918,12 +913,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -941,11 +936,11 @@ namespace DemulShooter
             //Gun motor is activated on shoot and dammage, and stays activated on dammaged untill the player hides
             //So Custom outputs will be based on game values (ammo, life)
 
-            int P1_Life = 0;
-            int P1_Ammo = 0;
+            _P1_Life = 0;
+            _P1_Ammo = 0;
             int P1_Clip = 0;
-            int P2_Life = 0;
-            int P2_Ammo = 0;
+            _P2_Life = 0;
+            _P2_Ammo = 0;
             int P2_Clip = 0;
 
             if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Playing_Offset) == 1)
@@ -962,8 +957,8 @@ namespace DemulShooter
                     WriteByte(_P1_DamagedEnabled_CustomAddress, 0x00);
                 }
 
-                P1_Ammo = ReadByte(_P1_Ammo_CustomAddress);
-                P1_Life = ReadByte(_P1_Life_CustomAddress);
+                _P1_Ammo = ReadByte(_P1_Ammo_CustomAddress);
+                _P1_Life = ReadByte(_P1_Life_CustomAddress);
             }
 
             if (ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Playing_Offset) == 1)
@@ -980,8 +975,8 @@ namespace DemulShooter
                     WriteByte(_P2_DamagedEnabled_CustomAddress, 0x00);
                 }
 
-                P2_Ammo = ReadByte(_P2_Ammo_CustomAddress);
-                P2_Life = ReadByte(_P2_Life_CustomAddress);
+                _P2_Ammo = ReadByte(_P2_Ammo_CustomAddress);
+                _P2_Life = ReadByte(_P2_Life_CustomAddress);
             }
 
 
@@ -989,12 +984,12 @@ namespace DemulShooter
             //Pointer address + 2c = ammo
             //pointer address + c0 = player ID
             //Need to separate betwen gameplay and attract mode :(
-            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
-            SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
+            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
+            SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
             SetOutputValue(OutputId.P1_Clip, P1_Clip);
             SetOutputValue(OutputId.P2_Clip, P2_Clip);
-            SetOutputValue(OutputId.P1_Life, P1_Life);
-            SetOutputValue(OutputId.P2_Life, P2_Life);
+            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P2_Life, _P2_Life);
 
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset));
         }

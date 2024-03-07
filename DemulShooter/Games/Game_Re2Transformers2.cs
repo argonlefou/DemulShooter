@@ -14,9 +14,6 @@ namespace DemulShooter
 {
     class Game_Re2Transformers2 : Game
     {
-
-        private Configurator _Configurator;
-
         //Memory values
         private UInt32 _pPlayerManager_Address = 0x200F7CD8;
         private UInt32 _pCreditsManager_Address = 0x200E9750;
@@ -82,10 +79,9 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Re2Transformers2(String RomName, Configurator MyConfigurator, bool HideCrosshairs, bool DisableInputHack, bool Verbose)
+        public Game_Re2Transformers2(String RomName, bool HideCrosshairs, bool DisableInputHack, bool Verbose)
             : base(RomName, "Transformers2", DisableInputHack, Verbose)
         {
-            _Configurator = MyConfigurator;
             _HideCrosshairs = HideCrosshairs;
 
             _KnownMd5Prints.Add("Transformers Shadow Rising v180605 - Original Dump", "b3b1f4ad6408d6ee946761a00f761455");
@@ -790,47 +786,47 @@ namespace DemulShooter
                     KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
                     if ((UInt32)wParam == Win32Define.WM_KEYDOWN)
                     {
-                        if (s.scanCode == _Configurator.DIK_Tsr_Start_P1)
+                        if (s.scanCode == Configurator.GetInstance().DIK_Tsr_Start_P1)
                         {
                             WriteByte(_P1_StartOn_Address, 0x01);
                             WriteByte(_P1_StartPress_Address, 0x01);
                         }
-                        else if (s.scanCode == _Configurator.DIK_Tsr_Start_P2)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Tsr_Start_P2)
                         {
                             WriteByte(_P2_StartOn_Address, 0x01);
                             WriteByte(_P2_StartPress_Address, 0x01);
                         }
-                        else if (s.scanCode == _Configurator.DIK_Tsr_LeverFront)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Tsr_LeverFront)
                         {
                             WriteByte(_LeverFrontOn_Address, 0x01);
                             WriteByte(_LeverFrontPress_Address, 0x01);
                         }
-                        else if (s.scanCode == _Configurator.DIK_Tsr_LeverBack)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Tsr_LeverBack)
                         {
                             WriteByte(_LeverBackOn_Address, 0x01);
                             WriteByte(_LeverBackPress_Address, 0x01);
                         }
-                        else if (s.scanCode == _Configurator.DIK_Tsr_Credits)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Tsr_Credits)
                             WriteByte(_AddCredit_Address, 0x01);
                     }
                     else if ((UInt32)wParam == Win32Define.WM_KEYUP)
                     {
-                        if (s.scanCode == _Configurator.DIK_Tsr_Start_P1)
+                        if (s.scanCode == Configurator.GetInstance().DIK_Tsr_Start_P1)
                         {
                             WriteByte(_P1_StartOn_Address, 0x00);
                             WriteByte(_P1_StartPress_Address, 0x00);
                         }
-                        else if (s.scanCode == _Configurator.DIK_Tsr_Start_P2)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Tsr_Start_P2)
                         {
                             WriteByte(_P2_StartOn_Address, 0x00);
                             WriteByte(_P2_StartPress_Address, 0x00);
                         }
-                        else if (s.scanCode == _Configurator.DIK_Tsr_LeverFront)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Tsr_LeverFront)
                         {
                             WriteByte(_LeverFrontOn_Address, 0x00);
                             WriteByte(_LeverFrontPress_Address, 0x00);
                         }
-                        else if (s.scanCode == _Configurator.DIK_Tsr_LeverBack)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Tsr_LeverBack)
                         {
                             WriteByte(_LeverBackOn_Address, 0x00);
                             WriteByte(_LeverBackPress_Address, 0x00);
@@ -862,12 +858,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.LmpDownlight, OutputId.Lmp_Downlight));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_GunRecoil, OutputId.P1_GunRecoil));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunRecoil, OutputId.P2_GunRecoil));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -886,8 +882,8 @@ namespace DemulShooter
             //Lamp side, Lever and recoil ??
 
             //Custom Outputs
-            int P1_Life = 0;
-            int P2_Life = 0;
+            _P1_Life = 0;
+            _P2_Life = 0;
             int Credits = 0;
 
             //Life is read in a struct that is only created when a game has started
@@ -899,7 +895,7 @@ namespace DemulShooter
                 {
                     if (ReadByte(CPlayer1 + _Cplayer_Mode_Offset) == 3 && ReadByte(CPlayer1 + _Cplayer_ID_Offset) == 0)
                     {
-                        P1_Life = BitConverter.ToInt32(ReadBytes(CPlayer1 + _Cplayer_Life_Offset, 4), 0);
+                        _P1_Life = BitConverter.ToInt32(ReadBytes(CPlayer1 + _Cplayer_Life_Offset, 4), 0);
                     }
                 }
 
@@ -908,7 +904,7 @@ namespace DemulShooter
                 {
                     if (ReadByte(CPlayer2 + _Cplayer_Mode_Offset) == 3 && ReadByte(CPlayer2 + _Cplayer_ID_Offset) == 1)
                     {
-                        P2_Life = BitConverter.ToInt32(ReadBytes(CPlayer2 + _Cplayer_Life_Offset, 4), 0);
+                        _P2_Life = BitConverter.ToInt32(ReadBytes(CPlayer2 + _Cplayer_Life_Offset, 4), 0);
                     }
                 }
             }
@@ -935,8 +931,8 @@ namespace DemulShooter
                 WriteByte(_P2_Damage_Address, 0);
             }
 
-            SetOutputValue(OutputId.P1_Life, P1_Life);
-            SetOutputValue(OutputId.P2_Life, P2_Life);
+            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P2_Life, _P2_Life);
 
             UInt32 CCreditsManager = ReadPtr(_pCreditsManager_Address);
             if (CCreditsManager != 0)

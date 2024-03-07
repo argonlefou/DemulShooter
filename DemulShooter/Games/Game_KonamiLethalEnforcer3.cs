@@ -1,14 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
+using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
 using DsCore.Win32;
-using DsCore.MameOutput;
-using System.Collections.Generic;
 
 namespace DemulShooter
 {
@@ -75,29 +75,17 @@ namespace DemulShooter
 
         private int _P1_LastWeapon = 0;
         private int _P2_LastWeapon = 0;
-        private int _P1_LastAmmo = 0;
-        private int _P2_LastAmmo = 0;
-        private int _P1_LastLife = 0;
-        private int _P2_LastLife = 0;
-
+        
         //Custom pedal-mod
-        private bool _Pedal1_Enable;
-        private HardwareScanCode _Pedal1_Key;
         private bool _isPedal1_Pushed = false;
-        private bool _Pedal2_Enable;
-        private HardwareScanCode _Pedal2_Key;
         private bool _isPedal2_Pushed = false;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_KonamiLethalEnforcers3(String RomName, bool Pedal1_Enable, HardwareScanCode Pedal1_Key, bool Pedal2_Enable, HardwareScanCode Pedal2_Key, bool DisableInputHack, bool Verbose) 
+        public Game_KonamiLethalEnforcers3(String RomName, bool DisableInputHack, bool Verbose) 
             : base (RomName, "game_patched", DisableInputHack, Verbose)
         {
-            _Pedal1_Enable = Pedal1_Enable;
-            _Pedal1_Key = Pedal1_Key;
-            _Pedal2_Enable = Pedal2_Enable;
-            _Pedal2_Key = Pedal2_Key;
             _KnownMd5Prints.Add("Lethal Enforcer 3 v2005-04-15-1 - Original game.exe", "1d338c452c7b087bc7aad823a74bb023");
             _KnownMd5Prints.Add("Lethal Enforcer 3 v2005-04-15-1 - DemulShooter compatible game.exe", "ce1359efe2dde0ac02280bfe8c96681d");
         
@@ -187,7 +175,7 @@ namespace DemulShooter
 
                     //If Pedal-Mod is used, we need to clmap value at +1/-1 compared to max values because of how the hack is done
                     //to check "return value" (>0 and <640, same for Y)
-                    if ((_Pedal1_Enable && PlayerData.ID == 1) || (_Pedal2_Enable && PlayerData.ID == 2))
+                    if ((Configurator.GetInstance().Le3_Pedal_P1_Enabled && PlayerData.ID == 1) || (Configurator.GetInstance().Le3_Pedal_P2_Enabled && PlayerData.ID == 2))
                     {
                         PlayerData.RIController.Computed_X = Convert.ToInt32(Math.Round(dMaxX * PlayerData.RIController.Computed_X / TotalResX));
                         PlayerData.RIController.Computed_Y = Convert.ToInt32(Math.Round(dMaxY * PlayerData.RIController.Computed_Y / TotalResY));
@@ -265,7 +253,7 @@ namespace DemulShooter
 
             if (PlayerData.ID == 1)
             {
-                if (_Pedal1_Enable && !_isPedal1_Pushed && ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _GameScene_Offset) == 17) //Scene 17 is in-game (not blocking axis in menus)
+                if (Configurator.GetInstance().Le3_Pedal_P1_Enabled && !_isPedal1_Pushed && ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _GameScene_Offset) == 17) //Scene 17 is in-game (not blocking axis in menus)
                 {
                     bufferX = BitConverter.GetBytes(-1.0f);
                     bufferY = BitConverter.GetBytes(-1.0f);
@@ -294,7 +282,7 @@ namespace DemulShooter
                 //Offsreen shoot => put the gun off screen. Let side seems to work best
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                 {
-                    if (!_Pedal1_Enable)
+                    if (!Configurator.GetInstance().Le3_Pedal_P1_Enabled)
                     {
                         WriteBytes(_BaseData_Address + _P1_X_Offset, BitConverter.GetBytes(-1.0f));
                         WriteBytes(_BaseData_Address + _P1_Y_Offset, BitConverter.GetBytes(-1.0f));
@@ -303,7 +291,7 @@ namespace DemulShooter
             }
             else if (PlayerData.ID == 2 && ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _GameScene_Offset) == 17)
             {
-                if (_Pedal2_Enable && !_isPedal2_Pushed && ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _GameScene_Offset) == 17)     //Scene 17 is in-game (not blocking axis in menus)
+                if (Configurator.GetInstance().Le3_Pedal_P2_Enabled && !_isPedal2_Pushed && ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _GameScene_Offset) == 17)     //Scene 17 is in-game (not blocking axis in menus)
                 {
                     bufferX = BitConverter.GetBytes(-1.0f);
                     bufferY = BitConverter.GetBytes(-1.0f);
@@ -335,7 +323,7 @@ namespace DemulShooter
                 //Offsreen shoot => put the gun off screen. Let side seems to work best
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                 {
-                    if (!_Pedal2_Enable)
+                    if (!Configurator.GetInstance().Le3_Pedal_P2_Enabled)
                     {
                         WriteBytes(_BaseData_Address + _P2_X_Offset, BitConverter.GetBytes(-1.0f));
                         WriteBytes(_BaseData_Address + _P2_Y_Offset, BitConverter.GetBytes(-1.0f));
@@ -388,11 +376,11 @@ namespace DemulShooter
                             _IsCreditsKeyPressed = true;
                         }
                     }
-                    if (s.scanCode == _Pedal1_Key && _Pedal1_Enable)
+                    if (s.scanCode == Configurator.GetInstance().DIK_Le3_Pedal_P1 && Configurator.GetInstance().Le3_Pedal_P1_Enabled)
                     {
                         _isPedal1_Pushed = true;
                     }
-                    else if (s.scanCode == _Pedal2_Key && _Pedal2_Enable)
+                    else if (s.scanCode == Configurator.GetInstance().DIK_Le3_Pedal_P2 && Configurator.GetInstance().Le3_Pedal_P2_Enabled)
                     {
                         _isPedal2_Pushed = true;
                     }
@@ -419,11 +407,11 @@ namespace DemulShooter
                     {
                         _IsCreditsKeyPressed = false;
                     }
-                    if (s.scanCode == _Pedal1_Key && _Pedal1_Enable)
+                    if (s.scanCode == Configurator.GetInstance().DIK_Le3_Pedal_P1 && Configurator.GetInstance().Le3_Pedal_P1_Enabled)
                     {
                         _isPedal1_Pushed = false;
                     }
-                    else if (s.scanCode == _Pedal2_Key && _Pedal2_Enable)
+                    else if (s.scanCode == Configurator.GetInstance().DIK_Le3_Pedal_P2 && Configurator.GetInstance().Le3_Pedal_P2_Enabled)
                     {
                         _isPedal2_Pushed = false;
                     }
@@ -455,10 +443,10 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -479,10 +467,10 @@ namespace DemulShooter
 
 
             //Custom Outputs
-            int P1_Ammo = 0;
-            int P2_Ammo = 0;
-            int P1_Life = 0;
-            int P2_Life = 0;
+            _P1_Ammo = 0;
+            _P2_Ammo = 0;
+            _P1_Life = 0;
+            _P2_Life = 0;
             int P1_Weapon = 0;
             int P2_Weapon = 0;
             //To be sure that outputs are not activated in Attract Mode, we can check the game scene ID and activate them only in gameplay 
@@ -496,22 +484,22 @@ namespace DemulShooter
 
                     if (P1_Weapon == _P1_LastWeapon)
                     {
-                        P1_Ammo = (int)ReadPtrChain(P1_InfoAddress + 0x40, new UInt32[] { 0x15C, (UInt32)(4 * P1_Weapon), 0xE8 });
+                        _P1_Ammo = (int)ReadPtrChain(P1_InfoAddress + 0x40, new UInt32[] { 0x15C, (UInt32)(4 * P1_Weapon), 0xE8 });
 
                         //Custom Recoil
-                        if (P1_Ammo < _P1_LastAmmo)
+                        if (_P1_Ammo < _P1_LastAmmo)
                             SetOutputValue(OutputId.P1_CtmRecoil, 1);
 
                         //[Clip Empty] custom Output
-                        if (P1_Ammo <= 0)
+                        if (_P1_Ammo <= 0)
                             SetOutputValue(OutputId.P1_Clip, 0);
                         else
                             SetOutputValue(OutputId.P1_Clip, 1);
                     }
 
-                    P1_Life = (int)ReadPtr(P1_InfoAddress + 0x6C);
+                    _P1_Life = (int)ReadPtr(P1_InfoAddress + 0x6C);
                     //Custom Dammage
-                    if (P1_Life < _P1_LastLife)
+                    if (_P1_Life < _P1_LastLife)
                         SetOutputValue(OutputId.P1_Damaged, 1);
                 }
                 else
@@ -528,22 +516,22 @@ namespace DemulShooter
 
                     if (P2_Weapon == _P2_LastWeapon)
                     {
-                        P2_Ammo = (int)ReadPtrChain(P2_InfoAddress + 0x40, new UInt32[] { 0x15C, (UInt32)(4 * P1_Weapon), 0xE8 });
+                        _P2_Ammo = (int)ReadPtrChain(P2_InfoAddress + 0x40, new UInt32[] { 0x15C, (UInt32)(4 * P1_Weapon), 0xE8 });
 
                         //Custom Recoil
-                        if (P2_Ammo < _P2_LastAmmo)
+                        if (_P2_Ammo < _P2_LastAmmo)
                             SetOutputValue(OutputId.P2_CtmRecoil, 1);
 
                         //[Clip Empty] custom Output
-                        if (P2_Ammo <= 0)
+                        if (_P2_Ammo <= 0)
                             SetOutputValue(OutputId.P2_Clip, 0);
                         else
                             SetOutputValue(OutputId.P2_Clip, 1);
                     }
 
-                    P2_Life = (int)ReadPtr(P2_InfoAddress + 0x6C);
+                    _P2_Life = (int)ReadPtr(P2_InfoAddress + 0x6C);
                     //Custom Dammage
-                    if (P2_Life < _P2_LastLife)
+                    if (_P2_Life < _P2_LastLife)
                         SetOutputValue(OutputId.P2_Damaged, 1);
                 }
                 else
@@ -552,17 +540,17 @@ namespace DemulShooter
                 }
             }
             
-            _P1_LastAmmo = P1_Ammo;
-            _P1_LastLife = P1_Life;
+            _P1_LastAmmo = _P1_Ammo;
+            _P1_LastLife = _P1_Life;
             _P1_LastWeapon = P1_Weapon;
-            _P2_LastAmmo = P2_Ammo;
-            _P2_LastLife = P2_Life;
+            _P2_LastAmmo = _P2_Ammo;
+            _P2_LastLife = _P2_Life;
             _P2_LastWeapon = P2_Weapon;
 
-            SetOutputValue(OutputId.P1_Life, P1_Life);
-            SetOutputValue(OutputId.P2_Life, P2_Life);
-            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
-            SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
+            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P2_Life, _P2_Life);
+            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
+            SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _CreditsTotal_Offset));
         }
 

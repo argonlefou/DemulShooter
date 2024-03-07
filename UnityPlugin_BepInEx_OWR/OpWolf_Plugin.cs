@@ -19,7 +19,7 @@ namespace UnityPlugin_BepInEx_OWR
     {
         public const String pluginGuid = "argonlefou.demulshooter.owr";
         public const String pluginName = "OWR DemulShooter Plugin";
-        public const String pluginVersion = "2.0.0.0";
+        public const String pluginVersion = "3.0.0.0";
 
         public static BepInEx.Logging.ManualLogSource MyLogger;
 
@@ -47,7 +47,7 @@ namespace UnityPlugin_BepInEx_OWR
         private TcpListener _TcpListener;
         private Thread _TcpListenerThread;
         private TcpClient _TcpClient;
-        private int _TcpPort = 1234;
+        private int _TcpPort = 33610;
         private static NetworkStream _TcpStream;
 
         public static bool IsMouseLockedRequired = false;

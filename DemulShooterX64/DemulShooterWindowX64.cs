@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
 using DsCore;
@@ -8,9 +10,6 @@ using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.RawInput;
 using DsCore.Win32;
-using System.Globalization;
-using System.Collections.Generic;
-using System.Security.Principal;
 
 namespace DemulShooterX64
 {
@@ -26,7 +25,6 @@ namespace DemulShooterX64
         private WndProc delegWndProc;
         private static DemulShooterWindowX64 _This;
 
-        private Configurator _Configurator;
         private const string CONF_FILENAME = "config.ini";
 
         //Timer for Hooking TimeOut
@@ -46,7 +44,9 @@ namespace DemulShooterX64
         private Win32API.HookProc _KeyboardHookProc;
 
         //Output (MameHooker)
-        private MameOutputHelper _OutputHelper;
+        private Wm_OutputHelper _Wm_OutputHelper;
+        //Output (Network)
+        private Net_OutputHelper _Net_OutputHelper;
         private Thread _OutputUpdateLoop;
 
         //Game options
@@ -168,9 +168,8 @@ namespace DemulShooterX64
             }  
 
             //Reading config file to get parameters
-            _Configurator = new Configurator();
-            _Configurator.ReadDsConfig(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME);
-            foreach (PlayerSettings Player in _Configurator.PlayersSettings)
+            Configurator.GetInstance().ReadDsConfig(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME);
+            foreach (PlayerSettings Player in Configurator.GetInstance().PlayersSettings)
             {
                 Logger.WriteLog("P" + Player.ID + " mode = " + Player.Mode);
                 if (Player.Mode == PlayerSettings.PLAYER_MODE_RAWINPUT)
@@ -231,11 +230,22 @@ namespace DemulShooterX64
             }
 
             //Starting Mame-style output daemon
-            if (_Configurator.OutputEnabled)
+            if (Configurator.GetInstance().OutputEnabled)
             {
                 Logger.WriteLog("Starting Output daemon...");
-                _OutputHelper = new MameOutputHelper(_RawMessageWnd_hWnd, _Configurator.OutputCustomRecoilOnDelay, _Configurator.OutputCustomRecoilOffDelay,  _Configurator.OutputCustomDamagedDelay);
-                _OutputHelper.Start();
+                if (Configurator.GetInstance().Wm_OutputEnabled)
+                {
+                    Logger.WriteLog("Creating Window Message Output Helper...");
+                    _Wm_OutputHelper = new Wm_OutputHelper(_RawMessageWnd_hWnd);
+                    _Wm_OutputHelper.Start();
+                }
+                if (Configurator.GetInstance().Net_OutputEnabled)
+                {
+                    Logger.WriteLog("Creating Network Output Helper...");
+                    _Net_OutputHelper = new Net_OutputHelper(_Rom);
+                    _Net_OutputHelper.Start();
+                }
+
                 _OutputUpdateLoop = new Thread(new ThreadStart(ReadAndSendOutput_Thread));
                 _OutputUpdateLoop.Start();
             }
@@ -337,15 +347,15 @@ namespace DemulShooterX64
                     {
                         case "deadstorm":
                             {
-                                _Game = new Game_S357DeadStormPirates(_Rom.ToLower(), _Configurator, _NoInput, isVerbose);
+                                _Game = new Game_S357DeadStormPirates(_Rom.ToLower(), _NoInput, isVerbose);
                             }; break;
                         case "de4d":
                             {
-                                _Game = new Game_S357DarkEscape(_Rom.ToLower(), _Configurator, _NoInput, isVerbose);
+                                _Game = new Game_S357DarkEscape(_Rom.ToLower(), _NoInput, isVerbose);
                             }; break;
                         case "sailorz":
                             {
-                                _Game = new Game_S357SailorZombie(_Rom.ToLower(), _Configurator, _NoInput, isVerbose);
+                                _Game = new Game_S357SailorZombie(_Rom.ToLower(), _NoInput, isVerbose);
                             }; break;
                     }
                 }
@@ -367,7 +377,7 @@ namespace DemulShooterX64
                 {
                     if (_Rom.ToLower().Equals("eai"))
                     {
-                        _Game = new Game_UnisElevatorActionInvasion(_Rom.ToLower(), _Configurator, _NoInput, isVerbose);
+                        _Game = new Game_UnisElevatorActionInvasion(_Rom.ToLower(), _NoInput, isVerbose);
                     }
                     else if (_Rom.ToLower().Equals("nha"))
                     {
@@ -404,9 +414,9 @@ namespace DemulShooterX64
                 _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);                
 
                 //starting the TimeOut Timer
-                if (_Configurator.HookTimeout != 0)
+                if (Configurator.GetInstance().HookTimeout != 0)
                 {
-                    _TimerHookTimeout.Interval = (_Configurator.HookTimeout * 1000);
+                    _TimerHookTimeout.Interval = (Configurator.GetInstance().HookTimeout * 1000);
                     _TimerHookTimeout.Start();
                 }
             }
@@ -490,29 +500,29 @@ namespace DemulShooterX64
         /// </summary>
         private IntPtr myWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
-            if (_Configurator.OutputEnabled && _OutputHelper != null)
+            if (Configurator.GetInstance().OutputEnabled && _Wm_OutputHelper != null)
             {
-                if (msg == _OutputHelper.MameOutput_RegisterClient)
+                if (msg == _Wm_OutputHelper.MameOutput_RegisterClient)
                 {
-                    _OutputHelper.RegisterClient(wParam, (UInt32)lParam);
+                    _Wm_OutputHelper.RegisterClient(wParam, (UInt32)lParam);
                 }
-                else if (msg == _OutputHelper.MameOutput_UnregisterClient)
+                else if (msg == _Wm_OutputHelper.MameOutput_UnregisterClient)
                 {
-                    _OutputHelper.UnregisterClient(wParam, (UInt32)lParam);
+                    _Wm_OutputHelper.UnregisterClient(wParam, (UInt32)lParam);
                 }
-                else if (msg == _OutputHelper.MameOutput_GetIdString)
+                else if (msg == _Wm_OutputHelper.MameOutput_GetIdString)
                 {
                     uint Id = (uint)lParam;
                     if (Id == 0)
                     {
-                        _OutputHelper.SendIdString(wParam, _Rom, 0);
+                        _Wm_OutputHelper.SendIdString(wParam, _Rom, 0);
                     }
                     else
                     {
                         if (_Game != null && _Game.Outputs.Count > 0)
                         {
                             String s = _Game.GetOutputDescriptionFromId(Id);
-                            _OutputHelper.SendIdString(wParam, s, Id);
+                            _Wm_OutputHelper.SendIdString(wParam, s, Id);
                         }
                     }
                 }
@@ -549,7 +559,7 @@ namespace DemulShooterX64
             {
                 if (Controller.isSourceOfRawInputMessage(RawInputHandle))
                 {
-                    foreach (PlayerSettings Player in _Configurator.PlayersSettings)
+                    foreach (PlayerSettings Player in Configurator.GetInstance().PlayersSettings)
                     {
                         if (Player.DeviceName == Controller.DeviceName)
                         {
@@ -609,7 +619,7 @@ namespace DemulShooterX64
 
                                     Logger.WriteLog("OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");                              
 
-                                    if (_Configurator.Act_Labs_Offset_Enable)
+                                    if (Configurator.GetInstance().Act_Labs_Offset_Enable)
                                     {
                                         Player.RIController.Computed_X += Player.Act_Labs_Offset_X;
                                         Player.RIController.Computed_Y += Player.Act_Labs_Offset_Y;
@@ -705,11 +715,14 @@ namespace DemulShooterX64
                 if (_Game != null && _Game.ProcessHooked)
                 {
                     _Game.UpdateOutputValues();
-                    _OutputHelper.SendValues(_Game.Outputs);
+                    if (Configurator.GetInstance().Wm_OutputEnabled && _Wm_OutputHelper != null)
+                        _Wm_OutputHelper.SendValues(_Game.Outputs);
+                    if (Configurator.GetInstance().Net_OutputEnabled && _Net_OutputHelper != null)
+                        _Net_OutputHelper.BroadcastValues(_Game.Outputs);
                 }
-                Win32API.MM_BeginPeriod(1);
-                Thread.Sleep(_Configurator.OutputPollingDelay);
-                Win32API.MM_EndPeriod(1);
+                DsCore.Win32.Win32API.MM_BeginPeriod(1);
+                Thread.Sleep(Configurator.GetInstance().OutputPollingDelay);
+                DsCore.Win32.Win32API.MM_EndPeriod(1);
             }
         }
 
@@ -748,6 +761,13 @@ namespace DemulShooterX64
 
             //Stopping the Timeout timer
             _TimerHookTimeout.Stop();
+
+            //Sending info to the Net_OutputHelper if existing
+            if (_Net_OutputHelper != null)
+            {
+                _Net_OutputHelper.SetGameHookedState(true);
+                _Net_OutputHelper.BroadcatStartMessage();
+            }
         }
 
         /// <summary>
@@ -767,17 +787,22 @@ namespace DemulShooterX64
             if (_OutputUpdateLoop != null)
                 _OutputUpdateLoop.Abort();
 
-            if (_OutputHelper != null)
+            if (_Wm_OutputHelper != null)
             {
                 //Simply sending MameStop may cause MameHooker to not release dll properly
                 //MAME goes from MameStop to MameStart with PAUSE enabled and "__empty" rom
                 //Which is not possible here due to the WndProc quitting before getting MameHooker request ??
                 // Solution would be to Send a new MameStart with no values before MAmeStopping again
-                _OutputHelper.Stop();
+                _Wm_OutputHelper.Stop();
                 _Game.CreatePauseOutputList();
-                _OutputHelper.Start();
-                _OutputHelper.SendValues(_Game.Outputs);
-                _OutputHelper.Stop();
+                _Wm_OutputHelper.Start();
+                _Wm_OutputHelper.SendValues(_Game.Outputs);
+                _Wm_OutputHelper.Stop();
+            }
+
+            if (_Net_OutputHelper != null)
+            {
+                _Net_OutputHelper.Stop();
             }
 
             //Cleanup so that the icon will be removed when the application is closed
@@ -850,7 +875,7 @@ namespace DemulShooterX64
                         Logger.WriteLog("KeyboardHook Event : WM_KEYDOWN event detected");
                         KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
                         Logger.WriteLog("KBDLLHOOKSTRUCT : " + s.ToString());
-                        foreach (PlayerSettings Player in _This._Configurator.PlayersSettings)
+                        foreach (PlayerSettings Player in Configurator.GetInstance().PlayersSettings)
                         {
                             if (Player.isVirtualMouseButtonsEnabled && Player.RIController != null)
                             {
@@ -881,7 +906,7 @@ namespace DemulShooterX64
                         Logger.WriteLog("KeyboardHook Event : WM_KEYUP event detected");
                         KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
                         Logger.WriteLog("KBDLLHOOKSTRUCT : " + s.ToString());
-                        foreach (PlayerSettings Player in _This._Configurator.PlayersSettings)
+                        foreach (PlayerSettings Player in Configurator.GetInstance().PlayersSettings)
                         {
                             if (Player.isVirtualMouseButtonsEnabled && Player.RIController != null)
                             {

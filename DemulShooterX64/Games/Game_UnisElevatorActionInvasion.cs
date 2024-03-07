@@ -34,9 +34,6 @@ namespace DemulShooterX64
         private UInt64 _Damage_Injection_Offset = 0x796360;
         private UInt64 _Damage_Injection_Return_Offset = 0x796370;
 
-        //Configurator, used to acces User-designed Key code
-        private Configurator _Configurator;
-
         //Outputs
         private UInt64 _P1_Recoil_CaveAddress = 0;
         private UInt64 _P2_Recoil_CaveAddress = 0; 
@@ -47,12 +44,11 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_UnisElevatorActionInvasion(String RomName, Configurator MyConfigurator, bool DisableInputHack, bool Verbose)
+        public Game_UnisElevatorActionInvasion(String RomName, bool DisableInputHack, bool Verbose)
             : base(RomName, "ESGame-Win64-Shipping", DisableInputHack, Verbose)
         {
             _KnownMd5Prints.Add("Elevator Action  Invasion v1.6.1[C] clean dump", "b7a68a80fa682673a61120aadf5b2ec35e1f7474");
             _KnownMd5Prints.Add("Elevator Action  Invasion v1.6.1[C] patched by Argonlefou", "d2c4c99a86648b34316ca4f61a23c1ea");
-            _Configurator = MyConfigurator;
             _tProcess.Start();
             Logger.WriteLog("Waiting for Unis " + _RomName + " game to hook.....");
         }
@@ -322,25 +318,25 @@ namespace DemulShooterX64
                     KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
                     if ((UInt32)wParam == Win32Define.WM_KEYDOWN)
                     {
-                        if (s.scanCode == _Configurator.DIK_Eai_P1_Start)
+                        if (s.scanCode == Configurator.GetInstance().DIK_Eai_P1_Start)
                             Apply_OR_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0x20);
-                        else if (s.scanCode == _Configurator.DIK_Eai_P2_Start)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Eai_P2_Start)
                             Apply_OR_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0x10);
-                        else if (s.scanCode == _Configurator.DIK_Eai_Settings)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Eai_Settings)
                             Apply_OR_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0x04);
-                        else if (s.scanCode == _Configurator.DIK_Eai_MenuUp)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Eai_MenuUp)
                             Apply_OR_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0x04);
-                        else if (s.scanCode == _Configurator.DIK_Eai_MenuDown)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Eai_MenuDown)
                             Apply_OR_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0x02);
-                        else if (s.scanCode == _Configurator.DIK_Eai_MenuEnter)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Eai_MenuEnter)
                             Apply_OR_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0x01);
-                        else if (s.scanCode == _Configurator.DIK_Eai_P1_Credits)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Eai_P1_Credits)
                         {
                             UInt32 c = BitConverter.ToUInt32(ReadBytes((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _P1_Credits_Offset), 4), 0);
                             c++;
                             WriteBytes((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _P1_Credits_Offset), BitConverter.GetBytes(c));
                         }
-                        else if (s.scanCode == _Configurator.DIK_Eai_P1_Credits)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Eai_P1_Credits)
                         {
                             UInt32 c = BitConverter.ToUInt32(ReadBytes((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _P2_Credits_Offset), 4), 0);
                             c++;
@@ -358,17 +354,17 @@ namespace DemulShooterX64
                     }
                     else if ((UInt32)wParam == Win32Define.WM_KEYUP)
                     {
-                        if (s.scanCode == _Configurator.DIK_Eai_P1_Start)
+                        if (s.scanCode == Configurator.GetInstance().DIK_Eai_P1_Start)
                             Apply_AND_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0xDF);
-                        else if (s.scanCode == _Configurator.DIK_Eai_P2_Start)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Eai_P2_Start)
                             Apply_AND_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0xEF);
-                        else if (s.scanCode == _Configurator.DIK_Eai_Settings)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Eai_Settings)
                             Apply_AND_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0xFB);
-                        else if (s.scanCode == _Configurator.DIK_Eai_MenuUp)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Eai_MenuUp)
                             Apply_AND_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0xFB);
-                        else if (s.scanCode == _Configurator.DIK_Eai_MenuDown)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Eai_MenuDown)
                             Apply_AND_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0xFD);
-                        else if (s.scanCode == _Configurator.DIK_Eai_MenuEnter)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Eai_MenuEnter)
                             Apply_AND_ByteMask((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _IoBoard_Payload_Offset + 2), 0xFE);
 
                         /*else if (s.scanCode == HardwareScanCode.DIK_F)
@@ -449,12 +445,12 @@ namespace DemulShooterX64
             _Outputs.Add(new GameOutput(OutputDesciption.DoorA, OutputId.DoorA));
             _Outputs.Add(new GameOutput(OutputDesciption.DoorB, OutputId.DoorB));
             _Outputs.Add(new GameOutput(OutputDesciption.ElevatorLedsStatus, OutputId.ElevatorLedsStatus));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             /*_Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));*/
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Credits, OutputId.P1_Credit));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Credits, OutputId.P2_Credit));
         }

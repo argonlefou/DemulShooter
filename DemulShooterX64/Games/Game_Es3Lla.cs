@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
 using DsCore.MemoryX64;
-using DsCore.RawInput;
 using DsCore.Win32;
 
 namespace DemulShooterX64

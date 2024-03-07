@@ -35,9 +35,6 @@ namespace DemulShooter
 
         private bool _AlternativeGameplay = false;
 
-        //Custom Outputs data
-        protected int _P1_LastLife = 0;
-        protected int _P2_LastLife = 0;        
 
         /// <summary>
         /// Constructor
@@ -454,12 +451,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunMotor, OutputId.P2_GunMotor));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -485,12 +482,12 @@ namespace DemulShooter
             SetOutputValue(OutputId.P1_GunRecoil, P1_RecoilState);
             SetOutputValue(OutputId.P1_GunMotor, P1_RumbleState);            
             SetOutputValue(OutputId.P2_GunRecoil, P2_RecoilState);
-            SetOutputValue(OutputId.P2_GunMotor, P2_RumbleState);            
+            SetOutputValue(OutputId.P2_GunMotor, P2_RumbleState);
 
-            int P1_Life = 0;
-            int P1_Ammo = 0;
-            int P2_Life = 0;
-            int P2_Ammo = 0;
+            _P1_Life = 0;
+            _P1_Ammo = 0;
+            _P2_Life = 0;
+            _P2_Ammo = 0;
 
             //Customs Outputs
             //Player Status :
@@ -501,13 +498,13 @@ namespace DemulShooter
             int P1_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C37364);            
             if (P1_Status == 1)
             {
-                P1_Ammo = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39D3C, 4), 0);
-                P1_Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39C88, 4), 0));
+                _P1_Ammo = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39D3C, 4), 0);
+                _P1_Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39C88, 4), 0));
                 
-                if (P1_Life < 0)
-                    P1_Life = 0;
+                if (_P1_Life < 0)
+                    _P1_Life = 0;
 
-                if (P1_Life < _P1_LastLife)
+                if (_P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);                
             }
 
@@ -515,23 +512,23 @@ namespace DemulShooter
             int P2_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C3736C);
             if (P2_Status == 1)
             {
-                P2_Ammo = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39DC8, 4), 0);
-                P2_Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39C94, 4), 0));
+                _P2_Ammo = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39DC8, 4), 0);
+                _P2_Life = (int)(100.0 * BitConverter.ToSingle(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x00C39C94, 4), 0));
                 
-                if (P2_Life < 0)
-                    P2_Life = 0;
+                if (_P2_Life < 0)
+                    _P2_Life = 0;
 
-                if (P2_Life < _P2_LastLife)
+                if (_P2_Life < _P2_LastLife)
                     SetOutputValue(OutputId.P2_Damaged, 1);      
             }
 
-            _P1_LastLife = P1_Life;
-            _P2_LastLife = P2_Life;
+            _P1_LastLife = _P1_Life;
+            _P2_LastLife = _P2_Life;
 
-            SetOutputValue(OutputId.P1_Life, P1_Life);
-            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
-            SetOutputValue(OutputId.P2_Life, P2_Life);
-            SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
+            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
+            SetOutputValue(OutputId.P2_Life, _P2_Life);
+            SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
             //Custom Recoil will simply be activated just like original Recoil
             SetOutputValue(OutputId.P1_CtmRecoil, P1_RecoilState);
             SetOutputValue(OutputId.P2_CtmRecoil, P2_RecoilState);

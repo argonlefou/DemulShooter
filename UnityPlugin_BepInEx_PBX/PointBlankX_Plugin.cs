@@ -18,7 +18,7 @@ namespace UnityPlugin_BepInEx_PBX
     {
         public const String pluginGuid = "argonlefou.demulshooter.pbx";
         public const String pluginName = "PBX DemulShooter Plugin";
-        public const String pluginVersion = "1.0.0.0";
+        public const String pluginVersion = "2.0.0.0";
 
         public static BepInEx.Logging.ManualLogSource MyLogger;
 
@@ -42,7 +42,7 @@ namespace UnityPlugin_BepInEx_PBX
         private TcpListener _TcpListener;
         private Thread _TcpListenerThread;
         private TcpClient _TcpClient;
-        private int _TcpPort = 1234;
+        private int _TcpPort = 33610;
         private static NetworkStream _TcpStream;
 
         public static bool IsMouseLockedRequired = false;

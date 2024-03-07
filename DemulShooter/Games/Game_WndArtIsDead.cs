@@ -5,7 +5,6 @@ using DsCore;
 using DsCore.Config;
 using DsCore.Memory;
 using DsCore.RawInput;
-using DsCore.Win32;
 
 namespace DemulShooter
 {

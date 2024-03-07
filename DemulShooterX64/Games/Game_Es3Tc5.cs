@@ -64,12 +64,7 @@ namespace DemulShooterX64
         private const UInt64 ROM_LOADED_CHECK_INSTRUCTION_OFFSET = 0x0006B060;
 
         //Custom Outputs
-        private int _P1_LastLife = 0;
-        private int _P1_LastAmmo = 0;
         private int _P1_LastWeapon = 0;
-        private int _P1_Life = 0;
-        private int _P1_Ammo = 0;
-        private int _P1_Weapon = 0;
         private int _P1_LastRecoil = 0;
 
         //Flag to differenciate standalone/Jconfig hack to do
@@ -736,9 +731,9 @@ namespace DemulShooterX64
             _Outputs.Add(new GameOutput(OutputDesciption.LmpBillboard, OutputId.LmpBillboard));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));            
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));            
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -781,9 +776,9 @@ namespace DemulShooterX64
                 _P1_LastRecoil = bRecoil;
             }
 
-            _P1_Life = 0;
-            _P1_Ammo = 0;
-            _P1_Weapon = 0;
+            int P1_Life = 0;
+            int P1_Ammo = 0;
+            int P1_Weapon = 0;
             int P1_Clip = 0;
 
             UInt64 PtrAmmoLife = ReadPtrChain((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x0185BE18), new UInt64[] { 0x1C, 0x08, 0x70, 0x1FC });
@@ -794,38 +789,38 @@ namespace DemulShooterX64
             {
                 //Life is value x 2 in memory....
                 //Also, can be found statically at 
-                _P1_Life = ReadByte((IntPtr)(PtrAmmoLife + 0x10)) >> 1; //Life also available in fixed pointer @BaseMemory + 0x01860B78
-                _P1_Weapon = ReadByte((IntPtr)(PtrAmmoLife + 0x118));
-                _P1_Ammo = ReadByte((IntPtr)(PtrAmmoLife + 0x170));
+                P1_Life = ReadByte((IntPtr)(PtrAmmoLife + 0x10)) >> 1; //Life also available in fixed pointer @BaseMemory + 0x01860B78
+                P1_Weapon = ReadByte((IntPtr)(PtrAmmoLife + 0x118));
+                P1_Ammo = ReadByte((IntPtr)(PtrAmmoLife + 0x170));
                 
                 //Computing custom Recoil with the following way (= using Ammo count) will not work during STAGE 2 with unimited ammo weapon              
-                if (_P1_Weapon == _P1_LastWeapon)
+                if (P1_Weapon == _P1_LastWeapon)
                 {  
                     //Custom Recoil
                     //As we don't have a "STATUS" variable telling us if the player is playing or not,
                     //we will smoothly filter for decrease to limit false recoil events if the game sets back Ammo to default value after game-over
-                    if (_IsStandalone && _P1_Ammo == _P1_LastAmmo - 1)
+                    if (_IsStandalone && P1_Ammo == _P1_LastAmmo - 1)
                         SetOutputValue(OutputId.P1_CtmRecoil, 1);
 
                     //[Clip Empty] custom Output
-                    if (_P1_Ammo > 0)
+                    if (P1_Ammo > 0)
                         P1_Clip = 1;
                 }
                 
                 //[Damaged] custom Output                
-                if (_P1_Life < _P1_LastLife)
+                if (P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);
                 
             }
 
-            _P1_LastAmmo = _P1_Ammo;
-            _P1_LastLife = _P1_Life;
-            _P1_LastWeapon = _P1_Weapon;
+            _P1_LastAmmo = P1_Ammo;
+            _P1_LastLife = P1_Life;
+            _P1_LastWeapon = P1_Weapon;
             
 
-            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
+            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
             SetOutputValue(OutputId.P1_Clip, P1_Clip);
-            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P1_Life, P1_Life);
         }
 
         #endregion

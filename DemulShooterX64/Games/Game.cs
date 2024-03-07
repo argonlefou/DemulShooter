@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text;
 using System.Timers;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.MemoryX64;
 using DsCore.Win32;
-using System.Reflection;
-using System.Globalization;
-using System.Text;
 
 namespace DemulShooterX64
 {
@@ -50,6 +50,15 @@ namespace DemulShooterX64
         { 
             get { return _ProcessHooked; } 
         }
+
+        #endregion
+
+        #region  Custom Outputs
+
+        protected int _P1_LastLife = 0;
+        protected int _P2_LastLife = 0;
+        protected int _P1_LastAmmo = 0;
+        protected int _P2_LastAmmo = 0;
 
         #endregion
 

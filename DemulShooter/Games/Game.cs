@@ -53,6 +53,20 @@ namespace DemulShooter
 
         #endregion
 
+        #region  Custom Outputs
+
+        protected int _P1_Life = 0;
+        protected int _P2_Life = 0;
+        protected int _P1_Ammo = 0;
+        protected int _P2_Ammo = 0;
+
+        protected int _P1_LastLife = 0;
+        protected int _P2_LastLife = 0;
+        protected int _P1_LastAmmo = 0;
+        protected int _P2_LastAmmo = 0;
+
+        #endregion
+
         /// <summary>
         /// Common constructor for every single games
         /// </summary>

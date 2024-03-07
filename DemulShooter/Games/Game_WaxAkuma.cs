@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
@@ -50,8 +49,6 @@ namespace DemulShooter
 
         private int _P1_Last_ShotCount = 0;
         private int _P2_Last_ShotCount = 0;
-        private int _P1_Last_Life = 0;
-        private int _P2_Last_Life = 0;
 
         /// <summary>
         /// Constructor
@@ -351,12 +348,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.LmpRight, OutputId.LmpRight));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_GunRecoil, OutputId.P1_GunRecoil));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunRecoil, OutputId.P2_GunRecoil));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -374,8 +371,8 @@ namespace DemulShooter
             SetOutputValue(OutputId.P1_GunRecoil, OutputData >> 6 & 0x01);
             SetOutputValue(OutputId.P2_GunRecoil, OutputData >> 7 & 0x01);
 
-            int P1_Life = 0;
-            int P2_Life = 0;
+            _P1_Life = 0;
+            _P2_Life = 0;
             int P1_ShotCount = 0;
             int P2_ShotCount = 0;
 
@@ -388,8 +385,8 @@ namespace DemulShooter
                 if (P1_ShotCount > _P1_Last_ShotCount)
                     SetOutputValue(OutputId.P1_CtmRecoil, 1);
 
-                P1_Life = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Player1_Life_Offset, 4), 0);
-                if (P1_Life < _P1_Last_Life)
+                _P1_Life = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Player1_Life_Offset, 4), 0);
+                if (_P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);
             }
 
@@ -399,18 +396,18 @@ namespace DemulShooter
                 if (P2_ShotCount > _P2_Last_ShotCount)
                     SetOutputValue(OutputId.P2_CtmRecoil, 1);
 
-                P2_Life = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Player2_Life_Offset, 4), 0);
-                if (P2_Life < _P2_Last_Life)
+                _P2_Life = BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Player2_Life_Offset, 4), 0);
+                if (_P2_Life < _P2_LastLife)
                     SetOutputValue(OutputId.P2_Damaged, 1);
             }
 
-            SetOutputValue(OutputId.P1_Life, P1_Life);
-            SetOutputValue(OutputId.P2_Life, P2_Life);
+            SetOutputValue(OutputId.P1_Life, _P1_Life);
+            SetOutputValue(OutputId.P2_Life, _P2_Life);
 
             _P1_Last_ShotCount = P1_ShotCount;
             _P2_Last_ShotCount = P2_ShotCount;
-            _P1_Last_Life = P1_Life;
-            _P2_Last_Life = P2_Life;
+            _P1_LastLife = _P1_Life;
+            _P2_LastLife = _P2_Life;
 
             SetOutputValue(OutputId.Credits, BitConverter.ToInt32(ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset, 4), 0));
         }

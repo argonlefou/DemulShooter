@@ -7,20 +7,12 @@ using DsCore.Config;
 using DsCore.IPC;
 using DsCore.MameOutput;
 using DsCore.RawInput;
-using DsCore.Win32;
-using System.Text;
 
 
 namespace DemulShooterX64
 {
     public class Game_UnisNightHunterArcade : Game
     {
-        //Outputs
-        private int _P1_Life = 0;
-        private int _P2_Life = 0;
-        private int _P1_LastLife = 0;
-        private int _P2_LastLife = 0;
-
         private bool _HackEnabled = false;
         private MMFH_NightHunterArcade _Mmfh;
 
@@ -206,12 +198,12 @@ namespace DemulShooterX64
         {
             //Gun motor : Is activated for every bullet fired AND when player gets
             _Outputs = new List<GameOutput>();
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -220,15 +212,15 @@ namespace DemulShooterX64
         /// </summary>
         public override void UpdateOutputValues()
         {
-            _P1_Life = 0;
-            _P2_Life = 0;
+            int P1_Life = 0;
+            int P2_Life = 0;
 
             int r = _Mmfh.ReadAll();
             if (r == 0)
             {
-                _P1_Life = BitConverter.ToInt32(_Mmfh.Payload, MMFH_NightHunterArcade.INDEX_P1_LIFE);
+                P1_Life = BitConverter.ToInt32(_Mmfh.Payload, MMFH_NightHunterArcade.INDEX_P1_LIFE);
                 //[Damaged] custom Output                
-                if (_P1_Life < _P1_LastLife)
+                if (P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);
 
 
@@ -238,9 +230,9 @@ namespace DemulShooterX64
                     _Mmfh.Payload[MMFH_NightHunterArcade.INDEX_P1_MOTOR] = 0;
                 }
 
-                _P2_Life = BitConverter.ToInt32(_Mmfh.Payload, MMFH_NightHunterArcade.INDEX_P2_LIFE);
+                P2_Life = BitConverter.ToInt32(_Mmfh.Payload, MMFH_NightHunterArcade.INDEX_P2_LIFE);
                 //[Damaged] custom Output                
-                if (_P2_Life < _P2_LastLife)
+                if (P2_Life < _P2_LastLife)
                     SetOutputValue(OutputId.P2_Damaged, 1);
 
 
@@ -250,10 +242,10 @@ namespace DemulShooterX64
                     _Mmfh.Payload[MMFH_NightHunterArcade.INDEX_P2_MOTOR] = 0;
                 }
 
-                _P1_LastLife = _P1_Life;
-                _P2_LastLife = _P2_Life;
-                SetOutputValue(OutputId.P1_Life, _P1_Life);
-                SetOutputValue(OutputId.P2_Life, _P2_Life);
+                _P1_LastLife = P1_Life;
+                _P2_LastLife = P2_Life;
+                SetOutputValue(OutputId.P1_Life, P1_Life);
+                SetOutputValue(OutputId.P2_Life, P2_Life);
 
                 SetOutputValue(OutputId.Credits, BitConverter.ToInt32(_Mmfh.Payload, MMFH_NightHunterArcade.INDEX_CREDITS));
 

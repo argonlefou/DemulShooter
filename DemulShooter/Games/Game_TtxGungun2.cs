@@ -7,7 +7,6 @@ using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
-using DsCore.Win32;
 
 namespace DemulShooter
 {

@@ -1,14 +1,10 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
-using DsCore.Memory;
-using DsCore.RawInput;
-using DsCore.Win32;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-
 
 namespace DemulShooter
 {
@@ -23,9 +19,6 @@ namespace DemulShooter
         private UInt32 _GameMgr_Pointer_Address = 0xA9DFE98;
         private UInt32 _Credits_Address = 0xAA3DD80;
         private UInt32 _Freeplay_Address = 0xAA3DD67;
-
-        private int _P1_Last_Life = 0;
-        private int _P2_Last_Life = 0;
 
         /// <summary>
         /// Constructor
@@ -115,8 +108,8 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpFoot, OutputId.P2_LmpFoot));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             /*
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));            
@@ -151,16 +144,16 @@ namespace DemulShooter
             if (GameManager_Address != 0)
             {
                 P1_Life = ReadByte(GameManager_Address + 0x48);
-                if (P1_Life < _P1_Last_Life)
+                if (P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);
 
                 P2_Life = ReadByte(GameManager_Address + 0x4C);
-                if (P2_Life < _P2_Last_Life)
+                if (P2_Life < _P2_LastLife)
                     SetOutputValue(OutputId.P2_Damaged, 1);
             }
 
-            _P1_Last_Life = P1_Life;
-            _P2_Last_Life = P2_Life;
+            _P1_LastLife = P1_Life;
+            _P2_LastLife = P2_Life;
 
             
 

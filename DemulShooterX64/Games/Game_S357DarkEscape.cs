@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
-using DsCore.MemoryX64;
 using DsCore.RawInput;
 using DsCore.Win32;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.IO;
-using System.Security.Cryptography;
 
 namespace DemulShooterX64
 {
@@ -31,16 +29,13 @@ namespace DemulShooterX64
         private int _P1_LastRumble = 0;
         private int _P2_LastRumble = 0;
 
-        //Configurator, used to acces User-designed Key code
-        private Configurator _Configurator;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_S357DarkEscape(String RomName, Configurator MyConfigurator, bool DisableInputHack, bool Verbose)
+        public Game_S357DarkEscape(String RomName, bool DisableInputHack, bool Verbose)
             : base(RomName, "rpcs3-gun", DisableInputHack, Verbose)
         {
-            _Configurator = MyConfigurator;
             _KnownMd5Prints.Add("RPCS3 v0.0.27 fork for System 357, GUN version", "3321f7771ae74e8027f0d4e18167d635");
             _tProcess.Start();
             Logger.WriteLog("Waiting for RPCS3 Dark Escape 4D " + _RomName + " game to hook.....");
@@ -368,36 +363,36 @@ namespace DemulShooterX64
                     KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
                     if ((UInt32)wParam == Win32Define.WM_KEYDOWN)
                     {
-                        if (s.scanCode == _Configurator.DIK_Rpcs3_P1_Start)
+                        if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_P1_Start)
                             Apply_OR_ByteMask((IntPtr)(_Buttons_Address + 1), 0x20);
-                        else if (s.scanCode == _Configurator.DIK_Rpcs3_P2_Start)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_P2_Start)
                             Apply_OR_ByteMask((IntPtr)(_Buttons_Address + 1), 0x04);
-                        else if (s.scanCode == _Configurator.DIK_Rpcs3_3D_Switch)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_3D_Switch)
                             Apply_OR_ByteMask((IntPtr)(_Buttons_Address + 1), 0x02);
-                        else if (s.scanCode == _Configurator.DIK_Rpcs3_Down)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_Down)
                             Apply_OR_ByteMask((IntPtr)_Buttons_Address, 0x10);
-                        else if (s.scanCode == _Configurator.DIK_Rpcs3_Up)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_Up)
                             Apply_OR_ByteMask((IntPtr)_Buttons_Address, 0x20);
-                        else if (s.scanCode == _Configurator.DIK_Rpcs3_Service)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_Service)
                             Apply_OR_ByteMask((IntPtr)_Buttons_Address, 0x40);
-                        else if (s.scanCode == _Configurator.DIK_Rpcs3_Enter)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_Enter)
                             Apply_OR_ByteMask((IntPtr)_Buttons_Address, 0x02);
                     }
                     else if ((UInt32)wParam == Win32Define.WM_KEYUP)
                     {
-                        if (s.scanCode == _Configurator.DIK_Rpcs3_P1_Start)
+                        if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_P1_Start)
                             Apply_AND_ByteMask((IntPtr)(_Buttons_Address + 1), 0xDF);
-                        else if (s.scanCode == _Configurator.DIK_Rpcs3_P2_Start)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_P2_Start)
                             Apply_AND_ByteMask((IntPtr)(_Buttons_Address + 1), 0xFB);
-                        else if (s.scanCode == _Configurator.DIK_Rpcs3_3D_Switch)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_3D_Switch)
                             Apply_AND_ByteMask((IntPtr)(_Buttons_Address + 1), 0xFD);
-                        else if (s.scanCode == _Configurator.DIK_Rpcs3_Down)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_Down)
                             Apply_AND_ByteMask((IntPtr)_Buttons_Address, 0xEF);
-                        else if (s.scanCode == _Configurator.DIK_Rpcs3_Up)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_Up)
                             Apply_AND_ByteMask((IntPtr)_Buttons_Address, 0xDF);
-                        else if (s.scanCode == _Configurator.DIK_Rpcs3_Service)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_Service)
                             Apply_AND_ByteMask((IntPtr)_Buttons_Address, 0xBF);
-                        else if (s.scanCode == _Configurator.DIK_Rpcs3_Enter)
+                        else if (s.scanCode == Configurator.GetInstance().DIK_Rpcs3_Enter)
                             Apply_AND_ByteMask((IntPtr)_Buttons_Address, 0xFD);
                     }
                 }
@@ -430,8 +425,8 @@ namespace DemulShooterX64
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Fan, OutputId.P2_Fan));
             _Outputs.Add(new GameOutput(OutputDesciption.VibrationSeat, OutputId.VibrationSeat));
             //Custom Outputs
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             /*_Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));

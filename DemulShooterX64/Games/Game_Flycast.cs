@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using DsCore;
-using DsCore.Config;
-using DsCore.MameOutput;
-using DsCore.MemoryX64;
-using DsCore.Win32;
-using DsCore.RawInput;
 
 namespace DemulShooterX64
 {
@@ -29,22 +23,11 @@ namespace DemulShooterX64
          * Atomiswave : no outputs
          * 
          */
-        
 
 
         //Output values
         protected UInt64 _GameRAMPtr_Offset = 0x2087490;
         protected UInt64 _GameRAM_Address = 0;
-
-        //Custom Outputs
-        protected int _P1_LastLife = 0;
-        protected int _P2_LastLife = 0;
-        protected int _P1_LastAmmo = 0;
-        protected int _P2_LastAmmo = 0;
-        protected int _P1_Life = 0;
-        protected int _P2_Life = 0;
-        protected int _P1_Ammo = 0;
-        protected int _P2_Ammo = 0;
 
         public Game_Flycast(String RomName, bool DisableInputHack, bool Verbose) : base(RomName, "flycast", DisableInputHack, Verbose)
         {

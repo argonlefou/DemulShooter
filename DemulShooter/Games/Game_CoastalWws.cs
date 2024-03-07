@@ -29,25 +29,12 @@ namespace DemulShooter
         private bool _HackEnabled = false;
         private MMFH_WildWestShoutout _Mmfh;
 
-        private HardwareScanCode _TestMode_Key;
-        private HardwareScanCode _P1_Coin_Key;
-        private HardwareScanCode _P2_Coin_Key;
-
-        //Outputs
-        private int _P1_LastLife = 0;
-        private int _P2_LastLife = 0;
-        private int _P1_Life = 0;
-        private int _P2_Life = 0;
-
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_CoastalWws(String RomName, HardwareScanCode P1_Coin_Key, HardwareScanCode P2_Coin_Key, HardwareScanCode TestMode_Key, bool DisableInputHack, bool Verbose)
+        public Game_CoastalWws(String RomName, bool DisableInputHack, bool Verbose)
             : base(RomName, "CowBoy", DisableInputHack, Verbose)
         {
-            _P1_Coin_Key = P1_Coin_Key;
-            _P2_Coin_Key = P2_Coin_Key;
-            _TestMode_Key = TestMode_Key;
             _KnownMd5Prints.Add("Wild West Shoutout original dump", "4f543c469818c1db8bc856be84f0131e");
             _tProcess.Start();
             Logger.WriteLog("Waiting for Coastal " + _RomName + " game to hook.....");
@@ -284,19 +271,19 @@ namespace DemulShooter
                 KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
                 if ((UInt32)wParam == Win32Define.WM_KEYDOWN)
                 {
-                    if (s.scanCode == _TestMode_Key)
+                    if (s.scanCode == Configurator.GetInstance().DIK_Wws_Test)
                     {
                         _Mmfh.ReadAll();
                         _Mmfh.Payload[MMFH_WildWestShoutout.INDEX_TEST] = 1;
                         _Mmfh.Writeall();
                     }
-                    else if (s.scanCode == _P1_Coin_Key)
+                    else if (s.scanCode == Configurator.GetInstance().DIK_Wws_P1Coin)
                     {
                         _Mmfh.ReadAll();
                         Array.Copy(BitConverter.GetBytes((UInt32)1), 0, _Mmfh.Payload, MMFH_WildWestShoutout.INDEX_P1_COIN, 4);
                         _Mmfh.Writeall();
                     }
-                    else if (s.scanCode == _P2_Coin_Key)
+                    else if (s.scanCode == Configurator.GetInstance().DIK_Wws_P2Coin)
                     {
                         _Mmfh.ReadAll();
                         Array.Copy(BitConverter.GetBytes((UInt32)1), 0, _Mmfh.Payload, MMFH_WildWestShoutout.INDEX_P2_COIN, 4);
@@ -323,12 +310,12 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Credits, OutputId.P1_Credit));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Credits, OutputId.P2_Credit));
         }

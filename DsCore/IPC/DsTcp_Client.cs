@@ -9,7 +9,7 @@ namespace DsCore.IPC
 {
     public class DsTcp_Client
     {
-        public static readonly int DS_TCP_CLIENT_PORT = 1234;
+        public static readonly int DS_TCP_CLIENT_PORT = 33610;
 
         bool TerminateListenerThread = false;
         bool ListenerThreadActive = false;        

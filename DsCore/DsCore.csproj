@@ -78,12 +78,14 @@
     <Compile Include="MameOutput\AsyncGameOutput.cs" />
     <Compile Include="MameOutput\BlinkGameOutput.cs" />
     <Compile Include="MameOutput\MMT.cs" />
+    <Compile Include="MameOutput\Network\Net_OutputClient.cs" />
+    <Compile Include="MameOutput\Network\Net_OutputHelper.cs" />
     <Compile Include="MameOutput\SyncBlinkingGameOutput.cs" />
     <Compile Include="MameOutput\OutputId.cs" />
     <Compile Include="MameOutput\GameOutput.cs" />
-    <Compile Include="MameOutput\MameOutputHelper.cs" />
-    <Compile Include="MameOutput\OutputClient.cs" />
-    <Compile Include="MameOutput\OutputDataStruct.cs" />
+    <Compile Include="MameOutput\WindowMessage\Wm_OutputHelper.cs" />
+    <Compile Include="MameOutput\WindowMessage\Wm_OutputClient.cs" />
+    <Compile Include="MameOutput\WindowMessage\Wm_OutputDataStruct.cs" />
     <Compile Include="MameOutput\OutputDescription.cs" />
     <Compile Include="MemoryX64\InjectionStruct.cs" />
     <Compile Include="MemoryX64\NopStruct.cs" />

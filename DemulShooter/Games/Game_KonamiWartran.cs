@@ -1,13 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
-using DsCore.Memory;
-using DsCore.RawInput;
-using DsCore.Win32;
-using System.Collections.Generic;
 using DsCore.MameOutput;
 
 namespace DemulShooter
@@ -30,12 +26,12 @@ namespace DemulShooter
         private byte _P2_LastWeaponType = 0;
         private byte _P3_LastWeaponType;
         private byte _P4_LastWeaponType;
-        private byte _P1_LastAmmo;
-        private byte _P2_LastAmmo;
+        private byte _bP1_LastAmmo;
+        private byte _bP2_LastAmmo;
         private byte _P3_LastAmmo;
         private byte _P4_LastAmmo;
-        private byte _P1_LastLife;
-        private byte _P2_LastLife;
+        private byte _bP1_LastLife;
+        private byte _bP2_LastLife;
         private byte _P3_LastLife;
         private byte _P4_LastLife;
 
@@ -127,18 +123,18 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
             _Outputs.Add(new GameOutput(OutputDesciption.P3_Clip, OutputId.P3_Clip));
             _Outputs.Add(new GameOutput(OutputDesciption.P4_Clip, OutputId.P4_Clip));            
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P3_CtmRecoil, OutputId.P3_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P4_CtmRecoil, OutputId.P4_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P3_CtmRecoil, OutputId.P3_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P4_CtmRecoil, OutputId.P4_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P3_Life, OutputId.P3_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P4_Life, OutputId.P4_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P3_Damaged, OutputId.P3_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P4_Damaged, OutputId.P4_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P3_Damaged, OutputId.P3_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P4_Damaged, OutputId.P4_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
@@ -170,7 +166,7 @@ namespace DemulShooter
             //Player1
             P1_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Life_Offset);
             SetOutputValue(OutputId.P1_Life, P1_Life);
-            if (P1_Life < _P1_LastLife)
+            if (P1_Life < _bP1_LastLife)
                 SetOutputValue(OutputId.P1_Damaged, 1);
 
             if (P1_Life > 0)
@@ -180,7 +176,7 @@ namespace DemulShooter
                 P1_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_WeaponStruct_Offset + 0x10 + P1_WeaponType);
                 if (P1_WeaponType == _P1_LastWeaponType)
                 {
-                    if (P1_Ammo < _P1_LastAmmo)
+                    if (P1_Ammo < _bP1_LastAmmo)
                         SetOutputValue(OutputId.P1_CtmRecoil, 1);  
                     if (P1_Ammo > 0)
                         SetOutputValue(OutputId.P1_Clip, 1);  
@@ -191,7 +187,7 @@ namespace DemulShooter
             //Player2
             P2_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Life_Offset);
             SetOutputValue(OutputId.P2_Life, P2_Life);
-            if (P2_Life < _P2_LastLife)
+            if (P2_Life < _bP2_LastLife)
                 SetOutputValue(OutputId.P2_Damaged, 1);
 
             if (P2_Life > 0)
@@ -201,7 +197,7 @@ namespace DemulShooter
                 P2_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_WeaponStruct_Offset + 0x10 + P2_WeaponType);
                 if (P2_WeaponType == _P2_LastWeaponType)
                 {
-                    if (P2_Ammo < _P2_LastAmmo)
+                    if (P2_Ammo < _bP2_LastAmmo)
                         SetOutputValue(OutputId.P2_CtmRecoil, 1);
                     if (P2_Ammo > 0)
                         SetOutputValue(OutputId.P2_Clip, 1);
@@ -252,12 +248,12 @@ namespace DemulShooter
             SetOutputValue(OutputId.P4_Ammo, P4_Ammo);
 
 
-            _P1_LastAmmo = P1_Ammo;
-            _P2_LastAmmo = P2_Ammo;
+            _bP1_LastAmmo = P1_Ammo;
+            _bP2_LastAmmo = P2_Ammo;
             _P3_LastAmmo = P3_Ammo;
             _P4_LastAmmo = P4_Ammo;
-            _P1_LastLife = P1_Life;
-            _P2_LastLife = P2_Life;
+            _bP1_LastLife = P1_Life;
+            _bP2_LastLife = P2_Life;
             _P3_LastLife = P3_Life;
             _P4_LastLife = P4_Life;
             _P1_LastWeaponType = P1_WeaponType;

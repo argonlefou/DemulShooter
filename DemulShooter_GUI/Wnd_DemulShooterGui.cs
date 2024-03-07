@@ -15,7 +15,6 @@ namespace DemulShooter_GUI
     public partial class Wnd_DemulShooterGui : Form
     {
         private static Wnd_DemulShooterGui _This;
-        private Configurator _Configurator;
         private const string CONF_FILENAME = "config.ini";
 
         //Non-GUI settings (W.I.P -- they should be incliuded next)
@@ -72,14 +71,13 @@ namespace DemulShooter_GUI
             }            
 
             //Reading config file to get parameters
-            _Configurator = new Configurator();
-            _Configurator.ReadDsConfig(AppDomain.CurrentDomain.BaseDirectory + CONF_FILENAME);
-            _Configurator.Read_Sha_Conf();
+            Configurator.GetInstance().ReadDsConfig(AppDomain.CurrentDomain.BaseDirectory + CONF_FILENAME);
+            Configurator.GetInstance().Read_Sha_Conf();
 
             Logger.WriteLog("Initializing GUI [Players] pages...");
             int TabPageIndex = 0;
             _GUI_Players = new List<GUI_Player>();
-            foreach (PlayerSettings PlayerData in _Configurator.PlayersSettings)
+            foreach (PlayerSettings PlayerData in Configurator.GetInstance().PlayersSettings)
             {
                 if (PlayerData.Mode == PlayerSettings.PLAYER_MODE_RAWINPUT)
                 {
@@ -102,119 +100,121 @@ namespace DemulShooter_GUI
             _GUI_AnalogCalibrations = new List<GUI_AnalogCalibration>();
             for (int i = 1; i <= 4; i++)
             {
-                GUI_AnalogCalibration Calib = new GUI_AnalogCalibration(i, _Configurator.GetPlayerSettings(i));
+                GUI_AnalogCalibration Calib = new GUI_AnalogCalibration(i, Configurator.GetInstance().GetPlayerSettings(i));
                 TableLayout_Calib.Controls.Add(Calib);
                 _GUI_AnalogCalibrations.Add(Calib);
             }            
 
             //Fill ActLabs tab
             Logger.WriteLog("Initializing GUI [Act Lab] page...");
-            Cb_ActLabsOffset.Checked = _Configurator.Act_Labs_Offset_Enable;
-            Chk_DspCorrectedCrosshair.Checked = _Configurator.Act_Labs_Display_Crosshair;
-            Txt_ActLabs_X1.Text = _Configurator.GetPlayerSettings(1).Act_Labs_Offset_X.ToString();
-            Txt_ActLabs_Y1.Text = _Configurator.GetPlayerSettings(1).Act_Labs_Offset_Y.ToString();
-            Txt_ActLabs_X2.Text = _Configurator.GetPlayerSettings(2).Act_Labs_Offset_X.ToString();
-            Txt_ActLabs_Y2.Text = _Configurator.GetPlayerSettings(2).Act_Labs_Offset_Y.ToString();
-            Txt_ActLabs_X3.Text = _Configurator.GetPlayerSettings(3).Act_Labs_Offset_X.ToString();
-            Txt_ActLabs_Y3.Text = _Configurator.GetPlayerSettings(3).Act_Labs_Offset_Y.ToString();
-            Txt_ActLabs_X4.Text = _Configurator.GetPlayerSettings(4).Act_Labs_Offset_X.ToString();
-            Txt_ActLabs_Y4.Text = _Configurator.GetPlayerSettings(4).Act_Labs_Offset_Y.ToString();            
+            Cb_ActLabsOffset.Checked = Configurator.GetInstance().Act_Labs_Offset_Enable;
+            Chk_DspCorrectedCrosshair.Checked = Configurator.GetInstance().Act_Labs_Display_Crosshair;
+            Txt_ActLabs_X1.Text = Configurator.GetInstance().GetPlayerSettings(1).Act_Labs_Offset_X.ToString();
+            Txt_ActLabs_Y1.Text = Configurator.GetInstance().GetPlayerSettings(1).Act_Labs_Offset_Y.ToString();
+            Txt_ActLabs_X2.Text = Configurator.GetInstance().GetPlayerSettings(2).Act_Labs_Offset_X.ToString();
+            Txt_ActLabs_Y2.Text = Configurator.GetInstance().GetPlayerSettings(2).Act_Labs_Offset_Y.ToString();
+            Txt_ActLabs_X3.Text = Configurator.GetInstance().GetPlayerSettings(3).Act_Labs_Offset_X.ToString();
+            Txt_ActLabs_Y3.Text = Configurator.GetInstance().GetPlayerSettings(3).Act_Labs_Offset_Y.ToString();
+            Txt_ActLabs_X4.Text = Configurator.GetInstance().GetPlayerSettings(4).Act_Labs_Offset_X.ToString();
+            Txt_ActLabs_Y4.Text = Configurator.GetInstance().GetPlayerSettings(4).Act_Labs_Offset_Y.ToString();            
 
             //Fill Model2 Tab
-            TXT_CH_P1.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_M2_Crosshair_P1);
-            TXT_CH_P2.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_M2_Crosshair_P2);
-            TXT_CH_VIS.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_M2_Crosshair_Visibility);
+            TXT_CH_P1.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_M2_Crosshair_P1);
+            TXT_CH_P2.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_M2_Crosshair_P2);
+            TXT_CH_VIS.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_M2_Crosshair_Visibility);
 
             //Fill Silent Hill tab
             Logger.WriteLog("Initializing GUI [Silent Hill] pages...");
-            TXT_P1_S.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Sha_P1_Start);
-            TXT_P1_T.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Sha_P1_Trigger);
-            TXT_P2_S.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Sha_P2_Start);
-            TXT_P2_T.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Sha_P2_Trigger);
-            TXT_EXIT.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Sha_Exit);
-            TXT_SERVICE.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Sha_Service);
-            TXT_TEST.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Sha_Test);
+            TXT_P1_S.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Sha_P1_Start);
+            TXT_P1_T.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Sha_P1_Trigger);
+            TXT_P2_S.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Sha_P2_Start);
+            TXT_P2_T.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Sha_P2_Trigger);
+            TXT_EXIT.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Sha_Exit);
+            TXT_SERVICE.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Sha_Service);
+            TXT_TEST.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Sha_Test);
 
             //Fill Elevator Action Invasion tab
-            Txt_EAI_P1_Start.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_P1_Start);
-            Txt_EAI_P2_Start.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_P2_Start);
-            Txt_EAI_P1_Credits.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_P1_Credits);
-            Txt_EAI_P2_Credits.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_P2_Credits);
-            Txt_EAI_Settings.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_Settings);
-            Txt_EAI_Up.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_MenuUp);
-            Txt_EAI_Down.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_MenuDown);
-            Txt_EAI_Enter.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Eai_MenuEnter);
+            Txt_EAI_P1_Start.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Eai_P1_Start);
+            Txt_EAI_P2_Start.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Eai_P2_Start);
+            Txt_EAI_P1_Credits.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Eai_P1_Credits);
+            Txt_EAI_P2_Credits.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Eai_P2_Credits);
+            Txt_EAI_Settings.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Eai_Settings);
+            Txt_EAI_Up.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Eai_MenuUp);
+            Txt_EAI_Down.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Eai_MenuDown);
+            Txt_EAI_Enter.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Eai_MenuEnter);
 
             //Fill Gundam tab
             Logger.WriteLog("Initializing GUI [Gundam] pages...");
-            Chk_GundamP1Pedal.Checked = _Configurator.Gsoz_Pedal_P1_Enabled;
-            Chk_GundamP2Pedal.Checked = _Configurator.Gsoz_Pedal_P2_Enabled;
-            TXT_GSOZ_PEDAL_1.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Gsoz_Pedal_P1);
-            TXT_GSOZ_PEDAL_2.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Gsoz_Pedal_P2);
+            Chk_GundamP1Pedal.Checked = Configurator.GetInstance().Gsoz_Pedal_P1_Enabled;
+            Chk_GundamP2Pedal.Checked = Configurator.GetInstance().Gsoz_Pedal_P2_Enabled;
+            TXT_GSOZ_PEDAL_1.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Gsoz_Pedal_P1);
+            TXT_GSOZ_PEDAL_2.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Gsoz_Pedal_P2);
 
             //Fill Heavy Fire Afghanistan tab
             Logger.WriteLog("Initializing GUI [Heavy Fire Afghanistan] pages...");
-            Txt_HF3_Browse.Text = _Configurator.HF3_Path;
-            TrackBar_HF3_Cover.Value = _Configurator.HF3_CoverSensibility;
-            Chk_HF3_ReverseCover.Checked = _Configurator.HF3_ReverseCover;
+            Txt_HF3_Browse.Text = Configurator.GetInstance().HF3_Path;
+            TrackBar_HF3_Cover.Value = Configurator.GetInstance().HF3_CoverSensibility;
+            Chk_HF3_ReverseCover.Checked = Configurator.GetInstance().HF3_ReverseCover;
 
             //Fill Heavy Fire Shattered Spear tab
             Logger.WriteLog("Initializing GUI [Heavy Fire S.S] pages...");
-            Txt_HF4_Browse.Text = _Configurator.HF4_Path;
-            TrackBar_HF4_Cover.Value = _Configurator.HF4_CoverSensibility;
-            Chk_HF4_ReverseCover.Checked = _Configurator.HF4_ReverseCover;
+            Txt_HF4_Browse.Text = Configurator.GetInstance().HF4_Path;
+            TrackBar_HF4_Cover.Value = Configurator.GetInstance().HF4_CoverSensibility;
+            Chk_HF4_ReverseCover.Checked = Configurator.GetInstance().HF4_ReverseCover;
 
             //Fill Lethal Enforcers 3 tab
             Logger.WriteLog("Initializing GUI [Lethal Enforcers 3] pages...");
-            Chk_Le3_EnablePedal1.Checked = _Configurator.Le3_Pedal_P1_Enabled;
-            Chk_Le3_EnablePedal2.Checked = _Configurator.Le3_Pedal_P2_Enabled;
-            TXT_LE3_PEDAL_1.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Le3_Pedal_P1);
-            TXT_LE3_PEDAL_2.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Le3_Pedal_P2);            
+            Chk_Le3_EnablePedal1.Checked = Configurator.GetInstance().Le3_Pedal_P1_Enabled;
+            Chk_Le3_EnablePedal2.Checked = Configurator.GetInstance().Le3_Pedal_P2_Enabled;
+            TXT_LE3_PEDAL_1.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Le3_Pedal_P1);
+            TXT_LE3_PEDAL_2.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Le3_Pedal_P2);            
 
             //Fill Operation GHOST Tab
             Logger.WriteLog("Initializing GUI [Operation G.H.O.S.T] pages...");
-            if (_Configurator.OpGhost_EnableFreeplay)
+            if (Configurator.GetInstance().OpGhost_EnableFreeplay)
                 Cbox_OpGhost_Freeplay.SelectedIndex = 1;
             else
                 Cbox_OpGhost_Freeplay.SelectedIndex = 0;
-            Cbox_OpGhost_CreditsByCoin.SelectedIndex = _Configurator.OpGhost_CoinsPerCredits - 1;
-            Cbox_OpGhost_CreditsToStart.SelectedIndex = _Configurator.OpGhost_CreditsToStart - 1;
-            Cbox_OpGhost_CreditsToContinue.SelectedIndex = _Configurator.OpGhost_CreditsToContinue - 1;
-            Chk_OpGhost_SeparateButton.Checked = _Configurator.OpGhost_SeparateButtons;
-            TXT_OPGHOST_ACTION_P1.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_OpGhost_Action_P1);
-            TXT_OPGHOST_ACTION_P2.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_OpGhost_Action_P2);
+            Cbox_OpGhost_CreditsByCoin.SelectedIndex = Configurator.GetInstance().OpGhost_CoinsPerCredits - 1;
+            Cbox_OpGhost_CreditsToStart.SelectedIndex = Configurator.GetInstance().OpGhost_CreditsToStart - 1;
+            Cbox_OpGhost_CreditsToContinue.SelectedIndex = Configurator.GetInstance().OpGhost_CreditsToContinue - 1;
+            Chk_OpGhost_SeparateButton.Checked = Configurator.GetInstance().OpGhost_SeparateButtons;
+            TXT_OPGHOST_ACTION_P1.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_OpGhost_Action_P1);
+            TXT_OPGHOST_ACTION_P2.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_OpGhost_Action_P2);
 
             //Fill Rabbids Hollywood tab
             Logger.WriteLog("Initializing GUI [Rabbids Hollywood] pages...");
-            Txt_Rha_GamePath.Text = _Configurator.Rha_Path;
+            Txt_Rha_GamePath.Text = Configurator.GetInstance().Rha_Path;
 
             //Fill RPCS3 Tab
             Logger.WriteLog("Initializing GUI [RPCS3] pages...");
-            Txt_Rpcs3_P1_Start.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_P1_Start);
-            Txt_Rpcs3_P2_Start.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_P2_Start);
-            Txt_Rpcs3_Service.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_Service);
-            Txt_Rpcs3_Up.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_Up);
-            Txt_Rpcs3_Down.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_Down);
-            Txt_Rpcs3_Enter.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_Enter);
-            Txt_Rpcs3_3D_Switch.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Rpcs3_3D_Switch);
+            Txt_Rpcs3_P1_Start.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Rpcs3_P1_Start);
+            Txt_Rpcs3_P2_Start.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Rpcs3_P2_Start);
+            Txt_Rpcs3_Service.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Rpcs3_Service);
+            Txt_Rpcs3_Up.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Rpcs3_Up);
+            Txt_Rpcs3_Down.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Rpcs3_Down);
+            Txt_Rpcs3_Enter.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Rpcs3_Enter);
+            Txt_Rpcs3_3D_Switch.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Rpcs3_3D_Switch);
 
             //Fill Wild West Shoutout tab
             Logger.WriteLog("Initializing GUI [Wild West Shoutout] pages...");
-            Txt_Wws_GamePath.Text = _Configurator.Wws_Path;
-            Txt_Wws_P1Coin.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_P1Coin);
-            Txt_Wws_P2Coin.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_P2Coin);
-            Txt_Wws_Test.Text = GetKeyStringFromScanCode((int)_Configurator.DIK_Wws_Test);
+            Txt_Wws_GamePath.Text = Configurator.GetInstance().Wws_Path;
+            Txt_Wws_P1Coin.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Wws_P1Coin);
+            Txt_Wws_P2Coin.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Wws_P2Coin);
+            Txt_Wws_Test.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Wws_Test);
 
             //Fill Output Tab
             Logger.WriteLog("Initializing GUI [Output] pages...");
-            Cbox_Outputs.Checked = _Configurator.OutputEnabled;
-            Txt_OutputDelay.Text = _Configurator.OutputPollingDelay.ToString();
-            Txt_OutputRecoilOn.Text = _Configurator.OutputCustomRecoilOnDelay.ToString();
-            Txt_OutputRecoilOff.Text = _Configurator.OutputCustomRecoilOffDelay.ToString();
-            Txt_OutputDamaged.Text = _Configurator.OutputCustomDamagedDelay.ToString();           
+            Cbox_Outputs.Checked = Configurator.GetInstance().OutputEnabled;
+            Cbox_WmOutputs.Checked = Configurator.GetInstance().Wm_OutputEnabled;
+            Cbox_NetOutputs.Checked = Configurator.GetInstance().Net_OutputEnabled;
+            Txt_OutputDelay.Text = Configurator.GetInstance().OutputPollingDelay.ToString();
+            Txt_OutputRecoilOn.Text = Configurator.GetInstance().OutputCustomRecoilOnDelay.ToString();
+            Txt_OutputRecoilOff.Text = Configurator.GetInstance().OutputCustomRecoilOffDelay.ToString();
+            Txt_OutputDamaged.Text = Configurator.GetInstance().OutputCustomDamagedDelay.ToString();           
 
             //Non-GUI settings
-            _HookTimeout = _Configurator.HookTimeout;
+            _HookTimeout = Configurator.GetInstance().HookTimeout;
 
             // Register to rawinput
             Logger.WriteLog("Registering to RawInput service...");
@@ -258,7 +258,7 @@ namespace DemulShooter_GUI
             {
                 if (Controller.isSourceOfRawInputMessage(RawInputHandle))
                 {
-                    foreach (PlayerSettings Player in _Configurator.PlayersSettings)
+                    foreach (PlayerSettings Player in Configurator.GetInstance().PlayersSettings)
                     {
                         if (Player.DeviceName == Controller.DeviceName)
                         {
@@ -285,20 +285,20 @@ namespace DemulShooter_GUI
 
         private void UpdateCalibration(int Player, int CurrentX, int CurrentY)
         {
-            if (CurrentX > _Configurator.PlayersSettings[Player - 1].AnalogManual_Xmax)
-                _Configurator.PlayersSettings[Player - 1].AnalogManual_Xmax = CurrentX;
-            if (CurrentX < _Configurator.PlayersSettings[Player - 1].AnalogManual_Xmin)
-                _Configurator.PlayersSettings[Player - 1].AnalogManual_Xmin = CurrentX;
-            if (CurrentY > _Configurator.PlayersSettings[Player - 1].AnalogManual_Ymax)
-                _Configurator.PlayersSettings[Player - 1].AnalogManual_Ymax = CurrentY;
-            if (CurrentY < _Configurator.PlayersSettings[Player - 1].AnalogManual_Ymin)
-                _Configurator.PlayersSettings[Player - 1].AnalogManual_Ymin = CurrentY;
+            if (CurrentX > Configurator.GetInstance().PlayersSettings[Player - 1].AnalogManual_Xmax)
+                Configurator.GetInstance().PlayersSettings[Player - 1].AnalogManual_Xmax = CurrentX;
+            if (CurrentX < Configurator.GetInstance().PlayersSettings[Player - 1].AnalogManual_Xmin)
+                Configurator.GetInstance().PlayersSettings[Player - 1].AnalogManual_Xmin = CurrentX;
+            if (CurrentY > Configurator.GetInstance().PlayersSettings[Player - 1].AnalogManual_Ymax)
+                Configurator.GetInstance().PlayersSettings[Player - 1].AnalogManual_Ymax = CurrentY;
+            if (CurrentY < Configurator.GetInstance().PlayersSettings[Player - 1].AnalogManual_Ymin)
+                Configurator.GetInstance().PlayersSettings[Player - 1].AnalogManual_Ymin = CurrentY;
 
         }
 
         private void Btn_SaveAnalog_Click(object sender, EventArgs e)
         {            
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -320,7 +320,7 @@ namespace DemulShooter_GUI
                 Txt_ActLabs_Y3.Enabled = true;
                 Txt_ActLabs_X4.Enabled = true;
                 Txt_ActLabs_Y4.Enabled = true;
-                _Configurator.Act_Labs_Offset_Enable = true;
+                Configurator.GetInstance().Act_Labs_Offset_Enable = true;
             }
             else
             {
@@ -332,115 +332,115 @@ namespace DemulShooter_GUI
                 Txt_ActLabs_Y3.Enabled = false;
                 Txt_ActLabs_X4.Enabled = false;
                 Txt_ActLabs_Y4.Enabled = false;
-                _Configurator.Act_Labs_Offset_Enable = false;
+                Configurator.GetInstance().Act_Labs_Offset_Enable = false;
             }
         }
 
 
         private void Chk_DspCorrectedCrosshair_CheckedChanged(object sender, EventArgs e)
         {
-            _Configurator.Act_Labs_Display_Crosshair = Chk_DspCorrectedCrosshair.Checked;
+            Configurator.GetInstance().Act_Labs_Display_Crosshair = Chk_DspCorrectedCrosshair.Checked;
         }
 
         private void Txt_ActLabs_X1_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                _Configurator.GetPlayerSettings(1).Act_Labs_Offset_X = Convert.ToInt32(Txt_ActLabs_X1.Text);
+                Configurator.GetInstance().GetPlayerSettings(1).Act_Labs_Offset_X = Convert.ToInt32(Txt_ActLabs_X1.Text);
             }
             catch
             {
                 MessageBox.Show(Txt_ActLabs_X1.Text + " is not a valid X offset value. Please enter a non-decimal number");
-                Txt_ActLabs_X1.Text = _Configurator.GetPlayerSettings(1).Act_Labs_Offset_X.ToString();
+                Txt_ActLabs_X1.Text = Configurator.GetInstance().GetPlayerSettings(1).Act_Labs_Offset_X.ToString();
             }
         }
         private void Txt_ActLabs_Y1_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                _Configurator.GetPlayerSettings(1).Act_Labs_Offset_Y = Convert.ToInt32(Txt_ActLabs_Y1.Text);
+                Configurator.GetInstance().GetPlayerSettings(1).Act_Labs_Offset_Y = Convert.ToInt32(Txt_ActLabs_Y1.Text);
             }
             catch
             {
                 MessageBox.Show(Txt_ActLabs_Y1.Text + " is not a valid Y offset value. Please enter a non-decimal number");
-                Txt_ActLabs_Y1.Text = _Configurator.GetPlayerSettings(1).Act_Labs_Offset_Y.ToString();
+                Txt_ActLabs_Y1.Text = Configurator.GetInstance().GetPlayerSettings(1).Act_Labs_Offset_Y.ToString();
             }
         }
         private void Txt_ActLabs_X2_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                _Configurator.PlayersSettings[1].Act_Labs_Offset_X = Convert.ToInt32(Txt_ActLabs_X2.Text);
+                Configurator.GetInstance().PlayersSettings[1].Act_Labs_Offset_X = Convert.ToInt32(Txt_ActLabs_X2.Text);
             }
             catch
             {
                 MessageBox.Show(Txt_ActLabs_X2.Text + " is not a valid X offset value. Please enter a non-decimal number");
-                Txt_ActLabs_X2.Text = _Configurator.PlayersSettings[1].Act_Labs_Offset_X.ToString();
+                Txt_ActLabs_X2.Text = Configurator.GetInstance().PlayersSettings[1].Act_Labs_Offset_X.ToString();
             }
         }
         private void Txt_ActLabs_Y2_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                _Configurator.PlayersSettings[1].Act_Labs_Offset_Y = Convert.ToInt32(Txt_ActLabs_Y2.Text);
+                Configurator.GetInstance().PlayersSettings[1].Act_Labs_Offset_Y = Convert.ToInt32(Txt_ActLabs_Y2.Text);
             }
             catch
             {
                 MessageBox.Show(Txt_ActLabs_Y2.Text + " is not a valid Y offset value. Please enter a non-decimal number");
-                Txt_ActLabs_Y2.Text = _Configurator.PlayersSettings[1].Act_Labs_Offset_Y.ToString();
+                Txt_ActLabs_Y2.Text = Configurator.GetInstance().PlayersSettings[1].Act_Labs_Offset_Y.ToString();
             }
         }
         private void Txt_ActLabs_X3_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                _Configurator.PlayersSettings[2].Act_Labs_Offset_X = Convert.ToInt32(Txt_ActLabs_X3.Text);
+                Configurator.GetInstance().PlayersSettings[2].Act_Labs_Offset_X = Convert.ToInt32(Txt_ActLabs_X3.Text);
             }
             catch
             {
                 MessageBox.Show(Txt_ActLabs_X3.Text + " is not a valid X offset value. Please enter a non-decimal number");
-                Txt_ActLabs_X3.Text = _Configurator.PlayersSettings[2].Act_Labs_Offset_X.ToString();
+                Txt_ActLabs_X3.Text = Configurator.GetInstance().PlayersSettings[2].Act_Labs_Offset_X.ToString();
             }
         }
         private void Txt_ActLabs_Y3_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                _Configurator.PlayersSettings[2].Act_Labs_Offset_Y = Convert.ToInt32(Txt_ActLabs_Y3.Text);
+                Configurator.GetInstance().PlayersSettings[2].Act_Labs_Offset_Y = Convert.ToInt32(Txt_ActLabs_Y3.Text);
             }
             catch
             {
                 MessageBox.Show(Txt_ActLabs_Y3.Text + " is not a valid Y offset value. Please enter a non-decimal number");
-                Txt_ActLabs_Y3.Text = _Configurator.PlayersSettings[2].Act_Labs_Offset_Y.ToString();
+                Txt_ActLabs_Y3.Text = Configurator.GetInstance().PlayersSettings[2].Act_Labs_Offset_Y.ToString();
             }
         }
         private void Txt_ActLabs_X4_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                _Configurator.PlayersSettings[3].Act_Labs_Offset_X = Convert.ToInt32(Txt_ActLabs_X4.Text);
+                Configurator.GetInstance().PlayersSettings[3].Act_Labs_Offset_X = Convert.ToInt32(Txt_ActLabs_X4.Text);
             }
             catch
             {
                 MessageBox.Show(Txt_ActLabs_X4.Text + " is not a valid X offset value. Please enter a non-decimal number");
-                Txt_ActLabs_X4.Text = _Configurator.PlayersSettings[3].Act_Labs_Offset_X.ToString();
+                Txt_ActLabs_X4.Text = Configurator.GetInstance().PlayersSettings[3].Act_Labs_Offset_X.ToString();
             }
         }
         private void Txt_ActLabs_Y4_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                _Configurator.PlayersSettings[3].Act_Labs_Offset_Y = Convert.ToInt32(Txt_ActLabs_Y4.Text);
+                Configurator.GetInstance().PlayersSettings[3].Act_Labs_Offset_Y = Convert.ToInt32(Txt_ActLabs_Y4.Text);
             }
             catch
             {
                 MessageBox.Show(Txt_ActLabs_Y4.Text + " is not a valid Y offset value. Please enter a non-decimal number");
-                Txt_ActLabs_Y4.Text = _Configurator.PlayersSettings[3].Act_Labs_Offset_Y.ToString();
+                Txt_ActLabs_Y4.Text = Configurator.GetInstance().PlayersSettings[3].Act_Labs_Offset_Y.ToString();
             }
         }         
         private void Btn_ActLabs_Save_Click(object sender, EventArgs e)
         {
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -452,7 +452,7 @@ namespace DemulShooter_GUI
 
         private void Save_Sha_Keys_Click(object sender, EventArgs e)
         {
-            if (_Configurator.Write_Sha_Config())
+            if (Configurator.GetInstance().Write_Sha_Config())
                 MessageBox.Show("Key mapping saved !");
             else
                 MessageBox.Show("Impossible to save SHA config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -464,23 +464,23 @@ namespace DemulShooter_GUI
 
         private void Chk_GundamP1Pedal_CheckedChanged(object sender, EventArgs e)
         {
-            _Configurator.Gsoz_Pedal_P1_Enabled = Chk_GundamP1Pedal.Checked;
-            if (_Configurator.Gsoz_Pedal_P1_Enabled)
+            Configurator.GetInstance().Gsoz_Pedal_P1_Enabled = Chk_GundamP1Pedal.Checked;
+            if (Configurator.GetInstance().Gsoz_Pedal_P1_Enabled)
                 TXT_GSOZ_PEDAL_1.Enabled = true;
             else
                 TXT_GSOZ_PEDAL_1.Enabled = false;
         }
         private void Chk_GundamP2Pedal_CheckedChanged(object sender, EventArgs e)
         {
-            _Configurator.Gsoz_Pedal_P2_Enabled = Chk_GundamP2Pedal.Checked;
-            if (_Configurator.Gsoz_Pedal_P2_Enabled)
+            Configurator.GetInstance().Gsoz_Pedal_P2_Enabled = Chk_GundamP2Pedal.Checked;
+            if (Configurator.GetInstance().Gsoz_Pedal_P2_Enabled)
                 TXT_GSOZ_PEDAL_2.Enabled = true;
             else
                 TXT_GSOZ_PEDAL_2.Enabled = false;
         }
         private void Btn_Save_Gsoz_Click(object sender, EventArgs e)
         {
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -516,8 +516,8 @@ namespace DemulShooter_GUI
                 int P2_Atrak_ID = 0;
                 try
                 {
-                    String VID = (_Configurator.PlayersSettings[0].DeviceName.ToUpper().Split(new string[] { "VID_" }, System.StringSplitOptions.RemoveEmptyEntries))[1].Substring(0, 4);
-                    String PID = (_Configurator.PlayersSettings[1].DeviceName.ToUpper().Split(new string[] { "PID_" }, System.StringSplitOptions.RemoveEmptyEntries))[1].Substring(0, 4);
+                    String VID = (Configurator.GetInstance().PlayersSettings[0].DeviceName.ToUpper().Split(new string[] { "VID_" }, System.StringSplitOptions.RemoveEmptyEntries))[1].Substring(0, 4);
+                    String PID = (Configurator.GetInstance().PlayersSettings[1].DeviceName.ToUpper().Split(new string[] { "PID_" }, System.StringSplitOptions.RemoveEmptyEntries))[1].Substring(0, 4);
                     if (VID.Equals("D209") && PID.StartsWith("16"))
                     {
                         IsAimtrak = true;
@@ -680,7 +680,7 @@ namespace DemulShooter_GUI
 
         private void Btn_EAI_Save_Click(object sender, EventArgs e)
         {
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -702,9 +702,9 @@ namespace DemulShooter_GUI
             {
                 StreamWriter streamWriter = new StreamWriter(folderBrowserDialog1.SelectedPath + "\\scripts\\demulshooter.lua", false);
                 streamWriter.WriteLine("-- This file is automatically generated by Demulshooter\n");
-                streamWriter.WriteLine("P1_ChangeCrosshairKey=0x" + ((byte)_Configurator.DIK_M2_Crosshair_P1).ToString("X2"));
-                streamWriter.WriteLine("P2_ChangeCrosshairKey=0x" + ((byte)_Configurator.DIK_M2_Crosshair_P2).ToString("X2"));
-                streamWriter.WriteLine("CrosshairVisibilityKey=0x" + ((byte)_Configurator.DIK_M2_Crosshair_Visibility).ToString("X2"));
+                streamWriter.WriteLine("P1_ChangeCrosshairKey=0x" + ((byte)Configurator.GetInstance().DIK_M2_Crosshair_P1).ToString("X2"));
+                streamWriter.WriteLine("P2_ChangeCrosshairKey=0x" + ((byte)Configurator.GetInstance().DIK_M2_Crosshair_P2).ToString("X2"));
+                streamWriter.WriteLine("CrosshairVisibilityKey=0x" + ((byte)Configurator.GetInstance().DIK_M2_Crosshair_Visibility).ToString("X2"));
                 streamWriter.WriteLine();
                 streamWriter.WriteLine("function lines_from(file)");
                 streamWriter.WriteLine("\tlines = {}");
@@ -740,13 +740,13 @@ namespace DemulShooter_GUI
             folderBrowserDialog1.Description = "Please select \"Heavy Fire Afghanistan\" installation folder";
             if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                _Configurator.HF3_Path = folderBrowserDialog1.SelectedPath;
-                Txt_HF3_Browse.Text = _Configurator.HF3_Path;
+                Configurator.GetInstance().HF3_Path = folderBrowserDialog1.SelectedPath;
+                Txt_HF3_Browse.Text = Configurator.GetInstance().HF3_Path;
             }
         }
         private void Txt_HF3_Browse_TextChanged(object sender, EventArgs e)
         {
-            _Configurator.HF3_Path = Txt_HF3_Browse.Text;
+            Configurator.GetInstance().HF3_Path = Txt_HF3_Browse.Text;
             if (Txt_HF3_Browse.Text.Length > 0)
             {
                 Lbl_HFA_Version.Text = "Game version : ";
@@ -756,11 +756,11 @@ namespace DemulShooter_GUI
 
                 //Getting game information
                 string sMD5 = string.Empty;
-                if (File.Exists(_Configurator.HF3_Path + @"\HeavyFire3_Final.exe"))
+                if (File.Exists(Configurator.GetInstance().HF3_Path + @"\HeavyFire3_Final.exe"))
                 {
                     using (var md5 = MD5.Create())
                     {
-                        using (var stream = File.OpenRead(_Configurator.HF3_Path + @"\HeavyFire3_Final.exe"))
+                        using (var stream = File.OpenRead(Configurator.GetInstance().HF3_Path + @"\HeavyFire3_Final.exe"))
                         {
                             //Getting md5 calculation of destination file
                             sMD5 = BitConverter.ToString(md5.ComputeHash(stream));
@@ -777,11 +777,11 @@ namespace DemulShooter_GUI
                         }
                     }                      
                 }
-                else if (File.Exists(_Configurator.HF3_Path + @"\HeavyFire3.exe"))
+                else if (File.Exists(Configurator.GetInstance().HF3_Path + @"\HeavyFire3.exe"))
                 {
                     using (var md5 = MD5.Create())
                     {
-                        using (var stream = File.OpenRead(_Configurator.HF3_Path + @"\HeavyFire3.exe"))
+                        using (var stream = File.OpenRead(Configurator.GetInstance().HF3_Path + @"\HeavyFire3.exe"))
                         {
                             sMD5 = BitConverter.ToString(md5.ComputeHash(stream));
                             if (sMD5.Equals("3F-49-95-1A-E8-23-28-17-A9-1E-F5-50-33-74-D6-B3"))
@@ -811,7 +811,7 @@ namespace DemulShooter_GUI
         }
         private void Btn_HF3_Install_Click(object sender, EventArgs e)
         {
-            InstallHeavyFireDll(_Configurator.HF3_Path);                  
+            InstallHeavyFireDll(Configurator.GetInstance().HF3_Path);                  
         }
         private void InstallHeavyFireDll(string Path)
         {
@@ -842,15 +842,15 @@ namespace DemulShooter_GUI
         }
         private void TrackBar_HF3_Cover_ValueChanged(object sender, EventArgs e)
         {
-            _Configurator.HF4_CoverSensibility = TrackBar_HF3_Cover.Value;
+            Configurator.GetInstance().HF4_CoverSensibility = TrackBar_HF3_Cover.Value;
         }
         private void Chk_HF3_ReverseCover_CheckedChanged(object sender, EventArgs e)
         {
-            _Configurator.HF3_ReverseCover = Chk_HF3_ReverseCover.Checked;
+            Configurator.GetInstance().HF3_ReverseCover = Chk_HF3_ReverseCover.Checked;
         }
         private void Btn_HF3_Save_Click(object sender, EventArgs e)
         {
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -865,13 +865,13 @@ namespace DemulShooter_GUI
             folderBrowserDialog1.Description = "Please select \"Heavy Fire Shattered Spear\" installation folder";
             if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                _Configurator.HF4_Path = folderBrowserDialog1.SelectedPath;
-                Txt_HF4_Browse.Text = _Configurator.HF4_Path;
+                Configurator.GetInstance().HF4_Path = folderBrowserDialog1.SelectedPath;
+                Txt_HF4_Browse.Text = Configurator.GetInstance().HF4_Path;
             }
         }
         private void Txt_HF4_Browse_TextChanged(object sender, EventArgs e)
         {
-            _Configurator.HF4_Path = Txt_HF4_Browse.Text;
+            Configurator.GetInstance().HF4_Path = Txt_HF4_Browse.Text;
             if (Txt_HF4_Browse.Text.Length > 0)
             {
                 Lbl_HF4_Version.Text = "Game version : ";
@@ -881,11 +881,11 @@ namespace DemulShooter_GUI
 
                 //Getting game information
                 string sMD5 = string.Empty;
-                if (File.Exists(_Configurator.HF4_Path + @"\hf4.exe"))
+                if (File.Exists(Configurator.GetInstance().HF4_Path + @"\hf4.exe"))
                 {
                     using (var md5 = MD5.Create())
                     {
-                        using (var stream = File.OpenRead(_Configurator.HF4_Path + @"\hf4.exe"))
+                        using (var stream = File.OpenRead(Configurator.GetInstance().HF4_Path + @"\hf4.exe"))
                         {
                             //Getting md5 calculation of destination file
                             sMD5 = BitConverter.ToString(md5.ComputeHash(stream));
@@ -902,11 +902,11 @@ namespace DemulShooter_GUI
                         }
                     }
                 }
-                else if (File.Exists(_Configurator.HF4_Path + @"\HeavyFire4.exe"))
+                else if (File.Exists(Configurator.GetInstance().HF4_Path + @"\HeavyFire4.exe"))
                 {
                     using (var md5 = MD5.Create())
                     {
-                        using (var stream = File.OpenRead(_Configurator.HF4_Path + @"\HeavyFire4.exe"))
+                        using (var stream = File.OpenRead(Configurator.GetInstance().HF4_Path + @"\HeavyFire4.exe"))
                         {
                             sMD5 = BitConverter.ToString(md5.ComputeHash(stream));
                             if (sMD5.Equals("94-76-F9-BB-A4-8A-EA-6C-A0-4D-06-15-8B-E0-7F-1C"))
@@ -936,15 +936,15 @@ namespace DemulShooter_GUI
         }
         private void Btn_HF4_Install_Click(object sender, EventArgs e)
         {
-            InstallHeavyFireDll(_Configurator.HF4_Path);
+            InstallHeavyFireDll(Configurator.GetInstance().HF4_Path);
 
             //Getting game information
             string sMD5 = string.Empty;
-            if (File.Exists(_Configurator.HF4_Path + @"\hf4.exe"))
+            if (File.Exists(Configurator.GetInstance().HF4_Path + @"\hf4.exe"))
             {
                 using (var md5 = MD5.Create())
                 {
-                    using (var stream = File.OpenRead(_Configurator.HF4_Path + @"\hf4.exe"))
+                    using (var stream = File.OpenRead(Configurator.GetInstance().HF4_Path + @"\hf4.exe"))
                     {
                         //Getting md5 calculation of destination file
                         sMD5 = BitConverter.ToString(md5.ComputeHash(stream));
@@ -955,11 +955,11 @@ namespace DemulShooter_GUI
                     }
                 }
             }
-            else if (File.Exists(_Configurator.HF4_Path + @"\HeavyFire4.exe"))
+            else if (File.Exists(Configurator.GetInstance().HF4_Path + @"\HeavyFire4.exe"))
             {
                 using (var md5 = MD5.Create())
                 {
-                    using (var stream = File.OpenRead(_Configurator.HF4_Path + @"\HeavyFire4.exe"))
+                    using (var stream = File.OpenRead(Configurator.GetInstance().HF4_Path + @"\HeavyFire4.exe"))
                     {
                         sMD5 = BitConverter.ToString(md5.ComputeHash(stream));
                         if (sMD5.Equals("94-76-F9-BB-A4-8A-EA-6C-A0-4D-06-15-8B-E0-7F-1C"))
@@ -976,15 +976,15 @@ namespace DemulShooter_GUI
         }
         private void TrackBar_HF4_Cover_ValueChanged(object sender, EventArgs e)
         {
-            _Configurator.HF4_CoverSensibility = TrackBar_HF4_Cover.Value;
+            Configurator.GetInstance().HF4_CoverSensibility = TrackBar_HF4_Cover.Value;
         }
         private void Chk_HF4_ReverseCover_CheckedChanged(object sender, EventArgs e)
         {
-            _Configurator.HF4_ReverseCover = Chk_HF4_ReverseCover.Checked;
+            Configurator.GetInstance().HF4_ReverseCover = Chk_HF4_ReverseCover.Checked;
         }        
         private void Btn_HF4_Save_Click(object sender, EventArgs e)
         {
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -996,8 +996,8 @@ namespace DemulShooter_GUI
 
         private void Chk_Le3_EnablePedal1_CheckedChanged(object sender, EventArgs e)
         {
-            _Configurator.Le3_Pedal_P1_Enabled = Chk_Le3_EnablePedal1.Checked;
-            if (_Configurator.Le3_Pedal_P1_Enabled)
+            Configurator.GetInstance().Le3_Pedal_P1_Enabled = Chk_Le3_EnablePedal1.Checked;
+            if (Configurator.GetInstance().Le3_Pedal_P1_Enabled)
                 TXT_LE3_PEDAL_1.Enabled = true;
             else
                 TXT_LE3_PEDAL_1.Enabled = false;
@@ -1005,8 +1005,8 @@ namespace DemulShooter_GUI
 
         private void Chk_Le3_EnablePedal2_CheckedChanged(object sender, EventArgs e)
         {
-            _Configurator.Le3_Pedal_P2_Enabled = Chk_Le3_EnablePedal2.Checked;
-            if (_Configurator.Le3_Pedal_P2_Enabled)
+            Configurator.GetInstance().Le3_Pedal_P2_Enabled = Chk_Le3_EnablePedal2.Checked;
+            if (Configurator.GetInstance().Le3_Pedal_P2_Enabled)
                 TXT_LE3_PEDAL_2.Enabled = true;
             else
                 TXT_LE3_PEDAL_2.Enabled = false;
@@ -1014,7 +1014,7 @@ namespace DemulShooter_GUI
 
         private void Btn_Save_Le3_Click(object sender, EventArgs e)
         {
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1027,30 +1027,30 @@ namespace DemulShooter_GUI
         private void Cbox_OpGhost_Freeplay_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (Cbox_OpGhost_Freeplay.SelectedIndex == 0)
-                _Configurator.OpGhost_EnableFreeplay = false;
+                Configurator.GetInstance().OpGhost_EnableFreeplay = false;
             else
-                _Configurator.OpGhost_EnableFreeplay = true;
+                Configurator.GetInstance().OpGhost_EnableFreeplay = true;
         }
 
         private void Cbox_OpGhost_CreditsByCoin_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _Configurator.OpGhost_CoinsPerCredits = Cbox_OpGhost_CreditsByCoin.SelectedIndex + 1;
+            Configurator.GetInstance().OpGhost_CoinsPerCredits = Cbox_OpGhost_CreditsByCoin.SelectedIndex + 1;
         }
 
         private void Cbox_OpGhost_CreditsToStart_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _Configurator.OpGhost_CreditsToStart = Cbox_OpGhost_CreditsToStart.SelectedIndex + 1;
+            Configurator.GetInstance().OpGhost_CreditsToStart = Cbox_OpGhost_CreditsToStart.SelectedIndex + 1;
         }
 
         private void Cbox_OpGhost_CreditsToContinue_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _Configurator.OpGhost_CreditsToContinue = Cbox_OpGhost_CreditsToContinue.SelectedIndex + 1;
+            Configurator.GetInstance().OpGhost_CreditsToContinue = Cbox_OpGhost_CreditsToContinue.SelectedIndex + 1;
         } 
 
         private void Chk_OpGhost_SeparateButton_CheckedChanged(object sender, EventArgs e)
         {
-            _Configurator.OpGhost_SeparateButtons = Chk_OpGhost_SeparateButton.Checked;
-            if (_Configurator.OpGhost_SeparateButtons)
+            Configurator.GetInstance().OpGhost_SeparateButtons = Chk_OpGhost_SeparateButton.Checked;
+            if (Configurator.GetInstance().OpGhost_SeparateButtons)
             {
                 TXT_OPGHOST_ACTION_P1.Enabled = true;
                 TXT_OPGHOST_ACTION_P2.Enabled = true;
@@ -1064,7 +1064,7 @@ namespace DemulShooter_GUI
 
         private void Btn_Save_OpGhost_Click(object sender, EventArgs e)
         {
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1079,8 +1079,8 @@ namespace DemulShooter_GUI
             folderBrowserDialog1.Description = "Please select \"CowBoy.exe\" installation folder";
             if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                _Configurator.Wws_Path = folderBrowserDialog1.SelectedPath;
-                Txt_Wws_GamePath.Text = _Configurator.Wws_Path;
+                Configurator.GetInstance().Wws_Path = folderBrowserDialog1.SelectedPath;
+                Txt_Wws_GamePath.Text = Configurator.GetInstance().Wws_Path;
             }
         }
 
@@ -1093,7 +1093,7 @@ namespace DemulShooter_GUI
             else
                 MessageBox.Show("Unity plugin installed !");
 
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);            
@@ -1101,7 +1101,7 @@ namespace DemulShooter_GUI
 
         private void Btn_Wws_SaveKeys_Click(object sender, EventArgs e)
         {
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);            
@@ -1116,8 +1116,8 @@ namespace DemulShooter_GUI
             folderBrowserDialog1.Description = "Please select \"Game.exe\" installation folder";
             if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                _Configurator.Rha_Path = folderBrowserDialog1.SelectedPath;
-                Txt_Rha_GamePath.Text = _Configurator.Rha_Path;
+                Configurator.GetInstance().Rha_Path = folderBrowserDialog1.SelectedPath;
+                Txt_Rha_GamePath.Text = Configurator.GetInstance().Rha_Path;
             }
         }
 
@@ -1128,7 +1128,7 @@ namespace DemulShooter_GUI
             else
                 MessageBox.Show("Unity plugin installed !");
 
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1217,7 +1217,7 @@ namespace DemulShooter_GUI
 
         private void Txt_Rpcs3_Save_Click(object sender, EventArgs e)
         {
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1258,19 +1258,43 @@ namespace DemulShooter_GUI
             Txt_OutputRecoilOn.Enabled = Cbox_Outputs.Checked;
             Txt_OutputRecoilOff.Enabled = Cbox_Outputs.Checked;
             Txt_OutputDamaged.Enabled = Cbox_Outputs.Checked;
-            _Configurator.OutputEnabled = Cbox_Outputs.Checked;
+
+            Cbox_WmOutputs.Enabled = Cbox_Outputs.Checked;
+            Cbox_NetOutputs.Enabled = Cbox_Outputs.Checked;
+            Configurator.GetInstance().OutputEnabled = Cbox_Outputs.Checked;
+        }
+
+
+        private void Cbox_WmOutputs_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!Cbox_WmOutputs.Checked)
+            {
+                if (!Cbox_NetOutputs.Checked)
+                    Cbox_WmOutputs.Checked = true;
+            }
+            Configurator.GetInstance().Wm_OutputEnabled = Cbox_WmOutputs.Checked;
+        }
+
+        private void Cbox_NetOutputs_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!Cbox_NetOutputs.Checked)
+            {
+                if (!Cbox_WmOutputs.Checked)
+                    Cbox_NetOutputs.Checked = true;
+            }
+            Configurator.GetInstance().Net_OutputEnabled = Cbox_NetOutputs.Checked;
         }
 
         private void Txt_OutputDelay_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                _Configurator.OutputPollingDelay = Convert.ToInt32(Txt_OutputDelay.Text);
+                Configurator.GetInstance().OutputPollingDelay = Convert.ToInt32(Txt_OutputDelay.Text);
             }
             catch
             {
                 MessageBox.Show(Txt_OutputDelay.Text + " is not a valid delay. Please enter a non-decimal number");
-                Txt_OutputDelay.Text = _Configurator.OutputPollingDelay.ToString();
+                Txt_OutputDelay.Text = Configurator.GetInstance().OutputPollingDelay.ToString();
             }
         }
 
@@ -1278,12 +1302,12 @@ namespace DemulShooter_GUI
         {
             try
             {
-                _Configurator.OutputCustomRecoilOnDelay = Convert.ToInt32(Txt_OutputRecoilOn.Text);
+                Configurator.GetInstance().OutputCustomRecoilOnDelay = Convert.ToInt32(Txt_OutputRecoilOn.Text);
             }
             catch
             {
                 MessageBox.Show(Txt_OutputRecoilOn.Text + " is not a valid delay. Please enter a non-decimal number");
-                Txt_OutputRecoilOn.Text = _Configurator.OutputCustomRecoilOnDelay.ToString();
+                Txt_OutputRecoilOn.Text = Configurator.GetInstance().OutputCustomRecoilOnDelay.ToString();
             }
         }
 
@@ -1291,12 +1315,12 @@ namespace DemulShooter_GUI
         {
             try
             {
-                _Configurator.OutputCustomRecoilOffDelay = Convert.ToInt32(Txt_OutputRecoilOff.Text);
+                Configurator.GetInstance().OutputCustomRecoilOffDelay = Convert.ToInt32(Txt_OutputRecoilOff.Text);
             }
             catch
             {
                 MessageBox.Show(Txt_OutputRecoilOff.Text + " is not a valid delay. Please enter a non-decimal number");
-                Txt_OutputRecoilOff.Text = _Configurator.OutputCustomRecoilOffDelay.ToString();
+                Txt_OutputRecoilOff.Text = Configurator.GetInstance().OutputCustomRecoilOffDelay.ToString();
             }
         }
 
@@ -1304,18 +1328,18 @@ namespace DemulShooter_GUI
         {
             try
             {
-                _Configurator.OutputCustomDamagedDelay = Convert.ToInt32(Txt_OutputDamaged.Text);
+                Configurator.GetInstance().OutputCustomDamagedDelay = Convert.ToInt32(Txt_OutputDamaged.Text);
             }
             catch
             {
                 MessageBox.Show(Txt_OutputDamaged.Text + " is not a valid delay. Please enter a non-decimal number");
-                Txt_OutputDamaged.Text = _Configurator.OutputCustomDamagedDelay.ToString();
+                Txt_OutputDamaged.Text = Configurator.GetInstance().OutputCustomDamagedDelay.ToString();
             }
         }
 
         private void Btn_Save_Cfg_Click(object sender, EventArgs e)
         {
-            if (_Configurator.WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1360,73 +1384,73 @@ namespace DemulShooter_GUI
                         _SelectedTextBox.Text = GetKeyStringFromVkCode(s.vkCode);
 
                         if (_SelectedTextBox == TXT_P1_S)
-                            _Configurator.DIK_Sha_P1_Start = s.scanCode;
+                            Configurator.GetInstance().DIK_Sha_P1_Start = s.scanCode;
                         else if (_SelectedTextBox == TXT_P1_T)
-                            _Configurator.DIK_Sha_P1_Trigger = s.scanCode;
+                            Configurator.GetInstance().DIK_Sha_P1_Trigger = s.scanCode;
                         else if (_SelectedTextBox == TXT_P2_S)
-                            _Configurator.DIK_Sha_P2_Start = s.scanCode;
+                            Configurator.GetInstance().DIK_Sha_P2_Start = s.scanCode;
                         else if (_SelectedTextBox == TXT_P2_T)
-                            _Configurator.DIK_Sha_P2_Trigger = s.scanCode;
+                            Configurator.GetInstance().DIK_Sha_P2_Trigger = s.scanCode;
                         else if (_SelectedTextBox == TXT_EXIT)
-                            _Configurator.DIK_Sha_Exit = s.scanCode;
+                            Configurator.GetInstance().DIK_Sha_Exit = s.scanCode;
                         else if (_SelectedTextBox == TXT_TEST)
-                            _Configurator.DIK_Sha_Test = s.scanCode;
+                            Configurator.GetInstance().DIK_Sha_Test = s.scanCode;
                         else if (_SelectedTextBox == TXT_SERVICE)
-                            _Configurator.DIK_Sha_Service = s.scanCode;
+                            Configurator.GetInstance().DIK_Sha_Service = s.scanCode;
                         else if (_SelectedTextBox == TXT_CH_P1)
-                            _Configurator.DIK_M2_Crosshair_P1 = s.scanCode;
+                            Configurator.GetInstance().DIK_M2_Crosshair_P1 = s.scanCode;
                         else if (_SelectedTextBox == TXT_CH_P2)
-                            _Configurator.DIK_M2_Crosshair_P2 = s.scanCode;
+                            Configurator.GetInstance().DIK_M2_Crosshair_P2 = s.scanCode;
                         else if (_SelectedTextBox == TXT_CH_VIS)
-                            _Configurator.DIK_M2_Crosshair_Visibility = s.scanCode;
+                            Configurator.GetInstance().DIK_M2_Crosshair_Visibility = s.scanCode;
                         else if (_SelectedTextBox == TXT_GSOZ_PEDAL_1)
-                            _Configurator.DIK_Gsoz_Pedal_P1 = s.scanCode;
+                            Configurator.GetInstance().DIK_Gsoz_Pedal_P1 = s.scanCode;
                         else if (_SelectedTextBox == TXT_GSOZ_PEDAL_2)
-                            _Configurator.DIK_Gsoz_Pedal_P2 = s.scanCode;
+                            Configurator.GetInstance().DIK_Gsoz_Pedal_P2 = s.scanCode;
                         else if (_SelectedTextBox == Txt_Wws_P1Coin)
-                            _Configurator.DIK_Wws_P1Coin = s.scanCode;
+                            Configurator.GetInstance().DIK_Wws_P1Coin = s.scanCode;
                         else if (_SelectedTextBox == Txt_Wws_P2Coin)
-                            _Configurator.DIK_Wws_P2Coin = s.scanCode;
+                            Configurator.GetInstance().DIK_Wws_P2Coin = s.scanCode;
                         else if (_SelectedTextBox == Txt_Wws_Test)
-                            _Configurator.DIK_Wws_Test = s.scanCode;
+                            Configurator.GetInstance().DIK_Wws_Test = s.scanCode;
                         else if (_SelectedTextBox == Txt_Rpcs3_P1_Start)
-                            _Configurator.DIK_Rpcs3_P1_Start = s.scanCode;
+                            Configurator.GetInstance().DIK_Rpcs3_P1_Start = s.scanCode;
                         else if (_SelectedTextBox == Txt_Rpcs3_P2_Start)
-                            _Configurator.DIK_Rpcs3_P2_Start = s.scanCode;
+                            Configurator.GetInstance().DIK_Rpcs3_P2_Start = s.scanCode;
                         else if (_SelectedTextBox == Txt_Rpcs3_Service)
-                            _Configurator.DIK_Rpcs3_Service = s.scanCode;
+                            Configurator.GetInstance().DIK_Rpcs3_Service = s.scanCode;
                         else if (_SelectedTextBox == Txt_Rpcs3_Up)
-                            _Configurator.DIK_Rpcs3_Up = s.scanCode;
+                            Configurator.GetInstance().DIK_Rpcs3_Up = s.scanCode;
                         else if (_SelectedTextBox == Txt_Rpcs3_Down)
-                            _Configurator.DIK_Rpcs3_Down = s.scanCode;
+                            Configurator.GetInstance().DIK_Rpcs3_Down = s.scanCode;
                         else if (_SelectedTextBox == Txt_Rpcs3_Enter)
-                            _Configurator.DIK_Rpcs3_Enter = s.scanCode;
+                            Configurator.GetInstance().DIK_Rpcs3_Enter = s.scanCode;
                         else if (_SelectedTextBox == Txt_Rpcs3_3D_Switch)
-                            _Configurator.DIK_Rpcs3_3D_Switch = s.scanCode;
+                            Configurator.GetInstance().DIK_Rpcs3_3D_Switch = s.scanCode;
                         else if (_SelectedTextBox == TXT_LE3_PEDAL_1)
-                            _Configurator.DIK_Le3_Pedal_P1 = s.scanCode;
+                            Configurator.GetInstance().DIK_Le3_Pedal_P1 = s.scanCode;
                         else if (_SelectedTextBox == TXT_LE3_PEDAL_2)
-                            _Configurator.DIK_Le3_Pedal_P2 = s.scanCode;
+                            Configurator.GetInstance().DIK_Le3_Pedal_P2 = s.scanCode;
                         else if (_SelectedTextBox == TXT_OPGHOST_ACTION_P1)
-                            _Configurator.DIK_OpGhost_Action_P1 = s.scanCode;
+                            Configurator.GetInstance().DIK_OpGhost_Action_P1 = s.scanCode;
                         else if (_SelectedTextBox == TXT_OPGHOST_ACTION_P2)
-                            _Configurator.DIK_OpGhost_Action_P2 = s.scanCode;
+                            Configurator.GetInstance().DIK_OpGhost_Action_P2 = s.scanCode;
                         else if (_SelectedTextBox == Txt_EAI_P1_Start)
-                            _Configurator.DIK_Eai_P1_Start = s.scanCode;
+                            Configurator.GetInstance().DIK_Eai_P1_Start = s.scanCode;
                         else if (_SelectedTextBox == Txt_EAI_P2_Start)
-                            _Configurator.DIK_Eai_P2_Start = s.scanCode;
+                            Configurator.GetInstance().DIK_Eai_P2_Start = s.scanCode;
                         else if (_SelectedTextBox == Txt_EAI_P1_Credits)
-                            _Configurator.DIK_Eai_P1_Credits = s.scanCode;
+                            Configurator.GetInstance().DIK_Eai_P1_Credits = s.scanCode;
                         else if (_SelectedTextBox == Txt_EAI_P2_Credits)
-                            _Configurator.DIK_Eai_P2_Credits = s.scanCode;
+                            Configurator.GetInstance().DIK_Eai_P2_Credits = s.scanCode;
                         else if (_SelectedTextBox == Txt_EAI_Settings)
-                            _Configurator.DIK_Eai_Settings = s.scanCode;
+                            Configurator.GetInstance().DIK_Eai_Settings = s.scanCode;
                         else if (_SelectedTextBox == Txt_EAI_Up)
-                            _Configurator.DIK_Eai_MenuUp = s.scanCode;
+                            Configurator.GetInstance().DIK_Eai_MenuUp = s.scanCode;
                         else if (_SelectedTextBox == Txt_EAI_Down)
-                            _Configurator.DIK_Eai_MenuDown = s.scanCode;
+                            Configurator.GetInstance().DIK_Eai_MenuDown = s.scanCode;
                         else if (_SelectedTextBox == Txt_EAI_Enter)
-                            _Configurator.DIK_Eai_MenuEnter = s.scanCode;
+                            Configurator.GetInstance().DIK_Eai_MenuEnter = s.scanCode;
                         
                         _SelectedTextBox = null;
                         _Start_KeyRecord = false;
@@ -1516,6 +1540,7 @@ namespace DemulShooter_GUI
             }
             return true;
         }
+
 
         
     }        

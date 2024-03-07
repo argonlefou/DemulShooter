@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using DsCore;
 using DsCore.Config;
-using DsCore.Memory;
 using DsCore.MameOutput;
+using DsCore.Memory;
 using DsCore.RawInput;
 using DsCore.Win32;
 

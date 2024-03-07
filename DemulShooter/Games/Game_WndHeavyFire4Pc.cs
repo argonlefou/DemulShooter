@@ -79,27 +79,27 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndHeavyFire4Pc(String RomName, String GamePath, int CoverSensibility, bool Reversecover, bool EnableP2, bool DisableInputHack, bool Verbose) 
+        public Game_WndHeavyFire4Pc(String RomName, bool EnableP2, bool DisableInputHack, bool Verbose) 
             : base(RomName, "HeavyFire4", DisableInputHack, Verbose)
         {
-            _ExecutableFilePath = GamePath + @"\" + HFA_FILENAME;
+            _ExecutableFilePath = Configurator.GetInstance().HF4_Path + @"\" + HFA_FILENAME;
 
-            Logger.WriteLog("Game path : " + GamePath);
+            Logger.WriteLog("Game path : " + Configurator.GetInstance().HF4_Path);
 
             //Steam version of the game has a different .exe name
-            if (File.Exists(GamePath + @"\" + HFA_STEAM_FILENAME))
+            if (File.Exists(Configurator.GetInstance().HF4_Path + @"\" + HFA_STEAM_FILENAME))
             {
                 _Target_Process_Name = "hf4";
-                _ExecutableFilePath = GamePath + @"\" + HFA_STEAM_FILENAME;
+                _ExecutableFilePath = Configurator.GetInstance().HF4_Path + @"\" + HFA_STEAM_FILENAME;
             }
             Logger.WriteLog("Executable file path : " + _ExecutableFilePath);
 
             _KnownMd5Prints.Add("Heavy Fire 4 - MASTIFF", "9476f9bba48aea6ca04d06158be07f1c");
             _KnownMd5Prints.Add("Heavy Fire 4 - STEAM", "7f8bf20aaba80ac1239efc553d94a53f");
 
-            _Reversecover = Reversecover;
+            _Reversecover = Configurator.GetInstance().HF3_ReverseCover;
             _EnableP2 = EnableP2;
-            _CoverDelta = (float)CoverSensibility / 10.0f;
+            _CoverDelta = (float)Configurator.GetInstance().HF4_CoverSensibility / 10.0f;
             Logger.WriteLog("Setting Cover delta to screen border to " + _CoverDelta.ToString());
 
             // To play as Player2 the game needs a Joypad
@@ -109,18 +109,18 @@ namespace DemulShooter
             // Again, to play solo we need to set the x360kb.ini accordingly so that no Joypad is emulated
             try
             {
-                using (StreamWriter sw = new StreamWriter(GamePath + @"\x360kb.ini", false))
+                using (StreamWriter sw = new StreamWriter(Configurator.GetInstance().HF4_Path + @"\x360kb.ini", false))
                 {
                     if (_EnableP2)
                         sw.Write(DemulShooter.Properties.Resources.x360kb_hfirea2p);
                     else
                         sw.Write(DemulShooter.Properties.Resources.x360kb_hfirea1p);
                 }
-                Logger.WriteLog("File \"" + GamePath + "\\x360kb.ini\" successfully written !");
+                Logger.WriteLog("File \"" + Configurator.GetInstance().HF4_Path + "\\x360kb.ini\" successfully written !");
             }
             catch (Exception ex)
             {
-                Logger.WriteLog("Error trying to write file " + GamePath + "\\x360kb.ini\" :" + ex.Message.ToString());
+                Logger.WriteLog("Error trying to write file " + Configurator.GetInstance().HF4_Path + "\\x360kb.ini\" :" + ex.Message.ToString());
             }
 
             _tProcess.Start();

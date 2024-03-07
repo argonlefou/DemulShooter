@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Windows.Forms;
-using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
-using DsCore.MemoryX64;
-using DsCore.Win32;
-using DsCore.RawInput;
 
 namespace DemulShooterX64
 {
@@ -67,12 +61,12 @@ namespace DemulShooterX64
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -83,10 +77,10 @@ namespace DemulShooterX64
         {
             UInt64 Outputs_Address = _GameRAM_Address + _Outputs_Outputs_Offset;
 
-            _P1_Life = 0;
-            _P2_Life = 0;
-            _P1_Ammo = 0;
-            _P2_Ammo = 0;
+            int P1_Life = 0;
+            int P2_Life = 0;
+            int P1_Ammo = 0;
+            int P2_Ammo = 0;
             int P1_Clip = 0;
             int P2_Clip = 0;
 
@@ -95,8 +89,8 @@ namespace DemulShooterX64
             {
                 //Didn't find any reliable "player state", but Life seem to stay at 0 when not playing, so we will use that
                 //Note that at start, life may be > 0 if the player has never entered a game :(
-                _P1_Life = (int)BitConverter.ToInt16(ReadBytes((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x54), 2), 0);
-                _P2_Life = (int)BitConverter.ToInt16(ReadBytes((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x56), 2), 0);
+                P1_Life = (int)BitConverter.ToInt16(ReadBytes((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x54), 2), 0);
+                P2_Life = (int)BitConverter.ToInt16(ReadBytes((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x56), 2), 0);
 
                 //For custom dammaged : 
                 //1) Solution 1 : Decrease life = small delay between the hit and the life beeing lost
@@ -118,44 +112,44 @@ namespace DemulShooterX64
                 _P1_LastDammage = P1_Dammage;
                 _P2_LastDammage = P2_Dammage;
 
-                if (_P1_Life > 0)
+                if (P1_Life > 0)
                 {
-                    _P1_Ammo = (int)BitConverter.ToInt16(ReadBytes((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x62), 2), 0);
+                    P1_Ammo = (int)BitConverter.ToInt16(ReadBytes((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x62), 2), 0);
 
                     //Custom Recoil
-                    if (_P1_Ammo < _P1_LastAmmo)
+                    if (P1_Ammo < _P1_LastAmmo)
                         SetOutputValue(OutputId.P1_CtmRecoil, 1);
 
                     //[Clip Empty] custom Output
-                    if (_P1_Ammo > 0)
+                    if (P1_Ammo > 0)
                         P1_Clip = 1;
                 }
 
-                if (_P2_Life > 0)
+                if (P2_Life > 0)
                 {
-                    _P2_Ammo = (int)BitConverter.ToInt16(ReadBytes((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x64), 2), 0);
+                    P2_Ammo = (int)BitConverter.ToInt16(ReadBytes((IntPtr)(_GameRAM_Address + _Outputs_PlayerData_Offset + 0x64), 2), 0);
 
                     //Custom Recoil
-                    if (_P2_Ammo < _P2_LastAmmo)
+                    if (P2_Ammo < _P2_LastAmmo)
                         SetOutputValue(OutputId.P2_CtmRecoil, 1);
 
                     //[Clip Empty] custom Output
-                    if (_P2_Ammo > 0)
+                    if (P2_Ammo > 0)
                         P2_Clip = 1;
                 }
             }
 
-            _P1_LastAmmo = _P1_Ammo;
-            _P2_LastAmmo = _P2_Ammo;
-            _P1_LastLife = _P1_Life;
-            _P2_LastLife = _P2_Life;
+            _P1_LastAmmo = P1_Ammo;
+            _P2_LastAmmo = P2_Ammo;
+            _P1_LastLife = P1_Life;
+            _P2_LastLife = P2_Life;
 
-            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
-            SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
+            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
+            SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
             SetOutputValue(OutputId.P1_Clip, P1_Clip);
             SetOutputValue(OutputId.P2_Clip, P2_Clip);
-            SetOutputValue(OutputId.P1_Life, _P1_Life);
-            SetOutputValue(OutputId.P2_Life, _P2_Life);
+            SetOutputValue(OutputId.P1_Life, P1_Life);
+            SetOutputValue(OutputId.P2_Life, P2_Life);
 
             //Genuine Outputs
             SetOutputValue(OutputId.P1_LmpStart, ReadByte((IntPtr)Outputs_Address) >> 6 & 0x01);

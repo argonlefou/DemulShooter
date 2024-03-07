@@ -145,8 +145,9 @@ namespace DemulShooter
             };
 
             Dictionary<String, String> _WindowsRoms = new Dictionary<String, String>(){
+                {"ads","Alien Disco Safari"},
                 {"artdead","Art Is Dead"},
-                {"bbusters","Bug Busters"},
+                {"bugbust","Bug Busters"},
                 {"friction","Friction"},
                 {"hfa", "Heavy Fire Afghanistan"},
                 {"hfa2p","Heavy Fire Afghanistan (dual Player)"},

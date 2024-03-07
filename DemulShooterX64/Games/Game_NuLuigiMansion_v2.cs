@@ -30,16 +30,6 @@ namespace DemulShooterX64
         //Check instruction for game loaded
         private const UInt64 ROM_LOADED_CHECK_INSTRUCTION_OFFSET = 0x00017E6E;
 
-        //Custom Outputs
-        private int _P1_LastLife = 0;
-        private int _P2_LastLife = 0;
-        private int _P1_LastAmmo = 0;
-        private int _P2_LastAmmo = 0;
-        private int _P1_Life = 0;
-        private int _P2_Life = 0;
-        private int _P1_Ammo = 0;
-        private int _P2_Ammo = 0;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -367,14 +357,14 @@ namespace DemulShooterX64
 
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));           
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, MameOutputHelper.CustomDamageDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
-            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, MameOutputHelper.CustomRecoilOnDelay, MameOutputHelper.CustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputDesciption.Credits, OutputId.Credits));
         }
 
@@ -435,10 +425,10 @@ namespace DemulShooterX64
             //[0] = Not Playing
             UInt32 P1_Status = 0;
             UInt32 P2_Status = 0;
-            _P1_Life = 0;
-            _P2_Life = 0;
-            _P1_Ammo = 0;
-            _P2_Ammo = 0;
+            int P1_Life = 0;
+            int P2_Life = 0;
+            int P1_Ammo = 0;
+            int P2_Ammo = 0;
             int P1_Clip = 0;
             int P2_Clip = 0;
 
@@ -454,42 +444,42 @@ namespace DemulShooterX64
             }
             if (P1_Status == 1)
             {
-                _P1_Life = ReadByte((IntPtr)(Ptr3 + 0x550));
-                _P1_Ammo = ReadByte((IntPtr)(Ptr3 + 0x57C));
+                P1_Life = ReadByte((IntPtr)(Ptr3 + 0x550));
+                P1_Ammo = ReadByte((IntPtr)(Ptr3 + 0x57C));
                 
                 //[Clip Empty] custom Output
-                if (_P1_Ammo > 0)
+                if (P1_Ammo > 0)
                     P1_Clip = 1;
 
                 //[Damaged] custom Output                
-                if (_P1_Life < _P1_LastLife)
+                if (P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);
             }
             if (P2_Status == 1)
             {
-                _P2_Life = ReadByte((IntPtr)(Ptr3 + 0x568));
-                _P2_Ammo = ReadByte((IntPtr)(Ptr3 + 0x588));
+                P2_Life = ReadByte((IntPtr)(Ptr3 + 0x568));
+                P2_Ammo = ReadByte((IntPtr)(Ptr3 + 0x588));
 
                 //[Clip Empty] custom Output
-                if (_P2_Ammo > 0)
+                if (P2_Ammo > 0)
                     P2_Clip = 1;
 
                 //[Damaged] custom Output                
-                if (_P2_Life < _P2_LastLife)
+                if (P2_Life < _P2_LastLife)
                     SetOutputValue(OutputId.P2_Damaged, 1);
             }
 
-            _P1_LastAmmo = _P1_Ammo;
-            _P2_LastAmmo = _P2_Ammo;
-            _P1_LastLife = _P1_Life;
-            _P2_LastLife = _P2_Life;
+            _P1_LastAmmo = P1_Ammo;
+            _P2_LastAmmo = P2_Ammo;
+            _P1_LastLife = P1_Life;
+            _P2_LastLife = P2_Life;
 
-            SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
-            SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
+            SetOutputValue(OutputId.P1_Ammo, P1_Ammo);
+            SetOutputValue(OutputId.P2_Ammo, P2_Ammo);
             SetOutputValue(OutputId.P1_Clip, P1_Clip);
             SetOutputValue(OutputId.P2_Clip, P2_Clip);
-            SetOutputValue(OutputId.P1_Life, _P1_Life);
-            SetOutputValue(OutputId.P2_Life, _P2_Life);
+            SetOutputValue(OutputId.P1_Life, P1_Life);
+            SetOutputValue(OutputId.P2_Life, P2_Life);
             
             SetOutputValue(OutputId.Credits, ReadByte((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x004E19A8)));
         }
