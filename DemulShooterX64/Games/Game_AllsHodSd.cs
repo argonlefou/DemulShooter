@@ -37,9 +37,7 @@ namespace DemulShooterX64
         /// Constructor
         /// </summary>
         public Game_AllsHodSd(String RomName, bool DisableInputHack, bool Verbose) : base(RomName, "Hodzero-Win64-Shipping", DisableInputHack, Verbose)
-        {
-            //_DisableInputHack = true; //Still WIP
-
+        {            
             _KnownMd5Prints.Add("Hodzero-Win64-Shipping.exe - Original Dump", "cde48c217d04caa64ee24a72f73dcce4");
             //Add amdaemon check ? (difference between original/Jconfig)
             //amdaemon.exe - original : 2ccb852ba8f98d6adf42ed62d1d1b759
@@ -73,8 +71,8 @@ namespace DemulShooterX64
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X16"));
                                 CheckExeMd5();
-                                if (!_DisableInputHack)
-                                    SetHack();
+                                /*if (!_DisableInputHack)
+                                    SetHack();*/
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -533,7 +531,7 @@ namespace DemulShooterX64
         /// </summary>   
         public override void SendInput(PlayerSettings PlayerData)
         {
-            byte[] bufferX = BitConverter.GetBytes(PlayerData.RIController.Computed_X);
+            /*byte[] bufferX = BitConverter.GetBytes(PlayerData.RIController.Computed_X);
             byte[] bufferY = BitConverter.GetBytes(PlayerData.RIController.Computed_Y);
 
             if (PlayerData.ID == 1)
@@ -545,7 +543,7 @@ namespace DemulShooterX64
             {
                 WriteBytes((IntPtr)_Databank_JVS_P2X_Address, bufferX);
                 WriteBytes((IntPtr)_Databank_JVS_P2Y_Address, bufferY);
-            }
+            }*/
         }
 
         #endregion

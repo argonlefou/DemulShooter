@@ -255,18 +255,29 @@ namespace DemulShooter
             }
 
             //Info on Monitor (max resolution)
-            var scope = new System.Management.ManagementScope();
-            var q = new System.Management.ObjectQuery("SELECT * FROM CIM_VideoControllerResolution");
-            String Maxres = String.Empty;
-            using (var searcher = new System.Management.ManagementObjectSearcher(scope, q))
+
+            //// Disabled for now -- may cause trouble on some computer( ???)
+            /*
+            try
             {
-                var results = searcher.Get();
-                foreach (var item in results)
+                var scope = new System.Management.ManagementScope();
+                var q = new System.Management.ObjectQuery("SELECT * FROM CIM_VideoControllerResolution");
+                String Maxres = String.Empty;
+                using (var searcher = new System.Management.ManagementObjectSearcher(scope, q))
                 {
-                    Maxres = item["Caption"].ToString();
+                    var results = searcher.Get();
+                    foreach (var item in results)
+                    {
+                        Maxres = item["Caption"].ToString();
+                    }
                 }
+                Logger.WriteLog("Monitor maximum resolution = " + Maxres);
             }
-            Logger.WriteLog("Monitor maximum resolution = " + Maxres);
+            catch (Exception Ex)
+            {
+                Logger.WriteLog("Error detecting monitor maximum resolution : " + Ex.Message.ToString());
+            }
+            */
 
             //Setting up IPC for inputs/outputs
             if (_EnableInputsIpc)
@@ -541,11 +552,15 @@ namespace DemulShooter
                             } break;
                         case "jp":
                             {
-                                _Game = new Game_LindberhJurassicPark(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                                _Game = new Game_RtJurassicPark(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             } break;
                         case "ts":
                             {
                                 _Game = new Game_RtTerminatorSalvation(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;
+                        case "wd":
+                            {
+                                _Game = new Game_RtWalkingDead(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             } break;
                     }
                 }

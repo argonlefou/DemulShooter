@@ -120,7 +120,8 @@ namespace DemulShooter
             Dictionary<String, String> _RawThrillRoms = new Dictionary<String, String>(){
                 {"aa","Aliens Armageddon"},
                 {"jp","Jurassic Park"},
-                {"ts","Terminator Salvation"}
+                {"ts","Terminator Salvation"},
+                {"wd","Walking Dead"}
             };
 
             Dictionary<String, String> _RingSystemRoms = new Dictionary<String, String>(){

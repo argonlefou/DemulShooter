@@ -36,6 +36,17 @@ namespace DsCore.MameOutput
         public static readonly String LmpSeatBase = "LmpSeatBase";      //
         public static readonly String LmpEstop = "LmpEstop";            //
         public static readonly String LmpCompressor = "LmpCompressor";  //
+        public static readonly String LmpRoof_R = "LmpRoof_R";              //
+        public static readonly String LmpRoof_G = "LmpRoof_G";              //
+        public static readonly String LmpRoof_B = "LmpRoof_B";              //  
+        public static readonly String LmpLgMarquee = "LmpLgMarquee";        //
+        public static readonly String LmpSqMarquee = "LmpSqMarquee";        //
+        public static readonly String LmpWalker_R = "LmpWalker_R";          // Walking Dead (Raw Thrill)
+        public static readonly String LmpWalker_G = "LmpWalker_G";          //
+        public static readonly String LmpWalker_B = "LmpWalker_B";          //
+        public static readonly String LmpWalkerEyes = "LmpWalkerEyes";      //
+        public static readonly String LmpWalkerCeiling = "LmpWalkerCeiling";//
+        public static readonly String LmpPosts = "LmpPosts";                //
         
         public static readonly String Lmp1 = "Lmp1";    //
         public static readonly String Lmp2 = "Lmp2";    //

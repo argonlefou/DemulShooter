@@ -69,6 +69,7 @@ namespace DemulShooter
                                 SetHack();
                             else
                                 Logger.WriteLog("Input Hack disabled");
+                            SetHack_Outputs();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();                            
                         }
@@ -149,13 +150,16 @@ namespace DemulShooter
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Btn_1);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Btn_2);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Btn_3);
-            SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Btn_4);
-
-            CreateDataBank();
-            SetHack_CustomRecoilOutput();
+            SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Btn_4);            
 
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
+        }
+
+        private void SetHack_Outputs()
+        {
+            CreateDataBank();
+            SetHack_CustomRecoilOutput();
         }
 
         /// <summary>

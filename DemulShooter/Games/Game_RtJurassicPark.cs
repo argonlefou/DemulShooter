@@ -10,7 +10,7 @@ using DsCore.Win32;
 
 namespace DemulShooter
 {
-    class Game_LindberhJurassicPark : Game
+    class Game_RtJurassicPark : Game
     {
         private const String GAMEDATA_FOLDER = @"MemoryData\lindbergh\jpark";
 
@@ -53,7 +53,7 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_LindberhJurassicPark(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
+        public Game_RtJurassicPark(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
             : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
         {
             _HideCrosshair = HideCrosshair;
