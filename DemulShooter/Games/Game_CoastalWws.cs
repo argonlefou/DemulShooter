@@ -66,10 +66,9 @@ namespace DemulShooter
                             {
                                 String AssemblyDllPath = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", @"CowBoy_Data\Managed\Assembly-CSharp.dll");
                                 CheckMd5(AssemblyDllPath);
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
+                                if (_DisableInputHack)
                                     Logger.WriteLog("Input Hack disabled");
+                                SetHack();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -210,7 +209,7 @@ namespace DemulShooter
         /// </summary>
         public override void SendInput(PlayerSettings PlayerData)
         {
-            if (_Mmfh.ReadAll() == 0 && _HackEnabled)
+            if (_Mmfh.ReadAll() == 0 && _HackEnabled && !_DisableInputHack)
             {
                 if (PlayerData.ID == 1)
                 {
@@ -385,7 +384,7 @@ namespace DemulShooter
                 _Mmfh.Writeall();
             }
             else
-                Logger.WriteLog("UpdateOutputValues() => Error reading Meped Memory File : " + r.ToString());
+                Logger.WriteLog("UpdateOutputValues() => Error reading Mapped Memory File : " + r.ToString());
         }
 
         #endregion

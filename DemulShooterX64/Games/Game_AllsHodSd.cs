@@ -66,7 +66,7 @@ namespace DemulShooterX64
                         {
                             // The game may start with other Windows than the main one (because of AMDaemon app console) so we need to filter
                             // the displayed window according to the Title, if DemulShooter is started before the game,  to hook the correct one
-                            if (FindGameWindow_Equals("Hodzero "))
+                            if (FindGameWindow_Equals("Hodzero ") || FindGameWindow_Equals("TeknoParrot - House of the Dead: Scarlet Dawn"))
                             {
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X16"));

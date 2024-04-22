@@ -195,7 +195,7 @@ namespace DemulShooter
 
             _Triggers_CaveAddress = CaveMemory.CaveAddress;
 
-            Logger.WriteLog("Custom data will be stored at : 0x" + _Triggers_CaveAddress.ToString("X8"));
+            Logger.WriteLog("Custom data will be stored at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
         }
 
         private void CreateDataBank_Outputs()
@@ -204,10 +204,10 @@ namespace DemulShooter
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
 
-            _P1_Recoil_CaveAddress = CaveMemory.CaveAddress + 0x10;
-            _P2_Recoil_CaveAddress = CaveMemory.CaveAddress + 0x14;
+            _P1_Recoil_CaveAddress = CaveMemory.CaveAddress;
+            _P2_Recoil_CaveAddress = CaveMemory.CaveAddress + 0x04;
 
-            Logger.WriteLog("Custom Outputs data will be stored at : 0x" + _Triggers_CaveAddress.ToString("X8"));
+            Logger.WriteLog("Custom Outputs data will be stored at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 44 24 08");
             //shl eax,2
             CaveMemory.Write_StrBytes("C1 E0 02");
-            //add eax, _Triggers_CaveAddress
+            //add eax, _P1_Recoil_CaveAddress
             byte[] b = BitConverter.GetBytes(_P1_Recoil_CaveAddress);
             CaveMemory.Write_StrBytes("05");
             CaveMemory.Write_Bytes(b);
@@ -404,12 +404,12 @@ namespace DemulShooter
             //Original recoil Handling is stripped from the DLL so we are forced to handle the duration ourselve with an Async-reset output
             if (ReadByte(_P1_Recoil_CaveAddress) == 1)
             {
-                SetOutputValue(OutputId.P1_GunRecoil, 1);
+                SetOutputValue(OutputId.P1_CtmRecoil, 1);
                 WriteByte(_P1_Recoil_CaveAddress, 0);
             }
             if (ReadByte(_P2_Recoil_CaveAddress) == 1)
             {
-                SetOutputValue(OutputId.P2_GunRecoil, 1);
+                SetOutputValue(OutputId.P2_CtmRecoil, 1);
                 WriteByte(_P2_Recoil_CaveAddress, 0);
             }            
         }

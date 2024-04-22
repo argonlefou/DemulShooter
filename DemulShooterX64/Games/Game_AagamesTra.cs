@@ -73,10 +73,9 @@ namespace DemulShooterX64
                             {
                                 String AssemblyDllPath = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", @"Game_Data\Managed\Assembly-CSharp.dll");
                                 CheckMd5(AssemblyDllPath);
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
+                                if (_DisableInputHack)
                                     Logger.WriteLog("Input Hack disabled");
+                                SetHack();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -202,7 +201,7 @@ namespace DemulShooterX64
         /// </summary>
         public override void SendInput(PlayerSettings PlayerData)
         {
-            if (_HackEnabled)
+            if (_HackEnabled &&!_DisableInputHack)
             {
                 Array.Copy(BitConverter.GetBytes(_PlayerShootAxis[PlayerData.ID - 1].x), 0, _Mmfh.Payload, MMFH_TombRaider.INDEX_P1_INGAME_X + 16 * (PlayerData.ID -1), 4);
                 Array.Copy(BitConverter.GetBytes(_PlayerShootAxis[PlayerData.ID - 1].y), 0, _Mmfh.Payload, MMFH_TombRaider.INDEX_P1_INGAME_Y + 16 * (PlayerData.ID -1), 4);

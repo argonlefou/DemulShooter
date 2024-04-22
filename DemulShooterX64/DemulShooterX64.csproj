@@ -81,6 +81,7 @@
     <Compile Include="Games\Game_Es3Lla.cs" />
     <Compile Include="Games\Game_NuLuigiMansion.cs" />
     <Compile Include="Games\Game_AllsHodSd.cs" />
+    <Compile Include="Games\Game_RacoonRampage.cs" />
     <Compile Include="Games\Game_S357DarkEscape.cs" />
     <Compile Include="Games\Game_S357DeadStormPirates.cs" />
     <Compile Include="Games\Game_S357SailorZombie.cs" />

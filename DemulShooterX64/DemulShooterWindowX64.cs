@@ -408,7 +408,13 @@ namespace DemulShooterX64
                 //Wip Games
                 else if (_Target.Equals("wip"))
                 {
-                    
+                    switch (_Rom.ToLower())
+                    {
+                        case "racoonr":
+                            {
+                                _Game = new Game_UnisRacoonRampage(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;
+                    }
                 }
 
                 _Game.OnGameHooked += new Game.GameHookedHandler(OnGameHooked);                
