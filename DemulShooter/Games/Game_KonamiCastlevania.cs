@@ -87,7 +87,7 @@ namespace DemulShooter
                         {
                             // The game may start with other Windows than the main one (BepInEx console, other stuff.....) so we need to filter
                             // the displayed window according to the Title, if DemulShooter is started before the game,  to hook the correct one
-                            if (FindGameWindow_Contains("CROSS"))
+                            if (FindGameWindow_Contains("CROSS") || FindGameWindow_Equals("TeknoParrot - Castlevania: The Arcade"))
                             {
                                 CheckExeMd5();
                                 if (!_DisableInputHack)

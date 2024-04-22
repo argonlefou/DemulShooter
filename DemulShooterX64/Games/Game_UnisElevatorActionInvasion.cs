@@ -47,7 +47,7 @@ namespace DemulShooterX64
         public Game_UnisElevatorActionInvasion(String RomName, bool DisableInputHack, bool Verbose)
             : base(RomName, "ESGame-Win64-Shipping", DisableInputHack, Verbose)
         {
-            _KnownMd5Prints.Add("Elevator Action  Invasion v1.6.1[C] clean dump", "b7a68a80fa682673a61120aadf5b2ec35e1f7474");
+            _KnownMd5Prints.Add("Elevator Action  Invasion v1.6.1[C] clean dump", "bc34cc1f04de2977eeb4e2fd5895ebf4");
             _KnownMd5Prints.Add("Elevator Action  Invasion v1.6.1[C] patched by Argonlefou", "d2c4c99a86648b34316ca4f61a23c1ea");
             _tProcess.Start();
             Logger.WriteLog("Waiting for Unis " + _RomName + " game to hook.....");
