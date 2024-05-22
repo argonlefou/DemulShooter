@@ -136,14 +136,18 @@ namespace DsCore.MameOutput
         public static readonly String P2_Whip_B = "P2_Whip_B";    ///
         public static readonly String P1_LmpHead = "P1_LmpHead";        //\    
         public static readonly String P1_LmpFoot = "P1_LmpFoot";        // 
-        public static readonly String P1_LmpFront = "P1_LmpFront";      // LEthal Enforcers 3
+        public static readonly String P1_LmpFront = "P1_LmpFront";      // Lethal Enforcers 3
         public static readonly String P2_LmpHead = "P2_LmpHead";        //
         public static readonly String P2_LmpFoot = "P2_LmpFoot";        //
         public static readonly String P2_LmpFront = "P2_LmpFront";      ///
         public static readonly String LmpLever = "Lmp_Lever";      //Transformers Shadow Rising
         public static readonly String LmpDownlight = "Lmp_Downlight";  //Transformers Shadow Rising
 
-
+        public static readonly String Lmp_DirectHit = "Lmp_DirectHit";              //  DCOP
+        public static readonly String Lmp_PoliceBar = "Lmp_PoliceBar";              //  DCOP
+        public static readonly String Lmp_GreenTestLight = "Lmp_GreenTestLight";    //  DCOP
+        public static readonly String Lmp_RedLight = "Lmp_RedLight";                //  DCOP
+        public static readonly String Lmp_WhiteStrobe = "Lmp_WhiteStrobe";          //  DCOP
 
         public static readonly String P1_GunMotor = "P1_GunMotor";
         public static readonly String P2_GunMotor = "P2_GunMotor";

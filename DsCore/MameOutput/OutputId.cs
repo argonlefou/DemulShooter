@@ -153,6 +153,13 @@ namespace DsCore.MameOutput
         P2_LmpFront,
         LmpLever,
         Lmp_Downlight,
+        Lmp_DirectHit,
+        Lmp_PoliceBar,
+        Lmp_GreenTestLight,
+        Lmp_RedLight,
+        Lmp_WhiteStrobe,
+
+
         Credits = 1000,
         P1_CtmLmpStart,
         P2_CtmLmpStart,

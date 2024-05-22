@@ -9,7 +9,7 @@ namespace UnityPlugin_BepInEx_PBX
         public byte P1_StartLED;
         public byte P2_StartLED;
         public byte P1_LED;
-        public byte P2_LED;        
+        public byte P2_LED;
         public byte P1_Life;
         public byte P2_Life;
         public UInt16 P1_Ammo;
@@ -17,7 +17,7 @@ namespace UnityPlugin_BepInEx_PBX
         public byte Credits;
 
         public static readonly int DATA_LENGTH = 9;
-        
+
         public TcpOutputData()
         {
             P1_Recoil = 0;
@@ -25,7 +25,7 @@ namespace UnityPlugin_BepInEx_PBX
             P1_StartLED = 0;
             P2_StartLED = 0;
             P1_LED = 0;
-            P2_LED = 0;            
+            P2_LED = 0;
             P1_Ammo = 0;
             P2_Ammo = 0;
             P1_Life = 0;

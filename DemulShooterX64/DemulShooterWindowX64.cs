@@ -394,6 +394,10 @@ namespace DemulShooterX64
                             {
                                 _Game = new Game_Bhapc(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
+                        case "dcop":
+                            {
+                                _Game = new Game_WndDcop(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            } break;
                         case "hotdra":
                             {
                                 _Game = new Game_WndHotdremakeArcade(_Rom.ToLower(), _NoInput, isVerbose);

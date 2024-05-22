@@ -87,6 +87,7 @@
     <Compile Include="Games\Game_S357SailorZombie.cs" />
     <Compile Include="Games\Game_UnisElevatorActionInvasion.cs" />
     <Compile Include="Games\Game_UnisNightHunterArcade.cs" />
+    <Compile Include="Games\Game_WndDcop.cs" />
     <Compile Include="Games\Game_WndHotdremakeArcade.cs" />
     <Compile Include="Games\Game_WndOpWolfReturn.cs" />
     <Compile Include="Program.cs" />

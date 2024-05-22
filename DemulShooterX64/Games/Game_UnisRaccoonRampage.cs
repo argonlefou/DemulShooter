@@ -63,11 +63,7 @@ namespace DemulShooterX64
         private UInt64 _P1_OuterWater_CaveAddress = 0;
         private UInt64 _P1_Damage_CaveAddress = 0;
 
-        private HardwareScanCode _Settings_Key = HardwareScanCode.DIK_9;
-        private HardwareScanCode _P1_Start_Key = HardwareScanCode.DIK_1;
-        private HardwareScanCode _P2_Start_Key = HardwareScanCode.DIK_2;
-        private HardwareScanCode _P3_Start_Key = HardwareScanCode.DIK_3;
-        private HardwareScanCode _P4_Start_Key = HardwareScanCode.DIK_4;
+        private HardwareScanCode _Settings_Key = HardwareScanCode.DIK_9;        
         private HardwareScanCode _P1_Credits_Key = HardwareScanCode.DIK_5;
         private HardwareScanCode _P2_Credits_Key = HardwareScanCode.DIK_6;
         private HardwareScanCode _P3_Credits_Key = HardwareScanCode.DIK_7;

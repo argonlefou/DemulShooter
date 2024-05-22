@@ -3,38 +3,23 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
-using Artoncode.Core;
 using BepInEx;
 using HarmonyLib;
 using UnityEngine;
 using UnityPlugin_BepInEx_Core;
 
-namespace UnityPlugin_BepInEx_PBX
+namespace UnityPlugin_BepInEx_DCOP
 {
     [BepInPlugin(pluginGuid, pluginName, pluginVersion)]
-    public class PointBlankX_Plugin : BaseUnityPlugin
+    public class Dcop_Plugin : BaseUnityPlugin
     {
-        public const String pluginGuid = "argonlefou.demulshooter.pbx";
-        public const String pluginName = "PBX DemulShooter Plugin";
-        public const String pluginVersion = "2.0.0.0";
+        public const String pluginGuid = "argonlefou.demulshooter.dcop";
+        public const String pluginName = "DCOP DemulShooter Plugin";
+        public const String pluginVersion = "1.0.0.0";
 
         public static BepInEx.Logging.ManualLogSource MyLogger;
 
-        public static PointBlankX_Plugin Instance = null;
-
-        public static readonly string PLAYER_1_NAME = "P1";
-        public static readonly string PLAYER_2_NAME = "P2";
-
-        //Custom Outputs data
-        public static byte P1_LastLife = 0;
-        public static ushort P1_LastAmmo = 0;
-        public static ushort P2_LastAmmo = 0;
-
-        //custom Input Data
-        public static Vector2 P1_Axis = new Vector2(0,0);
-        public static Vector2 P2_Axis = new Vector2(0,0);
-        public static byte P1_Trigger_ButtonState = 0;
-        public static byte P2_Trigger_ButtonState = 0;
+        public static Dcop_Plugin Instance = null;
 
         //TCP server data for Inputs/Outputs
         private TcpListener _TcpListener;
@@ -43,16 +28,28 @@ namespace UnityPlugin_BepInEx_PBX
         private int _TcpPort = 33610;
         private static NetworkStream _TcpStream;
 
-        public static bool IsMouseLockedRequired = false;
         public static TcpOutputData OutputData;
         private TcpOutputData _OutputDataBefore;
-        private TcpInputData _InputData;
 
-        public static readonly KeyCode P1_Start_KeyCode = KeyCode.Alpha1;
-        public static readonly KeyCode P2_Start_KeyCode = KeyCode.Alpha2;
-        public static readonly KeyCode Credits_KeyCode = KeyCode.Alpha5;
-
-        public static bool CrossHairVisibility = true;
+        //Game is setting Arduino PINS to set outputs :
+        // Pin 02 => Game Gun
+        // Pin 03 => Direct Hit (YELLOW LIGHT)
+        // Pin 08 => Police Light Bar
+        // Pin 16 => Red Light (CONTINUE / GAME OVER)
+        // Pin 19 => Game gun (YELLOW FLASH)
+        public enum ArduinoPin
+        {
+            PlayerGun_Solenoid = 2,
+            DirectHit_Light = 3,
+            Police_LightBar = 8,
+            DirectHit_Light2 = 12,
+            ArduinoReady_Light = 13,
+            EnemyGun_Solenoid = 15,
+            RedLightContinue = 16,
+            EnemyGun2_Solenoid = 17,
+            WhiteStrobe_Flasher = 18,
+            GameGun_Light = 19
+        }
 
         public void Awake()
         {
@@ -64,7 +61,6 @@ namespace UnityPlugin_BepInEx_PBX
 
             OutputData = new TcpOutputData();
             _OutputDataBefore = new TcpOutputData();
-            _InputData = new TcpInputData();
 
             // Start TcpServer	
             _TcpListenerThread = new Thread(new ThreadStart(TcpClientThreadLoop));
@@ -76,39 +72,13 @@ namespace UnityPlugin_BepInEx_PBX
 
         public void Start()
         {
-            MyLogger.LogMessage("PointBlankX_Plugin.Start() => Removing mouse cursor");
-            Cursor.visible = false;
         }
 
         public void Update()
         {
-            Singleton<GlobalData>.shared().isCrosshairVisible = CrossHairVisibility;
+            //Singleton<GlobalData>.shared().isCrosshairVisible = CrossHairVisibility;            
 
-            //Updating Credits
-            int iCredits = (int)Singleton<GlobalData>.shared().coinPool + (int)Singleton<GlobalData>.shared().serviceCredit;
-            OutputData.Credits = (byte)iCredits;
-
-            //Updating Life and Bullets            
-            OutputData.P1_Life = 0;
-            OutputData.P2_Life = 0;
-            OutputData.P1_Ammo = 0;
-            OutputData.P1_Ammo = 0;
-            Player p = Player.getPlayer(PLAYER_1_NAME);
-            if (p != null && p.playerData.state == PlayerData.PlayerState.Active)
-            {
-                OutputData.P1_Life = (byte)p.getHealth();
-                int Ammo = p.getAmmo();
-                if (Ammo > 0)
-                    OutputData.P1_Ammo = (ushort)Ammo;
-            }
-            p = Player.getPlayer(PLAYER_2_NAME);
-            if (p != null && p.playerData.state == PlayerData.PlayerState.Active)
-            {
-                OutputData.P2_Life = (byte)p.getHealth();
-                int Ammo = p.getAmmo();
-                if (Ammo > 0)
-                    OutputData.P2_Ammo = (ushort)Ammo;
-            }
+            
 
             //Checking for a change in output to send or not
             byte[] bOutputData = OutputData.ToByteArray();
@@ -120,23 +90,15 @@ namespace UnityPlugin_BepInEx_PBX
                     SendOutputs();
                     break;
                 }
-            }              
+            }
 
             //Save current state
             _OutputDataBefore.Update(bOutputData);
-
-
-            //Debug Keys
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                MyLogger.LogWarning("PointBlankX_Plugin.Update() =>  isCrosshairVisible : " + Singleton<GlobalData>.shared().isCrosshairVisible);
-                Singleton<GlobalData>.shared().isCrosshairVisible = true;
-            }
         }
 
         public void OnDestroy()
         {
-            Logger.LogMessage("PointBlankX_Plugin.OnDestroy() => Closing TCP Server....");
+            Logger.LogMessage("Dcop_Plugin.OnDestroy() => Closing TCP Server....");
             _TcpListener.Server.Close();
         }
 
@@ -157,14 +119,14 @@ namespace UnityPlugin_BepInEx_PBX
                 // Create listener on localhost port 8052. 			
                 _TcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), _TcpPort);
                 _TcpListener.Start();
-                MyLogger.LogMessage("PointBlankX_Plugin.TcpClientThreadLoop() => TCP Server is listening on Port " + _TcpPort);
+                MyLogger.LogMessage("Dcop_Plugin.TcpClientThreadLoop() => TCP Server is listening on Port " + _TcpPort);
 
                 Byte[] bytes = new Byte[1024];
                 while (true)
                 {
                     using (_TcpClient = _TcpListener.AcceptTcpClient())
                     {
-                        MyLogger.LogMessage("PointBlankX_Plugin.TcpClientThreadLoop() => TCP Client connected !");
+                        MyLogger.LogMessage("Dcop_Plugin.TcpClientThreadLoop() => TCP Client connected !");
                         using (_TcpStream = _TcpClient.GetStream())
                         {
                             //Send outputs at connection, if DemulShooter connects during game, between events
@@ -180,17 +142,17 @@ namespace UnityPlugin_BepInEx_PBX
                                         break;
                                     byte[] InputBuffer = new byte[Length];
                                     Array.Copy(bytes, 0, InputBuffer, 0, Length);
-                                    _InputData.Update(InputBuffer);
-                                    MyLogger.LogMessage("PointBlankX_Plugin.TcpClientThreadLoop() => client message received as: " + _InputData.ToString());
+                                    //_InputData.Update(InputBuffer);
+                                    //MyLogger.LogMessage("PointBlankX_Plugin.TcpClientThreadLoop() => client message received as: " + _InputData.ToString());
 
-                                    //lock (MutexLocker_Inputs)
-                                    //{
-                                        P1_Axis = new Vector2(_InputData.P1_X, _InputData.P1_Y);
-                                        P1_Trigger_ButtonState = _InputData.P1_Trigger;
-                                        P2_Axis = new Vector2(_InputData.P2_X, _InputData.P2_Y);
-                                        P2_Trigger_ButtonState = _InputData.P2_Trigger;
-                                        CrossHairVisibility = _InputData.HideCrosshairs == 1 ? false : true;
-                                    //}
+                                    ////lock (MutexLocker_Inputs)
+                                    ////{
+                                    //P1_Axis = new Vector2(_InputData.P1_X, _InputData.P1_Y);
+                                    //P1_Trigger_ButtonState = _InputData.P1_Trigger;
+                                    //P2_Axis = new Vector2(_InputData.P2_X, _InputData.P2_Y);
+                                    //P2_Trigger_ButtonState = _InputData.P2_Trigger;
+                                    //CrossHairVisibility = _InputData.HideCrosshairs == 1 ? false : true;
+                                    ////}
                                 }
                                 catch
                                 {
@@ -204,7 +166,7 @@ namespace UnityPlugin_BepInEx_PBX
             }
             catch (SocketException socketException)
             {
-                MyLogger.LogError("PointBlankX_Plugin.TcpClientThreadLoop() => SocketException " + socketException.ToString());
+                MyLogger.LogError("Dcop_Plugin.TcpClientThreadLoop() => SocketException " + socketException.ToString());
             }
         }
 
@@ -228,18 +190,17 @@ namespace UnityPlugin_BepInEx_PBX
                     TcpPacket p = new TcpPacket(OutputData.ToByteArray(), TcpPacket.PacketHeader.Outputs);
                     byte[] Buffer = p.GetFullPacket();
                     //Resetting event flags for next packets
-                    MyLogger.LogMessage("PointBlankX_Plugin.SendOutputs() => Sending data : " + p.ToString());
+                    MyLogger.LogMessage("Dcop_Plugin.SendOutputs() => Sending data : " + p.ToString());
                     //lock (MutexLocker_Outputs)
                     //{
-                        OutputData.P1_Recoil = 0;
-                        OutputData.P2_Recoil = 0;
+                    OutputData.GunLight = 0;
                     //}
                     _TcpStream.Write(Buffer, 0, Buffer.Length);
                 }
             }
             catch (Exception Ex)
             {
-                MyLogger.LogError("PointBlankX_Plugin.SendOutputs() => Socket exception: " + Ex);
+                MyLogger.LogError("Dcop_Plugin.SendOutputs() => Socket exception: " + Ex);
             }
         }
     }

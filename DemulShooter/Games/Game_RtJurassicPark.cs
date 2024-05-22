@@ -437,9 +437,6 @@ namespace DemulShooter
 
             if (GameFlow_Get_PlayerActive(0))
             {
-                //debug
-                SetOutputValue(OutputId.P1_LmpStart, 1);
-
                 switch(ReadByte(P1_Weapon_Address))
                 {
                     //default Gun / Jeep Gun
@@ -490,9 +487,6 @@ namespace DemulShooter
 
             if (GameFlow_Get_PlayerActive(1))
             {
-                //debug
-                SetOutputValue(OutputId.P2_LmpStart, 1);
-
                 switch (ReadByte(P2_Weapon_Address))
                 {
                     //default Gun

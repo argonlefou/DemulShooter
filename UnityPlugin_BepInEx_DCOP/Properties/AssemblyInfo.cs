@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // Les informations générales relatives à un assembly dépendent de 
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
-[assembly: AssemblyTitle("UnityPlugin_BepInEx_NHA2_Configurator")]
+[assembly: AssemblyTitle("UnityPlugin_BepInEx_DCOP")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("UnityPlugin_BepInEx_NHA2_Configurator")]
-[assembly: AssemblyCopyright("Argonlefou ©  2023")]
+[assembly: AssemblyProduct("UnityPlugin_BepInEx_DCOP")]
+[assembly: AssemblyCopyright("Argonlefou © 2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Le GUID suivant est pour l'ID de la typelib si ce projet est exposé à COM
-[assembly: Guid("7d150567-f457-49b6-b2d5-2118115d19ec")]
+[assembly: Guid("be701bda-57e2-4631-b834-07f500f00d74")]
 
 // Les informations de version pour un assembly se composent des quatre valeurs suivantes :
 //

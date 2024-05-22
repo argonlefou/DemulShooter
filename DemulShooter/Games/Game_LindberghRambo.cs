@@ -56,7 +56,7 @@ namespace DemulShooter
         //Outputs
         private UInt32 _OutputsPtr_Address = 0x085DD158;
         private UInt32 _Outputs_Address;
-        private UInt32 _Credits_Address = 0x0AF6CE20;
+        private UInt32 _pCreditsMgr_Address = 0x085DC2B0;
         private UInt32 _PlayerStructPtr_Address = 0x85CE9B0;
 
         private UInt32 _RomLoaded_Check_Instruction = 0x08073BC7;
@@ -456,7 +456,9 @@ namespace DemulShooter
             SetOutputValue(OutputId.P2_CtmRecoil, ReadByte(_Outputs_Address) >> 3 & 0x01);
             SetOutputValue(OutputId.P1_Life, _P1_Life);
             SetOutputValue(OutputId.P2_Life, _P2_Life);
-            SetOutputValue(OutputId.Credits, ReadByte(_Credits_Address + 3));
+
+            UInt32 CreditsMgr = ReadPtr(_pCreditsMgr_Address); 
+            SetOutputValue(OutputId.Credits, (int)(ReadByte(CreditsMgr + 0x38)));
         }
 
         #endregion

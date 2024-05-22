@@ -662,7 +662,7 @@ namespace DemulShooter
                         case "bugbust":
                             {
                                 _Game = new Game_WndBugBusters(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
-                            } break;
+                            } break;                        
                         case "friction":
                             {
                                 _Game = new Game_WndFriction(_Rom.ToLower(), _NoInput, isVerbose);
