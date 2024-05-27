@@ -68,7 +68,7 @@ namespace DemulShooterX64
         private DsCore.IPC.MemoryMappedFileHelper_Old _MMF_Inputs;
         private DsCore.IPC.MemoryMappedFileHelper_Old _MMF_Outputs;
 
-        public DemulShooterWindowX64(string[] Args, bool isVerbose)
+        public DemulShooterWindowX64(string[] Args, bool isVerbose, bool isTrace)
         {
             _This = this;
 
@@ -90,6 +90,7 @@ namespace DemulShooterX64
             _TimerHookTimeout.Elapsed += tHookTimeOut_Elapsed;
 
             Logger.IsEnabled = isVerbose;
+            Logger.IsTraceEnabled = isTrace;
             Logger.InitLogFileName();
             Logger.WriteLog("");
             Logger.WriteLog("---------------- Program Start -- DemulShooterX64 v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString() + " ----------------");

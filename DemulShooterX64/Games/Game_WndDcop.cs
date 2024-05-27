@@ -6,7 +6,6 @@ using DsCore;
 using DsCore.Config;
 using DsCore.IPC;
 using DsCore.MameOutput;
-using DsCore.RawInput;
 
 namespace DemulShooterX64
 {
@@ -14,6 +13,7 @@ namespace DemulShooterX64
     {
         private DsTcp_Client _Tcpclient;
         private DsTcp_OutputData_Dcop _OutputData;
+        private DsTcp_InputData_Dcop _InputData;
 
         //Thread-safe operation on input/output data
         //public static System.Object MutexLocker;
@@ -27,7 +27,6 @@ namespace DemulShooterX64
             : base(RomName, "DCOP", DisableInputHack, Verbose)
         {
             _HideCrosshair = HideCrosshair;
-
             _KnownMd5Prints.Add("DCOP - Tenoke ISO - Original", "3940b478b0069635b579c8bd2a6729c1");
             
             _tProcess.Start();
@@ -59,16 +58,24 @@ namespace DemulShooterX64
                             if (FindGameWindow_Equals("DCOP"))
                             {
                                 String AssemblyDllPath = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", @"DCOP_Data\Managed\Assembly-CSharp.dll");
-                                CheckMd5(AssemblyDllPath);
-                                
+                                CheckMd5(AssemblyDllPath); 
+                              
+                                _InputData = new DsTcp_InputData_Dcop();
+
                                 //Start TcpClient to dial with Unity Game
                                 _OutputData = new DsTcp_OutputData_Dcop();
                                 _Tcpclient = new DsTcp_Client("127.0.0.1", DsTcp_Client.DS_TCP_CLIENT_PORT);
                                 _Tcpclient.PacketReceived += DsTcp_Client_PacketReceived;
+                                _Tcpclient.TcpConnected += DsTcp_client_TcpConnected;
                                 _Tcpclient.Connect();
+
+                                
 
                                 if (_DisableInputHack)
                                     Logger.WriteLog("Input Hack disabled");
+
+
+                                
 
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
@@ -105,6 +112,19 @@ namespace DemulShooterX64
         {
             if (_Tcpclient != null)
                 _Tcpclient.Disconnect();
+        }
+
+        /// <summary>
+        /// Sending a TCP message on connection
+        /// </summary>
+        private void DsTcp_client_TcpConnected(Object Sender, EventArgs e)
+        {
+            if (_HideCrosshair)
+                _InputData.HideCrosshairs = 1;
+            else
+                _InputData.HideCrosshairs = 0;
+
+            _Tcpclient.SendMessage(_InputData.ToByteArray());
         }
 
         #region Outputs
@@ -162,5 +182,6 @@ namespace DemulShooterX64
         }
 
         #endregion
+
     }
 }

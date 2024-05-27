@@ -71,6 +71,7 @@
     <Compile Include="Games\Game_LindberghHotdEx.cs" />
     <Compile Include="Games\Game_LindberghHotd4Sp.cs" />
     <Compile Include="Games\Game_LindberghLgjsp.cs" />
+    <Compile Include="Games\Game_PpmPoliceTrainer2.cs" />
     <Compile Include="Games\Game_RtJurassicPark.cs" />
     <Compile Include="Games\Game_Re2Transformers2.cs" />
     <Compile Include="Games\Game_RtAliensArmageddon.cs" />

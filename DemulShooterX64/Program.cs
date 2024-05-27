@@ -33,6 +33,7 @@ namespace DemulShooterX64
             ConsoleHwnd = GetConsoleWindow();
 
             bool isVerbose = false;
+            bool isTrace = false;
 
             Dictionary<String, String> _SystemTargets = new Dictionary<String, String>(){
                 {"aagames","Adrenaline Amusements"},
@@ -160,6 +161,10 @@ namespace DemulShooterX64
                     {
                         isVerbose = true;
                     }
+                    else if (args[i].ToLower().Equals("-t") || args[i].ToLower().Equals("--trace"))
+                    {
+                        isTrace = true;
+                    }
 
                     else if (args[i].ToLower().StartsWith("-target"))
                     {
@@ -258,7 +263,7 @@ namespace DemulShooterX64
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new DemulShooterWindowX64(args, isVerbose));
+                Application.Run(new DemulShooterWindowX64(args, isVerbose, isTrace));
             }
             else
             {

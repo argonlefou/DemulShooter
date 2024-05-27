@@ -32,6 +32,7 @@ namespace DemulShooter
             ConsoleHwnd = GetConsoleWindow();
 
             bool isVerbose = false;
+            bool isTrace = false;
 
             Dictionary<String,String> _SystemTargets = new Dictionary<String,String> (){
                 {"chihiro","Cxbx-Reloaded"},
@@ -45,6 +46,7 @@ namespace DemulShooter
                 {"konami","Konami Arcade"},
                 {"lindbergh","TeknoParrot Loader"},
                 {"model2","Nebula Model2Emulator v1.1a"},
+                {"ppmarket","P&P Marketing Arcade"},
                 {"rawthrill","TeknoParrot Loader"},
                 {"ringwide","TeknoParrot Loader / JConfig"},
                 {"ttx","Taito Type X"},
@@ -115,6 +117,10 @@ namespace DemulShooter
                 {"vcop","Virtua Cop"},
                 {"vcop2","Virtua Cop 2"}
 
+            };
+
+            Dictionary<String, String> _PpMarketRoms = new Dictionary<String, String>(){
+                {"policetr2","Police Trainer 2"},
             };
 
             Dictionary<String, String> _RawThrillRoms = new Dictionary<String, String>(){
@@ -208,6 +214,9 @@ namespace DemulShooter
                         Console.WriteLine("Model2 roms :");
                         DisplayDictionnaryList(_Model2Roms);
                         Console.WriteLine("");
+                        Console.WriteLine("P&P Marketing roms :");
+                        DisplayDictionnaryList(_PpMarketRoms);
+                        Console.WriteLine("");
                         Console.WriteLine("Raw Thrill roms :");
                         DisplayDictionnaryList(_RawThrillRoms);
                         Console.WriteLine("");
@@ -238,6 +247,10 @@ namespace DemulShooter
                     else if (args[i].ToLower().Equals("-v") || args[i].ToLower().Equals("--verbose"))
                     {
                         isVerbose = true;
+                    }
+                    else if (args[i].ToLower().Equals("-t") || args[i].ToLower().Equals("--trace"))
+                    {
+                        isTrace = true;
                     }
 
                     else if (args[i].ToLower().StartsWith("-target"))
@@ -321,6 +334,14 @@ namespace DemulShooter
                                 ExitConsole();
                             }
                         }
+                        else if (strTarget.Equals("ppmarket"))
+                        {
+                            if (!CheckParameter(strRom, _PpMarketRoms))
+                            {
+                                Console.WriteLine("Unsupported P&P Marketing rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
                         else if (strTarget.Equals("rawthrill"))
                         {
                             if (!CheckParameter(strRom, _RawThrillRoms))
@@ -364,7 +385,7 @@ namespace DemulShooter
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new DemulShooterWindow(args, isVerbose));
+                Application.Run(new DemulShooterWindow(args, isVerbose, isTrace));
             }
             else
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Diagnostics;
 
 namespace DsCore
 {
@@ -7,6 +8,7 @@ namespace DsCore
     {
         private static string LogFilename = "debug.txt";
         public static bool IsEnabled { get; set; }
+        public static bool IsTraceEnabled { get; set; }
 
         public static void InitLogFileName()
         {
@@ -19,7 +21,11 @@ namespace DsCore
         /// </summary>
         public static void WriteLog(String Data)
         {
-            if (IsEnabled)
+            if (IsTraceEnabled)
+            {
+                Trace.WriteLine(Data);
+            }
+            else if (IsEnabled)
             {
                 try
                 {

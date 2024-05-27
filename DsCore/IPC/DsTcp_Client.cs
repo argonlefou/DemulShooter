@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Net.Sockets;
-using System.Net;
 using System.Threading;
 
 namespace DsCore.IPC
@@ -141,6 +138,8 @@ namespace DsCore.IPC
                     Logger.WriteLog("Ds_TcpClient.Listener(): Successfully connected to " + _ServerIpAddress + ":" + _ServerTcpPort);
                     _ClientNetworkStream = _TcpClient.GetStream();
 
+                    OnConnected(this, new EventArgs());
+
                     int PacketLengthInfo = -1;
                     int BytesRead = 0;
                     byte[] InputBuffer = new byte[0];
@@ -199,6 +198,16 @@ namespace DsCore.IPC
 
         #region Custom Event
 
+        /* OnConnected custom event*/
+        public delegate void TcpConnectedEventHandler(object sender, EventArgs e);
+        public event TcpConnectedEventHandler TcpConnected;
+        private void OnConnected(object sender, EventArgs e)
+        {
+            if (TcpConnected != null)
+                TcpConnected(sender, e);
+        }
+
+        /*OnPacketReceived custom event */
         public delegate void PacketReceivedEventHandler(object sender, PacketReceivedEventArgs e);
         public event PacketReceivedEventHandler PacketReceived;
         private void OnPacketReceived(object sender, PacketReceivedEventArgs e)

@@ -21,6 +21,10 @@ namespace UnityPlugin_BepInEx_DCOP
 
         public static Dcop_Plugin Instance = null;
 
+        //custom Input Data
+        public static Vector2 P1_Axis = new Vector2(0, 0);
+        public static byte P1_Trigger_ButtonState = 0;
+
         //TCP server data for Inputs/Outputs
         private TcpListener _TcpListener;
         private Thread _TcpListenerThread;
@@ -30,6 +34,9 @@ namespace UnityPlugin_BepInEx_DCOP
 
         public static TcpOutputData OutputData;
         private TcpOutputData _OutputDataBefore;
+        private TcpInputData _InputData;
+
+        public static bool CrossHairVisibility = true;
 
         //Game is setting Arduino PINS to set outputs :
         // Pin 02 => Game Gun
@@ -61,6 +68,7 @@ namespace UnityPlugin_BepInEx_DCOP
 
             OutputData = new TcpOutputData();
             _OutputDataBefore = new TcpOutputData();
+            _InputData = new TcpInputData();
 
             // Start TcpServer	
             _TcpListenerThread = new Thread(new ThreadStart(TcpClientThreadLoop));
@@ -76,10 +84,6 @@ namespace UnityPlugin_BepInEx_DCOP
 
         public void Update()
         {
-            //Singleton<GlobalData>.shared().isCrosshairVisible = CrossHairVisibility;            
-
-            
-
             //Checking for a change in output to send or not
             byte[] bOutputData = OutputData.ToByteArray();
             byte[] bOutputDataBefore = _OutputDataBefore.ToByteArray();
@@ -136,22 +140,24 @@ namespace UnityPlugin_BepInEx_DCOP
                                 int Length = 0;
                                 try
                                 {
-                                    Length = _TcpStream.Read(bytes, 0, bytes.Length);
+                                    Length = _TcpStream.Read(bytes, 0, bytes.Length);                                                                      
                                     //If Tcpclient gets disconnected, Read should return 0 bytes, so we can handle disconnection to allow a new connection
                                     if (Length == 0)
                                         break;
-                                    byte[] InputBuffer = new byte[Length];
+                                    byte[] InputBuffer = new byte[Length]; 
                                     Array.Copy(bytes, 0, InputBuffer, 0, Length);
-                                    //_InputData.Update(InputBuffer);
-                                    //MyLogger.LogMessage("PointBlankX_Plugin.TcpClientThreadLoop() => client message received as: " + _InputData.ToString());
+                                    _InputData.Update(InputBuffer);
+                                    MyLogger.LogMessage("Dcop_Plugin.TcpClientThreadLoop() => client message received as: " + _InputData.ToString());
 
                                     ////lock (MutexLocker_Inputs)
                                     ////{
-                                    //P1_Axis = new Vector2(_InputData.P1_X, _InputData.P1_Y);
-                                    //P1_Trigger_ButtonState = _InputData.P1_Trigger;
-                                    //P2_Axis = new Vector2(_InputData.P2_X, _InputData.P2_Y);
-                                    //P2_Trigger_ButtonState = _InputData.P2_Trigger;
-                                    //CrossHairVisibility = _InputData.HideCrosshairs == 1 ? false : true;
+                                    P1_Axis = new Vector2(_InputData.P1_X, _InputData.P1_Y);
+                                    P1_Trigger_ButtonState = _InputData.P1_Trigger;
+                                    CrossHairVisibility = _InputData.HideCrosshairs == 1 ? false : true;
+
+                                    //Make sure to remove the crosshair at the time we get the packet, as the game updates the display only at certain times (change of weapon, etc....)
+                                    if (!CrossHairVisibility)
+                                        UnityEngine.Cursor.visible = false;
                                     ////}
                                 }
                                 catch
@@ -193,7 +199,7 @@ namespace UnityPlugin_BepInEx_DCOP
                     MyLogger.LogMessage("Dcop_Plugin.SendOutputs() => Sending data : " + p.ToString());
                     //lock (MutexLocker_Outputs)
                     //{
-                    OutputData.GunLight = 0;
+                    ///OutputData.GunLight = 0;
                     //}
                     _TcpStream.Write(Buffer, 0, Buffer.Length);
                 }

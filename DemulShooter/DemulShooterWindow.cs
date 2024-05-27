@@ -70,7 +70,7 @@ namespace DemulShooter
         private DsCore.IPC.MemoryMappedFileHelper_Old _MMF_Inputs;
         private DsCore.IPC.MemoryMappedFileHelper_Old _MMF_Outputs;
         
-        public DemulShooterWindow(string[] Args, bool isVerbose)
+        public DemulShooterWindow(string[] Args, bool isVerbose, bool enableTrace)
         {
             //Stop program if Demulshooter already running
             Process[] pDemulShooter = Process.GetProcessesByName("DemulShooter");
@@ -90,6 +90,7 @@ namespace DemulShooter
             _TimerHookTimeout.Elapsed += tHookTimeOut_Elapsed;
 
             Logger.IsEnabled = isVerbose;
+            Logger.IsTraceEnabled = enableTrace;
             Logger.InitLogFileName();
             Logger.WriteLog("");
             Logger.WriteLog("---------------- Program Start -- DemulShooter v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString() + " ----------------");
@@ -541,11 +542,25 @@ namespace DemulShooter
                     }
                 }
 
+                //All model2 roms share same method
+                else if (_Target.Equals("ppmarket"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "policetr2":
+                            {
+                                _Game = new Game_PpmPoliceTrainer2(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;
+                        default:
+                            break;
+                    }
+                }
+
                 //Raw Thrill Games
                 else if (_Target.Equals("rawthrill"))
                 {
                     switch (_Rom.ToLower())
-                    {                        
+                    {
                         case "aa":
                             {
                                 _Game = new Game_RtAliensArmageddon(_Rom.ToLower(), _NoInput, isVerbose);
@@ -624,8 +639,8 @@ namespace DemulShooter
                             {
                                 //_Game = new Game_TtxGundam(_Rom.ToLower(), Configurator.GetInstance().Gsoz_Pedal_P1_Enabled, Configurator.GetInstance().DIK_Gsoz_Pedal_P1, Configurator.GetInstance().Gsoz_Pedal_P2_Enabled, Configurator.GetInstance().DIK_Gsoz_Pedal_P2, _NoInput, isVerbose);
                                 _Game = new Game_TtxGundam_V2(_Rom.ToLower(), _NoInput, isVerbose);
-                                
-                            
+
+
                             } break;
                         case "hmuseum":
                             {
@@ -662,7 +677,7 @@ namespace DemulShooter
                         case "bugbust":
                             {
                                 _Game = new Game_WndBugBusters(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
-                            } break;                        
+                            } break;
                         case "friction":
                             {
                                 _Game = new Game_WndFriction(_Rom.ToLower(), _NoInput, isVerbose);
