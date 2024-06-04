@@ -13,9 +13,11 @@ namespace DemulShooter
 {
     class Game_WndHotdoPc : Game
     {
+        private const String GAMEDATA_FOLDER = @"MemoryData\windows\hodo";
 
         /*** MEMORY ADDRESSES **/
-        private UInt32 _Credits_Address = 0x2F9D5B3C;
+        private UInt32 _PlayerStatus_Offset = 0x0059C378;
+        private UInt32 _CreditsPtr_Offset = 0x005996C8;
         private UInt32 _PlayerInfoPtr_Offset = 0x00599688;
 
         //Play the "Coins" sound when adding coin
@@ -28,6 +30,7 @@ namespace DemulShooter
             : base (RomName, "HOTD_NG", DisableInputHack, Verbose)
         {                      
             _KnownMd5Prints.Add("Typing Of The Dead SEGA Windows", "da39156a426e3f3faca25d3c8cb2b401");
+            _KnownMd5Prints.Add("Typing Of The Dead SEGA Windows STEAM", "9dcb7083e3e3ede186c9a809498a0d3b");
 
             _tProcess.Start();            
             Logger.WriteLog("Waiting for Windows Game " + _RomName + " game to hook.....");
@@ -55,19 +58,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-
-                            //Try to load the "coin" sound
-                            try
-                            {
-                                String strCoinSndPath = _TargetProcess.MainModule.FileName;
-                                strCoinSndPath = strCoinSndPath.Substring(0, strCoinSndPath.Length - 10);
-                                strCoinSndPath += @"..\media\coin002.aif";
-                                _SndPlayer = new SoundPlayer(strCoinSndPath);
-                            }
-                            catch
-                            {
-                                Logger.WriteLog("Unable to find/open the coin002.aif file for Hotd3");
-                            }
+                            ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
 
                             _ProcessHooked = true;                            
                             RaiseGameHookedEvent();
@@ -109,11 +100,10 @@ namespace DemulShooter
                 {
                     if (s.scanCode ==  HardwareScanCode.DIK_5)
                     {
-                        byte Credits = ReadByte(_Credits_Address);
+                        UInt32 Credits_Address = ReadPtrChain((UInt32)_TargetProcess_MemoryBaseAddress + _CreditsPtr_Offset, new UInt32[] { 0x228 }) + 0x17C;// ReadByte(_Credits_Address);
+                        byte Credits = ReadByte(Credits_Address);
                         Credits++;
-                        WriteByte(_Credits_Address, Credits);
-                        if (_SndPlayer != null)
-                            _SndPlayer.Play();
+                        WriteByte(Credits_Address, Credits);                        
                     }
                 }
             }
@@ -146,7 +136,7 @@ namespace DemulShooter
             //Player status :
             //[0] = Not Playing
             //[1] = Playing
-            UInt32 P1_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + 0x0059C378);
+            UInt32 P1_Status = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _PlayerStatus_Offset);
 
             UInt32 iTemp = ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + _PlayerInfoPtr_Offset);
             UInt32 PlayerInfo = 0;
@@ -184,7 +174,7 @@ namespace DemulShooter
 
             SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
             SetOutputValue(OutputId.P1_Life, _P1_Life);
-            SetOutputValue(OutputId.Credits, ReadByte(_Credits_Address));
+            SetOutputValue(OutputId.Credits, ReadByte(ReadPtrChain((UInt32)_TargetProcess_MemoryBaseAddress + _CreditsPtr_Offset, new UInt32[] { 0x228 }) + 0x17C));
         }
 
         #endregion

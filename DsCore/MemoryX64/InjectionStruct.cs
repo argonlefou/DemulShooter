@@ -18,7 +18,7 @@ namespace DsCore.MemoryX64
         { get { return _Length; } }
 
         public int NeededNops
-        { get { return (int)(_Length - 5); } }
+        { get { return (int)(_Length - 14); } }
 
         public InjectionStruct(UInt64 Offset, UInt32 Length)
         {

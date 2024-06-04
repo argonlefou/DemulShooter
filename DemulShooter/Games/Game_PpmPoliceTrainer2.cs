@@ -162,7 +162,7 @@ namespace DemulShooter
             //mov [08230900],edx
             CaveMemory.Write_StrBytes("89 15 00 09 23 08");
             //return
-            CaveMemory.Write_jmp(_P2Recoil_InjectionStruct.InjectionReturnOffset);
+            CaveMemory.Write_jmp(_P1Recoil_InjectionStruct.InjectionReturnOffset);
 
             Logger.WriteLog("Adding P1 Recoil Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
 

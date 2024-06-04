@@ -211,5 +211,34 @@ namespace DsCore.Memory
                 return false;
             }
         }
+        
+        /// <summary>
+        /// Create both Jump-To and Jump-Back instruction and inject the codecave in memory 
+        /// </summary>
+        /// <param name="iStruct">InjectionStruct with needed offset to inject the codecave to the good paert of the game code</param>
+        /// <param name="sCodeCaveName">Name that will be used to log the codecave creation</param>
+        public void Inject(InjectionStruct iStruct, string sCodeCaveName, bool bCreateButNotInject = false)
+        {
+            //Jump back
+            Write_jmp((UInt32)_ModuleBaseAddress + iStruct.InjectionReturnOffset);
+
+            Logger.WriteLog("Adding " + sCodeCaveName + " CodeCave at : 0x" + _Cave_Address.ToString("X8"));
+
+            //Code injection
+            UInt32 bytesWritten = 0;
+            UInt32 jumpTo = 0;
+            jumpTo = _Cave_Address - ((UInt32)_ModuleBaseAddress + iStruct.InjectionOffset) - 5;
+            List<byte> Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
+            for (int i = 0; i < iStruct.NeededNops; i++)
+            {
+                Buffer.Add(0x90);
+            }
+
+            //For "crash" debug purpose, sometimes I need to create the codecave to examine it, without making the game jump to it.
+            if (!bCreateButNotInject)
+                Win32API.WriteProcessMemory(_ProcessHandle, (UInt32)_ModuleBaseAddress + iStruct.InjectionOffset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);        
+        }
     }
 }

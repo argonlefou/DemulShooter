@@ -8,6 +8,7 @@ using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
 using DsCore.Win32;
+using System.Text;
 
 namespace DemulShooter
 {
@@ -25,20 +26,25 @@ namespace DemulShooter
         private UInt32 _P2_Y_Offset = 0x00000013;
         private UInt32 _P2_Buttons_Offset = 0x00000009;
         private NopStruct _Nop_Axis = new NopStruct(0x002FE60C, 3);
-        private UInt32 _Buttons_Injection_Offset = 0x002FE592;
-        private UInt32 _Buttons_Injection_Return_Offset = 0x002FE59A;
-        protected UInt32 _CalibrationValues_Injection_Offset = 0x0049DC27;
-        protected UInt32 _CalibrationValues_Injection_Return_Offset = 0x0049DC2D;
+        private InjectionStruct _Buttons_InjectionStruct = new InjectionStruct(0x002FE592, 8);
+        private InjectionStruct _CalibrationValues_InjectionStruct = new InjectionStruct(0x0049DC27, 6);
+        private UInt32 _StrlenFunction_Offset = 0x002FF3EC;
 
         //Outputs
         private UInt32 _OutputsPtr_Offset = 0x0065DA20;
         private UInt32 _PlayersStructPtr_Offset = 0x008429F0;
 
-        //Custom recoil injection
-        private UInt32 _Recoil_Injection_Offset = 0x003518F1;
-        private UInt32 _Recoil_Injection_Return_Offset = 0x003518F6;
+        //Custom injection
+        private InjectionStruct _Recoil_InjectionStruct = new InjectionStruct(0x003518F1, 5);
+        private InjectionStruct _CurrentSequence_InjectionStruct = new InjectionStruct(0x0002615BF, 6);
+
+        //Custom Data
         private UInt32 _P1_CustomRecoil_CaveAddress = 0;
         private UInt32 _P2_CustomRecoil_CaveAddress = 0;
+        private UInt32 _CurrentSequenceStringLength = 0;
+        private UInt32 _CurrentSequenceString = 0;
+
+        private bool _IsAttractMode = true;
 
         /// <summary>
         /// Constructor
@@ -227,22 +233,10 @@ namespace DemulShooter
             //movzx ecx,byte ptr [esp+13]
             CaveMemory.Write_StrBytes("0F B6 4C 24 13");
             //Jump back
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Return_Offset);
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_InjectionStruct.InjectionReturnOffset);
 
-            Logger.WriteLog("Adding CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Offset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Buffer.Add(0x90);
-            Buffer.Add(0x90);
-            Buffer.Add(0x90);
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            //Inject it
+            CaveMemory.Inject(_Buttons_InjectionStruct, "Buttons");
         }
 
         /// <summary>
@@ -282,30 +276,45 @@ namespace DemulShooter
             //mov     dword_C17D28, edi
             CaveMemory.Write_StrBytes("89 3D 28 7D C1 00");
             //Jump back
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _CalibrationValues_Injection_Return_Offset);
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _CalibrationValues_InjectionStruct.InjectionReturnOffset);
 
-            Logger.WriteLog("Adding Calibration CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+            //Inject it
+            CaveMemory.Inject(_CalibrationValues_InjectionStruct, "Calibration Values");
+        }
 
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _CalibrationValues_Injection_Offset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Buffer.Add(0x90);
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _CalibrationValues_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        private void SetHack_Output()
+        {
+            //Create Databak to store our value
+            Create_OutputsDataBank();
+
+            SetHack_Recoil();
+            SetHack_GetCurrentSequence();            
+        }
+
+        /// <summary>
+        /// Creating a zone in memory where we will save recoil status, updated by the game.
+        /// This memory will then be read by the game thanks to the following hacks.
+        /// </summary>
+        private void Create_OutputsDataBank()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            _P1_CustomRecoil_CaveAddress = CaveMemory.CaveAddress;
+            _P2_CustomRecoil_CaveAddress = CaveMemory.CaveAddress + 0x04;
+            _CurrentSequenceStringLength = CaveMemory.CaveAddress + 0x10;
+            _CurrentSequenceString = CaveMemory.CaveAddress + 0x14;
+
+            Logger.WriteLog("Custom Recoil data will be stored at : 0x" + _P1_CustomRecoil_CaveAddress.ToString("X8"));
         }
 
         //Original game is simply setting a Motor to vibrate, so simply using this data to create or pulsed custom recoil will not be synchronized with bullets shot
         //as the pulses lenght and spaceing will depend on DemulShooter output pulse config data.
         //To synch recoil pulse with projectiles, this hack allows to intercept the code shooting the actual projectile to generate the pulse
-        private void SetHack_Output()
+        
+        private void SetHack_Recoil()
         {
-            //Create Databak to store our value
-            CreateDataBank();
-
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
@@ -324,38 +333,70 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("C7 00 01 00 00 00");
             //xor al,al
             CaveMemory.Write_StrBytes("30 C0");
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_Injection_Return_Offset);
+            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_InjectionStruct.InjectionReturnOffset);
 
-            Logger.WriteLog("Adding Recoil Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_Injection_Offset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
-
-            Logger.WriteLog("Output memory Hack complete !");
-            Logger.WriteLog("-");
+            //Inject it
+            CaveMemory.Inject(_Recoil_InjectionStruct, "Recoil");
         }
 
+
         /// <summary>
-        /// Creating a zone in memory where we will save recoil status, updated by the game.
-        /// This memory will then be read by the game thanks to the following hacks.
+        /// Get the current sequence string, this will be used later to filter when the game is in "Advertise" mode
         /// </summary>
-        private void CreateDataBank()
+        private void SetHack_GetCurrentSequence()
         {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
 
-            _P1_CustomRecoil_CaveAddress = CaveMemory.CaveAddress;
-            _P2_CustomRecoil_CaveAddress = CaveMemory.CaveAddress + 0x04;
+            //mov mov eax,[esp+54]
+            CaveMemory.Write_StrBytes("8B 44 24 54");
+            //test eax, eax
+            CaveMemory.Write_StrBytes("85 C0");
+            //je Exit
+            CaveMemory.Write_StrBytes("74 2A");
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //call strlen()
+            CaveMemory.Write_call((UInt32)_TargetProcess_MemoryBaseAddress + _StrlenFunction_Offset);
+            //add esp, 4
+            CaveMemory.Write_StrBytes("83 C4 04");
+            //push ecx
+            CaveMemory.Write_StrBytes("51");
+            //push esi
+            CaveMemory.Write_StrBytes("56");
+            //push edi
+            CaveMemory.Write_StrBytes("57");
+            //mov ecx, _CurrentSequenceStringLength
+            CaveMemory.Write_StrBytes("B9");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_CurrentSequenceStringLength));
+            //mov [ecx], eax
+            CaveMemory.Write_StrBytes("89 01");
+            //mov ecx,eax
+            CaveMemory.Write_StrBytes("8B C8");
+            //inc ecx
+            CaveMemory.Write_StrBytes("41");
+            //mov mov esi,[esp+60]
+            CaveMemory.Write_StrBytes("8B 74 24 60");
+            //mov edi, _CurrentSequenceString
+            CaveMemory.Write_StrBytes("BF");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_CurrentSequenceString));
+            //repe movsb
+            CaveMemory.Write_StrBytes("F3 A4");
+            //pop edi
+            CaveMemory.Write_StrBytes("5F");
+            //pop esi
+            CaveMemory.Write_StrBytes("5E");
+            //pop ecx
+            CaveMemory.Write_StrBytes("59");
+            //mov mov eax,[esp+54]
+            CaveMemory.Write_StrBytes("8B 44 24 54");
+            //test eax,eax
+            CaveMemory.Write_StrBytes("85 C0");
 
-            Logger.WriteLog("Custom Recoil data will be stored at : 0x" + _P1_CustomRecoil_CaveAddress.ToString("X8"));
+            //Inject it
+            CaveMemory.Inject(_CurrentSequence_InjectionStruct, "Current Sequence");
         }
 
         #endregion
@@ -465,7 +506,15 @@ namespace DemulShooter
             _P1_Life = 0;
             _P2_Life = 0;
 
-            if (P1_Status == 1)
+            UInt32 StrLength = BitConverter.ToUInt32(ReadBytes(_CurrentSequenceStringLength, 4), 0);
+            byte[] bCurrentSeq = ReadBytes(_CurrentSequenceString, StrLength);
+            string sCurrentSeq = System.Text.ASCIIEncoding.ASCII.GetString(bCurrentSeq);
+            if (sCurrentSeq.StartsWith("Adv"))
+                _IsAttractMode = true;
+            if (sCurrentSeq.StartsWith("GameSeq"))
+                _IsAttractMode = false;
+
+            if (!_IsAttractMode)
             {
                 _P1_Life = (int)BitConverter.ToSingle(ReadBytes(P1_Strutc_Address + 0x20, 4), 0);
                 if (_P1_Life < 0)
@@ -474,9 +523,7 @@ namespace DemulShooter
                 //[Damaged] custom Output                
                 if (_P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);
-            }
-            if (P2_Status == 1)
-            {
+
                 _P2_Life = (int)BitConverter.ToSingle(ReadBytes(P2_Strutc_Address + 0x20, 4), 0);
                 if (_P2_Life < 0)
                     _P2_Life = 0;
