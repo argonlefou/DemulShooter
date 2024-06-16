@@ -24,8 +24,6 @@ namespace DemulShooter
         protected float _P2_X_Value;
         protected float _P2_Y_Value;
 
-        private bool _HideCrosshair = false;
-
         /// <summary>
         /// Constructor
         /// </summary>

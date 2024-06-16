@@ -158,7 +158,14 @@ namespace DsCore.MameOutput
         Lmp_GreenTestLight,
         Lmp_RedLight,
         Lmp_WhiteStrobe,
-
+        P1_LmpGunTip,
+        P1_LmpGunBack,
+        P2_LmpGunTip,
+        P2_LmpGunBack,
+        BallAgitator_State,
+        BallAgitator_Direction,
+        P1_BallShooter,
+        P2_BallShooter,
 
         Credits = 1000,
         P1_CtmLmpStart,

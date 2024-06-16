@@ -13,8 +13,6 @@ namespace DemulShooterX64
 {
     class Game_AagamesRha : Game
     {
-        private bool _HideCrosshair = false;
-
         //Float "POINT" for Unity float axis values
         private struct Vector3
         {

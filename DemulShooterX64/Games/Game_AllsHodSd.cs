@@ -19,7 +19,7 @@ namespace DemulShooterX64
         private InjectionStruct _Jvs_P2Y_Injection = new InjectionStruct(0x001E293F, 15);
         private InjectionStruct _MenuFlag_Injection = new InjectionStruct(0x00DA3050, 17);
         private InjectionStruct _AxisCorrection_Injection = new InjectionStruct(0x001DED89, 17);
-        private UInt32 _RemoveMenuCorrection_Offset = 0x00DA3041;
+        //private UInt32 _RemoveMenuCorrection_Offset = 0x00DA3041;
         private UInt64 _PlayerStatusPointer_Offset = 0x03087750;     
 
         //Custom Values

@@ -33,6 +33,7 @@ namespace DemulShooterX64
         protected bool _VerboseEnable;
         protected bool _DisableWindow = false;
         protected bool _DisableInputHack = false;
+        protected bool _HideCrosshair = false;
 
         //MD5 check of target binaries, may help to know if it's the wrong version or not compatible
         protected Dictionary<string, string> _KnownMd5Prints;
@@ -653,24 +654,6 @@ namespace DemulShooterX64
             }
             else
                 return false;
-        }
-
-        protected void Write_Codecave(Codecave CodecaveToWrite, InjectionStruct Injection)
-        {
-            UIntPtr bytesWritten = UIntPtr.Zero;
-            List<byte> Buffer = new List<byte>();
-            Buffer.Add(0xFF);
-            Buffer.Add(0x25);
-            Buffer.Add(0x00);
-            Buffer.Add(0x00);
-            Buffer.Add(0x00);
-            Buffer.Add(0x00);
-            Buffer.AddRange(BitConverter.GetBytes(CodecaveToWrite.CaveAddress));
-            for (int i = 0; i < Injection.NeededNops; i++)
-            {
-                Buffer.Add(0x90);
-            }
-            Win32API.WriteProcessMemoryX64(_TargetProcess.Handle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + Injection.InjectionOffset), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
         }
 
         protected void SetNops(IntPtr BaseAddress, NopStruct Nop)

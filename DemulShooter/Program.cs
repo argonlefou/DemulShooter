@@ -43,6 +43,7 @@ namespace DemulShooter
                 {"dolphin5","Dolphin v5.0"},
                 {"gamewax","Gamewax Arcade"},
                 {"globalvr","Global VR"},
+                {"ice","ICE Games"},
                 {"konami","Konami Arcade"},
                 {"lindbergh","TeknoParrot Loader"},
                 {"model2","Nebula Model2Emulator v1.1a"},
@@ -91,6 +92,10 @@ namespace DemulShooter
                 {"aliens","Aliens Extermination Dehasped (2nd dump, x86 and x64, no need for VM)"},
                 {"farcry","Far Cry : Paradise Lost"},
                 {"fearland","Fright Fear Land"}
+            };
+
+            Dictionary<String, String> _IceRoms = new Dictionary<String, String>(){
+                {"gbusters","Ghostbusters"}
             };
 
             Dictionary<String, String> _KonamiRoms = new Dictionary<String, String>(){
@@ -205,6 +210,9 @@ namespace DemulShooter
                         Console.WriteLine("Gamewax Games :");
                         DisplayDictionnaryList(_GamewaxRoms);
                         Console.WriteLine("");
+                        Console.WriteLine("ICE Games :");
+                        DisplayDictionnaryList(_IceRoms);
+                        Console.WriteLine("");
                         Console.WriteLine("Konami Games :");
                         DisplayDictionnaryList(_KonamiRoms);
                         Console.WriteLine("");
@@ -315,6 +323,22 @@ namespace DemulShooter
                             if (!CheckParameter(strRom, _GlobalVrRoms))
                             {
                                 Console.WriteLine("Unsupported GlobalVR rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
+                        else if (strTarget.Equals("ice"))
+                        {
+                            if (!CheckParameter(strRom, _IceRoms))
+                            {
+                                Console.WriteLine("Unsupported ICE rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
+                        else if (strTarget.Equals("konami"))
+                        {
+                            if (!CheckParameter(strRom, _KonamiRoms))
+                            {
+                                Console.WriteLine("Unsupported Konami rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
                         }

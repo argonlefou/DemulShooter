@@ -13,7 +13,6 @@ namespace DemulShooter
     class Game_WndReload : Game
     {
         private const String GAMEDATA_FOLDER = @"MemoryData\windows\reload";
-        private bool _HideCrosshair = false;
 
         /*** MEMORY ADDRESSES **/
         /// The game needs 3 different values to be overwritten :

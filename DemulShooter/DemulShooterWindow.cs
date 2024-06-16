@@ -450,6 +450,28 @@ namespace DemulShooter
                     }
                 }
 
+                    //GlobalVR game
+                else if (_Target.Equals("ice"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "gbusters":
+                            {
+                                _Game = new Game_IceGhostBusters(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            } break;
+                        case "farcry":
+                            {
+                                _Game = new Game_GvrFarCry(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;
+                        case "fearland":
+                            {
+                                _Game = new Game_GvrFearLand(_Rom.ToLower(), _HardFfl, _NoInput, isVerbose);
+                            } break;
+                        default:
+                            break;
+                    }
+                }
+
                 //KONAMI Arcade
                 else if (_Target.Equals("konami"))
                 {

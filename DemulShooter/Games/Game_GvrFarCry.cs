@@ -170,11 +170,8 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("C7 45 00 00 00 00 00");
             //pop ebp
             CaveMemory.Write_StrBytes("5D");
-            //return
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _PlayerOff_InjectionStruct.InjectionReturnOffset);
 
-            Logger.WriteLog("Adding player not playing status CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-            Write_Codecave(CaveMemory, _PlayerOff_InjectionStruct);
+            CaveMemory.InjectToOffset(_PlayerOff_InjectionStruct, "player not playing status");            
         }
 
         /// <summary>
@@ -205,11 +202,8 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("C7 45 00 01 00 00 00");
             //pop ebp
             CaveMemory.Write_StrBytes("5D");
-            //return
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _PlayerOn_InjectionStruct.InjectionReturnOffset);
 
-            Logger.WriteLog("Adding player playing status CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-            Write_Codecave(CaveMemory, _PlayerOn_InjectionStruct);
+            CaveMemory.InjectToOffset(_PlayerOn_InjectionStruct, "player playing status");  
         }
 
         /// <summary>
@@ -238,11 +232,7 @@ namespace DemulShooter
             //cmp edx,[edi+ecx*4+00000610]
             CaveMemory.Write_StrBytes("3B 94 8F 10 06 00 00");
 
-            //return
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _ReadLife_InjectionStruct.InjectionReturnOffset);
-
-            Logger.WriteLog("Adding Custom Life output CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-            Write_Codecave(CaveMemory, _ReadLife_InjectionStruct);
+            CaveMemory.InjectToOffset(_ReadLife_InjectionStruct, "Custom Life output"); 
         }
 
         /// <summary>
@@ -274,11 +264,7 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("66 89 0D");
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Shots_CaveAddress));
 
-            //return
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _ReadShots_InjectionStruct.InjectionReturnOffset);
-
-            Logger.WriteLog("Adding Player Shots output CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-            Write_Codecave(CaveMemory, _ReadShots_InjectionStruct);
+            CaveMemory.InjectToOffset(_ReadShots_InjectionStruct, "Player Shots output"); 
         }
 
         /// <summary>
@@ -329,11 +315,8 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("88 1D");
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_KillsDigit2_CaveAddress));
             //Exit:
-            //return
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _ReadKills_InjectionStruct.InjectionReturnOffset);
 
-            Logger.WriteLog("Adding Kill digits output CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-            Write_Codecave(CaveMemory, _ReadKills_InjectionStruct);
+            CaveMemory.InjectToOffset(_ReadKills_InjectionStruct, "Kill digits output"); 
         }
 
         /// <summary>
@@ -370,11 +353,8 @@ namespace DemulShooter
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Rumble_CaveAddress));
             CaveMemory.Write_StrBytes("01 00 00 00");
             //Exit:
-            //return
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _ReadRumble_InjectionStruct.InjectionReturnOffset);
 
-            Logger.WriteLog("Adding Rumble output CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-            Write_Codecave(CaveMemory, _ReadRumble_InjectionStruct);
+            CaveMemory.InjectToOffset(_ReadRumble_InjectionStruct, "Rumble output"); 
         }
 
         #endregion            

@@ -37,8 +37,6 @@ namespace DemulShooter
         private InjectionStruct _Damage_InjectionStruct = new InjectionStruct(0x080762D6, 8);
         private UInt32 _NoCrosshair_Address = 0x0806DFFC;
 
-        private bool _HideCrosshair = false;
-
         /// <summary>
         /// Constructor
         /// </summary>

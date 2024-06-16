@@ -236,7 +236,7 @@ namespace DemulShooter
             CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_InjectionStruct.InjectionReturnOffset);
 
             //Inject it
-            CaveMemory.Inject(_Buttons_InjectionStruct, "Buttons");
+            CaveMemory.InjectToOffset(_Buttons_InjectionStruct, "Buttons");
         }
 
         /// <summary>
@@ -279,7 +279,7 @@ namespace DemulShooter
             CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _CalibrationValues_InjectionStruct.InjectionReturnOffset);
 
             //Inject it
-            CaveMemory.Inject(_CalibrationValues_InjectionStruct, "Calibration Values");
+            CaveMemory.InjectToOffset(_CalibrationValues_InjectionStruct, "Calibration Values");
         }
 
         private void SetHack_Output()
@@ -336,7 +336,7 @@ namespace DemulShooter
             CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_InjectionStruct.InjectionReturnOffset);
 
             //Inject it
-            CaveMemory.Inject(_Recoil_InjectionStruct, "Recoil");
+            CaveMemory.InjectToOffset(_Recoil_InjectionStruct, "Recoil");
         }
 
 
@@ -396,7 +396,7 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("85 C0");
 
             //Inject it
-            CaveMemory.Inject(_CurrentSequence_InjectionStruct, "Current Sequence");
+            CaveMemory.InjectToOffset(_CurrentSequence_InjectionStruct, "Current Sequence");
         }
 
         #endregion

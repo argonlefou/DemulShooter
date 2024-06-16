@@ -18,8 +18,6 @@ namespace DemulShooterX64
         //Thread-safe operation on input/output data
         //public static System.Object MutexLocker;
 
-        private bool _HideCrosshair = false;
-
         /// <summary>
         /// Constructor
         /// </summary>

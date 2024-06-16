@@ -45,9 +45,7 @@ namespace DemulShooter
 
         //Rom loaded + Rom version check
         private UInt32 _RomLoaded_check_Instruction_v108 = 0x08188F10;
-        private UInt32 _RomLoaded_check_Instruction_v133 = 0x08153065;
-
-        private bool _HideCrosshair = false;
+        //private UInt32 _RomLoaded_check_Instruction_v133 = 0x08153065;
 
         /// <summary>
         /// Constructor

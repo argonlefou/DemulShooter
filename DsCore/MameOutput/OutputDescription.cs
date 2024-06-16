@@ -149,6 +149,16 @@ namespace DsCore.MameOutput
         public static readonly String Lmp_RedLight = "Lmp_RedLight";                //  DCOP
         public static readonly String Lmp_WhiteStrobe = "Lmp_WhiteStrobe";          //  DCOP
 
+        public static readonly String P1_LmpGunTip = "P1_LmpGunTip";                    //
+        public static readonly String P1_LmpGunBack = "P1_LmpGunBack";                  //
+        public static readonly String P2_LmpGunTip = "P2_LmpGunTip";                    //Ghostbusters
+        public static readonly String P2_LmpGunBack = "P2_LmpGunBack";                  //
+        public static readonly String BallAgitator_State = "BallAgitator_State";        //
+        public static readonly String BallAgitator_Direction = "BallAgitator_Direction";//
+        public static readonly String P1_BallShooter = "P1_BallShooter";                   //
+        public static readonly String P2_BallShooter = "P2_BallShooter";                   //
+
+
         public static readonly String P1_GunMotor = "P1_GunMotor";
         public static readonly String P2_GunMotor = "P2_GunMotor";
         public static readonly String P3_GunMotor = "P3_GunMotor";

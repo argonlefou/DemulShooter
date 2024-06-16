@@ -21,7 +21,7 @@ namespace DemulShooter
         private UInt32 _PlayerInfoPtr_Offset = 0x00599688;
 
         //Play the "Coins" sound when adding coin
-        SoundPlayer _SndPlayer;
+        //SoundPlayer _SndPlayer;
 
         /// <summary>
         /// Constructor

@@ -19,16 +19,13 @@ namespace DemulShooterX64
         //Thread-safe operation on input/output data
         //public static System.Object MutexLocker;
 
-        private byte _HideCrosshair = 0;
-
         /// <summary>
         /// Constructor
         /// </summary>
         public Game_WndOpWolfReturn(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
             : base(RomName, "OperationWolf", DisableInputHack, Verbose)
         {
-            if (HideCrosshair)
-                _HideCrosshair = 1;
+            _HideCrosshair = HideCrosshair;
             _KnownMd5Prints.Add("Operation Wolf Returns - COG", "6c32e74cda2fd1953245158382cf188a");
             _tProcess.Start();
             Logger.WriteLog("Waiting for Coastal " + _RomName + " game to hook.....");
@@ -195,7 +192,7 @@ namespace DemulShooterX64
                 }
 
                 //Small hack to send a DS param to Unity plugin.....not really an Input variable but eh....
-                _InputData.HideCrosshair = _HideCrosshair;
+                _InputData.HideCrosshair = _HideCrosshair == true ? (byte)1 : (byte)0;
 
                 _Tcpclient.SendMessage(_InputData.ToByteArray());
             }

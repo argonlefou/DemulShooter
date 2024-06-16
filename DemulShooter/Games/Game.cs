@@ -6,13 +6,13 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text;
 using System.Timers;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.Win32;
-using System.Text;
 
 namespace DemulShooter
 {
@@ -33,6 +33,7 @@ namespace DemulShooter
         protected bool _VerboseEnable;
         protected bool _DisableWindow = false;
         protected bool _DisableInputHack = false;
+        protected bool _HideCrosshair = false;
 
         //MD5 check of target binaries, may help to know if it's the wrong version or not compatible
         protected Dictionary<string, string> _KnownMd5Prints;
@@ -655,21 +656,6 @@ namespace DemulShooter
             }
             else
                 return false;
-        }
-
-        protected void Write_Codecave(Codecave CodecaveToWrite, InjectionStruct Injection)
-        {
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CodecaveToWrite.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + Injection.InjectionOffset) - 5;
-            List<byte> Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            for (int i = 0; i < Injection.NeededNops; i++)
-            {
-                Buffer.Add(0x90);
-            }
-            Win32API.WriteProcessMemory(_TargetProcess.Handle, (UInt32)_TargetProcess.MainModule.BaseAddress + Injection.InjectionOffset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
         }
 
         protected void SetNops(UInt32 BaseAddress, NopStruct Nop)

@@ -180,11 +180,8 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("89 98 BC 00 00 00");
             //pop ebx
             CaveMemory.Write_StrBytes("5B");
-            //return
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _AxisX_InjectionStruct.InjectionReturnOffset);
 
-            Logger.WriteLog("Adding AxisX CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-            Write_Codecave(CaveMemory, _AxisX_InjectionStruct);
+            CaveMemory.InjectToOffset(_AxisX_InjectionStruct, "AxisX");
         }
 
         private void SetHack_Y()
@@ -210,11 +207,8 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("89 98 C0 00 00 00");
             //pop ebx
             CaveMemory.Write_StrBytes("5B");
-            //return
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _AxisY_InjectionStruct.InjectionReturnOffset);
 
-            Logger.WriteLog("Adding AxisX CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-            Write_Codecave(CaveMemory, _AxisY_InjectionStruct);
+            CaveMemory.InjectToOffset(_AxisY_InjectionStruct, "AxisY");
         }
 
         #endregion
