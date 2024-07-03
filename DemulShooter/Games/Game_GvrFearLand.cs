@@ -49,7 +49,8 @@ namespace DemulShooter
             _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - 'Game Full'", "d3639bf04ababc7246df5a0a0892408b");
             _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - 'Game Full' + Patched Header", "228a3d0e81141c3850459bfaf968321a");
             _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - 'Game Full' + Patched Header + NoCrosshair", "80e10a8e5363205b670f9366e3fe78b1");
-            _tProcess.Start();
+			_KnownMd5Prints.Add("Haunted Museum 2 v1.00 - Other", "8372323ffceebfd064707064ac00c043");
+			_tProcess.Start();
             Logger.WriteLog("Waiting for Global VR " + _RomName + " game to hook.....");
         }
 
