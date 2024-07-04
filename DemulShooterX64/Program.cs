@@ -26,7 +26,9 @@ namespace DemulShooterX64
         static String strTarget = string.Empty;
         static String strRom = string.Empty;
 
-        static void Main(string[] args)
+		public static String strTargetProcess { get; private set; } = string.Empty;
+
+		static void Main(string[] args)
         {
             // Attach to the parent process via AttachConsole SDK call
             AttachConsole(ATTACH_PARENT_PROCESS);
@@ -154,8 +156,9 @@ namespace DemulShooterX64
                         Console.WriteLine(" -usesinglemouse \tUse standard mouse instead of Lightguns");
                         Console.WriteLine(" -? -h --help\tShow this help");
                         Console.WriteLine(" -v --verbose\tEnable output to log file");
+						Console.WriteLine(" -tprocess=[ProcessName] : change the name of the expected executable instead of expecting specific name like game.exe");
 
-                        ExitConsole();
+						ExitConsole();
                     }
                     else if (args[i].ToLower().Equals("-v") || args[i].ToLower().Equals("--verbose"))
                     {
@@ -175,7 +178,12 @@ namespace DemulShooterX64
                             ExitConsole();
                         }
                     }
-                }
+					else if (args[i].ToLower().StartsWith("-tprocess"))
+					{
+						strTargetProcess = (args[i].ToLower().Split('='))[1].Trim();
+						if (strTargetProcess.EndsWith(".exe")) strTargetProcess = strTargetProcess.Substring(0, strTargetProcess.Length - 4);
+					}
+				}
 
                 if (strTarget == String.Empty)
                 {

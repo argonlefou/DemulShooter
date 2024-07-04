@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 namespace DemulShooter
 {
     class Program
@@ -24,6 +25,8 @@ namespace DemulShooter
 
         static String strTarget = string.Empty;
         static String strRom = string.Empty;
+
+        public static String strTargetProcess { get; private set; } = string.Empty;
 
         static void Main(string[] args)
         {
@@ -249,6 +252,7 @@ namespace DemulShooter
                         Console.WriteLine(" -widescreen \tDemul Widescreen hack");                        
                         Console.WriteLine(" -? -h --help\tShow this help");
                         Console.WriteLine(" -v --verbose\tEnable output to log file");
+                        Console.WriteLine(" -tprocess=[ProcessName] : change the name of the expected executable instead of expecting specific name like game.exe");
 
                         ExitConsole();
                     }
@@ -273,7 +277,13 @@ namespace DemulShooter
                             }
                         }
                     }
-                }
+					else if (args[i].ToLower().StartsWith("-tprocess"))
+					{
+						strTargetProcess = (args[i].ToLower().Split('='))[1].Trim();
+						if (strTargetProcess.EndsWith(".exe")) strTargetProcess = strTargetProcess.Substring(0, strTargetProcess.Length - 4);
+					}
+
+				}
 
                 if (strTarget == String.Empty)
                 {

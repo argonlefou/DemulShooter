@@ -87,7 +87,7 @@ namespace DemulShooter
             _DisableInputHack = DisableInputHack;
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
-            _Target_Process_Name = TargetProcessName;
+            _Target_Process_Name = Program.strTargetProcess == string.Empty ? TargetProcessName : Program.strTargetProcess;
 
             CreateOutputList();
 
