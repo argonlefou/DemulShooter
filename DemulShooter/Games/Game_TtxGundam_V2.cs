@@ -115,7 +115,7 @@ namespace DemulShooter
                         {
                             // The game may start with other Windows than the main one (BepInEx console, other stuff.....) so we need to filter
                             // the displayed window according to the Title, if DemulShooter is started before the game,  to hook the correct one
-                            if (FindGameWindow_Equals("game"))
+                            if (FindGameWindow_Equals("game") || FindGameWindow_Equals("TeknoParrot - Gundam Spirits Of Zeon"))
                             {
                                 if (!_DisableInputHack)
                                     SetHack();
@@ -753,9 +753,11 @@ namespace DemulShooter
                             Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _JVS_Trigger_Offset, 0x20);
                         }
                     }
+                    //Without "Pedal Mode", enable right click only if the player is not pointing in the screen boundaries
                     else
                     {
-                        Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _JVS_Trigger_Offset, 0x20);
+                        if (PlayerData.RIController.Computed_X < 17 || PlayerData.RIController.Computed_X > 624 || PlayerData.RIController.Computed_Y < 17 || PlayerData.RIController.Computed_Y > 464)
+                            Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _JVS_Trigger_Offset, 0x20);
                     }
                 }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
@@ -796,9 +798,11 @@ namespace DemulShooter
                             Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _JVS_Trigger_Offset, 0x10);
                         }
                     }
+                    //Without "Pedal Mode", enable right click only if the player is not pointing in the screen boundaries
                     else
                     {
-                        Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _JVS_Trigger_Offset, 0x10);
+                        if (PlayerData.RIController.Computed_X < 17 || PlayerData.RIController.Computed_X > 624 || PlayerData.RIController.Computed_Y < 17 || PlayerData.RIController.Computed_Y > 464)
+                            Apply_OR_ByteMask((UInt32)_TargetProcess_MemoryBaseAddress + _JVS_Trigger_Offset, 0x10);
                     }
                 }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)

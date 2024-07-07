@@ -181,6 +181,7 @@ namespace DemulShooter
             //pop ebx
             CaveMemory.Write_StrBytes("5B");
 
+            //Inject it
             CaveMemory.InjectToOffset(_AxisX_InjectionStruct, "AxisX");
         }
 
@@ -208,6 +209,7 @@ namespace DemulShooter
             //pop ebx
             CaveMemory.Write_StrBytes("5B");
 
+            //Inject it
             CaveMemory.InjectToOffset(_AxisY_InjectionStruct, "AxisY");
         }
 

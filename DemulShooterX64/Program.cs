@@ -25,6 +25,9 @@ namespace DemulShooterX64
 
         static String strTarget = string.Empty;
         static String strRom = string.Empty;
+        static String strCustomTargetProcessName = string.Empty;
+        public static String CustomTargetProcessName
+        { get { return strCustomTargetProcessName; } }
 
         static void Main(string[] args)
         {
@@ -149,6 +152,7 @@ namespace DemulShooterX64
                         DisplayDictionnaryList(_WindowsRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
+                        Console.WriteLine(" -pname=[ProcessName] : change the name of the expected executable instead of expecting specific name like game.exe");
                         Console.WriteLine(" -noinput \tDisable any input hack");
                         Console.WriteLine(" -nocrosshair \tHide in-game crosshair (Only for Unity-based Games");
                         Console.WriteLine(" -usesinglemouse \tUse standard mouse instead of Lightguns");
@@ -175,6 +179,14 @@ namespace DemulShooterX64
                             ExitConsole();
                         }
                     }
+
+                    else if (args[i].ToLower().StartsWith("-pname"))
+                    {
+                        strCustomTargetProcessName = (args[i].ToLower().Split('='))[1].Trim();
+                        if (strCustomTargetProcessName.EndsWith(".exe"))
+                            strCustomTargetProcessName = strCustomTargetProcessName.Substring(0, strCustomTargetProcessName.Length - 4);
+                    }
+
                 }
 
                 if (strTarget == String.Empty)

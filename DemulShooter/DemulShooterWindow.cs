@@ -369,6 +369,9 @@ namespace DemulShooter
                             {
                                 _Game = new Game_CoastalWws(_Rom.ToLower(), _NoInput, isVerbose);
                             }; break;
+
+                        default : 
+                            break;
                     }
                 }
 
@@ -381,6 +384,9 @@ namespace DemulShooter
                             {
                                 _Game = new Game_CxbxVcop3(_Rom.ToLower(), _NoInput, isVerbose);
                             }; break;
+
+                        default : 
+                            break;
                     }
                 }
 
@@ -416,6 +422,21 @@ namespace DemulShooter
                     _Game = new Game_Dolphin5(_Rom.ToLower(), _Ddinumber, _NoInput, isVerbose);
                 }
 
+                    //Es4
+                else if (_Target.Equals("es4"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "pblankx":
+                            {
+                                _Game = new Game_WndPointBlankX(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            }; break;
+
+                        default: 
+                            break;
+                    }
+                }
+
                 //Gamewax game
                 else if (_Target.Equals("gamewax"))
                 {
@@ -424,7 +445,10 @@ namespace DemulShooter
                         case "akuma":
                             {
                                 _Game = new Game_WaxAkuma(_Rom.ToLower(), _NoInput, isVerbose);
-                            }break;
+                            } break;
+
+                        default : 
+                            break;
                     }
                 }
 
@@ -459,14 +483,6 @@ namespace DemulShooter
                             {
                                 _Game = new Game_IceGhostBusters(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             } break;
-                        case "farcry":
-                            {
-                                _Game = new Game_GvrFarCry(_Rom.ToLower(), _NoInput, isVerbose);
-                            } break;
-                        case "fearland":
-                            {
-                                _Game = new Game_GvrFearLand(_Rom.ToLower(), _HardFfl, _NoInput, isVerbose);
-                            } break;
                         default:
                             break;
                     }
@@ -489,6 +505,8 @@ namespace DemulShooter
                             {
                                 _Game = new Game_KonamiWartran(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
+                        default:
+                            break;
                     }
                 }
 
@@ -512,7 +530,7 @@ namespace DemulShooter
                         case "hotdex":
                             {
                                 _Game = new Game_LindberghHotdEx(_Rom.ToLower(), _NoInput, isVerbose);
-                            } break;   
+                            } break;
                         case "lgj":
                             {
                                 _Game = new Game_LindberghLgj(_Rom.ToLower(), _NoInput, isVerbose);
@@ -558,12 +576,11 @@ namespace DemulShooter
                         case "vcop2":
                             {
                                 _Game = new Game_Model2Vcop2(_Rom.ToLower(), _NoInput, isVerbose);
-                            }break;
+                            } break;
                         default:
                             break;
                     }
                 }
-
                 //All model2 roms share same method
                 else if (_Target.Equals("ppmarket"))
                 {
@@ -599,6 +616,19 @@ namespace DemulShooter
                             {
                                 _Game = new Game_RtWalkingDead(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             } break;
+                        default :
+                            break;
+                    }
+                }
+
+                else if (_Target.Equals("ringedge2"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "tsr":
+                                {
+                                    _Game = new Game_Re2Transformers2(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                                }; break;
                     }
                 }
 
@@ -680,6 +710,8 @@ namespace DemulShooter
                             {
                                 _Game = new Game_TtxSha(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
+                        default:
+                            break;
                     }
                 }
 
@@ -740,6 +772,8 @@ namespace DemulShooter
                             {
                                 _Game = new Game_WndReload(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             }; break;
+                        default:
+                            break;
                     }
                 }
 
@@ -748,14 +782,17 @@ namespace DemulShooter
                 {
                     switch (_Rom.ToLower())
                     {
-                        case "pblankx":
+
+                        case "adcop":
                             {
-                                _Game = new Game_WndPointBlankX(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                                _Game = new Game_WndAdCop95(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             }; break;
-                        case "tsr":
+                        case "bonbon":
                             {
-                                _Game = new Game_Re2Transformers2(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                                _Game = new Game_WndBonbon95(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             }; break;
+                        default:
+                            break;
                     }
                 }
 
@@ -866,9 +903,15 @@ namespace DemulShooter
                 else if (msg == _Wm_OutputHelper.MameOutput_GetIdString)
                 {
                     uint Id = (uint)lParam;
+                    Logger.WriteLog("MameHooker GetIdString message received for ID=" + Id.ToString());
                     if (Id == 0)
                     {
+                        /*if (_Game.ProcessHooked)
+                            _Wm_OutputHelper.SendIdString(wParam, _Rom, 0);
+                        else
+                            _Wm_OutputHelper.SendIdString(wParam, "___empty", 0);*/
                         _Wm_OutputHelper.SendIdString(wParam, _Rom, 0);
+                        _Wm_OutputHelper.RomNameSent = true;
                     }
                     else
                     {
@@ -1069,11 +1112,13 @@ namespace DemulShooter
                 if (_Game != null && _Game.ProcessHooked)
                 {
                     _Game.UpdateOutputValues();
-                    if (Configurator.GetInstance().Wm_OutputEnabled && _Wm_OutputHelper != null)
+                    
+                    if (Configurator.GetInstance().Wm_OutputEnabled && _Wm_OutputHelper != null && _Wm_OutputHelper.RomNameSent)
                         _Wm_OutputHelper.SendValues(_Game.Outputs);
                     if (Configurator.GetInstance().Net_OutputEnabled && _Net_OutputHelper!= null)
                         _Net_OutputHelper.BroadcastValues(_Game.Outputs);
                 }
+
                 DsCore.Win32.Win32API.MM_BeginPeriod(1);
                 Thread.Sleep(Configurator.GetInstance().OutputPollingDelay);
                 DsCore.Win32.Win32API.MM_EndPeriod(1);
@@ -1116,6 +1161,12 @@ namespace DemulShooter
             //Stopping the Timeout timer
             _TimerHookTimeout.Stop();
 
+            if (_Wm_OutputHelper != null)
+            {
+                _Game.SetMamePauseState(false);
+                _Wm_OutputHelper.SendValues(_Game.Outputs);
+            }
+
             //Sending info to the Net_OutputHelper if existing
             if (_Net_OutputHelper != null)
             {
@@ -1144,10 +1195,10 @@ namespace DemulShooter
                 //MAME goes from MameStop to MameStart with PAUSE enabled and "__empty" rom
                 //Which is not possible here due to the WndProc quitting before getting MameHooker request ??
                 // Solution would be to Send a new MameStart with no values before MAmeStopping again
-                _Wm_OutputHelper.Stop();
-                _Game.CreatePauseOutputList();
-                _Wm_OutputHelper.Start();
+                _Game.SetMamePauseState(true);
                 _Wm_OutputHelper.SendValues(_Game.Outputs);
+                _Wm_OutputHelper.Stop();
+                _Wm_OutputHelper.Start();
                 _Wm_OutputHelper.Stop();
             }
 
@@ -1161,7 +1212,7 @@ namespace DemulShooter
             {
                 _TrayIcon.Visible = false;
                 _TrayIcon.Dispose();
-            }        
+            }
         }
 
         /// <summary>

@@ -828,9 +828,9 @@ namespace DemulShooter
                         //Custom Recoil
                         if (_Ammo[Players_Offset[i]] < _LastAmmo[Players_Offset[i]])
                         {
-                            if (i == 0)
+                            if (Players_Offset[i] == 0)
                                 SetOutputValue(OutputId.P1_CtmRecoil, 1);
-                            else if (i == 1)
+                            else if (Players_Offset[i] == 1)
                                 SetOutputValue(OutputId.P2_CtmRecoil, 1);
                         }
 
@@ -841,15 +841,16 @@ namespace DemulShooter
                         //[Damaged] custom Output                
                         if (_Life[Players_Offset[i]] < _LastLife[Players_Offset[i]])
                         {
-                            if (i == 0)
+                            if (Players_Offset[i] == 0)
                                 SetOutputValue(OutputId.P1_Damaged, 1);
-                            else if (i == 1)
+                            else if (Players_Offset[i] == 1)
                                 SetOutputValue(OutputId.P2_Damaged, 1);
                         }
                     }
                 }
             }
 
+            
             for (int i = 0; i < 2; i++)
             {
                 _LastAmmo[i] = _Ammo[i];

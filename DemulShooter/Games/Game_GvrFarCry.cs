@@ -171,6 +171,7 @@ namespace DemulShooter
             //pop ebp
             CaveMemory.Write_StrBytes("5D");
 
+            //Inject it
             CaveMemory.InjectToOffset(_PlayerOff_InjectionStruct, "player not playing status");            
         }
 
@@ -203,6 +204,7 @@ namespace DemulShooter
             //pop ebp
             CaveMemory.Write_StrBytes("5D");
 
+            //Inject it
             CaveMemory.InjectToOffset(_PlayerOn_InjectionStruct, "player playing status");  
         }
 
@@ -232,6 +234,7 @@ namespace DemulShooter
             //cmp edx,[edi+ecx*4+00000610]
             CaveMemory.Write_StrBytes("3B 94 8F 10 06 00 00");
 
+            //Inject it
             CaveMemory.InjectToOffset(_ReadLife_InjectionStruct, "Custom Life output"); 
         }
 
@@ -264,6 +267,7 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("66 89 0D");
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Shots_CaveAddress));
 
+            //Inject it
             CaveMemory.InjectToOffset(_ReadShots_InjectionStruct, "Player Shots output"); 
         }
 
@@ -316,6 +320,7 @@ namespace DemulShooter
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_KillsDigit2_CaveAddress));
             //Exit:
 
+            //Inject it
             CaveMemory.InjectToOffset(_ReadKills_InjectionStruct, "Kill digits output"); 
         }
 
@@ -354,6 +359,7 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("01 00 00 00");
             //Exit:
 
+            //Inject it
             CaveMemory.InjectToOffset(_ReadRumble_InjectionStruct, "Rumble output"); 
         }
 

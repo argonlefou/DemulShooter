@@ -87,7 +87,8 @@ namespace DemulShooter
             _DisableInputHack = DisableInputHack;
             _VerboseEnable = Verbose;
             _ProcessHooked = false;
-            _Target_Process_Name = TargetProcessName;
+            _Target_Process_Name = Program.CustomTargetProcessName == string.Empty ? TargetProcessName : Program.CustomTargetProcessName;
+            Logger.WriteLog("Target process name : " + _Target_Process_Name + ".exe");
 
             CreateOutputList();
 
@@ -697,6 +698,14 @@ namespace DemulShooter
         public virtual void UpdateOutputValues()
         { }
 
+        public void SetMamePauseState(bool PauseState)
+        {
+            if (PauseState)
+                SetOutputValue(OutputId.MamePause, 1);
+            else
+                SetOutputValue(OutputId.MamePause, 0);
+        }
+
         /// <summary>
         /// Return a GameOutput object corresponding to a desired GameOutputId
         /// </summary>
@@ -1011,18 +1020,20 @@ namespace DemulShooter
         }
 
         /// <summary>
-        /// Create a minimal output list with only orientation and pause
+        /// Get the Window Title
         /// </summary>
-        public void CreatePauseOutputList()
+        /// <returns></returns>
+        protected string Get_GameWindowTitle()
         {
-            _Outputs.Clear();
-            _Outputs = new List<GameOutput>();
-
-            _Outputs.Add(new GameOutput(OutputDesciption.MameOrientation, OutputId.MameOrientation));
-            _Outputs.Add(new GameOutput(OutputDesciption.MamePause, OutputId.MamePause));
-
-            SetOutputValue(OutputId.MameOrientation, 0);
-            SetOutputValue(OutputId.MamePause, 1);
+            string sTitle = string.Empty;
+            int length = Win32API.GetWindowTextLength(_GameWindowHandle);
+            if (length >= 0)
+            {
+                StringBuilder builder = new StringBuilder(length);
+                Win32API.GetWindowText(_GameWindowHandle, builder, length + 1);
+                sTitle = builder.ToString();
+            }
+            return sTitle;
         }
     }
 }

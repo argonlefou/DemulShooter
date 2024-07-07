@@ -24,6 +24,10 @@ namespace DemulShooter
 
         static String strTarget = string.Empty;
         static String strRom = string.Empty;
+        static String strCustomTargetProcessName = string.Empty;
+        public static String CustomTargetProcessName
+        { get {return strCustomTargetProcessName;} }
+
 
         static void Main(string[] args)
         {
@@ -41,6 +45,7 @@ namespace DemulShooter
                 {"demul058","Demul v0.582"},
                 {"demul07a","Demul v0.7a 180428"},
                 {"dolphin5","Dolphin v5.0"},
+                {"es4","Namco ES4 games"},
                 {"gamewax","Gamewax Arcade"},
                 {"globalvr","Global VR"},
                 {"ice","ICE Games"},
@@ -49,6 +54,7 @@ namespace DemulShooter
                 {"model2","Nebula Model2Emulator v1.1a"},
                 {"ppmarket","P&P Marketing Arcade"},
                 {"rawthrill","TeknoParrot Loader"},
+                {"ringedge2", "RingEdge2 Games"},
                 {"ringwide","TeknoParrot Loader / JConfig"},
                 {"ttx","Taito Type X"},
                 {"windows","Windows games"}
@@ -82,6 +88,10 @@ namespace DemulShooter
                 {"sprtshot","Sports Shooting USA"},
                 {"xtrmhunt","Extreme Hunting"},
                 {"xtrmhnt2","Extreme Hunting 2"}
+            };
+
+            Dictionary<String, String> _Es4Roms = new Dictionary<String, String>(){
+                {"pblankx","Point Blank X"}
             };
 
             Dictionary<String, String> _GamewaxRoms = new Dictionary<String, String>(){
@@ -133,6 +143,10 @@ namespace DemulShooter
                 {"jp","Jurassic Park"},
                 {"ts","Terminator Salvation"},
                 {"wd","Walking Dead"}
+            };
+
+            Dictionary<String, String> _RingEdge2Roms = new Dictionary<String, String>(){
+                {"tsr","Transformers : Shadow Rising"}
             };
 
             Dictionary<String, String> _RingSystemRoms = new Dictionary<String, String>(){
@@ -204,6 +218,9 @@ namespace DemulShooter
                         Console.WriteLine("Dolphin roms :");
                         Console.WriteLine(" - Parameter not used - ");
                         Console.WriteLine("");
+                        Console.WriteLine("ES4 roms :");
+                        DisplayDictionnaryList(_Es4Roms);
+                        Console.WriteLine("");
                         Console.WriteLine("Global VR Games :");
                         DisplayDictionnaryList(_GlobalVrRoms);
                         Console.WriteLine("");
@@ -231,6 +248,9 @@ namespace DemulShooter
                         Console.WriteLine("Ringwide roms :");
                         DisplayDictionnaryList(_RingSystemRoms);
                         Console.WriteLine("");
+                        Console.WriteLine("Ringedge2 roms :");
+                        DisplayDictionnaryList(_RingEdge2Roms);
+                        Console.WriteLine("");
                         Console.WriteLine("Taito Type X Games :");
                         DisplayDictionnaryList(_TtxRoms);
                         Console.WriteLine("");
@@ -238,6 +258,7 @@ namespace DemulShooter
                         DisplayDictionnaryList(_WindowsRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
+                        Console.WriteLine(" -pname=[ProcessName] : change the name of the expected executable instead of expecting specific name like game.exe");
                         Console.WriteLine(" -ddinumber \tDolphin's DirectInput number for P2 device");
                         Console.WriteLine(" -hardffl \tAlternative gameplay for Fright Fear Land / Haunted Museum 2(see README.TXT)");
                         Console.WriteLine(" -noautofire \tDisable in-game autofire for SEGA Golden Gun");
@@ -273,6 +294,13 @@ namespace DemulShooter
                             }
                         }
                     }
+
+                    else if (args[i].ToLower().StartsWith("-pname"))
+                    {
+                        strCustomTargetProcessName = (args[i].ToLower().Split('='))[1].Trim();
+                        if (strCustomTargetProcessName.EndsWith(".exe"))
+                            strCustomTargetProcessName = strCustomTargetProcessName.Substring(0, strCustomTargetProcessName.Length - 4);
+                    }
                 }
 
                 if (strTarget == String.Empty)
@@ -307,6 +335,14 @@ namespace DemulShooter
                             if (!CheckParameter(strRom, _DemulRoms))
                             {
                                 Console.WriteLine("Unsupported Demul rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
+                        else if (strTarget.StartsWith("es4"))
+                        {
+                            if (!CheckParameter(strRom, _Es4Roms))
+                            {
+                                Console.WriteLine("Unsupported ES4 rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
                         }
@@ -371,6 +407,14 @@ namespace DemulShooter
                             if (!CheckParameter(strRom, _RawThrillRoms))
                             {
                                 Console.WriteLine("Unsupported Raw Thrill rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
+                        else if (strTarget.Equals("ringedge2"))
+                        {
+                            if (!CheckParameter(strRom, _RingEdge2Roms))
+                            {
+                                Console.WriteLine("Unsupported RingEdge2 rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
                         }

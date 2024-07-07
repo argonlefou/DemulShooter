@@ -45,6 +45,14 @@ namespace DsCore.MameOutput
         private List<GameOutput> _OutputsBefore;
         private bool _FirstOutputs = true;
 
+        //After a start session, MAME is asking for the name (ID == 0)
+        private bool _RomNameSent = false;
+        public bool RomNameSent
+        {
+            get { return _RomNameSent; }
+            set { _RomNameSent = value; }
+        }
+
         public Wm_OutputHelper(IntPtr MainWindowHandle)
         {
             if (_Instance == null)
@@ -73,6 +81,8 @@ namespace DsCore.MameOutput
         /// </summary>
         public void Start()
         {
+            //_FirstOutputs = true;
+            _RomNameSent = false;
             Win32API.PostMessage(HWND_BROADCAST, _Mame_OnStartMsg, _hWnd, IntPtr.Zero); 
         }
 
@@ -138,6 +148,7 @@ namespace DsCore.MameOutput
         /// <param name="Id">Requested Id</param>
         public void SendIdString(IntPtr hWnd, String lpStr, UInt32 Id)
         {
+            Logger.WriteLog(System.Reflection.MethodBase.GetCurrentMethod().Name + "():  Id= " + Id + ", lpStr = " + lpStr);
             Wm_OutputDataStruct data = new Wm_OutputDataStruct();
             data.Id = Id;
             data.lpStr = lpStr;
@@ -176,19 +187,27 @@ namespace DsCore.MameOutput
         {
             if (_FirstOutputs)
             {
+                _FirstOutputs = false;
+
+                Logger.WriteLog("Wm_OutputHelper.SendValues() => Sending Initial values");
+
                 //For MameHooker compatibility : Sending orientation once
                 Outputs.Insert(0, new GameOutput(OutputDesciption.MameOrientation, OutputId.MameOrientation));
+                Outputs[0].OutputValue = 0;
+
+                Outputs.Insert(0, new GameOutput(OutputDesciption.MamePause, OutputId.MamePause));
                 Outputs[0].OutputValue = 0;
 
                 //Cloning the output list without references to the GameOutput object
                 _OutputsBefore = Outputs.ConvertAll(x => new GameOutput(x));
                 for (int i = 0; i < Outputs.Count; i++)
                 {
+                    //System.Threading.Thread.Sleep(100);  
                     SendValue(Outputs[i].Id, Outputs[i].OutputValue);
-                    //DEBUG Only :
-                    //Logger.WriteLog("MAME Output sent : " + Outputs[i].Name + " [Value=" + Outputs[i].OutputValue.ToString() + "]");
+                    Logger.WriteLog("MAME Output sent : " + Outputs[i].Name + " [Value=" + Outputs[i].OutputValue.ToString() + "]");
+                    //MAME Hooker will not get all values if we do not delay the send a little !!!!                     
                 }
-                _FirstOutputs = false;
+                
             }
             else
             {
@@ -200,7 +219,7 @@ namespace DsCore.MameOutput
                     {
                         SendValue(Outputs[i].Id, Outputs[i].OutputValue);
                         //DEBUG only :
-                        //Logger.WriteLog("MAME Output sent : " + Outputs[i].Name + " [Value=" + Outputs[i].OutputValue.ToString() + "]");
+                        Logger.WriteLog("MAME Output sent : " + Outputs[i].Name + " [Value=" + Outputs[i].OutputValue.ToString() + "]");
                         _OutputsBefore[i].OutputValue = Outputs[i].OutputValue;
                     }
                 }
@@ -216,6 +235,8 @@ namespace DsCore.MameOutput
         {
             foreach (Wm_OutputClient c in _RegisteredClients)
             {
+                //DEBUG ONLY:
+                //Logger.WriteLog("Sending WameOutputValue : ID=" + Id.ToString() + ", Value=" + Value.ToString());
                 Win32API.PostMessage(c.hWnd, _Mame_UpdateStateMsg, new IntPtr(Id), new IntPtr(Value));
             }
         }

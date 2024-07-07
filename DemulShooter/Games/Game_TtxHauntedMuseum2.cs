@@ -62,6 +62,7 @@ namespace DemulShooter
             _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - For JConfig (v1.6) - game_v1.01_JPN.exe", "264d671b83282a09701b27f2249c5d0d"); 
             _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - For JConfig (v1.6) - game_v1.01_JPN.exe patched  for NoCrosshair", "6b6452843f2d07fd66814e7d0d6af765");
             _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - For JConfig (v1.6) - game_v1.01_JPN_v2.exe", "0e8f49eb448ff7c9bd448940a53ac16a");
+            _KnownMd5Prints.Add("Haunted Museum 2 v1.00 - GameLoaderAllRH patched binary", "8372323ffceebfd064707064ac00c043");
 
             _tProcess.Start();
             Logger.WriteLog("Waiting for Taito type X " + _RomName + " game to hook.....");

@@ -527,6 +527,7 @@ namespace DemulShooterX64
                     if (Id == 0)
                     {
                         _Wm_OutputHelper.SendIdString(wParam, _Rom, 0);
+                        _Wm_OutputHelper.RomNameSent = true;
                     }
                     else
                     {
@@ -726,11 +727,13 @@ namespace DemulShooterX64
                 if (_Game != null && _Game.ProcessHooked)
                 {
                     _Game.UpdateOutputValues();
-                    if (Configurator.GetInstance().Wm_OutputEnabled && _Wm_OutputHelper != null)
+
+                    if (Configurator.GetInstance().Wm_OutputEnabled && _Wm_OutputHelper != null && _Wm_OutputHelper.RomNameSent)
                         _Wm_OutputHelper.SendValues(_Game.Outputs);
                     if (Configurator.GetInstance().Net_OutputEnabled && _Net_OutputHelper != null)
                         _Net_OutputHelper.BroadcastValues(_Game.Outputs);
                 }
+
                 DsCore.Win32.Win32API.MM_BeginPeriod(1);
                 Thread.Sleep(Configurator.GetInstance().OutputPollingDelay);
                 DsCore.Win32.Win32API.MM_EndPeriod(1);
@@ -773,6 +776,12 @@ namespace DemulShooterX64
             //Stopping the Timeout timer
             _TimerHookTimeout.Stop();
 
+            if (_Wm_OutputHelper != null)
+            {
+                _Game.SetMamePauseState(false);
+                _Wm_OutputHelper.SendValues(_Game.Outputs);
+            }
+
             //Sending info to the Net_OutputHelper if existing
             if (_Net_OutputHelper != null)
             {
@@ -781,9 +790,6 @@ namespace DemulShooterX64
             }
         }
 
-        /// <summary>
-        /// Application Exit cleanup
-        /// </summary>
         private void OnApplicationExit(object sender, EventArgs e)
         {
             Logger.WriteLog("Cleaning things before exiting application...");
@@ -804,10 +810,10 @@ namespace DemulShooterX64
                 //MAME goes from MameStop to MameStart with PAUSE enabled and "__empty" rom
                 //Which is not possible here due to the WndProc quitting before getting MameHooker request ??
                 // Solution would be to Send a new MameStart with no values before MAmeStopping again
-                _Wm_OutputHelper.Stop();
-                _Game.CreatePauseOutputList();
-                _Wm_OutputHelper.Start();
+                _Game.SetMamePauseState(true);
                 _Wm_OutputHelper.SendValues(_Game.Outputs);
+                _Wm_OutputHelper.Stop();
+                _Wm_OutputHelper.Start();                
                 _Wm_OutputHelper.Stop();
             }
 

@@ -14,7 +14,7 @@ namespace DemulShooter
         private const String GAMEDATA_FOLDER = @"MemoryData\ice\gbusters";
 
         //Rom loaded + Rom version check
-        //private UInt32 _RomLoaded_check_Instruction_v115 = 0x;
+        private UInt32 _RomLoaded_check_Instruction_v115 = 0x08197EF5;
         private UInt32 _RomLoaded_check_Instruction_v117 = 0x08198B4C;
 
         private UInt32 _CrosshairHack_Address = 0x0806673D;
@@ -41,8 +41,8 @@ namespace DemulShooter
             _HideCrosshair = HideCrosshair;
 
             //Only for documentation, version check is done by reading code position in memory, as we don't have access to the ELF path
-            _KnownMd5Prints.Add("Ghostbusters - v1.15", "f24794f1bc8bf93031206578e4bdabf5");
-            _KnownMd5Prints.Add("Ghostbusters - v1.17", "c62483935c2ea3c8387f33b3c8b89c6b");            
+            _KnownMd5Prints.Add("Ghostbusters - v1.15", "8de0a59ff3c10420959038d6769b646c");
+            _KnownMd5Prints.Add("Ghostbusters - v1.17", "ce10cf8f57b0fffd7fc5437622033b3a");            
 
             _tProcess.Start();
             Logger.WriteLog("Waiting for Lindbergh " + _RomName + " game to hook.....");
@@ -87,12 +87,12 @@ namespace DemulShooter
                             }
                             else
                             {
-                                /*buffer = ReadBytes(_RomLoaded_check_Instruction_RevC, 5);
-                                if (buffer[0] == 0xE8 && buffer[1] == 0x42 && buffer[2] == 0x0D && buffer[3] == 0x00 && buffer[4] == 0x00)
+                                buffer = ReadBytes(_RomLoaded_check_Instruction_v115, 5);
+                                if (buffer[0] == 0x89 && buffer[1] == 0x04 && buffer[2] == 0x95 && buffer[3] == 0xC4 && buffer[4] == 0x65)
                                 {
                                     _GameWindowHandle = _TargetProcess.MainWindowHandle;
-                                    Logger.WriteLog("House Of The Dead 4 - Rev.C binary detected");
-                                    _TargetProcess_Md5Hash = _KnownMd5Prints["House of The Dead 4 - Rev.C"];
+                                    Logger.WriteLog("Ghostbusters - v1.15 binary detected");
+                                    _TargetProcess_Md5Hash = _KnownMd5Prints["Ghostbusters - v1.15"];
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                     ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
@@ -100,13 +100,14 @@ namespace DemulShooter
                                         SetHack();
                                     else
                                         Logger.WriteLog("Input Hack disabled");
+                                    SetHack_Outputs();
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
                                 }
                                 else
                                 {
                                     Logger.WriteLog("Game not Loaded, waiting...");
-                                }*/
+                                }
                             }
                         }
                     }

@@ -80,7 +80,9 @@
     <Compile Include="Games\Game_RtWalkingDead.cs" />
     <Compile Include="Games\Game_TtxGundam_V2.cs" />
     <Compile Include="Games\Game_WaxAkuma.cs" />
+    <Compile Include="Games\Game_WndAdCop95.cs" />
     <Compile Include="Games\Game_WndAlienSafari.cs" />
+    <Compile Include="Games\Game_WndBonbon95.cs" />
     <Compile Include="Games\Game_WndBugBusters.cs" />
     <Compile Include="Games\Game_WndFriction.cs" />
     <Compile Include="Games\Game_Model2Vcop.cs" />

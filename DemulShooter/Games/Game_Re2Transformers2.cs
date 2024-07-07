@@ -27,25 +27,19 @@ namespace DemulShooter
         private UInt32 _FrameRateMgr_ExecServer_Function_Offset = 0x00D70D0;
         private UInt32 _GmMgr_GetGameMode_Function_Offset = 0x000E43C0;
         private UInt32 _GetResolution_Function_Offset = 0x002608B0;
+        private UInt32 _PlMgr_IsHoldMode_FunctionOffset = 0x0024DDE0;
         private UInt32 _LaserSight_Patch_Offset = 0x002E558A;
         private UInt32 _PlayerInputMode_Patch_Offset = 0x000F751A;
-        private UInt32 _Axis_Injection_Offset = 0x000F75CD;
-        private UInt32 _Axis_Injection_Return_Offset = 0x000F75D3;
-        private UInt32 _Buttons_Injection_Offset = 0x000F787F;
-        private UInt32 _Buttons_Injection_Return_Offset = 0x000F7884;
-        private UInt32 _NoCrosshair_Injection_Offset = 0x000F6DB0;
-        private UInt32 _NoCrosshair_Injection_Return_Offset = 0x000F6DB5;
-        private UInt32 _Credits_Injection_Offset = 0x00240BCB;
-        private UInt32 _Credits_Injection_Return_Offset = 0x00240BD0;
-        private UInt32 _StartLamps_Injection_Offset = 0x00067159;
-        private UInt32 _StartLamps_Injection_Return_Offset = 0x0006715E;
-        private UInt32 _GunLamps_Injection_Offset = 0x000FC124;
-        private UInt32 _GunLamps_Injection_Return_Offset = 0x000FC129;
-        private UInt32 _Recoil_Injection_Offset = 0x0024AAFF;
-        private UInt32 _Recoil_Injection_Return_Offset = 0x0024AB05;
-        private UInt32 _Damage_Injection_Offset = 0x00246C69;
-        private UInt32 _Damage_Injection_Return_Offset = 0x00246C6F;
 
+        private InjectionStruct _Axis_InjectionStruct = new InjectionStruct(0x000F75CD, 6);
+        private InjectionStruct _Buttons_InjectionStruct = new InjectionStruct(0x000F787F, 5);
+        private InjectionStruct _NoCrosshair_InjectionStruct = new InjectionStruct(0x000F6DB0, 5);
+        private InjectionStruct _FixCrosshair_InjectionStruct = new InjectionStruct(0x000F6DB5, 7);
+        private InjectionStruct _Credits_InjectionStruct = new InjectionStruct(0x00240BCB, 5);
+        private InjectionStruct _StartLamps_InjectionStruct = new InjectionStruct(0x00067159, 5);
+        private InjectionStruct _GunLamps_InjectionStruct = new InjectionStruct(0x000FC124, 5);
+        private InjectionStruct _Recoil_InjectionStruct = new InjectionStruct(0x0024AAFF, 6);
+        private InjectionStruct _Damage_InjectionStruct = new InjectionStruct(0x00246C69, 6);
 
         //Custom Input Address
         private UInt32 _P1_StartOn_Address;
@@ -74,15 +68,13 @@ namespace DemulShooter
         private UInt32 _P1_Damage_Address;
         private UInt32 _P2_Damage_Address;
 
-        bool _HideCrosshairs = false;
-
         /// <summary>
         /// Constructor
         /// </summary>
         public Game_Re2Transformers2(String RomName, bool HideCrosshairs, bool DisableInputHack, bool Verbose)
             : base(RomName, "Transformers2", DisableInputHack, Verbose)
         {
-            _HideCrosshairs = HideCrosshairs;
+            _HideCrosshair = HideCrosshairs;
 
             _KnownMd5Prints.Add("Transformers Shadow Rising v180605 - Original Dump", "b3b1f4ad6408d6ee946761a00f761455");
             _tProcess.Start();
@@ -109,13 +101,18 @@ namespace DemulShooter
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
                             _GameWindowHandle = _TargetProcess.MainWindowHandle;
+                            //Running DemulShooter before the game can cause it to find an empty window at start
+                            if (_GameWindowHandle == IntPtr.Zero)
+                                return;
+
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
+                            Logger.WriteLog("GameWindow Title = " + Get_GameWindowTitle());
                             CheckExeMd5();
                             //ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
 
                             //Remove Crosshairs
-                            if (_HideCrosshairs)
+                            if (_HideCrosshair)
                                 HideCrosshairs();
 
                             //Output hack
@@ -204,6 +201,7 @@ namespace DemulShooter
             SetHack_Axis();
             SetHack_Buttons();
             SetHack_Credits();
+            SetHack_CorrectReticlePosition();
 
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
@@ -283,21 +281,9 @@ namespace DemulShooter
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Y_Address));
             //mov [esi+5], al
             CaveMemory.Write_StrBytes("88 46 05");
-            //Jump back
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Axis_Injection_Return_Offset);
 
-            Logger.WriteLog("Adding Axis X CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _Axis_Injection_Offset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Buffer.Add(0x90);
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Axis_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            //Inject it
+            CaveMemory.InjectToOffset(_Axis_InjectionStruct, "Axis");
         }
 
         /// <summary>
@@ -398,20 +384,8 @@ namespace DemulShooter
             //xor eax, eax
             CaveMemory.Write_StrBytes("31 C0");
 
-            //Jump back
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Return_Offset);
-
-            Logger.WriteLog("Adding Buttons CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Offset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            //Inject it
+            CaveMemory.InjectToOffset(_Buttons_InjectionStruct, "Buttons");
         }
 
         /// <summary>
@@ -446,22 +420,32 @@ namespace DemulShooter
             //call _FrameRateMgr_ExecServer_Function_Offset()
             CaveMemory.Write_call((UInt32)_TargetProcess_MemoryBaseAddress + _FrameRateMgr_ExecServer_Function_Offset);
 
-            //Jump back
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Credits_Injection_Return_Offset);
-
-            Logger.WriteLog("Adding Credits CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _Credits_Injection_Offset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Credits_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            //Inject it
+            CaveMemory.InjectToOffset(_Credits_InjectionStruct, "Credits");
         }
 
+        /// <summary>
+        /// Reticle seems to be misaligned if resolution is not 1920x1080
+        /// </summary>
+        private void SetHack_CorrectReticlePosition()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+
+            //mov [esp+14],00000780
+            CaveMemory.Write_StrBytes("C7 44 24 14 80 07 00 00");
+            //mov [esp+10],00000438
+            CaveMemory.Write_StrBytes("C7 44 24 10 38 04 00 00");
+            //mov eax,[ebp-04]
+            CaveMemory.Write_StrBytes("8B 45 FC");
+            //movd xmm0,eax
+            CaveMemory.Write_StrBytes("66 0F 6E C0");
+
+            //Inject it
+            CaveMemory.InjectToOffset(_FixCrosshair_InjectionStruct, "FixCrosshair");
+        }
 
         /// <summary>
         /// 
@@ -516,20 +500,8 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("89 1D");
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_LmpStart_Address));
 
-            //Jump back
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _StartLamps_Injection_Return_Offset);
-
-            Logger.WriteLog("Adding StartLamps CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _StartLamps_Injection_Offset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _StartLamps_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            //Inject it
+            CaveMemory.InjectToOffset(_StartLamps_InjectionStruct, "StartLamps");
         }
 
         /// <summary>
@@ -556,20 +528,8 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("A3");
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_LmpGun_Address));
 
-            //Jump back
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _GunLamps_Injection_Return_Offset);
-
-            Logger.WriteLog("Adding GunLamps CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _GunLamps_Injection_Offset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _GunLamps_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            //Inject it
+            CaveMemory.InjectToOffset(_GunLamps_InjectionStruct, "GunLamps");
         }
 
         /// <summary>
@@ -596,21 +556,9 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("0F BE 46 60");
             //push 00
             CaveMemory.Write_StrBytes("6A 00");
-            //Jump back
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_Injection_Return_Offset);
 
-            Logger.WriteLog("Adding Recoil CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_Injection_Offset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Buffer.Add(0x90);
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Recoil_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            //Inject it
+            CaveMemory.InjectToOffset(_Recoil_InjectionStruct, "Recoil");
         }
 
         /// <summary>
@@ -639,21 +587,9 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("C7 00 01 00 00 00");
             //lea eax,[ebp+14]
             CaveMemory.Write_StrBytes("8D 45 14");
-            //Jump back
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _Damage_Injection_Return_Offset);
 
-            Logger.WriteLog("Adding Damage CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _Damage_Injection_Offset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Buffer.Add(0x90);
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Damage_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            //Inject it
+            CaveMemory.InjectToOffset(_Damage_InjectionStruct, "Dammage");
         }
 
         /// <summary>
@@ -678,13 +614,13 @@ namespace DemulShooter
         /// </summary>
         private void HideCrosshairs()
         {
-            // PlayerGunObj::UpdateLaserSight(PlayerGunObj *this)
-            // Check if laser is on -> force JmMP to remove sight
-            WriteByte((UInt32)_TargetProcess_MemoryBaseAddress + _LaserSight_Patch_Offset, 0xEB);
+            if (_HideCrosshair)
+            {
+                // PlayerGunObj::UpdateLaserSight(PlayerGunObj *this)
+                // Check if laser is on -> force JmMP to remove sight
+                WriteByte((UInt32)_TargetProcess_MemoryBaseAddress + _LaserSight_Patch_Offset, 0xEB);
+            }
 
-            // To remove Corsshair, only in gameplay mode 
-            // Need to check game mode (6 or 7 = playing) and change display value of the crosshair to Negative value to draw it out of screen
-            // And keep crosshair in menus
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
@@ -702,13 +638,12 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("83 F8 07");
             //ja original code
             CaveMemory.Write_StrBytes("77 15");
-
-            CaveMemory.Write_call(0x64DDE0);
+            //call _PlMgr_IsHoldMode
+            CaveMemory.Write_call((UInt32)_TargetProcess_MemoryBaseAddress + _PlMgr_IsHoldMode_FunctionOffset);
+            //test eax, eax
             CaveMemory.Write_StrBytes("85 C0");
-
+            //jne originalcode
             CaveMemory.Write_StrBytes("75 0C");
-
-
             //mov [esi],C1F00000
             CaveMemory.Write_StrBytes("C7 06 00 00 F0 C1");
             //mov [edi],C1F00000
@@ -718,21 +653,11 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("58");
             //call GetResolution()
             CaveMemory.Write_call((UInt32)_TargetProcess_MemoryBaseAddress + _GetResolution_Function_Offset);
-            //Jump back
-            CaveMemory.Write_jmp((UInt32)_TargetProcess.MainModule.BaseAddress + _NoCrosshair_Injection_Return_Offset);
-
-            Logger.WriteLog("Adding NoCrosshair CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess.MainModule.BaseAddress + _NoCrosshair_Injection_Offset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _NoCrosshair_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            
+            //Inject it
+            CaveMemory.InjectToOffset(_NoCrosshair_InjectionStruct, "No Crosshair");
         }
+
 
         #endregion
 

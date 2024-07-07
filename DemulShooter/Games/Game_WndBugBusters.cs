@@ -57,15 +57,13 @@ namespace DemulShooter
         private NopStruct _Nop_InitCoinsCounter = new NopStruct(0x0004091F, 10);
         private NopStruct _Nop_ShowCrosshairInGame = new NopStruct(0x000263C1, 2);
 
-        private bool _HideGameCrosshair = false;
-
         /// <summary>
         /// Constructor
         /// </summary>
         public Game_WndBugBusters(String RomName, bool HideGameCrosshair, bool DisableInputHack, bool Verbose)
             : base(RomName, "BBPC", DisableInputHack, Verbose)
         {
-            _HideGameCrosshair = HideGameCrosshair;
+            _HideCrosshair = HideGameCrosshair;
 
             _KnownMd5Prints.Add("Bug Buster v1.0.0.1 - Original exe", "832f2fa9ef018d390b7b477f4240ca8e");
             _KnownMd5Prints.Add("Bug Buster v1.0.0.1 - NO-CD patched", "7d4195bdfbfa843cac8af85616abbc21");
@@ -198,7 +196,7 @@ namespace DemulShooter
             //By default, this PC-version force the coins counter to 9 when displaying the start screen. Removing it....
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_InitCoinsCounter);
 
-            if (_HideGameCrosshair)
+            if (_HideCrosshair)
                 SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_ShowCrosshairInGame);
 
             Logger.WriteLog("Memory Hack complete !");
