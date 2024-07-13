@@ -55,13 +55,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="mBNUsioController.cs" />
-    <Compile Include="mBootSceneController.cs" />
-    <Compile Include="mConfig.cs" />
-    <Compile Include="mErrorMessageHandler.cs" />
-    <Compile Include="mGlobalData.cs" />
-    <Compile Include="mInputWrapper.cs" />
-    <Compile Include="mPlayer.cs" />
+    <Compile Include="INIFile.cs" />
+    <Compile Include="patch\mBNUsioController.cs" />
+    <Compile Include="patch\mBootSceneController.cs" />
+    <Compile Include="patch\mConfig.cs" />
+    <Compile Include="patch\mErrorMessageHandler.cs" />
+    <Compile Include="patch\mGlobalData.cs" />
+    <Compile Include="patch\mInputWrapper.cs" />
+    <Compile Include="patch\mPlayer.cs" />
     <Compile Include="PointBlankX_Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TcpInputData.cs" />

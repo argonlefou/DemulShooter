@@ -11,6 +11,7 @@ namespace UnityPlugin_BepInEx_PBX
         public byte P1_Trigger;
         public byte P2_Trigger;
         public byte HideCrosshairs;
+        public byte EnableInputsHack;
 
         public static readonly int DATA_LENGTH = 17;
 
@@ -23,6 +24,7 @@ namespace UnityPlugin_BepInEx_PBX
             P1_Trigger = 0;
             P2_Trigger = 0;
             HideCrosshairs = 0;
+            EnableInputsHack = 0;
         }
 
         public void Update(byte[] ReceivedData)
@@ -34,6 +36,7 @@ namespace UnityPlugin_BepInEx_PBX
             P1_Trigger = (byte)(ReceivedData[16] & 0x01);
             P2_Trigger = (byte)(ReceivedData[16] >> 1 & 0x01);
             HideCrosshairs = (byte)(ReceivedData[16] >> 3 & 0x01);
+            EnableInputsHack = (byte)(ReceivedData[16] >> 2 & 0x01);
         }
 
         public byte[] ToByteArray()
@@ -46,6 +49,7 @@ namespace UnityPlugin_BepInEx_PBX
             bArray[16] |= P1_Trigger;
             bArray[16] |= (byte)(P2_Trigger << 1);
             bArray[16] |= (byte)(HideCrosshairs << 3);
+            bArray[16] |= (byte)(EnableInputsHack << 2);
             return bArray;
         }
 

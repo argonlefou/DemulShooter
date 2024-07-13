@@ -8,6 +8,7 @@ using BepInEx;
 using HarmonyLib;
 using UnityEngine;
 using UnityPlugin_BepInEx_Core;
+using System.IO;
 
 namespace UnityPlugin_BepInEx_PBX
 {
@@ -16,8 +17,8 @@ namespace UnityPlugin_BepInEx_PBX
     {
         public const String pluginGuid = "argonlefou.demulshooter.pbx";
         public const String pluginName = "PBX DemulShooter Plugin";
-        public const String pluginVersion = "2.0.0.0";
-
+        public const String pluginVersion = "3.0.0.0";
+        public const String pluginConfigFile = "PBX_BepInEx_DemulShooter_Plugin.ini";
         public static BepInEx.Logging.ManualLogSource MyLogger;
 
         public static PointBlankX_Plugin Instance = null;
@@ -31,6 +32,7 @@ namespace UnityPlugin_BepInEx_PBX
         public static ushort P2_LastAmmo = 0;
 
         //custom Input Data
+        public static bool EnableInputHack = false;         //By default, no input hack on the plugin. Enabled once DemulShooter is connected (without -noinput flag)
         public static Vector2 P1_Axis = new Vector2(0,0);
         public static Vector2 P2_Axis = new Vector2(0,0);
         public static byte P1_Trigger_ButtonState = 0;
@@ -53,6 +55,12 @@ namespace UnityPlugin_BepInEx_PBX
         public static readonly KeyCode Credits_KeyCode = KeyCode.Alpha5;
 
         public static bool CrossHairVisibility = true;
+
+        //Custom resolution
+        private bool _ScreenChanged = false;
+        private int _ScreenWidth = 1920;
+        private int _ScreenHeight = 1080;
+        private bool _Fullscreen = true;
 
         public void Awake()
         {
@@ -78,10 +86,47 @@ namespace UnityPlugin_BepInEx_PBX
         {
             MyLogger.LogMessage("PointBlankX_Plugin.Start() => Removing mouse cursor");
             Cursor.visible = false;
+            
+            MyLogger.LogMessage("PointBlankX_Plugin.Start() => Loading custom config : " + @"./BepInEx/plugins/" + pluginConfigFile);
+            INIFile Plugin_IniFile = new INIFile(@"./BepInEx/plugins/" + pluginConfigFile);
+
+            if (File.Exists(Plugin_IniFile.FInfo.FullName))
+            {
+                try
+                {
+                    _ScreenWidth = Int32.Parse(Plugin_IniFile.IniReadValue("Video", "WIDTH"));
+                    _ScreenHeight = Int32.Parse(Plugin_IniFile.IniReadValue("Video", "HEIGHT"));
+                    if (Plugin_IniFile.IniReadValue("Video", "FULLSCREEN").Equals("0"))
+                        _Fullscreen = false;
+                    else
+                        _Fullscreen = true;
+
+                    MyLogger.LogMessage("PointBlankX_Plugin.Start() => changing resolution to " + _ScreenWidth + "x" + _ScreenHeight + ", fullscren=" + _Fullscreen );                    
+                }
+                catch (Exception Ex)
+                {
+                    MyLogger.LogError("PointBlankX_Plugin.Start() => Error reading config file : " + Plugin_IniFile.FInfo.FullName);
+                    MyLogger.LogError(Ex.Message.ToString());
+                }
+            }
+            else
+            {
+                MyLogger.LogWarning("PointBlankX_Plugin.Start() => " + Plugin_IniFile.FInfo.FullName + " not found");
+            }
+
         }
 
         public void Update()
         {
+            //Changing the resolution in the Start() event may be too soon, so checking in the update() loop and make it happen only once
+            if (!_ScreenChanged)
+            {
+                Screen.SetResolution(_ScreenWidth, _ScreenHeight, _Fullscreen);
+                MyLogger.LogWarning("PointBlankX_Plugin.Update() => Changed Res");
+
+                _ScreenChanged = true;
+            }
+
             Singleton<GlobalData>.shared().isCrosshairVisible = CrossHairVisibility;
 
             //Updating Credits
@@ -127,11 +172,11 @@ namespace UnityPlugin_BepInEx_PBX
 
 
             //Debug Keys
-            if (Input.GetKeyDown(KeyCode.K))
+            /*if (Input.GetKeyDown(KeyCode.K))
             {
                 MyLogger.LogWarning("PointBlankX_Plugin.Update() =>  isCrosshairVisible : " + Singleton<GlobalData>.shared().isCrosshairVisible);
                 Singleton<GlobalData>.shared().isCrosshairVisible = true;
-            }
+            }*/
         }
 
         public void OnDestroy()
@@ -190,6 +235,7 @@ namespace UnityPlugin_BepInEx_PBX
                                         P2_Axis = new Vector2(_InputData.P2_X, _InputData.P2_Y);
                                         P2_Trigger_ButtonState = _InputData.P2_Trigger;
                                         CrossHairVisibility = _InputData.HideCrosshairs == 1 ? false : true;
+                                        EnableInputHack = _InputData.EnableInputsHack == 1 ? true : false;
                                     //}
                                 }
                                 catch

@@ -22,6 +22,7 @@ namespace DemulShooter
         private WndProc delegWndProc;        
 
         private const string DEMULSHOOTER_CONF_FILENAME = "config.ini";
+        private string _UserDefinedIniFile = string.Empty;
 
         //Timer for Hooking TimeOut
         private System.Timers.Timer _TimerHookTimeout;
@@ -151,15 +152,19 @@ namespace DemulShooter
                 {
                     _NoAutoFire = true;
                 }
-                if (Args[i].ToLower().Equals("-noinput"))
+                else if (Args[i].ToLower().Equals("-noinput"))
                 {
                     _NoInput = true;
                 }
                 else if (Args[i].ToLower().Equals("-noresize"))
                 {
                     _DisableWindow = true;
-                }                
-                if (Args[i].ToLower().StartsWith("-rom"))
+                }
+                else if (Args[i].ToLower().StartsWith("-profile"))
+                {
+                    _UserDefinedIniFile = (Args[i].Split('='))[1].Trim();
+                }       
+                else if (Args[i].ToLower().StartsWith("-rom"))
                 {
                     _Rom = (Args[i].Split('='))[1].Trim();
                 }
@@ -201,7 +206,11 @@ namespace DemulShooter
             }  
 
             //Reading config file to get parameters
-            Configurator.GetInstance().ReadDsConfig(AppDomain.CurrentDomain.BaseDirectory + @"\" + DEMULSHOOTER_CONF_FILENAME);
+            if (_UserDefinedIniFile != string.Empty)
+                Configurator.GetInstance().ReadDsConfig(_UserDefinedIniFile);
+            else
+                Configurator.GetInstance().ReadDsConfig(AppDomain.CurrentDomain.BaseDirectory + @"\" + DEMULSHOOTER_CONF_FILENAME);
+
             foreach (PlayerSettings Player in Configurator.GetInstance().PlayersSettings)
             {
                 Logger.WriteLog("P" + Player.ID + " mode = " + Player.Mode);
@@ -429,7 +438,7 @@ namespace DemulShooter
                     {
                         case "pblankx":
                             {
-                                _Game = new Game_WndPointBlankX(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                                _Game = new Game_Es4PointBlankX(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             }; break;
 
                         default: 
@@ -612,6 +621,10 @@ namespace DemulShooter
                             {
                                 _Game = new Game_RtTerminatorSalvation(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
+                        case "ttg":
+                            {
+                                _Game = new Game_RtTargetTerror(_Rom.ToLower(), _HideGameCrosshair, isVerbose);
+                            }; break;
                         case "wd":
                             {
                                 _Game = new Game_RtWalkingDead(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
@@ -790,7 +803,7 @@ namespace DemulShooter
                         case "bonbon":
                             {
                                 _Game = new Game_WndBonbon95(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
-                            }; break;
+                            }; break;                        
                         default:
                             break;
                     }

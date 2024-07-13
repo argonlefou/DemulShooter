@@ -76,6 +76,7 @@
     <Compile Include="Games\Game_RtJurassicPark.cs" />
     <Compile Include="Games\Game_Re2Transformers2.cs" />
     <Compile Include="Games\Game_RtAliensArmageddon.cs" />
+    <Compile Include="Games\Game_RtTargetTerror.cs" />
     <Compile Include="Games\Game_RtTerminatorSalvation.cs" />
     <Compile Include="Games\Game_RtWalkingDead.cs" />
     <Compile Include="Games\Game_TtxGundam_V2.cs" />
@@ -115,7 +116,7 @@
     <Compile Include="Games\Game_LindberghHotd4.cs" />
     <Compile Include="Games\Game_LindberghLgj.cs" />
     <Compile Include="Games\Game_LindberghRambo.cs" />
-    <Compile Include="Games\Game_WndPointBlankX.cs" />
+    <Compile Include="Games\Game_Es4PointBlankX.cs" />
     <Compile Include="Games\Game_WndProjectGreenBeat.cs" />
     <Compile Include="Games\Game_WndReload.cs" />
     <Compile Include="Games\Game_RwLGI.cs" />

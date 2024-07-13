@@ -142,6 +142,7 @@ namespace DemulShooter
                 {"aa","Aliens Armageddon"},
                 {"jp","Jurassic Park"},
                 {"ts","Terminator Salvation"},
+                {"ttg","Target : Terror - GOLD"},
                 {"wd","Walking Dead"}
             };
 
@@ -259,6 +260,7 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
                         Console.WriteLine(" -pname=[ProcessName] : change the name of the expected executable instead of expecting specific name like game.exe");
+                        Console.WriteLine(" -profile=[ConfigFile] : specify a config file name for DemulShooter to load");
                         Console.WriteLine(" -ddinumber \tDolphin's DirectInput number for P2 device");
                         Console.WriteLine(" -hardffl \tAlternative gameplay for Fright Fear Land / Haunted Museum 2(see README.TXT)");
                         Console.WriteLine(" -noautofire \tDisable in-game autofire for SEGA Golden Gun");

@@ -10,7 +10,7 @@ using DsCore.RawInput;
 
 namespace DemulShooter
 {
-    class Game_WndPointBlankX : Game
+    class Game_Es4PointBlankX : Game
     {
         private DsTcp_Client _Tcpclient;
         private DsTcp_OutputData_PointBlankX _OutputData;
@@ -24,10 +24,16 @@ namespace DemulShooter
         protected float _P2_X_Value;
         protected float _P2_Y_Value;
 
+        // The game can be used with regular mouse
+        // If DemulShooter is used with the -noinput flag, the plugin has to not take over the default controls
+        // In that case, DemulShooter will send a packet once, with the -nocrosshair and -noinput status so that the plugin can take over the controls if needed
+        private bool _Flag_InitialDataSentToPlugin = false;
+
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndPointBlankX(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
+        public Game_Es4PointBlankX(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
             : base(RomName, "PBX100-2-NA-MPR0-A63", DisableInputHack, Verbose)
         {
             _HideCrosshair = HideCrosshair;
@@ -94,6 +100,24 @@ namespace DemulShooter
             }
             else
             {
+                //Send initial packet with inputhack and crosshair data for Unity plugin
+                if (!_Flag_InitialDataSentToPlugin && _Tcpclient.IsConnected())
+                {
+                    if (_HideCrosshair)
+                        _InputData.HideCrosshairs = 1;
+                    else
+                        _InputData.HideCrosshairs = 0;
+
+                    if (_DisableInputHack)
+                        _InputData.EnableInputsHack = 0;
+                    else
+                        _InputData.EnableInputsHack = 1;
+
+                    _Tcpclient.SendMessage(_InputData.ToByteArray());
+
+                    _Flag_InitialDataSentToPlugin = true;
+                }
+
                 Process[] processes = Process.GetProcessesByName(_Target_Process_Name);
                 if (processes.Length <= 0)
                 {
@@ -107,7 +131,7 @@ namespace DemulShooter
             }
         }
 
-        ~Game_WndPointBlankX()
+        ~Game_Es4PointBlankX()
         {
             if (_Tcpclient != null)
                 _Tcpclient.Disconnect();
@@ -125,9 +149,14 @@ namespace DemulShooter
                     double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
                     Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
-                    //Coordinates goes from [0.0, 0.0] in bottom left corner to [1.0, 1.0] in upper right 
+                    //Coordinates goes from [0.0, 0.0] in bottom left corner to [1.0, 1.0] in upper right when the game is on a 16/9 display ration
+                    //If the ratio is different, the Y value must go over 1.0 or else there will be some offset
+                    float Y_Max = (16.0f / 9.0f) / ((float)TotalResX / (float)TotalResY);
+                    Logger.WriteLog("Y_Max value : " + Y_Max.ToString());
+                    
+
                     float X_Value = (float)PlayerData.RIController.Computed_X / (float)TotalResX;
-                    float Y_Value = 1.0f - ((float)PlayerData.RIController.Computed_Y / (float)TotalResY);
+                    float Y_Value = (1.0f - ((float)PlayerData.RIController.Computed_Y / (float)TotalResY)) * Y_Max;
 
                     if (X_Value < 0.0f)
                         X_Value = 0.0f;
@@ -135,8 +164,8 @@ namespace DemulShooter
                         Y_Value = 0.0f;
                     if (X_Value > (float)1.0f)
                         X_Value = (float)1.0f;
-                    if (Y_Value > (float)1.0f)
-                        Y_Value = (float)1.0f;
+                    if (Y_Value > (float)1.0f * Y_Max)
+                        Y_Value = (float)1.0f * Y_Max;
 
                     Logger.WriteLog("Computed float values = [ " + X_Value + "x" + Y_Value + " ]");
 

@@ -538,6 +538,7 @@ namespace DsCore.Config
         {
             try
             {
+                Logger.WriteLog("Opening Configuration file : " + Path.GetFullPath(ConfigFilePath));
                 using (StreamReader sr = new StreamReader(ConfigFilePath))
                 {
                     String line = sr.ReadLine();

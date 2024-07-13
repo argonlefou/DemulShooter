@@ -153,6 +153,7 @@ namespace DemulShooterX64
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
                         Console.WriteLine(" -pname=[ProcessName] : change the name of the expected executable instead of expecting specific name like game.exe");
+                        Console.WriteLine(" -profile=[ConfigFileName] : specify a config file name for DemulShooterX64 to load");
                         Console.WriteLine(" -noinput \tDisable any input hack");
                         Console.WriteLine(" -nocrosshair \tHide in-game crosshair (Only for Unity-based Games");
                         Console.WriteLine(" -usesinglemouse \tUse standard mouse instead of Lightguns");

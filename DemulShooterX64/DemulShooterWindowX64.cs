@@ -25,7 +25,8 @@ namespace DemulShooterX64
         private WndProc delegWndProc;
         private static DemulShooterWindowX64 _This;
 
-        private const string CONF_FILENAME = "config.ini";
+        private const string DEMULSHOOTER_CONF_FILENAME = "config.ini";
+        private string _UserDefinedIniFile = string.Empty;
 
         //Timer for Hooking TimeOut
         private System.Timers.Timer _TimerHookTimeout;
@@ -135,6 +136,10 @@ namespace DemulShooterX64
                 {
                     _NoInput = true;
                 }
+                else if (Args[i].ToLower().StartsWith("-profile"))
+                {
+                    _UserDefinedIniFile = (Args[i].Split('='))[1].Trim();
+                } 
                 else if (Args[i].ToLower().StartsWith("-rom"))
                 {
                     _Rom = (Args[i].Split('='))[1].Trim();
@@ -169,7 +174,11 @@ namespace DemulShooterX64
             }  
 
             //Reading config file to get parameters
-            Configurator.GetInstance().ReadDsConfig(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME);
+            if (_UserDefinedIniFile != string.Empty)
+                Configurator.GetInstance().ReadDsConfig(_UserDefinedIniFile);
+            else
+                Configurator.GetInstance().ReadDsConfig(AppDomain.CurrentDomain.BaseDirectory + @"\" + DEMULSHOOTER_CONF_FILENAME);
+
             foreach (PlayerSettings Player in Configurator.GetInstance().PlayersSettings)
             {
                 Logger.WriteLog("P" + Player.ID + " mode = " + Player.Mode);

@@ -7,8 +7,8 @@ using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Memory;
-using DsCore.RawInput;
 using DsCore.Win32;
+using DsCore.RawInput;
 
 namespace DemulShooter
 {
@@ -20,9 +20,14 @@ namespace DemulShooter
         private NopStruct _Nop_AxisY = new NopStruct(0x0000D982, 6);
         private UInt32 _PlayersDataPtr_Offset = 0x00063607;
         private UInt32 _PlayersStatus_Offset = 0x00060A51;
+        private InjectionStruct _Buttons_InjectionStruct = new InjectionStruct(0x0000D948, 9);
 
         private UInt32 _NoCrosshairPatch_P1_Offset = 0x000030F9;
         private UInt32 _NoCrosshairPatch_P2_Offset = 0x00003187;
+
+        //custom values
+        private UInt32 _P1_Buttons_CaveAddress = 0;
+        private UInt32 _P2_Buttons_CaveAddress = 0;
 
         private HardwareScanCode _DIK_Credits = HardwareScanCode.DIK_5;
 
@@ -146,19 +151,9 @@ namespace DemulShooter
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_AxisX);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_AxisY);
 
-            /*CreateDataBank();
-
-            //Force the game to act as if MOUSE was choosen in the Players Controls reading function
-            // Keyboard = 0
-            // Mouse = 1
-            // Other ? To check...
-            WriteByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_ControlType_Offset, 1);
-            WriteByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_ControlType_Offset, 1);
-
-            //Create custom function to handle MOUSE controls update and call them
-            SetHack_P1Controls();
-            SetHack_P2Controls();
-            */
+            CreateDataBank();
+            SetHack_Buttons();
+            
             if (_HideCrosshair)
             {
                 WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _NoCrosshairPatch_P1_Offset, new byte[] { 0x68, 0xFF, 0x07, 0x00, 0x00, 0x90 });
@@ -168,7 +163,7 @@ namespace DemulShooter
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
         }
-        /*
+        
         private void CreateDataBank()
         {
             //Creating data bank
@@ -177,220 +172,58 @@ namespace DemulShooter
             CaveMemoryInput.Open();
             CaveMemoryInput.Alloc(0x800);
             _P1_Buttons_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P1_X_CaveAddress = CaveMemoryInput.CaveAddress + 4;
-            _P1_Y_CaveAddress = CaveMemoryInput.CaveAddress + 8;
-            _P2_Buttons_CaveAddress = CaveMemoryInput.CaveAddress + 0xC;
-            _P2_X_CaveAddress = CaveMemoryInput.CaveAddress + 0x10;
-            _P2_Y_CaveAddress = CaveMemoryInput.CaveAddress + 0x14;
+            _P2_Buttons_CaveAddress = CaveMemoryInput.CaveAddress + 4;
             Logger.WriteLog("Custom input data will be stored at : 0x" + CaveMemoryInput.CaveAddress.ToString("X8"));
         }
 
         /// <summary>
-        /// Creating a function that will replace the existing one to update buttons + axis values
-        /// sub_4321EA(_DWORD *a1, _DWORD *a2, _DWORD *a3)
-        /// a1 = Buttons
-        /// a2 = X
-        /// a3 = Y
+        /// At that moment the game is checking the button state to run functions based on the button value.
+        /// - Player ID in EBP+8 (0 / 1)
+        /// - Player Struct in EDI (+3BC and +3C0 are axis)
+        /// - EDX+C has button info (2 = shoot, 1=reload, 4=grenade, 8= ??) 
+        /// Resetting the custom codecave value afterward is mandatory or all bullets will be fired at once with a button push
         /// </summary>
-        private void SetHack_P1Controls()
+        private void SetHack_Buttons()
         {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
             List<Byte> Buffer = new List<Byte>();
 
+            //mov edi,[ebx+0000008A]
+            CaveMemory.Write_StrBytes("8B BB 8A 00 00 00");
+            //mov edx,[ebp+0C]
+            CaveMemory.Write_StrBytes("8B 55 0C");
+
             //push eax
             CaveMemory.Write_StrBytes("50");
             //push ebx
             CaveMemory.Write_StrBytes("53");
-            //mov ebx, [_P1_Buttons_CaveAddress]
-            CaveMemory.Write_StrBytes("8B 1D");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Buttons_CaveAddress));
-            //mov eax,[esp+08]
-            CaveMemory.Write_StrBytes("8B 44 24 08");
-            //mov [eax],ebx
-            CaveMemory.Write_StrBytes("89 18");
-
-            //mov ebx, [_P1_X_CaveAddress]
-            CaveMemory.Write_StrBytes("8B 1D");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_X_CaveAddress));
-            //mov eax,[esp+0C]
-            CaveMemory.Write_StrBytes("8B 44 24 0C");
-            //mov [eax],ebx
-            CaveMemory.Write_StrBytes("89 18");
-
-            //mov ebx, [_P1_Y_CaveAddress]
-            CaveMemory.Write_StrBytes("8B 1D");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Y_CaveAddress));
-            //mov eax,[esp+10]
-            CaveMemory.Write_StrBytes("8B 44 24 10");
-            //mov [eax],ebx
-            CaveMemory.Write_StrBytes("89 18");
-
+            //mov eax,[ebp+08]
+            CaveMemory.Write_StrBytes("8B 45 08");
+            //shl eax,02
+            CaveMemory.Write_StrBytes("C1 E0 02");
+            //add eax, _P1_Buttons_CaveAddress
+            CaveMemory.Write_StrBytes("05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Buttons_CaveAddress));            
+            //mov ebx, [eax]
+            CaveMemory.Write_StrBytes("8B 18");
+            //mov [edx+c], eax
+            CaveMemory.Write_StrBytes("89 5A 0C");
+            //mov byte ptr[eax], 0
+            CaveMemory.Write_StrBytes("C6 00 00");
             //pop ebx
             CaveMemory.Write_StrBytes("5B");
             //pop eax
             CaveMemory.Write_StrBytes("58");
 
             //Inject it
-            CaveMemory.InjectToOffset(_P1_MouseControls_InjectionStruct, "P1 Controls");
-        }
-        private void SetHack_P2Controls()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-            List<Byte> Buffer = new List<Byte>();
-
-            //push eax
-            CaveMemory.Write_StrBytes("50");
-            //push ebx
-            CaveMemory.Write_StrBytes("53");
-            //mov ebx, [_P2_Buttons_CaveAddress]
-            CaveMemory.Write_StrBytes("8B 1D");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Buttons_CaveAddress));
-            //mov eax,[esp+08]
-            CaveMemory.Write_StrBytes("8B 44 24 08");
-            //mov [eax],ebx
-            CaveMemory.Write_StrBytes("89 18");
-
-            //mov ebx, [_P2_X_CaveAddress]
-            CaveMemory.Write_StrBytes("8B 1D");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_X_CaveAddress));
-            //mov eax,[esp+0C]
-            CaveMemory.Write_StrBytes("8B 44 24 0C");
-            //mov [eax],ebx
-            CaveMemory.Write_StrBytes("89 18");
-
-            //mov ebx, [_P2_Y_CaveAddress]
-            CaveMemory.Write_StrBytes("8B 1D");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Y_CaveAddress));
-            //mov eax,[esp+10]
-            CaveMemory.Write_StrBytes("8B 44 24 10");
-            //mov [eax],ebx
-            CaveMemory.Write_StrBytes("89 18");
-
-            //pop ebx
-            CaveMemory.Write_StrBytes("5B");
-            //pop eax
-            CaveMemory.Write_StrBytes("58");
-
-            //Inject it
-            CaveMemory.InjectToOffset(_P2_MouseControls_InjectionStruct, "P2 Controls");
+            CaveMemory.InjectToOffset(_Buttons_InjectionStruct, "Buttons");
         }
 
-        /// <summary>
-        /// To remove crosshair, we can force out-of -screen corrdinates when the game is drawing the needed texture
-        /// To find the texture, it looks like the _TextureDrawingCategoryIndex_Offset is 0x11 when the function is called to draw crosshair-related resources
-        /// And the ECX value (Texture ID ?) is 0x17 and 0x1C for Impact texture (untouched)
-        /// Other Id (0x192, 0x193, etc..) will be changed to not be visible
-        /// </summary>
-        private void SetHack_NoCrosshair()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-            List<Byte> Buffer = new List<Byte>();
-
-            //cmp dword ptr [Main95.exe+4BFB4],11
-            CaveMemory.Write_StrBytes("83 3D");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes((UInt32)_TargetProcess_MemoryBaseAddress + _TextureDrawingCategoryIndex_Offset));
-            CaveMemory.Write_StrBytes("11");
-            //jne Originalcode
-            CaveMemory.Write_StrBytes("75 11");
-            //cmp ecx, 17
-            CaveMemory.Write_StrBytes("83 F9 1C");
-            //je OriginalCode
-            CaveMemory.Write_StrBytes("74 0C");
-            //cmp ecx, 1C
-            CaveMemory.Write_StrBytes("83 F9 17");
-            //je OriginalCode
-            CaveMemory.Write_StrBytes("74 07");
-            //Patch:
-            //mov eax, 3000
-            CaveMemory.Write_StrBytes("B8 00 03 00 00");
-            //jmp Next
-            CaveMemory.Write_StrBytes("EB 03");
-            //OriginalCode:
-            //mov eax,[ebx+54]
-            CaveMemory.Write_StrBytes("8B 43 54");
-            //mov [edi],eax
-            CaveMemory.Write_StrBytes("89 07");
-            //mov eax,[ebx+58]
-            CaveMemory.Write_StrBytes("8B 43 58");
-            //mov [edi+04],eax
-            CaveMemory.Write_StrBytes("89 47 04");
-
-            //Inject it
-            CaveMemory.InjectToOffset(_NoCrosshair_InjectionStruct, "No Crosshair");
-        }
-        */
         private void SetHack_Outputs()
-        {
-           /* CreateDataBank_Outputs();
-            SetHack_Recoil_P1();
-            SetHack_Recoil_P2();*/
-        }
+        { }
 
-        /*
-        private void CreateDataBank_Outputs()
-        {
-            //Creating data bank
-            //Codecave :
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            _P1_RecoilStatus_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P2_RecoilStatus_CaveAddress = CaveMemoryInput.CaveAddress + 4;
-            Logger.WriteLog("Custom output data will be stored at : 0x" + CaveMemoryInput.CaveAddress.ToString("X8"));
-        }
-
-        /// <summary>
-        /// Intercepting some kind of call to draw impact texture when trigger is pressed
-        /// </summary>
-        private void SetHack_Recoil_P1()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-            List<Byte> Buffer = new List<Byte>();
-
-            //mov byte ptr[_P1_RecoilStatus_CaveAddress],00000001
-            CaveMemory.Write_StrBytes("C6 05");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_RecoilStatus_CaveAddress));
-            CaveMemory.Write_StrBytes("01");
-            //mov eax,[ebp+14]
-            CaveMemory.Write_StrBytes("8B 45 14");
-            //push [eax+58]
-            CaveMemory.Write_StrBytes("FF 70 58");
-
-            //Inject it
-            CaveMemory.InjectToOffset(_P1_Recoil_InjectionStruct, "P1 Recoil");
-        }
-
-        /// <summary>
-        /// Intercepting some kind of call to draw impact texture when trigger is pressed
-        /// </summary>
-        private void SetHack_Recoil_P2()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-            List<Byte> Buffer = new List<Byte>();
-
-            //mov byte ptr[_P1_RecoilStatus_CaveAddress],00000001
-            CaveMemory.Write_StrBytes("C6 05");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_RecoilStatus_CaveAddress));
-            CaveMemory.Write_StrBytes("01");
-            //mov eax,[ebp+14]
-            CaveMemory.Write_StrBytes("8B 45 14");
-            //push [eax+58]
-            CaveMemory.Write_StrBytes("FF 70 58");
-
-            //Inject it
-            CaveMemory.InjectToOffset(_P2_Recoil_InjectionStruct, "P2 Recoil");
-        }
-        */
         #endregion
 
         #region Inputs
@@ -411,16 +244,14 @@ namespace DemulShooter
                     WriteBytes(PlayerAddress + 0x3BC, bufferX);
                     WriteBytes(PlayerAddress + 0x3C0, bufferY);
                 }
-                /*
-                 * }
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
                 {
-                    Apply_OR_ByteMask(_P1_Buttons_CaveAddress, 0x01);
+                    Apply_OR_ByteMask(_P1_Buttons_CaveAddress, 0x02);
                 }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
                 {
-                    Apply_AND_ByteMask(_P1_Buttons_CaveAddress, 0xFE);
+                    Apply_AND_ByteMask(_P1_Buttons_CaveAddress, 0xFD);
                 }
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
@@ -434,12 +265,12 @@ namespace DemulShooter
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                 {
-                    Apply_OR_ByteMask(_P1_Buttons_CaveAddress, 0x02);
+                    Apply_OR_ByteMask(_P1_Buttons_CaveAddress, 0x01);
                 }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                 {
-                    Apply_AND_ByteMask(_P1_Buttons_CaveAddress, 0xFD);
-                }*/
+                    Apply_AND_ByteMask(_P1_Buttons_CaveAddress, 0xFE);
+                }
             }
             else if (PlayerData.ID == 2)
             {
@@ -448,15 +279,15 @@ namespace DemulShooter
                 {
                     WriteBytes(PlayerAddress + 0x3BC, bufferX);
                     WriteBytes(PlayerAddress + 0x3C0, bufferY);
-                }/*
+                }
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
                 {
-                    Apply_OR_ByteMask(_P2_Buttons_CaveAddress, 0x01);
+                    Apply_OR_ByteMask(_P2_Buttons_CaveAddress, 0x02);
                 }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
                 {
-                    Apply_AND_ByteMask(_P2_Buttons_CaveAddress, 0xFE);
+                    Apply_AND_ByteMask(_P2_Buttons_CaveAddress, 0xFD);
                 }
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.ActionDown) != 0)
@@ -470,12 +301,12 @@ namespace DemulShooter
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
                 {
-                    Apply_OR_ByteMask(_P2_Buttons_CaveAddress, 0x02);
+                    Apply_OR_ByteMask(_P2_Buttons_CaveAddress, 0x01);
                 }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
                 {
-                    Apply_AND_ByteMask(_P2_Buttons_CaveAddress, 0xFD);
-                }*/
+                    Apply_AND_ByteMask(_P2_Buttons_CaveAddress, 0xFE);
+                }
             }
         }
 

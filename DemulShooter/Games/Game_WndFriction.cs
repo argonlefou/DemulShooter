@@ -85,28 +85,40 @@ namespace DemulShooter
                         _ProcessHandle = _TargetProcess.Handle;
                         _TargetProcess_MemoryBaseAddress = _TargetProcess.MainModule.BaseAddress;
 
-                        ProcessModuleCollection c = _TargetProcess.Modules;
-                        foreach (ProcessModule m in c)
+                        if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
-                            if (m.ModuleName.ToLower().Equals("vsioboard.dll"))
+                            _GameWindowHandle = _TargetProcess.MainWindowHandle;
+
+                            if (!_DisableInputHack)
                             {
-                                _VsIOBoard_Module_BaseAddress = m.BaseAddress;
-                                if (_VsIOBoard_Module_BaseAddress != IntPtr.Zero)
+                                ProcessModuleCollection c = _TargetProcess.Modules;
+                                foreach (ProcessModule m in c)
                                 {
-                                    _GameWindowHandle = _TargetProcess.MainWindowHandle;
-                                    Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
-                                    Logger.WriteLog("Friction.exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8") + ", vsIOBoard.dll = 0x" + _VsIOBoard_Module_BaseAddress.ToString("X8"));
-                                    String VsIoBoardDll_Path = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", "vsioboard.dll");                                  
-                                    CheckMd5(VsIoBoardDll_Path);
-                                    ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                    if (!_DisableInputHack)
-                                        SetHack();
-                                    else
-                                        Logger.WriteLog("Input Hack disabled");
-                                    _ProcessHooked = true;
-                                    RaiseGameHookedEvent();
-                                    break;
+                                    if (m.ModuleName.ToLower().Equals("vsioboard.dll"))
+                                    {
+                                        _VsIOBoard_Module_BaseAddress = m.BaseAddress;
+                                        if (_VsIOBoard_Module_BaseAddress != IntPtr.Zero)
+                                        {
+                                            Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
+                                            Logger.WriteLog("Friction.exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8") + ", vsIOBoard.dll = 0x" + _VsIOBoard_Module_BaseAddress.ToString("X8"));
+                                            String VsIoBoardDll_Path = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", "vsioboard.dll");
+                                            CheckMd5(VsIoBoardDll_Path);
+                                            ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
+                                            SetHack();
+                                            _ProcessHooked = true;
+                                            RaiseGameHookedEvent();
+                                            break;
+                                        }
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
+                                Logger.WriteLog("Friction.exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
+                                Logger.WriteLog("Input Hack disabled");
+                                _ProcessHooked = true;
+                                RaiseGameHookedEvent();
                             }
                         }
                     }
