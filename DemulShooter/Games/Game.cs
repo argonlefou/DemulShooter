@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Timers;
 using DsCore;
 using DsCore.Config;
@@ -169,6 +170,15 @@ namespace DemulShooter
         {
             if (File.Exists(FileName))
             {
+                if(Program.CustomMD5 != String.Empty)
+                {
+					Regex md5Regex = new Regex("^[a-fA-F0-9]{32}$");
+                    if (md5Regex.IsMatch(Program.CustomMD5))
+                    {
+						_TargetProcess_Md5Hash = Program.CustomMD5.ToLower();
+						return;
+					}
+				}
                 using (var md5 = MD5.Create())
                 {
                     using (var stream = File.OpenRead(FileName))

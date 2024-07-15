@@ -25,11 +25,14 @@ namespace DemulShooter
         static String strTarget = string.Empty;
         static String strRom = string.Empty;
         static String strCustomTargetProcessName = string.Empty;
-        public static String CustomTargetProcessName
+		public static String CustomTargetProcessName
         { get {return strCustomTargetProcessName;} }
 
+		static String strCustomMD5 = string.Empty;
+		public static String CustomMD5
+		{ get {return strCustomMD5;} }
 
-        static void Main(string[] args)
+		static void Main(string[] args)
         {
             // Attach to the parent process via AttachConsole SDK call
             AttachConsole(ATTACH_PARENT_PROCESS);
@@ -303,7 +306,12 @@ namespace DemulShooter
                         if (strCustomTargetProcessName.EndsWith(".exe"))
                             strCustomTargetProcessName = strCustomTargetProcessName.Substring(0, strCustomTargetProcessName.Length - 4);
                     }
-                }
+
+					else if (args[i].ToLower().StartsWith("-forcemd5"))
+					{
+						strCustomMD5 = (args[i].ToLower().Split('='))[1].Trim();
+					}
+				}
 
                 if (strTarget == String.Empty)
                 {
