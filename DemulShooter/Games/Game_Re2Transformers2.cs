@@ -35,6 +35,7 @@ namespace DemulShooter
         private InjectionStruct _Buttons_InjectionStruct = new InjectionStruct(0x000F787F, 5);
         private InjectionStruct _NoCrosshair_InjectionStruct = new InjectionStruct(0x000F6DB0, 5);
         private InjectionStruct _FixCrosshair_InjectionStruct = new InjectionStruct(0x000F6DB5, 7);
+        private InjectionStruct _FixEnnemyTarget_InjectionStruct = new InjectionStruct(0x004EEF9D, 5);
         private InjectionStruct _Credits_InjectionStruct = new InjectionStruct(0x00240BCB, 5);
         private InjectionStruct _StartLamps_InjectionStruct = new InjectionStruct(0x00067159, 5);
         private InjectionStruct _GunLamps_InjectionStruct = new InjectionStruct(0x000FC124, 5);
@@ -202,6 +203,7 @@ namespace DemulShooter
             SetHack_Buttons();
             SetHack_Credits();
             SetHack_CorrectReticlePosition();
+            SetHack_CorrectEnnemyTarget();
 
             Logger.WriteLog("Memory Hack complete !");
             Logger.WriteLog("-");
@@ -288,6 +290,7 @@ namespace DemulShooter
 
         /// <summary>
         /// Ath the end of the CGun::MainProc we are overwritting buttons values with data read on our custom Databank
+        /// Looks like putting 1 in the Button_On byte is not necesary for gameplay (autofire still on) and causes repeated inputs on Name entry screen
         /// </summary>
         private void SetHack_Buttons()
         {
@@ -298,7 +301,7 @@ namespace DemulShooter
 
             //push edi
             CaveMemory.Write_StrBytes("57");
-            //shl ebx, 4
+            //shl ebx, 2
             CaveMemory.Write_StrBytes("C1 E3 02");
 
             //mov eax, _P1_TriggerPress_Address
@@ -310,17 +313,16 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 38");
             //mov [esi+08],edi
             CaveMemory.Write_StrBytes("89 7E 08");
-            //mov [eax], 0
-            //CaveMemory.Write_StrBytes("C7 00 00 00 00 00");
-            //mov eax, _P1_TriggerOn_Address
-            CaveMemory.Write_StrBytes("B8");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_TriggerOn_Address));
-            //add eax, ebx
-            CaveMemory.Write_StrBytes("01 D8");
-            //mov edi, [eax]
-            CaveMemory.Write_StrBytes("8B 38");
-            //mov [esi+0C],edi
-            CaveMemory.Write_StrBytes("89 7E 0C");
+            
+            ////mov eax, _P1_TriggerOn_Address
+            //CaveMemory.Write_StrBytes("B8");
+            //CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_TriggerOn_Address));
+            ////add eax, ebx
+            //CaveMemory.Write_StrBytes("01 D8");
+            ////mov edi, [eax]
+            //CaveMemory.Write_StrBytes("8B 38");
+            ////mov [esi+0C],edi
+            //CaveMemory.Write_StrBytes("89 7E 0C");
 
             //mov eax, _P1_StartPress_Address
             CaveMemory.Write_StrBytes("B8");
@@ -331,17 +333,16 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 38");
             //mov [esi+28],edi
             CaveMemory.Write_StrBytes("89 7E 28");
-            //mov [eax], 0
-            //CaveMemory.Write_StrBytes("C7 00 00 00 00 00");
-            //mov eax, _P1_StartOn_Address
-            CaveMemory.Write_StrBytes("B8");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_StartOn_Address));
-            //add eax, ebx
-            CaveMemory.Write_StrBytes("01 D8");
-            //mov edi, [eax]
-            CaveMemory.Write_StrBytes("8B 38");
-            //mov [esi+2C],edi
-            CaveMemory.Write_StrBytes("89 7E 2C");
+
+            ////mov eax, _P1_StartOn_Address
+            //CaveMemory.Write_StrBytes("B8");
+            //CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_StartOn_Address));
+            ////add eax, ebx
+            //CaveMemory.Write_StrBytes("01 D8");
+            ////mov edi, [eax]
+            //CaveMemory.Write_StrBytes("8B 38");
+            ////mov [esi+2C],edi
+            //CaveMemory.Write_StrBytes("89 7E 2C");
 
             //mov eax, _LeverFrontPress_Address
             CaveMemory.Write_StrBytes("B8");
@@ -350,8 +351,7 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 38");
             //mov [esi+30],edi
             CaveMemory.Write_StrBytes("89 7E 30");
-            //mov [eax], 0
-            //CaveMemory.Write_StrBytes("C7 00 00 00 00 00");
+
             //mov eax, _LeverFrontOn_Address
             CaveMemory.Write_StrBytes("B8");
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_LeverFrontOn_Address));
@@ -367,8 +367,7 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 38");
             //mov [esi+38],edi
             CaveMemory.Write_StrBytes("89 7E 38");
-            //mov [eax], 0
-            //CaveMemory.Write_StrBytes("C7 00 00 00 00 00");
+
             //mov eax, _LeverBackOn_Address
             CaveMemory.Write_StrBytes("B8");
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_LeverBackOn_Address));
@@ -445,6 +444,40 @@ namespace DemulShooter
 
             //Inject it
             CaveMemory.InjectToOffset(_FixCrosshair_InjectionStruct, "FixCrosshair");
+        }
+
+        /// <summary>
+        /// On a different resolution than 1920x1080, ennemy targets on screen are mislocated
+        /// The game is measuring window width and window height but even with this, it's buggy
+        /// Forcing window dimension to 1920p fix the issue (strangely ?)
+        /// For that, the game calls to get center values
+        /// Then the game calls for WindowSize
+        /// = Forcing Center and max values
+        /// </summary>
+        private void SetHack_CorrectEnnemyTarget()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+
+            //mov [ebp-4], 44700000
+            CaveMemory.Write_StrBytes("C7 45 FC 00 00 70 44");    
+
+            //mov [ebp-8], 44070000
+            CaveMemory.Write_StrBytes("C7 45 F8 00 00 07 44");
+
+            //mov [ebp-18], 44870000
+            CaveMemory.Write_StrBytes("C7 45 E8 00 00 87 44");  
+
+            //mov [ebp-10], 44f00000
+            CaveMemory.Write_StrBytes("C7 45 F0 00 00 F0 44");
+
+            //movss xmm0,[ebp-18]
+            CaveMemory.Write_StrBytes("F3 0F 10 45 E8");
+
+            //Inject it
+            CaveMemory.InjectToOffset(_FixEnnemyTarget_InjectionStruct, "FixEnnemyTarget");
         }
 
         /// <summary>
