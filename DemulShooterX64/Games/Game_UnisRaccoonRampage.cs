@@ -687,10 +687,10 @@ namespace DemulShooterX64
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P3_Damaged, OutputId.P3_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P4_Damaged, OutputId.P4_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
-            _Outputs.Add(new GameOutput(OutputDesciption.P1_Credits, OutputId.P1_Credit));
-            _Outputs.Add(new GameOutput(OutputDesciption.P2_Credits, OutputId.P2_Credit));
-            _Outputs.Add(new GameOutput(OutputDesciption.P3_Credits, OutputId.P3_Credit));
-            _Outputs.Add(new GameOutput(OutputDesciption.P4_Credits, OutputId.P4_Credit));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Credits, OutputId.P1_Credits));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Credits, OutputId.P2_Credits));
+            _Outputs.Add(new GameOutput(OutputDesciption.P3_Credits, OutputId.P3_Credits));
+            _Outputs.Add(new GameOutput(OutputDesciption.P4_Credits, OutputId.P4_Credits));
         }
 
         /// <summary>
@@ -771,10 +771,10 @@ namespace DemulShooterX64
             } 
 
             //Credits
-            SetOutputValue(OutputId.P1_Credit, ReadByte((IntPtr)(_P1_Coins_CaveAddress)));
-            SetOutputValue(OutputId.P2_Credit, ReadByte((IntPtr)(_P2_Coins_CaveAddress)));
-            SetOutputValue(OutputId.P3_Credit, ReadByte((IntPtr)(_P3_Coins_CaveAddress)));
-            SetOutputValue(OutputId.P4_Credit, ReadByte((IntPtr)(_P4_Coins_CaveAddress)));
+            SetOutputValue(OutputId.P1_Credits, ReadByte((IntPtr)(_P1_Coins_CaveAddress)));
+            SetOutputValue(OutputId.P2_Credits, ReadByte((IntPtr)(_P2_Coins_CaveAddress)));
+            SetOutputValue(OutputId.P3_Credits, ReadByte((IntPtr)(_P3_Coins_CaveAddress)));
+            SetOutputValue(OutputId.P4_Credits, ReadByte((IntPtr)(_P4_Coins_CaveAddress)));
         }
 
         #endregion

@@ -50,6 +50,7 @@ namespace DemulShooterX64
             };
 
             Dictionary<String, String> _AagamesRoms = new Dictionary<String, String>(){
+                {"drk", "Drakon Realm Keepers"},
                 {"rha", "Rabbids Hollywood Arcade"},
                 {"tra", "Tomb Raider Arcade"}
             };

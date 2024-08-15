@@ -289,6 +289,10 @@ namespace DemulShooterX64
                 {
                     switch (_Rom.ToLower())
                     {
+                        case "drk":
+                            {
+                                _Game = new Game_AagamesDrakon(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            }break;
                         case "rha":
                             {
                                 _Game = new Game_AagamesRha(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);

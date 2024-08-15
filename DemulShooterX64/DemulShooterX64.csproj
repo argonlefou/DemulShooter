@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DemulShooterWindowX64.cs" />
+    <Compile Include="Games\Game_AagamesDrakon.cs" />
     <Compile Include="Games\Game_AagamesRha.cs" />
     <Compile Include="Games\Game_AagamesTra.cs" />
     <Compile Include="Games\Game_Es3Tc5.cs" />

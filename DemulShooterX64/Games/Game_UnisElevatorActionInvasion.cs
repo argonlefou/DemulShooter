@@ -451,8 +451,8 @@ namespace DemulShooterX64
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));*/
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
-            _Outputs.Add(new GameOutput(OutputDesciption.P1_Credits, OutputId.P1_Credit));
-            _Outputs.Add(new GameOutput(OutputDesciption.P1_Credits, OutputId.P2_Credit));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Credits, OutputId.P1_Credits));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Credits, OutputId.P2_Credits));
         }
 
         /// <summary>
@@ -516,8 +516,8 @@ namespace DemulShooterX64
             }
 
             //Credits
-            SetOutputValue(OutputId.P1_Credit, BitConverter.ToInt32(ReadBytes((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _P1_Credits_Offset), 4), 0));
-            SetOutputValue(OutputId.P2_Credit, BitConverter.ToInt32(ReadBytes((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _P2_Credits_Offset), 4), 0));
+            SetOutputValue(OutputId.P1_Credits, BitConverter.ToInt32(ReadBytes((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _P1_Credits_Offset), 4), 0));
+            SetOutputValue(OutputId.P2_Credits, BitConverter.ToInt32(ReadBytes((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _P2_Credits_Offset), 4), 0));
         }
 
         #endregion

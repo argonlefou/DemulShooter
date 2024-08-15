@@ -315,8 +315,8 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
-            _Outputs.Add(new GameOutput(OutputDesciption.P1_Credits, OutputId.P1_Credit));
-            _Outputs.Add(new GameOutput(OutputDesciption.P2_Credits, OutputId.P2_Credit));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Credits, OutputId.P1_Credits));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Credits, OutputId.P2_Credits));
         }
 
         /// <summary>
@@ -378,8 +378,8 @@ namespace DemulShooter
                 SetOutputValue(OutputId.P1_Life, _P1_Life);
                 SetOutputValue(OutputId.P2_Life, _P2_Life);
 
-                SetOutputValue(OutputId.P1_Credit, BitConverter.ToInt32(_Mmfh.Payload, MMFH_WildWestShoutout.INDEX_P1_CREDITS));
-                SetOutputValue(OutputId.P2_Credit, BitConverter.ToInt32(_Mmfh.Payload, MMFH_WildWestShoutout.INDEX_P2_CREDITS));
+                SetOutputValue(OutputId.P1_Credits, BitConverter.ToInt32(_Mmfh.Payload, MMFH_WildWestShoutout.INDEX_P1_CREDITS));
+                SetOutputValue(OutputId.P2_Credits, BitConverter.ToInt32(_Mmfh.Payload, MMFH_WildWestShoutout.INDEX_P2_CREDITS));
 
                 _Mmfh.Writeall();
             }

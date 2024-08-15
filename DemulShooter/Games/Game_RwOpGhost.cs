@@ -80,8 +80,6 @@ namespace DemulShooter
         //Credits settings (these are defaults values)
         private int _Credits_Freeplay = 0;   //0 or 1
 
-        private HardwareScanCode _P2_Action_Key = HardwareScanCode.DIK_H;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -409,7 +407,7 @@ namespace DemulShooter
             //jmp dword ptr [edx*4+gs2.exe+1AF274]
             CaveMemory.Write_StrBytes("FF 24 95 74 F2 5A 00");
 
-            Logger.WriteLog("Adding JVS Buttons CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+            Logger.WriteLog("Adding  CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
 
             //Code injection
             IntPtr ProcessHandle = _TargetProcess.Handle;
@@ -625,7 +623,7 @@ namespace DemulShooter
                             {
                                 Apply_OR_ByteMask(_Buttons_CaveAddress + 1, 0x80);
                             }
-                            else if (s.scanCode == _P2_Action_Key)
+                            else if (s.scanCode == Configurator.GetInstance().DIK_OpGhost_Action_P2)
                             {
                                 Apply_OR_ByteMask(_Buttons_CaveAddress + 3, 0x80);
                             }
@@ -639,7 +637,7 @@ namespace DemulShooter
                             {
                                 WriteByte(_P1_Action_CaveAddress, 0x80);
                             }
-                            else if (s.scanCode == _P2_Action_Key)
+                            else if (s.scanCode == Configurator.GetInstance().DIK_OpGhost_Action_P2)
                             {
                                 Send_VK_KeyDown(_P2_Action_VK);
                             }
@@ -664,7 +662,7 @@ namespace DemulShooter
                             {
                                 Apply_AND_ByteMask(_Buttons_CaveAddress + 1, 0x7F);
                             }
-                            else if (s.scanCode == _P2_Action_Key)
+                            else if (s.scanCode == Configurator.GetInstance().DIK_OpGhost_Action_P2)
                             {
                                 Apply_AND_ByteMask(_Buttons_CaveAddress + 3, 0x7F);
                             }
@@ -678,7 +676,7 @@ namespace DemulShooter
                             {
                                 WriteByte(_P1_Action_CaveAddress, 0x00);
                             }
-                            else if (s.scanCode == _P2_Action_Key)
+                            else if (s.scanCode == Configurator.GetInstance().DIK_OpGhost_Action_P2)
                             {
                                 Send_VK_KeyUp(_P2_Action_VK);
                             }

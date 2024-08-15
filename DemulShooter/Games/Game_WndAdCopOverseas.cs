@@ -12,18 +12,18 @@ using DsCore.Win32;
 
 namespace DemulShooter
 {
-    class Game_WndAdCop95 : Game
+    class Game_WndAdCopOverseas : Game
     {
         //Memory values
-        private UInt32 _Credits_Offset = 0x00060A45;
-        private NopStruct _Nop_AxisX = new NopStruct(0x0000D970, 6);
-        private NopStruct _Nop_AxisY = new NopStruct(0x0000D982, 6);
-        private UInt32 _PlayersDataPtr_Offset = 0x00063607;
-        private UInt32 _PlayersStatus_Offset = 0x00060A51;
-        private InjectionStruct _Buttons_InjectionStruct = new InjectionStruct(0x0000D948, 9);
+        private UInt32 _Credits_Offset = 0x00064B29;
+        private NopStruct _Nop_AxisX = new NopStruct(0x0000E1F1, 6);
+        private NopStruct _Nop_AxisY = new NopStruct(0x0000E203, 6);
+        private UInt32 _PlayersDataPtr_Offset = 0x00067817;
+        private UInt32 _PlayersStatus_Offset = 0x00064B35;
+        private InjectionStruct _Buttons_InjectionStruct = new InjectionStruct(0x0000E1C9, 9);
 
-        private UInt32 _NoCrosshairPatch_P1_Offset = 0x000030F9;
-        private UInt32 _NoCrosshairPatch_P2_Offset = 0x00003187;
+        private UInt32 _NoCrosshairPatch_P1_Offset = 0x000030FC;
+        private UInt32 _NoCrosshairPatch_P2_Offset = 0x0000318A;
 
         //custom values
         private UInt32 _P1_Buttons_CaveAddress = 0;
@@ -34,12 +34,12 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndAdCop95(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "adcop95", DisableInputHack, Verbose)
+        public Game_WndAdCopOverseas(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
+            : base(RomName, "adcopsea", DisableInputHack, Verbose)
         {
             _HideCrosshair = HideCrosshair;
 
-            _KnownMd5Prints.Add("ADCOP v1.06 - Original exe", "e5ee4b73028672d5b30a5f0f38e0a05a");
+            _KnownMd5Prints.Add("ADCOP Overseas Mission - Original exe", "7e02a4e85cf1ed8c672e077b86cb370a");
             _tProcess.Start();
 
             Logger.WriteLog("Waiting for Windows " + _RomName + " game to hook.....");

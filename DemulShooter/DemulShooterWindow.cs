@@ -800,6 +800,10 @@ namespace DemulShooter
                             {
                                 _Game = new Game_WndAdCop95(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             }; break;
+                        case "adcopsea":
+                            {
+                                _Game = new Game_WndAdCopOverseas(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            }; break;
                         case "bonbon":
                             {
                                 _Game = new Game_WndBonbon95(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
