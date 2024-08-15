@@ -397,6 +397,10 @@ namespace DemulShooterX64
                     {
                         _Game = new Game_UnisNightHunterArcade(_Rom.ToLower(), _NoInput, isVerbose);
                     }
+                    else if (_Rom.ToLower().Equals("racramp"))
+                    {
+                        _Game = new Game_UnisRaccoonRampage(_Rom.ToLower(), _NoInput, isVerbose);
+                    }
                 }
 
                 //Windows games
@@ -428,10 +432,6 @@ namespace DemulShooterX64
                 {
                     switch (_Rom.ToLower())
                     {
-                        case "raccoonr":
-                            {
-                                _Game = new Game_UnisRaccoonRampage(_Rom.ToLower(), _NoInput, isVerbose);
-                            } break;
                     }
                 }
 
