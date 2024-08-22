@@ -528,6 +528,10 @@ namespace DemulShooter
                             {
                                 _Game = new Game_Lindbergh2spicy(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
+                        case "gsquad":
+                            {
+                                _Game = new Game_LindberghGhostSquadEvo(_Rom.ToLower(), _NoInput, isVerbose);
+                            } break;
                         case "hotd4":
                             {
                                 _Game = new Game_LindberghHotd4(_Rom.ToLower(), _NoInput, isVerbose);

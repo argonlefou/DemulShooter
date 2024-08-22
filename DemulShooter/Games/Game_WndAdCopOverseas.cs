@@ -67,11 +67,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
-                            SetHack_Outputs();
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -146,34 +142,19 @@ namespace DemulShooter
         /// <summary>
         /// Genuine Hack, just blocking Axis and Triggers input to replace them.
         /// </summary>        
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_AxisX);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_AxisY);
 
-            CreateDataBank();
-            SetHack_Buttons();
-            
-            if (_HideCrosshair)
-            {
-                WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _NoCrosshairPatch_P1_Offset, new byte[] { 0x68, 0xFF, 0x07, 0x00, 0x00, 0x90 });
-                WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _NoCrosshairPatch_P2_Offset, new byte[] { 0x68, 0xFF, 0x07, 0x00, 0x00, 0x90 });
-            }
+            Create_InputsDataBank();
+            _P1_Buttons_CaveAddress = _InputsDatabank_Address;
+            _P2_Buttons_CaveAddress = _InputsDatabank_Address + 4;
 
-            Logger.WriteLog("Memory Hack complete !");
+            SetHack_Buttons();
+
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-        
-        private void CreateDataBank()
-        {
-            //Creating data bank
-            //Codecave :
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            _P1_Buttons_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P2_Buttons_CaveAddress = CaveMemoryInput.CaveAddress + 4;
-            Logger.WriteLog("Custom input data will be stored at : 0x" + CaveMemoryInput.CaveAddress.ToString("X8"));
         }
 
         /// <summary>
@@ -221,8 +202,11 @@ namespace DemulShooter
             CaveMemory.InjectToOffset(_Buttons_InjectionStruct, "Buttons");
         }
 
-        private void SetHack_Outputs()
-        { }
+        protected override void Apply_NoCrosshairMemoryHack()
+        {
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _NoCrosshairPatch_P1_Offset, new byte[] { 0x68, 0xFF, 0x07, 0x00, 0x00, 0x90 });
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _NoCrosshairPatch_P2_Offset, new byte[] { 0x68, 0xFF, 0x07, 0x00, 0x00, 0x90 });
+        }
 
         #endregion
 

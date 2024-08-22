@@ -21,11 +21,6 @@ namespace DemulShooterX64
         protected float _P2_X_Value;
         protected float _P2_Y_Value;
 
-        // The game can be used with regular mouse
-        // If DemulShooter is used with the -noinput flag, the plugin has to not take over the default controls
-        // In that case, DemulShooter will send a packet once, with the -nocrosshair and -noinput status so that the plugin can take over the controls if needed
-        private bool _Flag_InitialDataSentToPlugin = false;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -33,11 +28,11 @@ namespace DemulShooterX64
             : base(RomName, "Game", DisableInputHack, Verbose)
         {
             _HideCrosshair = HideCrosshair;
-            _KnownMd5Prints.Add("Drakon - v22301R", "b9eaa606548f04d684876c17f48deaa3");
-            _KnownMd5Prints.Add("Drakon - v227996 Debug Build", "783a592917167b3a3a3e42f9f0717a06");
+            _KnownMd5Prints.Add("Drakon Realm Keepers - Development Build v227996", "783a592917167b3a3a3e42f9f0717a06");
+            _KnownMd5Prints.Add("Drakon Realm Keepers - Release Build v223011", "b9eaa606548f04d684876c17f48deaa3");
             
             _tProcess.Start();
-            Logger.WriteLog("Waiting for " + _RomName + " game to hook.....");
+            Logger.WriteLog("Waiting for Adrenaline Amusements game " + _RomName + " game to hook.....");
         }
 
          /// <summary>
@@ -96,25 +91,7 @@ namespace DemulShooterX64
                 }
             }
             else
-            {
-                //Send initial packet with inputhack and crosshair data for Unity plugin
-                /*if (!_Flag_InitialDataSentToPlugin && _Tcpclient.IsConnected())
-                {
-                    if (_HideCrosshair)
-                        _InputData.HideCrosshairs = 1;
-                    else
-                        _InputData.HideCrosshairs = 0;
-
-                    if (_DisableInputHack)
-                        _InputData.EnableInputsHack = 0;
-                    else
-                        _InputData.EnableInputsHack = 1;
-
-                    _Tcpclient.SendMessage(_InputData.ToByteArray());
-
-                    _Flag_InitialDataSentToPlugin = true;
-                }*/
-
+            { 
                 Process[] processes = Process.GetProcessesByName(_Target_Process_Name);
                 if (processes.Length <= 0)
                 {

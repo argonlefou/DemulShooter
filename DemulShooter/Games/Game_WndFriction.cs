@@ -104,7 +104,7 @@ namespace DemulShooter
                                             String VsIoBoardDll_Path = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", "vsioboard.dll");
                                             CheckMd5(VsIoBoardDll_Path);
                                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                            SetHack();
+                                            Apply_MemoryHacks();
                                             _ProcessHooked = true;
                                             RaiseGameHookedEvent();
                                             break;
@@ -212,9 +212,17 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            _P1_X_CaveAddress = _InputsDatabank_Address;
+            _P2_X_CaveAddress = _InputsDatabank_Address + 0x08;
+            _P1_Y_CaveAddress = _InputsDatabank_Address + 0x10;
+            _P2_Y_CaveAddress = _InputsDatabank_Address + 0x18;
+            _P1_Trigger_CaveAddress = _InputsDatabank_Address + 0x20;
+            _P2_Trigger_CaveAddress = _InputsDatabank_Address + 0x28;
+            _P1_Reload_CaveAddress = _InputsDatabank_Address + 0x30;
+            _P2_Reload_CaveAddress = _InputsDatabank_Address + 0x38;
                
             //VSIOBOARD.dd v1.0 has a different Hack
             if (_TargetProcess_Md5Hash == _KnownMd5Prints["Friction hacked VSIOBOARD.dll - v1.0"])
@@ -237,31 +245,10 @@ namespace DemulShooter
                 SetHack_Reload();
             }
 
-            Logger.WriteLog("Friction Arcade Hack complete !");
+            Logger.WriteLog("Inputs Arcade Hack complete !");
             Logger.WriteLog("-");
         }
-
-        /// <summary>
-        /// Custom data storage
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_X_CaveAddress = CaveMemory.CaveAddress;
-            _P2_X_CaveAddress = CaveMemory.CaveAddress + 0x08;
-            _P1_Y_CaveAddress = CaveMemory.CaveAddress + 0x10;
-            _P2_Y_CaveAddress = CaveMemory.CaveAddress + 0x18;
-            _P1_Trigger_CaveAddress = CaveMemory.CaveAddress + 0x20;
-            _P2_Trigger_CaveAddress = CaveMemory.CaveAddress + 0x28;
-            _P1_Reload_CaveAddress = CaveMemory.CaveAddress + 0x30;
-            _P2_Reload_CaveAddress = CaveMemory.CaveAddress + 0x38;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));
-        }
-        
+                
         #region VSIOBOARD V1.0 Hack
 
         /// <summary>

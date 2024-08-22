@@ -52,10 +52,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();                            
                         }
@@ -128,7 +125,7 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             /***
              * This game is made to work with ActLabs CRT guns, so no gun = no movement
@@ -143,16 +140,13 @@ namespace DemulShooter
             ***/            
             
             //First part = Allocating Memory to store P1 and P2 axis values and trigger
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x20);
-            Logger.WriteLog("Allocating memory at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-            _P1_X_CaveAddress = CaveMemory.CaveAddress;
-            _P1_Y_CaveAddress = CaveMemory.CaveAddress + 4;
-            _P1_Trigger_CaveAddress = CaveMemory.CaveAddress + 8;
-            _P2_X_CaveAddress = CaveMemory.CaveAddress + 9;
-            _P2_Y_CaveAddress = CaveMemory.CaveAddress + 13;
-            _P2_Trigger_CaveAddress = CaveMemory.CaveAddress + 17;
+            Create_InputsDataBank();
+            _P1_X_CaveAddress = _InputsDatabank_Address;
+            _P1_Y_CaveAddress = _InputsDatabank_Address + 4;
+            _P1_Trigger_CaveAddress = _InputsDatabank_Address + 8;
+            _P2_X_CaveAddress = _InputsDatabank_Address + 9;
+            _P2_Y_CaveAddress = _InputsDatabank_Address + 13;
+            _P2_Trigger_CaveAddress = _InputsDatabank_Address + 17;
 
             //Second Part
             //Step 1)            
@@ -194,7 +188,7 @@ namespace DemulShooter
             b = BitConverter.GetBytes(_P1_Trigger_CaveAddress);
             WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + 0x21353, b);
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
         

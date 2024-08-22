@@ -135,10 +135,7 @@ namespace DemulShooterX64
                                 Logger.WriteLog("IsStandalone = " + _IsStandalone.ToString());
 
                                 CheckExeMd5();
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -237,7 +234,7 @@ namespace DemulShooterX64
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void  Apply_InputsMemoryHack()
         {
             //Standalone (old) hack
             if (_IsStandalone)
@@ -261,7 +258,7 @@ namespace DemulShooterX64
                 SetHack_JVS_Axis();
                 SetNops(_TargetProcess_MemoryBaseAddress, _Standalone_Nop_Trigger_On);  //JConfig does not disable mouse so we will to avoid conflict with lightgun handling
             }
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 

@@ -71,9 +71,7 @@ namespace DemulShooter
                                     Logger.WriteLog("Police Trainer 2 - 0.0.1g11 binary detected");
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-
-                                    SetHack_Outputs();
-
+                                    Apply_MemoryHacks();
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
                                     break;
@@ -108,28 +106,17 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_OutputsMemoryHack()
         {
-            //Not used
-        }
+            Create_OutputsDataBank();
+            _P1_RecoilStatus_CaveAddress = _OutputsDatabank_Address;
+            _P2_RecoilStatus_CaveAddress = _OutputsDatabank_Address + 4;
 
-        private void SetHack_Outputs()
-        {
-            CreateDataBank_Outputs();
             SetHack_Recoil_P1();
-            SetHack_Recoil_P2();            
-        }
+            SetHack_Recoil_P2();
 
-        private void CreateDataBank_Outputs()
-        {
-            //Creating data bank
-            //Codecave :
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            _P1_RecoilStatus_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P2_RecoilStatus_CaveAddress = CaveMemoryInput.CaveAddress + 4;
-            Logger.WriteLog("Custom output data will be stored at : 0x" + CaveMemoryInput.CaveAddress.ToString("X8"));
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
 
         /// <summary>

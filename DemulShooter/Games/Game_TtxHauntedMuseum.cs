@@ -74,11 +74,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
-                            SetHack_Outputs();
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -167,61 +163,21 @@ namespace DemulShooter
         
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            _P1_X_CaveAddress = _InputsDatabank_Address; ;
+            _P1_Y_CaveAddress = _InputsDatabank_Address + 0x08;
+            _P1_Trigger_CaveAddress = _InputsDatabank_Address + 0x10;
+            _P2_X_CaveAddress = _InputsDatabank_Address + 0x20;
+            _P2_Y_CaveAddress = _InputsDatabank_Address + 0x28;
+            _P2_Trigger_CaveAddress = _InputsDatabank_Address + 0x30;
+
             SetHack_Axis();            
             SetHack_Trigger();    
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        //For custom outputs :
-        //The gun is vibrating on hit and on fire, so we the purpose is to generate
-        //a custom Flag for each of them separatly
-        private void SetHack_Outputs()
-        {
-            CreateDataBank_Outputs();
-            SetHack_Damage();
-            SetHack_Recoil();
-
-            Logger.WriteLog("Outputs Memory Hack complete !");
-            Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// Creating a zone in memory where we will save our devices Axis and Buttons status.
-        /// This memory will then be read by the game thanks to the following hacks.
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_X_CaveAddress = CaveMemory.CaveAddress; ;
-            _P1_Y_CaveAddress = CaveMemory.CaveAddress + 0x08;
-            _P1_Trigger_CaveAddress = CaveMemory.CaveAddress + 0x10;
-            _P2_X_CaveAddress = CaveMemory.CaveAddress + 0x20;
-            _P2_Y_CaveAddress = CaveMemory.CaveAddress + 0x28;
-            _P2_Trigger_CaveAddress = CaveMemory.CaveAddress + 0x30;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));
-        }
-
-        private void CreateDataBank_Outputs()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);           
-
-            _P1_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x00;
-            _P2_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x04;
-            _P1_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x10;
-            _P2_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x14;
-
-            Logger.WriteLog("Custom Outputs data will be stored at : 0x" + _P1_RecoilStatus_CaveAddress.ToString("X8"));
         }
 
         /// <summary>
@@ -338,6 +294,21 @@ namespace DemulShooter
             Buffer.Add(0xE9);
             Buffer.AddRange(BitConverter.GetBytes(jumpTo));
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+        protected override void Apply_OutputsMemoryHack()
+        {
+            Create_OutputsDataBank();
+            _P1_RecoilStatus_CaveAddress = _OutputsDatabank_Address + 0x00;
+            _P2_RecoilStatus_CaveAddress = _OutputsDatabank_Address + 0x04;
+            _P1_DamageStatus_CaveAddress = _OutputsDatabank_Address + 0x10;
+            _P2_DamageStatus_CaveAddress = _OutputsDatabank_Address + 0x14;
+
+            SetHack_Damage();
+            SetHack_Recoil();
+
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
 
         /// <summary>

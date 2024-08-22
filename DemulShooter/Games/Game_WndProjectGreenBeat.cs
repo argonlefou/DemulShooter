@@ -74,10 +74,7 @@ namespace DemulShooter
 
                             if (_AxisX_Address != 0 && _AxisY_Address != 0)
                             {
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -172,10 +169,20 @@ namespace DemulShooter
         /// Float [-1;1] computed values are updated with a generic function so we need to filter with the Axis pointer to stop it and write ourself later
         /// Axis address must be updated often as the game is changign it with each level
         /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            _AxisX_BankAddress = _InputsDatabank_Address;
+            _AxisY_BankAddress = _InputsDatabank_Address + 0x08;
 
+            SetHack_Axis();
+
+            Logger.WriteLog("Inputs Memory Hack complete !");
+            Logger.WriteLog("-");            
+        }
+
+        private void SetHack_Axis()
+        {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
@@ -188,7 +195,7 @@ namespace DemulShooter
             byte[] b = BitConverter.GetBytes(_AxisX_BankAddress);
             CaveMemory.Write_Bytes(b);
             //cmp eax, ecx
-            CaveMemory.Write_StrBytes("39 C8");            
+            CaveMemory.Write_StrBytes("39 C8");
             //je exit 
             CaveMemory.Write_StrBytes("74 0B");
             //add ecx, 04
@@ -198,7 +205,7 @@ namespace DemulShooter
             //je exit
             CaveMemory.Write_StrBytes("74 04");
             //movss [eax],xmm0
-            CaveMemory.Write_StrBytes("F3 0F 11 00");            
+            CaveMemory.Write_StrBytes("F3 0F 11 00");
             //return
             CaveMemory.Write_jmp((UInt32)_TargetProcess_MemoryBaseAddress + _Axis_Injection_Return_Offset);
 
@@ -214,21 +221,6 @@ namespace DemulShooter
             Buffer.AddRange(BitConverter.GetBytes(jumpTo));
             Buffer.Add(0x90);
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess_MemoryBaseAddress + _Axis_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
-        }
-
-        /// <summary>
-        /// Custom data storage
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _AxisX_BankAddress = CaveMemory.CaveAddress;
-            _AxisY_BankAddress = CaveMemory.CaveAddress + 0x08;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + _AxisX_BankAddress.ToString("X8"));
         }
 
         #endregion

@@ -156,9 +156,12 @@ namespace DemulShooterX64
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void  Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            _Databank_WindowWidth_Address = _InputsDatabank_Address;
+            _Databank_WindowHeight_Address = _InputsDatabank_Address + 0x08;
+            _Databank_InMenu_Address = _InputsDatabank_Address + 0x10;        
 
             //First part is to set our own JVS base values when the game is reading them in the JVS data array
             SetHack_JVS_P1_X();
@@ -175,24 +178,8 @@ namespace DemulShooterX64
             //LAstly, forcing jump to not use the in-game part screwing the menus aim with screen multiplier according to resolution Height
             //WriteByte((IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _RemoveMenuCorrection_Offset), 0xEB);
             
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// Space for our own axis data
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _Databank_WindowWidth_Address = CaveMemory.CaveAddress;
-            _Databank_WindowHeight_Address = CaveMemory.CaveAddress + 0x08;
-            _Databank_InMenu_Address = CaveMemory.CaveAddress + 0x10;            
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + CaveMemory.CaveAddress.ToString("X16"));
         }
 
         /// <summary>

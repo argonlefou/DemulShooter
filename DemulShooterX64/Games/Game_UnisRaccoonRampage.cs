@@ -119,11 +119,7 @@ namespace DemulShooterX64
                                     Logger.WriteLog(_UsbPluginsDllName + " = 0x" + _UsbPluginsDll_BaseAddress);
                                     String UsbPluginPath = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", @"..\..\Plugins\" + _UsbPluginsDllName);
                                     CheckMd5(UsbPluginPath);
-                                    if (!_DisableInputHack)
-                                        SetHack();
-                                    else
-                                        Logger.WriteLog("Input Hack disabled");
-                                    SetHack_Outputs();
+                                    Apply_MemoryHacks();
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
                                     break;
@@ -154,7 +150,9 @@ namespace DemulShooterX64
 
         #region MemoryHack
 
-        private void SetHack()
+        #region Inputs Hack
+
+        protected override void  Apply_InputsMemoryHack()
         {
             //+B85E4A --> NOP | 5 --> Nop mousebuttons and keyboard keys
             //SetNops(_TargetProcess_MemoryBaseAddress, "0x0E38CA7|5");
@@ -168,32 +166,22 @@ namespace DemulShooterX64
             _P3_Coins_CaveAddress = (UInt64)_TargetProcess_MemoryBaseAddress + _CustomCoins_Offset +2;
             _P4_Coins_CaveAddress = (UInt64)_TargetProcess_MemoryBaseAddress + _CustomCoins_Offset +3;
 
-            Create_DataBank();
+            Create_InputsDataBank();
+            _P1_X_CaveAddress = _InputsDatabank_Address;         //
+            _P1_Y_CaveAddress = _InputsDatabank_Address + 0x04;  // P2, P3 and P4 will be accessed from P1 address, with added offset                
+            _SystemButtons_CaveAddress = _InputsDatabank_Address + 0x20;
+            _StartButtonsAndWater_CaveAddress = _InputsDatabank_Address + 0x21;
+
+            //Set Water Level to "normal"
+            Apply_OR_ByteMask((IntPtr)(_StartButtonsAndWater_CaveAddress), 0x04);
+
             SetHack_Axis();
             SetHack_StartButtons();
             SetHack_GetCoinsNum();
             SetHack_DecCoins();
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-
-        private void Create_DataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_X_CaveAddress = CaveMemory.CaveAddress;         //
-            _P1_Y_CaveAddress = CaveMemory.CaveAddress + 0x04;  // P2, P3 and P4 will be accessed from P1 address, with added offset                
-            _SystemButtons_CaveAddress = CaveMemory.CaveAddress + 0x20;
-            _StartButtonsAndWater_CaveAddress = CaveMemory.CaveAddress + 0x21;  
-
-            //Set Water Level to "normal"
-            Apply_OR_ByteMask((IntPtr)(_StartButtonsAndWater_CaveAddress), 0x04);
-
-            Logger.WriteLog("Adding custom input data at : " + CaveMemory.CaveAddress.ToString("X16"));
         }
 
         /// <summary>
@@ -401,23 +389,21 @@ namespace DemulShooterX64
             Win32API.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + 0x9DC17E), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
         }
 
-        private void SetHack_Outputs()
+        #endregion
+
+        #region Outputs Hack
+
+        protected override void  Apply_OutputsMemoryHack()
         {
-            Create_Outputs_DataBank();
+            Create_OutputsDataBank();
+            _P1_InnerWater_CaveAddress = _OutputsDatabank_Address;
+            _P1_OuterWater_CaveAddress = _OutputsDatabank_Address + 0x01;
+            _P1_Damage_CaveAddress = _OutputsDatabank_Address + 0x08;
+
             SetHack_GetDamage();
-        }
 
-        private void Create_Outputs_DataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_InnerWater_CaveAddress = CaveMemory.CaveAddress;
-            _P1_OuterWater_CaveAddress = CaveMemory.CaveAddress + 0x01;
-            _P1_Damage_CaveAddress = CaveMemory.CaveAddress + 0x08;
-
-            Logger.WriteLog("Adding custom outputs data at : " + CaveMemory.CaveAddress.ToString("X16"));
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
 
         private void SetHack_GetDamage()
@@ -480,7 +466,8 @@ namespace DemulShooterX64
             Buffer.Add(0x90);
             Win32API.WriteProcessMemoryX64(ProcessHandle, (IntPtr)((UInt64)_TargetProcess_MemoryBaseAddress + _PlayerDamage_Injection.InjectionOffset), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
         }
-        
+
+        #endregion
 
         #endregion
 
@@ -657,7 +644,6 @@ namespace DemulShooterX64
         /// </summary>
         protected override void CreateOutputList()
         {
-            //Gun motor : Is activated for every bullet fired AND when player gets
             _Outputs = new List<GameOutput>();
 
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpGun, OutputId.P1_LmpGun));

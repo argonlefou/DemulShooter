@@ -54,6 +54,13 @@ namespace DemulShooterX64
 
         #endregion
 
+        #region Custom Databanks
+
+        protected UInt64 _InputsDatabank_Address = 0;
+        protected UInt64 _OutputsDatabank_Address = 0;
+
+        #endregion
+
         #region  Custom Outputs
 
         protected int _P1_LastLife = 0;
@@ -565,6 +572,63 @@ namespace DemulShooterX64
         #endregion       
 
         #region MemoryHack x64
+
+        protected virtual void Apply_MemoryHacks()
+        {
+            if (!_DisableInputHack)
+                Apply_InputsMemoryHack();
+            else
+                Logger.WriteLog("Input Hack disabled");
+
+            Apply_OutputsMemoryHack();
+
+            if (_HideCrosshair)
+            {
+                Logger.WriteLog("Applying No-Crosshair hack...");
+                Apply_NoCrosshairMemoryHack();
+            }
+        }
+
+        protected virtual void Apply_InputsMemoryHack()
+        { }
+
+        protected virtual void Create_InputsDataBank()
+        {
+            try
+            {
+                Codecave CaveMemoryInputs = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
+                CaveMemoryInputs.Open();
+                CaveMemoryInputs.Alloc(0x800);
+                _InputsDatabank_Address = CaveMemoryInputs.CaveAddress;
+                Logger.WriteLog("Custom output data will be stored at : 0x" + CaveMemoryInputs.CaveAddress.ToString("X16"));
+            }
+            catch (Exception Ex)
+            {
+                Logger.WriteLog("Impossible to create Inputs Databank : " + Ex.Message);
+            }
+        }
+
+        protected virtual void Apply_OutputsMemoryHack()
+        { }
+
+        protected virtual void Create_OutputsDataBank()
+        {
+            try
+            {
+                Codecave CaveMemoryOutputs = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
+                CaveMemoryOutputs.Open();
+                CaveMemoryOutputs.Alloc(0x800);
+                _OutputsDatabank_Address = CaveMemoryOutputs.CaveAddress;
+                Logger.WriteLog("Custom output data will be stored at : 0x" + CaveMemoryOutputs.CaveAddress.ToString("X16"));
+            }
+            catch (Exception Ex)
+            {
+                Logger.WriteLog("Impossible to create Outputs Databank : " + Ex.Message);
+            }
+        }
+
+        protected virtual void Apply_NoCrosshairMemoryHack()
+        { }
 
         public virtual void SendInput(PlayerSettings PlayerData)
         {}

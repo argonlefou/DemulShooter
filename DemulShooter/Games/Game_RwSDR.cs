@@ -78,10 +78,7 @@ namespace DemulShooter
                                 Logger.WriteLog("Controls base address = 0x" + _Controls_Base_Address.ToString("X8"));
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }   
@@ -162,7 +159,7 @@ namespace DemulShooter
         /// Genuine Hack, just blocking Axis and Triggers input to replace them
         /// Reverse back to it when DumbJVSCommand will be working with ParrotLoader, without DumbJVSManager
         /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             //NOPing axis proc
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Axis);
@@ -220,7 +217,7 @@ namespace DemulShooter
             Buffer.AddRange(BitConverter.GetBytes(jumpTo));
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 

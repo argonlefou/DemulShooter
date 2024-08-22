@@ -100,11 +100,7 @@ namespace DemulShooter
                                     Logger.WriteLog("P1 InputStruct address = 0x" + _Player1_InputStruct_Address.ToString("X8"));
                                     Logger.WriteLog("P2 InputStruct address = 0x" + _Player2_InputStruct_Address.ToString("X8"));
 
-                                    SetHack_Output();
-                                    if (!_DisableInputHack)
-                                        SetHack();
-                                    else
-                                        Logger.WriteLog("Input Hack disabled");
+                                    Apply_MemoryHacks();
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
                                 }
@@ -190,7 +186,7 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             // Noping X,Y axis values update in the following procedure :
             // acpPlayer::input()
@@ -199,7 +195,7 @@ namespace DemulShooter
 
             SetHack_Buttons();
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
         
@@ -261,10 +257,12 @@ namespace DemulShooter
         //Original game is simply setting a Motor to vibrate, so simply using this data to create or pulsed custom recoil will not be synchronized with bullets shot
         //as the pulses lenght and spaceing will depend on DemulShooter output pulse config data.
         //To synch recoil pulse with projectiles, this hack allows to intercept the code increasing the "PlayerShotCounter" variable
-        private void SetHack_Output()
+        protected override void Apply_OutputsMemoryHack()
         {
             //Create Databak to store our value
-            CreateDataBank();
+            Create_OutputsDataBank();
+            _P1_CustomRecoil_CaveAddress = _OutputsDatabank_Address;
+            _P2_CustomRecoil_CaveAddress = _OutputsDatabank_Address + 0x04;
 
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
@@ -303,24 +301,8 @@ namespace DemulShooter
             Buffer.Add(0x90);
             Win32API.WriteProcessMemory(ProcessHandle, _Recoil_Injection_Address, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
 
-            Logger.WriteLog("Output memory Hack complete !");
+            Logger.WriteLog("Outputs memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// Creating a zone in memory where we will save recoil status, updated by the game.
-        /// This memory will then be read by the game thanks to the following hacks.
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_CustomRecoil_CaveAddress = CaveMemory.CaveAddress;
-            _P2_CustomRecoil_CaveAddress = CaveMemory.CaveAddress + 0x04;
-
-            Logger.WriteLog("Custom Recoil data will be stored at : 0x" + _P1_CustomRecoil_CaveAddress.ToString("X8"));
         }
 
         #endregion

@@ -46,10 +46,7 @@ namespace DemulShooterX64
                             _GameWindowHandle = _TargetProcess.MainWindowHandle;
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;                            
                         }
                     }
@@ -124,10 +121,11 @@ namespace DemulShooterX64
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void  Apply_InputsMemoryHack()
         {
             SetNops(_TargetProcess_MemoryBaseAddress, _Nop_Axis);
-            Logger.WriteLog("Memory Hack complete !");
+
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 

@@ -74,11 +74,7 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
-                                SetHack_Outputs();
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                                 break;
@@ -161,9 +157,11 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            _Triggers_CaveAddress = _InputsDatabank_Address;
+
             SetHack_Triggers();
             
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_X);
@@ -174,40 +172,8 @@ namespace DemulShooter
             //Set P2 IN_SCREEN
             WriteByte((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Out_Offset, 0x01);
             WriteByte((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Out_Offset, 0x01);
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        private void SetHack_Outputs()
-        {
-            CreateDataBank_Outputs();
-            SetHack_Recoil();
-        }
-
-        /// <summary>
-        /// Custom data storage
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _Triggers_CaveAddress = CaveMemory.CaveAddress;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-        }
-
-        private void CreateDataBank_Outputs()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_Recoil_CaveAddress = CaveMemory.CaveAddress;
-            _P2_Recoil_CaveAddress = CaveMemory.CaveAddress + 0x04;
-
-            Logger.WriteLog("Custom Outputs data will be stored at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
         }
 
         /// <summary>
@@ -257,7 +223,19 @@ namespace DemulShooter
             Buffer.Add(0x90);
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess_MemoryBaseAddress + _Triggers_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);              
         }
-        
+
+        protected override void Apply_OutputsMemoryHack()
+        {
+            Create_OutputsDataBank();
+            _P1_Recoil_CaveAddress = _OutputsDatabank_Address;
+            _P2_Recoil_CaveAddress = _OutputsDatabank_Address + 0x04;
+
+            SetHack_Recoil();
+
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
+        }        
+
         /// <summary>
         /// To activate gun recoil, the game is calling the GUN_Reaction() function of shaiolib.dll.
         /// This function has been ripped from the cracked Dll, so we are injecting a piece of code

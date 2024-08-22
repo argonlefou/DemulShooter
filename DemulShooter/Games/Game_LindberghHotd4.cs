@@ -90,10 +90,7 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -108,10 +105,7 @@ namespace DemulShooter
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                     ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                    if (!_DisableInputHack)
-                                        SetHack();
-                                    else
-                                        Logger.WriteLog("Input Hack disabled");
+                                    Apply_MemoryHacks();
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
                                 }
@@ -187,7 +181,7 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             // CgunMgr::Init()
             // Init Axis and buttons values to 0
@@ -202,7 +196,7 @@ namespace DemulShooter
             SetNops(0, _Nop_Reload_2);
             SetNops(0, _Nop_WeaponBtn);            
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 

@@ -115,11 +115,7 @@ namespace DemulShooter
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
-                                SetHack_Outputs();
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }                                                        
@@ -193,26 +189,17 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank(); 
+            Create_InputsDataBank();
+            _P2_Buttons_CaveAddress = _InputsDatabank_Address;
+            _P1_Buttons_CaveAddress = _InputsDatabank_Address + 0x04;
+
             SetHack_Axis();
-            SetHack_Buttons();                
-        }
+            SetHack_Buttons();
 
-        /// <summary>
-        /// Custom data storage
-        /// </summary>        
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P2_Buttons_CaveAddress = CaveMemory.CaveAddress;
-            _P1_Buttons_CaveAddress = CaveMemory.CaveAddress + 0x04;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + _P2_Buttons_CaveAddress.ToString("X8"));
+            Logger.WriteLog("Inputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
                 
         private void SetHack_Axis()
@@ -285,9 +272,6 @@ namespace DemulShooter
             Buffer.AddRange(BitConverter.GetBytes(jumpTo));
             Buffer.Add(0x90);
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
-
-            Logger.WriteLog("Memory Hack complete !");
-            Logger.WriteLog("-");
         }
 
         /// <summary>
@@ -295,28 +279,19 @@ namespace DemulShooter
         /// Data is available on the Output offset but the game is resetting the value too quickly for DemulShooter to get it everytime
         /// So we are using a custom flag in memory, and will put it to 0 or 1 when the game is changing original recoil state.
         /// </summary>
-        private void SetHack_Outputs()
+        protected override void Apply_OutputsMemoryHack()
         {
-            CreateOutputDataBank();
+            Create_OutputsDataBank();
+            _P1_CustomRecoil_Address = _OutputsDatabank_Address;
+            _P2_CustomRecoil_Address = _OutputsDatabank_Address + 0x04;
+
             SetHack_Recoil_P1();
             SetHack_Recoil_P2();
+
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
-
-        /// <summary>
-        /// Custom Recoil Output Data storage
-        /// </summary>
-        private void CreateOutputDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_CustomRecoil_Address = CaveMemory.CaveAddress;
-            _P2_CustomRecoil_Address = CaveMemory.CaveAddress + 0x04;
-
-            Logger.WriteLog("Custom recoil data will be stored at : 0x" + _P2_CustomRecoil_Address.ToString("X8"));
-        }
-
+        
         private void SetHack_Recoil_P1()
         {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);

@@ -77,10 +77,7 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog("WindowHandle = " + _GameWindowHandle.ToString());
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();  
                             }
@@ -156,17 +153,20 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
-        {   
-            //Creating data bank
-            //Codecave :
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            _P1_Buttons_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P2_Buttons_CaveAddress = CaveMemoryInput.CaveAddress + 0x20;
-            Logger.WriteLog("Custom data will be stored at : 0x" + _P1_Buttons_CaveAddress.ToString("X8"));
+        protected override void Apply_InputsMemoryHack()
+        {
+            Create_InputsDataBank();
+            _P1_Buttons_CaveAddress = _InputsDatabank_Address;
+            _P2_Buttons_CaveAddress = _InputsDatabank_Address + 0x20;
 
+            SetHack_Buttons();
+
+            Logger.WriteLog("Inputs Memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
+        private void SetHack_Buttons()
+        {
             //For P1 :
             //modify [edx+0x21] so that it corresponds to our values
             //EDX + 0x21 ==> 0x10 (START)

@@ -91,7 +91,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             if (!_DisableInputHack)
-                                SetHack();
+                                Apply_InputsMemoryHack();
                             else
                                 Logger.WriteLog("Input Hack disabled");
                             _ProcessHooked = true;
@@ -225,20 +225,18 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        protected void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            //Creating data bank
-            //Codecave :
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            _P1_Data_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P2_Data_CaveAddress = CaveMemoryInput.CaveAddress + 0x03;
-            Logger.WriteLog("Custom data will be stored at : 0x" + _P1_Data_CaveAddress.ToString("X8"));
+            Create_InputsDataBank();
+            _P1_Data_CaveAddress = _InputsDatabank_Address;
+            _P2_Data_CaveAddress = _InputsDatabank_Address + 0x03;
+        }
 
-
-            /************ Replace data by ours when writing to IO board *****/
-           
+        /// <summary>
+        /// Replace data by ours when writing to IO board
+        /// </summary>
+        private void SetHack_ButtonsAndAxis()
+        {          
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);

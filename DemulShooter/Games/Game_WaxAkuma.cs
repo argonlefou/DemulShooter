@@ -85,13 +85,8 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);                            
-
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
-
+                            ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -160,35 +155,24 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             //One of the existing package has a modified inpout32.dll acting on axis values with Mouse
             //Original dump does nothing
             //So to be sure values are clean for Demulshooter, disabling the call to the original functions filling the values
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Axis_Nop_Offset);
 
-            CreateDataBank();
+            Create_InputsDataBank();
+            _P1_Trigger_BankAddress = _InputsDatabank_Address;
+            _P2_Trigger_BankAddress = _InputsDatabank_Address + 0x04;
+
             SetHack_P1Trigger();
             SetHack_P2Trigger();
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
-
-        /// <summary>
-        /// This will be used to store custom input values
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave InputMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            InputMemory.Open();
-            InputMemory.Alloc(0x800);
-            _P1_Trigger_BankAddress = InputMemory.CaveAddress;
-            _P2_Trigger_BankAddress = InputMemory.CaveAddress + 0x04;
-
-            Logger.WriteLog("Custom input data will be stored at : 0x" + InputMemory.CaveAddress.ToString("X8"));
-        }
-
+        
         /// <summary>
         /// Usingour own flag to update the original flag during the looped procedure to update game inputs
         /// </summary>
@@ -286,7 +270,6 @@ namespace DemulShooter
             Buffer.Add(0x90);
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _P2_Trigger_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
         }
-
 
         #endregion
 

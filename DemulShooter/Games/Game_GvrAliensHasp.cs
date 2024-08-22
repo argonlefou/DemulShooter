@@ -60,7 +60,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            SetHack();
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -134,7 +134,7 @@ namespace DemulShooter
         /// <summary>
         /// Easy hack, just blocking instructions to be able to inject custom values
         /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_X);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Y);
@@ -143,7 +143,7 @@ namespace DemulShooter
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Btn_3);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Btn_4);
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 

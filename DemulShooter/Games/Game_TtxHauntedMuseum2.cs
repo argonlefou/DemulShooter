@@ -92,10 +92,7 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -183,9 +180,18 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            _P1_X_CaveAddress = _InputsDatabank_Address + 0x40;
+            _P1_Y_CaveAddress = _InputsDatabank_Address + 0x48;
+            _P1_Trigger_CaveAddress = _InputsDatabank_Address + 0x50;
+            _P1_Action_CaveAddress = _InputsDatabank_Address + 0x58;
+            _P2_X_CaveAddress = _InputsDatabank_Address + 0x60;
+            _P2_Y_CaveAddress = _InputsDatabank_Address + 0x68;
+            _P2_Trigger_CaveAddress = _InputsDatabank_Address + 0x70;
+            _P2_Action_CaveAddress = _InputsDatabank_Address + 0x78;
+
             SetHack_Axis();
             SetHack_Trigger();
 
@@ -196,32 +202,10 @@ namespace DemulShooter
                 WriteByte(_P2_Action_CaveAddress, 0x80);
             }
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
-
-        /// <summary>
-        /// Creating a zone in memory where we will save our devices Axis and Buttons status.
-        /// This memory will then be read by the game thanks to the following hacks.
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_X_CaveAddress = CaveMemory.CaveAddress + 0x40;
-            _P1_Y_CaveAddress = CaveMemory.CaveAddress + 0x48;
-            _P1_Trigger_CaveAddress = CaveMemory.CaveAddress + 0x50;
-            _P1_Action_CaveAddress = CaveMemory.CaveAddress + 0x58;
-            _P2_X_CaveAddress = CaveMemory.CaveAddress + 0x60;
-            _P2_Y_CaveAddress = CaveMemory.CaveAddress + 0x68;
-            _P2_Trigger_CaveAddress = CaveMemory.CaveAddress + 0x70;
-            _P2_Action_CaveAddress = CaveMemory.CaveAddress + 0x78;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));
-        }
-
+        
         /// <summary>
         /// P1 and P2 share same memory values so we split them :
         /// Changing proc so that X and Y will be read on custom memomy values.

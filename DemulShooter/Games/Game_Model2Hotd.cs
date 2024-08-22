@@ -71,10 +71,7 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                                 break;
@@ -148,12 +145,11 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        /// <summary>
-        /// Creating a custom memory bank to store our data
-        /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            _Buttons_CaveAddress = _InputsDatabank_Address + 8;
+            _Reload_CaveAddress = _InputsDatabank_Address + 9;
 
             //Buttons : The game is reading the Byte containing Buttons info. Replacing the real address with our own
             byte[] b = BitConverter.GetBytes(_Buttons_CaveAddress);
@@ -176,20 +172,8 @@ namespace DemulShooter
             WriteByte(_Buttons_CaveAddress, 0xFF);
             WriteByte(_Reload_CaveAddress, 0x03);
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        private void CreateDataBank()
-        {
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            //Buttons
-            _Buttons_CaveAddress = CaveMemoryInput.CaveAddress + 8;
-            _Reload_CaveAddress = CaveMemoryInput.CaveAddress + 9;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + _Buttons_CaveAddress.ToString("X8"));
         }
 
         #endregion   

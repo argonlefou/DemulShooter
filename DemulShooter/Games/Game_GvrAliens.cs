@@ -65,11 +65,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
-                            SetHack_Outputs();
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();                            
                         }
@@ -143,7 +139,7 @@ namespace DemulShooter
         /// <summary>
         /// Easy hack, just blocking instructions to be able to inject custom values
         /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_X);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Y);
@@ -152,28 +148,20 @@ namespace DemulShooter
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Btn_3);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Btn_4);            
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 
-        private void SetHack_Outputs()
+        protected override void Apply_OutputsMemoryHack()
         {
-            CreateDataBank();
-            SetHack_CustomRecoilOutput();
-        }
+            Create_OutputsDataBank();
+            _CtmRecoil_CaveAddress = _OutputsDatabank_Address;
 
-        /// <summary>
-        /// 1st Memory created to store custom Recoil data
-        /// This memory will be written by a codecave placed in the procedure changing output values in game
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave InputMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            InputMemory.Open();
-            InputMemory.Alloc(0x800);
-            _CtmRecoil_CaveAddress = InputMemory.CaveAddress;
-            Logger.WriteLog("Custom Recoil data will be stored at : 0x" + _CtmRecoil_CaveAddress.ToString("X8"));
-        }
+            SetHack_CustomRecoilOutput();
+
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
+        }        
 
         /// <summary>
         /// This codecave will intercept the game's procedure changing the output values

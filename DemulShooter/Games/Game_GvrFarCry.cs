@@ -78,7 +78,7 @@ namespace DemulShooter
                             else*/
 
                             Logger.WriteLog("Input Hack disabled");
-                            SetHack_Outputs();
+                            Apply_OutputsMemoryHack();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -106,40 +106,31 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack_Outputs()
+        protected override void Apply_OutputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();            
+            _P1_Playing_CaveAddress = _InputsDatabank_Address;
+            _P2_Playing_CaveAddress = _InputsDatabank_Address + 0x04;
+            _P1_Shots_CaveAddress = _InputsDatabank_Address + 0x08;
+            _P2_Shots_CaveAddress = _InputsDatabank_Address + 0x0C;
+            _P1_Life_CaveAddress = _InputsDatabank_Address + 0x10;
+            _P2_Life_CaveAddress = _InputsDatabank_Address + 0x14;
+            _P1_KillsDigit1_CaveAddress = _InputsDatabank_Address + 0x18;
+            _P1_KillsDigit2_CaveAddress = _InputsDatabank_Address + 0x1C;
+            _P2_KillsDigit1_CaveAddress = _InputsDatabank_Address + 0x20;
+            _P2_KillsDigit2_CaveAddress = _InputsDatabank_Address + 0x24;
+            _P1_Rumble_CaveAddress = _InputsDatabank_Address + 0x28;
+            _P2_Rumble_CaveAddress = _InputsDatabank_Address + 0x2C;
+
             SetHack_ReadPlayerPlaying();
             SetHack_ReadPlayerNotPlaying();
             SetHack_ReadPlayerLife();
             SetHack_ReadPlayerShots();
             SetHack_ReadPlayerKillsDigit();
             SetHack_ReadRumble();
-            Logger.WriteLog("Memory Hack complete !");
+
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        //Creating a custom memory space to store custom values
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_Playing_CaveAddress = CaveMemory.CaveAddress;
-            _P2_Playing_CaveAddress = CaveMemory.CaveAddress + 0x04;
-            _P1_Shots_CaveAddress = CaveMemory.CaveAddress + 0x08;
-            _P2_Shots_CaveAddress = CaveMemory.CaveAddress + 0x0C;
-            _P1_Life_CaveAddress = CaveMemory.CaveAddress + 0x10;
-            _P2_Life_CaveAddress = CaveMemory.CaveAddress + 0x14;
-            _P1_KillsDigit1_CaveAddress = CaveMemory.CaveAddress + 0x18;
-            _P1_KillsDigit2_CaveAddress = CaveMemory.CaveAddress + 0x1C;
-            _P2_KillsDigit1_CaveAddress = CaveMemory.CaveAddress + 0x20;
-            _P2_KillsDigit2_CaveAddress = CaveMemory.CaveAddress + 0x24;
-            _P1_Rumble_CaveAddress = CaveMemory.CaveAddress + 0x28;
-            _P2_Rumble_CaveAddress = CaveMemory.CaveAddress + 0x2C;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
         }
 
         /// <summary>

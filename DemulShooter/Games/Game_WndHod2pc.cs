@@ -81,10 +81,7 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();    
 
@@ -175,10 +172,13 @@ namespace DemulShooter
         /// <summary>
         /// Simple Hack : NOPing Axis procedures
         /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_X);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Y);
+
+            Logger.WriteLog("Inputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
 
         #endregion

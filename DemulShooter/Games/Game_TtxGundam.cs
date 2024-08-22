@@ -124,11 +124,7 @@ namespace DemulShooter
                         {
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
-                            SetHack_Outputs();
+                            Apply_MemoryHacks();
                             CheckExeMd5();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
@@ -269,7 +265,7 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_P1_X_1);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_P1_X_2);
@@ -496,13 +492,22 @@ namespace DemulShooter
             WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Y_Offset, initY);
             WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_X_Offset, initX);
             WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Y_Offset, initY);
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 
-        private void SetHack_Outputs()
+        protected override void Apply_OutputsMemoryHack()
         {
-            CreateDataBank();
+            Create_OutputsDataBank();
+            _P1_RecoilEnabled_CustomAddress = _OutputsDatabank_Address;
+            _P2_RecoilEnabled_CustomAddress = _OutputsDatabank_Address + 0x04;
+            _P1_DamagedEnabled_CustomAddress = _OutputsDatabank_Address + 0x08;
+            _P2_DamagedEnabled_CustomAddress = _OutputsDatabank_Address + 0x0C;
+            _P1_Ammo_CustomAddress = _OutputsDatabank_Address + 0x10;
+            _P2_Ammo_CustomAddress = _OutputsDatabank_Address + 0x14;
+            _P1_Life_CustomAddress = _OutputsDatabank_Address + 0x18;
+            _P2_Life_CustomAddress = _OutputsDatabank_Address + 0x1C;
+
             GetRecoilEvent(_SetRumbleGunShot_Offset);
             GetRecoilEvent(_SetRumbleCanonShot_Offset);
             GetDamagedEvent(_SetRumbleOnHit_Offset);
@@ -514,28 +519,9 @@ namespace DemulShooter
 
             Hack_GetAmmo();
             Hack_GetLife();
-        }
 
-        /// <summary>
-        /// Creating a zone in memory where we will save our recoil and hit events
-        /// This memory will then be read by the game thanks to the following hacks.
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_RecoilEnabled_CustomAddress = CaveMemory.CaveAddress;
-            _P2_RecoilEnabled_CustomAddress = CaveMemory.CaveAddress + 0x04;
-            _P1_DamagedEnabled_CustomAddress = CaveMemory.CaveAddress + 0x08;
-            _P2_DamagedEnabled_CustomAddress = CaveMemory.CaveAddress + 0x0C;
-            _P1_Ammo_CustomAddress = CaveMemory.CaveAddress + 0x10;
-            _P2_Ammo_CustomAddress = CaveMemory.CaveAddress + 0x14;
-            _P1_Life_CustomAddress = CaveMemory.CaveAddress + 0x18;
-            _P2_Life_CustomAddress = CaveMemory.CaveAddress + 0x1C;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
 
         /// <summary>
@@ -718,7 +704,6 @@ namespace DemulShooter
             Buffer.Add(0x90);
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Life_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
         }
-
 
         #endregion
 

@@ -92,22 +92,7 @@ namespace DemulShooter
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-
-                                //Output hack
-                                CreateDataBank();
-                                SetHack_RecoilP1();
-                                SetHack_RecoilP2();
-
-                                if (!_DisableInputHack)
-                                {
-                                    //Force Calibration values
-                                    WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets + 0x58, new byte[] { 0x00, 0xFF, 0x00, 0xFF });
-                                    WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets + 0x60, new byte[] { 0x00, 0xFF, 0x00, 0xFF });
-                                    SetHack();                                    
-                                }
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
-                                
+                                Apply_MemoryHacks();                                
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             } 
@@ -184,27 +169,18 @@ namespace DemulShooter
         /// <summary>
         /// Genuine Hack, just blocking Axis and filtering Triggers input to replace them without blocking other input
         /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
+            //Force Calibration values
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets + 0x58, new byte[] { 0x00, 0xFF, 0x00, 0xFF });
+            WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _GameTestMenuSettings_Offsets + 0x60, new byte[] { 0x00, 0xFF, 0x00, 0xFF });
+
             //NOPing axis proc
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_Axis_1);
-            SetHackInput();              
+            SetHack_Buttons();              
                         
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// This will be used to store custom recoil values, updated by the program code each time it will check for rumble (for each bullet fired)
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave InputMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            InputMemory.Open();
-            InputMemory.Alloc(0x800);
-            _P1_RecoilState_Address = InputMemory.CaveAddress;
-            _P2_RecoilState_Address = InputMemory.CaveAddress + 0x04;
-            Logger.WriteLog("Custom OutputRecoil data will be stored at : 0x" + _P1_RecoilState_Address.ToString("X8"));
         }
 
         /// <summary>
@@ -216,7 +192,7 @@ namespace DemulShooter
         ///0b00000010 is TriggerR
         ///So we need to make a mask to accept Start button moodification and block other so we can inject   
         /// </summary>>
-        private void SetHackInput()
+        private void SetHack_Buttons()
         {   
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
@@ -264,6 +240,20 @@ namespace DemulShooter
             Buffer.Add(0xE9);
             Buffer.AddRange(BitConverter.GetBytes(jumpTo));
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Buttons_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+        protected override void Apply_OutputsMemoryHack()
+        {
+            //Output hack
+            Create_OutputsDataBank();
+            _P1_RecoilState_Address = _OutputsDatabank_Address;
+            _P2_RecoilState_Address = _OutputsDatabank_Address + 0x04;
+
+            SetHack_RecoilP1();
+            SetHack_RecoilP2();
+
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
 
         /// <summary>

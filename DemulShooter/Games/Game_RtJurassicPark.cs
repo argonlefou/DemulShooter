@@ -93,11 +93,7 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
-                                SetHack_Outputs();
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -149,48 +145,22 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_OutputsMemoryHack()
         {
-            //Not used
-        }
+            Create_OutputsDataBank();
+            _P1_RecoilStatus_CaveAddress = _OutputsDatabank_Address;
+            _P2_RecoilStatus_CaveAddress = _OutputsDatabank_Address + 4;
+            _P1_DamageStatus_CaveAddress = _OutputsDatabank_Address + 0x10;
+            _P2_DamageStatus_CaveAddress = _OutputsDatabank_Address + 0x14;
 
-        private void SetHack_Outputs()
-        {
-            CreateDataBank_Outputs();
             SetHack_Damage();
             SetHack_Recoil1();
             SetHack_Recoil2();
 
-            if (_HideCrosshair)
-            {
-                //Replacing call to mShowODR() for reticle object by a call to mHideODR()
-                WriteBytes(_ReticleShowODR_Call_Address +1, new byte[] { 0x11, 0x86 });
-                //Codecave to remove Lasers
-                SetHack_Lasers();
-            }
-            else
-            {
-                //Setting it back to mShowODR() if it was changed by a previous instance of DemulSHooter
-                WriteBytes(_ReticleShowODR_Call_Address + 1, new byte[] { 0xF1, 0x85 });
-                //Again, putting back original code for lasers instead of Codecave
-                WriteBytes(_Lasers_Injection_Address, new byte[] { 0x8B, 0x83, 0x28, 0x02, 0x00, 0x00 });
-            }
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
-
-        private void CreateDataBank_Outputs()
-        {
-            //Creating data bank
-            //Codecave :
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            _P1_RecoilStatus_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P2_RecoilStatus_CaveAddress = CaveMemoryInput.CaveAddress + 4;
-            _P1_DamageStatus_CaveAddress = CaveMemoryInput.CaveAddress + 0x10;
-            _P2_DamageStatus_CaveAddress = CaveMemoryInput.CaveAddress + 0x14;
-            Logger.WriteLog("Custom output data will be stored at : 0x" + CaveMemoryInput.CaveAddress.ToString("X8"));
-        }
-
+        
         /// <summary>
         /// Remove Laser aiming display
         /// </summary>
@@ -346,6 +316,24 @@ namespace DemulShooter
             Buffer.Add(0x90);
             Buffer.Add(0x90);
             Win32API.WriteProcessMemory(ProcessHandle, _Recoil02_Injection_Address, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+        protected override void Apply_NoCrosshairMemoryHack()
+        {
+            if (_HideCrosshair)
+            {
+                //Replacing call to mShowODR() for reticle object by a call to mHideODR()
+                WriteBytes(_ReticleShowODR_Call_Address + 1, new byte[] { 0x11, 0x86 });
+                //Codecave to remove Lasers
+                SetHack_Lasers();
+            }
+            else
+            {
+                //Setting it back to mShowODR() if it was changed by a previous instance of DemulSHooter
+                WriteBytes(_ReticleShowODR_Call_Address + 1, new byte[] { 0xF1, 0x85 });
+                //Again, putting back original code for lasers instead of Codecave
+                WriteBytes(_Lasers_Injection_Address, new byte[] { 0x8B, 0x83, 0x28, 0x02, 0x00, 0x00 });
+            }
         }
 
         #endregion

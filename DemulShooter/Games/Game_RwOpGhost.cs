@@ -159,10 +159,7 @@ namespace DemulShooter
                                     Logger.WriteLog("P2_X adddress =  0x" + _P2_X_Address.ToString("X8"));
                                     Logger.WriteLog("P2_Y adddress =  0x" + _P2_Y_Address.ToString("X8"));
                                     CheckExeMd5();
-                                    if (!_DisableInputHack)
-                                        SetHack();
-                                    else
-                                        Logger.WriteLog("Input Hack disabled");
+                                    Apply_MemoryHacks();
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
                                 }
@@ -235,30 +232,21 @@ namespace DemulShooter
         
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            _P1_Trigger_CaveAddress = _InputsDatabank_Address;
+            _P1_Reload_CaveAddress = _InputsDatabank_Address + 0x10;
+            _P1_Change_CaveAddress = _InputsDatabank_Address + 0x01;
+            _P1_Action_CaveAddress = _InputsDatabank_Address + 0x03;
+            _P1_X_CaveAddress = _InputsDatabank_Address + 0x20;
+            _P1_Y_CaveAddress = _InputsDatabank_Address + 0x24;
+
             SetHack_Buttons();
             SetHack_Axis();
-        }
 
-        /// <summary>
-        /// 1st Memory created to store custom button data
-        /// This memory will be read by the codecave to overwrite the GetKeystate API results
-        /// And by the other codecave to overwrite mouse axis value
-        /// </summary>
-        private void CreateDataBank()
-        {        
-            Codecave InputMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            InputMemory.Open();
-            InputMemory.Alloc(0x800);
-            _P1_Trigger_CaveAddress = InputMemory.CaveAddress;
-            _P1_Reload_CaveAddress = InputMemory.CaveAddress + 0x10;
-            _P1_Change_CaveAddress = InputMemory.CaveAddress + 0x01;
-            _P1_Action_CaveAddress = InputMemory.CaveAddress + 0x03;
-            _P1_X_CaveAddress = InputMemory.CaveAddress + 0x20;
-            _P1_Y_CaveAddress = InputMemory.CaveAddress + 0x24;
-            Logger.WriteLog("Custom Axis data will be stored at : 0x" + _P1_Trigger_CaveAddress.ToString("X8"));
+            Logger.WriteLog("Inputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
                 
         /// <summary>
@@ -421,7 +409,7 @@ namespace DemulShooter
             Buffer.Add(0x90);
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess.MainModule.BaseAddress + _Jvs_ButtonsInjection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 

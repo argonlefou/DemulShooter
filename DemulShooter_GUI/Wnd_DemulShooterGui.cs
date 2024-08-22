@@ -1136,6 +1136,74 @@ namespace DemulShooter_GUI
 
         #endregion
 
+        #region Raccoon Rampage Tab
+
+        private string _RACCOON_ExeFilename = "RSGame-Win64-Shipping.exe";
+        private string _RACCOON_UsbDllFilename = "UsbPluginsDll.dll";
+
+        private void Btn_Raccoon_Open_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+            {
+                fbd.Description = "Select your " + _RACCOON_ExeFilename + " location :";
+                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    if (fbd.SelectedPath != string.Empty)
+                    {
+                        if (File.Exists(fbd.SelectedPath + "\\" + _RACCOON_ExeFilename))
+                        {
+                            Txt_Raccoon_FolderPath.Text = fbd.SelectedPath;
+                            Btn_Raccoon_Patch.Enabled = true;
+                        }
+                        else
+                        {
+                            MessageBox.Show(_RACCOON_ExeFilename + " not found in following folder : " + fbd.SelectedPath, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void Btn_Raccoon_Patch_Click(object sender, EventArgs e)
+        {
+            string ExeFilePath = Txt_Raccoon_FolderPath.Text + "\\" + _RACCOON_ExeFilename;
+            string UsbDllFilePath = Txt_Raccoon_FolderPath.Text + "\\..\\..\\Plugins\\" + _RACCOON_UsbDllFilename;
+            
+            //USB dll patching
+            try
+            {
+                using (BinaryWriter bw = new BinaryWriter(File.Open(UsbDllFilePath, FileMode.Open, FileAccess.ReadWrite)))
+                {
+                    //Force return true for BIND_InitDongle()
+                    bw.BaseStream.Seek(0x14D2B, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0x90, 0x90, });
+                    //Force return true for BIND_IsDongleVerify()
+                    bw.BaseStream.Seek(0x14FE9, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xB0, 0x01 });   
+  
+                    //Force good  BIND_InitUnisIo()
+                    bw.BaseStream.Seek(0x14DEA, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xEB, 0x14 });
+
+                    //Force return true for BIND_IsIoWorking()
+                    bw.BaseStream.Seek(0x15127, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xEB, 0x1D });
+
+                    //Force return -1 for BIND_DWInit() and Skipping 255 COM port loop opening to try to find a Card Reader
+                    bw.BaseStream.Seek(0xCC80, SeekOrigin.Begin);
+                    bw.Write(new byte[] { 0xE9, 0x63, 0x02, 0x00, 0x00 });                    
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show("Error patching " + UsbDllFilePath + " : \n" + Ex.Message.ToString(), this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            MessageBox.Show("Patch Complete !", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        #endregion
+
         #region RPCS3 Tab
 
         private void Btn_Rpcs3_DeadStorm_Click(object sender, EventArgs e)
@@ -1540,8 +1608,5 @@ namespace DemulShooter_GUI
             }
             return true;
         }
-
-
-        
     }        
 }

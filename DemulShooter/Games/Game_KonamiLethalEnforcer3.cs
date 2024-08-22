@@ -121,14 +121,7 @@ namespace DemulShooter
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-
-                                if (!_DisableInputHack)
-                                {
-                                    SetHack();
-                                }
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
-
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -220,7 +213,7 @@ namespace DemulShooter
         /// <summary>
         /// Genuine Hack, just blocking Axis and filtering Triggers input to replace them without blocking other input
         /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             //NOPing axis proc
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_AxisX_1);
@@ -235,7 +228,7 @@ namespace DemulShooter
             WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Ymin_Patch_Offset, BitConverter.GetBytes((UInt32)_TargetProcess_MemoryBaseAddress +_Float_0_Offset));
             WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Ymax_Patch_Offset, BitConverter.GetBytes((UInt32)_TargetProcess_MemoryBaseAddress +_Float_480_Offset));
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 

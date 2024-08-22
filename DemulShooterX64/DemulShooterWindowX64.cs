@@ -432,6 +432,12 @@ namespace DemulShooterX64
                 {
                     switch (_Rom.ToLower())
                     {
+                        case "drakon":
+                            {
+                                _Game = new Game_AagamesDrakon_NoPlugin(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            }; break;
+
+                        default: break;
                     }
                 }
 

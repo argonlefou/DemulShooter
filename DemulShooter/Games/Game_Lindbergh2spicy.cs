@@ -76,10 +76,7 @@ namespace DemulShooter
                                 _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();                                
                             }
@@ -155,9 +152,11 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            Create_DataBank();
+            Create_InputsDataBank();
+            _Buttons_CaveAddress = _InputsDatabank_Address;
+
             SetHack_Buttons();
 
             SetNops(0, _Nop_Axix_X_1);
@@ -165,22 +164,8 @@ namespace DemulShooter
             SetNops(0, _Nop_Axix_Y_1);
             SetNops(0, _Nop_Axix_Y_2);            
             
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// Creating a custom memory bank to store our Buttons data
-        /// </summary>
-        private void Create_DataBank()
-        {
-            Codecave DataCaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            DataCaveMemory.Open();
-            DataCaveMemory.Alloc(0x800);
-
-            _Buttons_CaveAddress = DataCaveMemory.CaveAddress;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + DataCaveMemory.CaveAddress.ToString("X8"));
         }
 
         /// <summary>

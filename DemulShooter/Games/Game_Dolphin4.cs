@@ -74,7 +74,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             System.Threading.Thread.Sleep(2000);
-                            SetHack();
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();                            
                         }                        
@@ -169,7 +169,7 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             //Calulation of base addresses for Dinput Keyboard/Mouse
             byte[] bTampon = ReadBytes((UInt32)_TargetProcess_MemoryBaseAddress + CONTROLS_PTR_OFFSET, 8);
@@ -272,7 +272,7 @@ namespace DemulShooter
                 WriteBytes(_ATRAK_BaseAddress + ATRAK_Y_OFFSET, new byte[] { 0, 0, 0, 0 });
             }
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }       
 

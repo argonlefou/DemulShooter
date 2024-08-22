@@ -94,11 +94,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
-                            SetHack_Outputs();
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -173,7 +169,7 @@ namespace DemulShooter
         /// <summary>
         /// Genuine Hack, just blocking Axis and Triggers input to replace them.
         /// </summary>        
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             //Removing ENTER keypress event actions from the WndProc WM_KEYDOWN
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_EnterKeyPress);  
@@ -199,12 +195,8 @@ namespace DemulShooter
             if (_HideCrosshair)
                 SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_ShowCrosshairInGame);
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-        private void SetHack_Outputs()
-        {
-
         }
 
         #endregion

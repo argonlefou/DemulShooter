@@ -84,11 +84,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
-                            SetHack_Outputs();
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -167,7 +163,7 @@ namespace DemulShooter
         /// <summary>
         /// Genuine Hack, just blocking Axis and Triggers input to replace them.
         /// </summary>        
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_P1_X);
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_P1_Y);
@@ -188,43 +184,23 @@ namespace DemulShooter
             WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P1_Out_Offset, new byte[] { 0x00, 0x00 });
             WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Out_Offset, new byte[] { 0x00, 0x00 });
 
-            //For custom outputs :
-            //The gun is vibrating on hit and on fire, so we the purpose is to generate
-            //a custom Flag for each of them separatly
-            CreateDataBank();
-            SetHack_Damage();
-            SetHack_Recoil();
-
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 
-        private void SetHack_Outputs()
+        protected override void Apply_OutputsMemoryHack()
         {
-            CreateDataBank();
+            Create_OutputsDataBank();
+            _P1_RecoilStatus_CaveAddress = _OutputsDatabank_Address;
+            _P2_RecoilStatus_CaveAddress = _OutputsDatabank_Address + 0x04;
+            _P1_DamageStatus_CaveAddress = _OutputsDatabank_Address + 0x10;
+            _P2_DamageStatus_CaveAddress = _OutputsDatabank_Address + 0x14;
+
             SetHack_Damage();
             SetHack_Recoil();
 
             Logger.WriteLog("Outputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// Creating a zone in memory where we will save our custom outputs status.
-        /// This memory will then be read by the game thanks to the following hacks.
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_RecoilStatus_CaveAddress = CaveMemory.CaveAddress;
-            _P2_RecoilStatus_CaveAddress = CaveMemory.CaveAddress + 0x04;
-            _P1_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x10;
-            _P2_DamageStatus_CaveAddress = CaveMemory.CaveAddress + 0x14;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
         }
 
         /// <summary>

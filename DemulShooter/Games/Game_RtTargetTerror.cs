@@ -73,8 +73,7 @@ namespace DemulShooter
                                 _TargetProcess_Md5Hash = _KnownMd5Prints["Target Terror Gold - 2.12"];
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-
-                                SetHack_Output();
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -105,38 +104,23 @@ namespace DemulShooter
             }
         }
 
-
         #region Memory Hack
 
         //Teknoparrot does not emulate the gun board, so the game is not proceding to the real hardware motor engine
         //To get recoil, we cannot compute Ammo difference, because some weapons have infinite ammo
         //This game's procedure is called everytime a bullet is fire to choose what the game is going to do according to the current weapon.
         //Player index is in ESI
-        private void SetHack_Output()
+        protected override void Apply_OutputsMemoryHack()
         {
             //Create Databak to store our value
-            CreateDataBank();
+            Create_OutputsDataBank();
+            _P1_CustomRecoil_CaveAddress = _OutputsDatabank_Address;
+            _P2_CustomRecoil_CaveAddress = _OutputsDatabank_Address + 0x04;
 
             SetHack_MiniGameRecoil();
             
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// Creating a zone in memory where we will save recoil status, updated by the game.
-        /// This memory will then be read by the game thanks to the following hacks.
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_CustomRecoil_CaveAddress = CaveMemory.CaveAddress;
-            _P2_CustomRecoil_CaveAddress = CaveMemory.CaveAddress + 0x04;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + _P1_CustomRecoil_CaveAddress.ToString("X8"));
         }
 
         /// <summary>

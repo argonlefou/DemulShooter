@@ -103,11 +103,7 @@ namespace DemulShooter
                                     Logger.WriteLog("rld_game.dll Module Base Address = 0x " + _RldGameDll_ModuleBaseAddress.ToString("X8"));
                                     CheckExeMd5();
                                     ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                    if (!_DisableInputHack)
-                                        SetHack();
-                                    else
-                                        Logger.WriteLog("Input Hack disabled");
-                                    SetHack_Outputs();
+                                    Apply_MemoryHacks();
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
 
@@ -208,10 +204,16 @@ namespace DemulShooter
         /// Although the hack is the same, .dll files have slighty different asm codes so for some of them we need to rewrite
         /// it all differently, because only changing offsets won't be enough
         /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             //Common procedure
-            CreateDataBank();
+            Create_InputsDataBank();
+            _P1_X_Menu_CaveAddress = _InputsDatabank_Address;
+            _P1_Y_Menu_CaveAddress = _InputsDatabank_Address + 0x04;
+            _P1_X_Shoot_CaveAddress = _InputsDatabank_Address + 0x10;
+            _P1_Y_Shoot_CaveAddress = _InputsDatabank_Address + 0x14;
+            _P1_X_Crosshair_CaveAddress = _InputsDatabank_Address + 0x20;
+            _P1_Y_Crosshair_CaveAddress = _InputsDatabank_Address + 0x24;
 
             if (_TargetProcess_Md5Hash == _KnownMd5Prints["Reload v1.0.0.1 - IGG"])
             {
@@ -226,174 +228,56 @@ namespace DemulShooter
                 SetHack_P1_X_Shoot();
                 SetHack_P1_Y_Shoot();
             }
-            else if (_TargetProcess_Md5Hash == _KnownMd5Prints["Reload v1.0.0.1 - Unknown release 1"]
-                        || _TargetProcess_Md5Hash == _KnownMd5Prints["Reload v1.0.0.1 - Unknown release 2"])
+            else if (_TargetProcess_Md5Hash == _KnownMd5Prints["Reload v1.0.0.1 - Unknown release 1"] || _TargetProcess_Md5Hash == _KnownMd5Prints["Reload v1.0.0.1 - Unknown release 2"])
             {
                 SetHack_P1X_Menu_V2();
                 SetHack_P1Y_Menu_V2();
-                SetHack_P1_Crosshair_V2();
+
+                //If HideCrossair option is activated, the P1_Crosshair codecave will overwrite the NoCrosshair injection
+                //That why we need to check before installing it
+                if (!_HideCrosshair)
+                    SetHack_P1_Crosshair_V2();
+
                 SetHack_P1_X_Shoot_V2();
                 SetHack_P1_Y_Shoot_V2();
             }
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// Creating a custom memory bank to store our data
-        /// </summary>
-        private void CreateDataBank()
-        {
-            //1st Codecave : storing our Axis Data
-            Codecave DataCaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            DataCaveMemory.Open();
-            DataCaveMemory.Alloc(0x800);
-
-            _P1_X_Menu_CaveAddress = DataCaveMemory.CaveAddress;
-            _P1_Y_Menu_CaveAddress = DataCaveMemory.CaveAddress + 0x04;
-            _P1_X_Shoot_CaveAddress = DataCaveMemory.CaveAddress + 0x10;
-            _P1_Y_Shoot_CaveAddress = DataCaveMemory.CaveAddress + 0x14;
-            _P1_X_Crosshair_CaveAddress = DataCaveMemory.CaveAddress + 0x20;
-            _P1_Y_Crosshair_CaveAddress = DataCaveMemory.CaveAddress + 0x24;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + _P1_X_Menu_CaveAddress.ToString("X8"));
-        }
-
-        /// <summary>
-        /// Set values to [-1.0; -1.0] to display crosshair in ActorHud::Crosshair_SetPosition() function
-        /// </summary>
-        private void SetHack_NoCrosshair()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            List<Byte> Buffer = new List<Byte>();
-
-            //mov edi,[ebp+0C]
-            CaveMemory.Write_StrBytes("8B 7D 0C");
-            //mov [edi],BF800000 { -1.00 }
-            CaveMemory.Write_StrBytes("C7 07 00 00 80 BF");
-            //mov [edi+04],BF800000 { -1.00 }
-            CaveMemory.Write_StrBytes("C7 47 04 00 00 80 BF");
-            //test edx,edx
-            CaveMemory.Write_StrBytes("85 D2");
-
-            //return
-            CaveMemory.Write_jmp((UInt32)_RldGameDll_ModuleBaseAddress + _NoCrosshair_InjectionStruct.InjectionReturnOffset);
-
-            Logger.WriteLog("Adding NoCrosshair CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_RldGameDll_ModuleBaseAddress + _NoCrosshair_InjectionStruct.InjectionOffset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_RldGameDll_ModuleBaseAddress + _NoCrosshair_InjectionStruct.InjectionOffset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
         }
 
         /// <summary>
         /// For outputs, we need to create a custom DataBank and inject code to intercept the gun firing event to create recoil
         /// </summary>
-        private void SetHack_Outputs()
+        protected override void Apply_OutputsMemoryHack()
         {
-            CreateDataBank_Outputs();
-            SetHack_Recoil();
-            SetHack_Ammo();
-
-            //Putting NoCrosshair hack here, as it can be run with the -noinput option
-            if (_HideCrosshair)
+            Create_OutputsDataBank();
+            _P1_Recoil_CaveAddress = _OutputsDatabank_Address;
+            _P1_Ammo_CaveAddress = _OutputsDatabank_Address + 0x04;
+            
+            if (_TargetProcess_Md5Hash == _KnownMd5Prints["Reload v1.0.0.1 - IGG"])
             {
-                _NoCrosshair_InjectionStruct = new InjectionStruct(0x0021874F, 5);
-                SetHack_NoCrosshair();
+                SetHack_Recoil();
+                SetHack_Ammo();
             }
+            else if (_TargetProcess_Md5Hash == _KnownMd5Prints["Reload v1.0.0.1 - Unknown release 1"] || _TargetProcess_Md5Hash == _KnownMd5Prints["Reload v1.0.0.1 - Unknown release 2"])
+            {
+                SetHack_Recoil_V2();
+                SetHack_Ammo_V2();
+            }
+            
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
 
-        private void CreateDataBank_Outputs()
+        protected override void Apply_NoCrosshairMemoryHack()
         {
-            Codecave DataCaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            DataCaveMemory.Open();
-            DataCaveMemory.Alloc(0x800);
-
-            _P1_Recoil_CaveAddress = DataCaveMemory.CaveAddress;
-            _P1_Ammo_CaveAddress = DataCaveMemory.CaveAddress + 0x04;
-
-            Logger.WriteLog("Outputs data bank will be stored at : 0x" + DataCaveMemory.CaveAddress.ToString("X8"));
+            if (_TargetProcess_Md5Hash == _KnownMd5Prints["Reload v1.0.0.1 - IGG"])
+                SetHack_NoCrosshair();
+            else if (_TargetProcess_Md5Hash == _KnownMd5Prints["Reload v1.0.0.1 - Unknown release 1"] || _TargetProcess_Md5Hash == _KnownMd5Prints["Reload v1.0.0.1 - Unknown release 2"])
+                SetHack_NoCrosshair_V2();
         }
-
-        /// <summary>
-        /// csControllerActor::Shoot()  calls csControllerActorPlayer::Shoot() 	
-        /// Intercepting the call will make us create a recoil signal+ 
-        /// </summary>
-        private void SetHack_Recoil()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-            List<Byte> Buffer = new List<Byte>();
-            //mov byte ptr[_P1_Recoil_CaveAddress], 1
-            CaveMemory.Write_StrBytes("C6 05");
-            byte[] b = BitConverter.GetBytes(_P1_Recoil_CaveAddress);
-            CaveMemory.Write_Bytes(b);
-            CaveMemory.Write_StrBytes("01");
-            //mov ecx, esi
-            CaveMemory.Write_StrBytes("8B CE");
-            //fstp dword ptr [esp]
-            CaveMemory.Write_StrBytes("D9 1C 24");
-            //Jump back
-            CaveMemory.Write_jmp((UInt32)_RldGameDll_ModuleBaseAddress + _Recoil_InjectionStruct.InjectionReturnOffset);
-
-            Logger.WriteLog("Adding P1_Recoil CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_RldGameDll_ModuleBaseAddress + _Recoil_InjectionStruct.InjectionOffset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_RldGameDll_ModuleBaseAddress + _Recoil_InjectionStruct.InjectionOffset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
        
-        }
-
-        private void SetHack_Ammo()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-            List<Byte> Buffer = new List<Byte>();
-            //mov [_P1_Ammo_CaveAddress], eax
-            CaveMemory.Write_StrBytes("A3");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Ammo_CaveAddress));
-            //mov esi,eax
-            CaveMemory.Write_StrBytes("8B F0");
-            //mov edx,[ecx]
-            CaveMemory.Write_StrBytes("8B 11");
-            //mov [ebp-00000148],esi
-            CaveMemory.Write_StrBytes("89 B5 B8 FE FF FF");
-
-            //Jump back
-            CaveMemory.Write_jmp((UInt32)_RldGameDll_ModuleBaseAddress + _Ammo_InjectionStruct.InjectionReturnOffset);
-
-            Logger.WriteLog("Adding P1_Ammo CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_RldGameDll_ModuleBaseAddress + _Ammo_InjectionStruct.InjectionOffset) - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_RldGameDll_ModuleBaseAddress + _Ammo_InjectionStruct.InjectionOffset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
-       
-        }
-
         #endregion
 
         #region Memory Hack_ExeV1
@@ -615,6 +499,75 @@ namespace DemulShooter
             Buffer.Add(0x90);
             Buffer.Add(0x90);
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_RldGameDll_ModuleBaseAddress + _P1_InGame_Y_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+        /// <summary>
+        /// csControllerActor::Shoot()  calls csControllerActorPlayer::Shoot() 	
+        /// Intercepting the call will make us create a recoil signal+ 
+        /// </summary>
+        private void SetHack_Recoil()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //mov byte ptr[_P1_Recoil_CaveAddress], 1
+            CaveMemory.Write_StrBytes("C6 05");
+            byte[] b = BitConverter.GetBytes(_P1_Recoil_CaveAddress);
+            CaveMemory.Write_Bytes(b);
+            CaveMemory.Write_StrBytes("01");
+            //mov ecx, esi
+            CaveMemory.Write_StrBytes("8B CE");
+            //fstp dword ptr [esp]
+            CaveMemory.Write_StrBytes("D9 1C 24");
+
+            //Inject it
+            CaveMemory.InjectToOffset(_RldGameDll_ModuleBaseAddress, _Recoil_InjectionStruct, "Recoil"); 
+        }
+
+        /// <summary>
+        /// Reading the result of GetRemainingBullets() call in the ActorHud::StatusBar_AdvanceTime() loop
+        /// </summary>
+        private void SetHack_Ammo()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //mov [_P1_Ammo_CaveAddress], eax
+            CaveMemory.Write_StrBytes("A3");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Ammo_CaveAddress));
+            //mov esi,eax
+            CaveMemory.Write_StrBytes("8B F0");
+            //mov edx,[ecx]
+            CaveMemory.Write_StrBytes("8B 11");
+            //mov [ebp-00000148],esi
+            CaveMemory.Write_StrBytes("89 B5 B8 FE FF FF");
+
+            //Inject it
+            CaveMemory.InjectToOffset(_RldGameDll_ModuleBaseAddress, _Ammo_InjectionStruct, "Ammo"); 
+        }
+
+        /// <summary>
+        /// Set values to [-1.0; -1.0] to display crosshair in ActorHud::Crosshair_SetPosition() function
+        /// </summary>
+        private void SetHack_NoCrosshair()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //mov edi,[ebp+0C]
+            CaveMemory.Write_StrBytes("8B 7D 0C");
+            //mov [edi],BF800000 { -1.00 }
+            CaveMemory.Write_StrBytes("C7 07 00 00 80 BF");
+            //mov [edi+04],BF800000 { -1.00 }
+            CaveMemory.Write_StrBytes("C7 47 04 00 00 80 BF");
+            //test edx,edx
+            CaveMemory.Write_StrBytes("85 D2");
+
+            //Inject it
+            CaveMemory.InjectToOffset(_RldGameDll_ModuleBaseAddress, _NoCrosshair_InjectionStruct, "No Crosshair"); 
         }
 
         #endregion
@@ -839,7 +792,76 @@ namespace DemulShooter
             Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_RldGameDll_ModuleBaseAddress + _P1_InGame_Y_Injection_Offset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
         }
 
-#endregion
+        /// <summary>
+        /// csControllerActor::Shoot()  calls csControllerActorPlayer::Shoot() 	
+        /// Intercepting the call will make us create a recoil signal+ 
+        /// </summary>
+        private void SetHack_Recoil_V2()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //mov byte ptr[_P1_Recoil_CaveAddress], 1
+            CaveMemory.Write_StrBytes("C6 05");
+            byte[] b = BitConverter.GetBytes(_P1_Recoil_CaveAddress);
+            CaveMemory.Write_Bytes(b);
+            CaveMemory.Write_StrBytes("01");
+            //mov ecx, edi
+            CaveMemory.Write_StrBytes("8B CF");
+            //fstp dword ptr [esp]
+            CaveMemory.Write_StrBytes("D9 1C 24");
+
+            //Inject it
+            CaveMemory.InjectToOffset(_RldGameDll_ModuleBaseAddress, _Recoil_InjectionStruct, "Recoil"); 
+        }
+
+        /// <summary>
+        /// Reading the result of GetRemainingBullets() call in the ActorHud::StatusBar_AdvanceTime() loop
+        /// </summary>
+        private void SetHack_Ammo_V2()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //mov [_P1_Ammo_CaveAddress], eax
+            CaveMemory.Write_StrBytes("A3");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Ammo_CaveAddress));
+            //mov edx,[ecx]
+            CaveMemory.Write_StrBytes("8B 11");
+            //mov ebp,eax
+            CaveMemory.Write_StrBytes("8B E8");
+            //mov eax,[edx+60]
+            CaveMemory.Write_StrBytes("8B 42 60");
+
+            //Inject it
+            CaveMemory.InjectToOffset(_RldGameDll_ModuleBaseAddress, _Ammo_InjectionStruct, "Ammo"); 
+        }
+
+        /// <summary>
+        /// Set values to [-1.0; -1.0] to display crosshair in ActorHud::Crosshair_SetPosition() function
+        /// </summary>
+        private void SetHack_NoCrosshair_V2()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+            //push edi
+            CaveMemory.Write_StrBytes("57");
+            //mov edi,[esp+10]
+            CaveMemory.Write_StrBytes("8B 7C 24 10");
+            //mov [edi],BF800000 { -1.00 }
+            CaveMemory.Write_StrBytes("C7 07 00 00 80 BF");
+            //mov [edi+04],BF800000 { -1.00 }
+            CaveMemory.Write_StrBytes("C7 47 04 00 00 80 BF");
+
+            //Inject it
+            CaveMemory.InjectToOffset(_RldGameDll_ModuleBaseAddress, _NoCrosshair_InjectionStruct, "No Crosshair"); 
+        }
+
+        #endregion
 
         #region Inputs
 
@@ -884,9 +906,7 @@ namespace DemulShooter
         {
             _Outputs = new List<GameOutput>();
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
-            _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Clip, OutputId.P1_Clip));
-            _Outputs.Add(new GameOutput(OutputDesciption.P2_Clip, OutputId.P2_Clip));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
         }
 

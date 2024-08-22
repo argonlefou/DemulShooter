@@ -111,19 +111,7 @@ namespace DemulShooter
                             Logger.WriteLog("GameWindow Title = " + Get_GameWindowTitle());
                             CheckExeMd5();
                             //ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-
-                            //Remove Crosshairs
-                            if (_HideCrosshair)
-                                HideCrosshairs();
-
-                            //Output hack
-                            SetHack_Outputs();
-
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
-
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -196,48 +184,38 @@ namespace DemulShooter
         /// <summary>
         /// Genuine Hack, just blocking Axis and filtering Triggers input to replace them without blocking other input
         /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            // This will be used to store custom input values
+            // Games has 2 distinct requets for button : "press" and "on"
+            Create_InputsDataBank();
+            _P1_StartOn_Address = _InputsDatabank_Address;
+            _P2_StartOn_Address = _InputsDatabank_Address + 0x04;
+            _P1_StartPress_Address = _InputsDatabank_Address + 0x08;
+            _P2_StartPress_Address = _InputsDatabank_Address + 0x0C;
+            _P1_TriggerOn_Address = _InputsDatabank_Address + 0x10;
+            _P2_TriggerOn_Address = _InputsDatabank_Address + 0x14;
+            _P1_TriggerPress_Address = _InputsDatabank_Address + 0x18;
+            _P2_TriggerPress_Address = _InputsDatabank_Address + 0x1C;
+            _LeverFrontOn_Address = _InputsDatabank_Address + 0x20;
+            _LeverFrontPress_Address = _InputsDatabank_Address + 0x24;
+            _LeverBackOn_Address = _InputsDatabank_Address + 0x28;
+            _LeverBackPress_Address = _InputsDatabank_Address + 0x2C;
+            _P1_X_Address = _InputsDatabank_Address + 0x30;
+            _P1_Y_Address = _InputsDatabank_Address + 0x34;
+            _P2_X_Address = _InputsDatabank_Address + 0x38;
+            _P2_Y_Address = _InputsDatabank_Address + 0x3C;
+            _AddCredit_Address = _InputsDatabank_Address + 0x40;
+
             SetHack_Axis();
             SetHack_Buttons();
             SetHack_Credits();
             SetHack_CorrectReticlePosition();
             SetHack_CorrectEnnemyTarget();
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// This will be used to store custom input values
-        /// Games has 2 distinct requets for button : "press" and "on"
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave InputMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            InputMemory.Open();
-            InputMemory.Alloc(0x800);
-            _P1_StartOn_Address = InputMemory.CaveAddress;
-            _P2_StartOn_Address = InputMemory.CaveAddress + 0x04;
-            _P1_StartPress_Address = InputMemory.CaveAddress + 0x08;
-            _P2_StartPress_Address = InputMemory.CaveAddress + 0x0C;
-            _P1_TriggerOn_Address = InputMemory.CaveAddress + 0x10;
-            _P2_TriggerOn_Address = InputMemory.CaveAddress + 0x14;
-            _P1_TriggerPress_Address = InputMemory.CaveAddress + 0x18;
-            _P2_TriggerPress_Address = InputMemory.CaveAddress + 0x1C;
-            _LeverFrontOn_Address = InputMemory.CaveAddress + 0x20;
-            _LeverFrontPress_Address = InputMemory.CaveAddress + 0x24;
-            _LeverBackOn_Address = InputMemory.CaveAddress + 0x28;
-            _LeverBackPress_Address = InputMemory.CaveAddress + 0x2C;
-            _P1_X_Address = InputMemory.CaveAddress + 0x30;
-            _P1_Y_Address = InputMemory.CaveAddress + 0x34;
-            _P2_X_Address = InputMemory.CaveAddress + 0x38;
-            _P2_Y_Address = InputMemory.CaveAddress + 0x3C;
-            _AddCredit_Address = InputMemory.CaveAddress + 0x40;
-
-            Logger.WriteLog("Custom input data will be stored at : 0x" + InputMemory.CaveAddress.ToString("X8"));
-        }
+        }        
 
         /// <summary>
         ///Hacking Axis proc : 
@@ -480,39 +458,25 @@ namespace DemulShooter
             CaveMemory.InjectToOffset(_FixEnnemyTarget_InjectionStruct, "FixEnnemyTarget");
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void SetHack_Outputs()
+        protected override void Apply_OutputsMemoryHack()
         {
             Create_OutputsDataBank();
+            _P1_LmpStart_Address = _OutputsDatabank_Address;
+            _P2_LmpStart_Address = _OutputsDatabank_Address + 0x04;
+            _P1_LmpGun_Address = _OutputsDatabank_Address + 0x08;
+            _P2_LmpGun_Address = _OutputsDatabank_Address + 0x0C;
+            _P1_Recoil_Address = _OutputsDatabank_Address + 0x10;
+            _P2_Recoil_Address = _OutputsDatabank_Address + 0x14;
+            _P1_Damage_Address = _OutputsDatabank_Address + 0x18;
+            _P2_Damage_Address = _OutputsDatabank_Address + 0x1C;
+
             SetHack_Output_StartLamp();
             SetHack_Output_GunLamp();
             SetHack_Recoil();
             SetHack_Damage();
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Outputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// This will be used to store custom output values
-        /// </summary>
-        private void Create_OutputsDataBank()
-        {
-            Codecave InputMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            InputMemory.Open();
-            InputMemory.Alloc(0x800);
-            _P1_LmpStart_Address = InputMemory.CaveAddress;
-            _P2_LmpStart_Address = InputMemory.CaveAddress + 0x04;
-            _P1_LmpGun_Address = InputMemory.CaveAddress + 0x08;
-            _P2_LmpGun_Address = InputMemory.CaveAddress + 0x0C;
-            _P1_Recoil_Address = InputMemory.CaveAddress + 0x10;
-            _P2_Recoil_Address = InputMemory.CaveAddress + 0x14;
-            _P1_Damage_Address = InputMemory.CaveAddress + 0x18;
-            _P2_Damage_Address = InputMemory.CaveAddress + 0x1C;
-
-            Logger.WriteLog("Custom Output data will be stored at : 0x" + InputMemory.CaveAddress.ToString("X8"));
         }
 
         /// <summary>
@@ -645,7 +609,7 @@ namespace DemulShooter
         /// - Laser
         /// - Gun Model (deactivated when KID MODE is on)
         /// </summary>
-        private void HideCrosshairs()
+        protected override void Apply_NoCrosshairMemoryHack()
         {
             if (_HideCrosshair)
             {

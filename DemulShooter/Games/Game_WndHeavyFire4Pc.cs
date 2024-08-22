@@ -150,10 +150,7 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();                            
                         }
@@ -238,35 +235,22 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            _P1_X_CaveAddress = _InputsDatabank_Address;
+            _P1_Y_CaveAddress = _InputsDatabank_Address + 0x04;
+            _P2_X_CaveAddress = _InputsDatabank_Address + 0x20;
+            _P2_Y_CaveAddress = _InputsDatabank_Address + 0x24;
+
             SetHack_P1X();
             SetHack_P1Y();
             SetHack_P2X();
             SetHack_P2Y();
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_P1_Buttons);
-            Logger.WriteLog("Memory Hack complete !");
+
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// Creating a custom memory bank to store our datas
-        /// </summary>
-        private void CreateDataBank()
-        {
-            //1st Codecave : storing our Axis Data
-            Codecave DataCaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            DataCaveMemory.Open();
-            DataCaveMemory.Alloc(0x800);
-
-            _P1_X_CaveAddress = DataCaveMemory.CaveAddress;
-            _P1_Y_CaveAddress = DataCaveMemory.CaveAddress + 0x04;
-
-            _P2_X_CaveAddress = DataCaveMemory.CaveAddress + 0x20;
-            _P2_Y_CaveAddress = DataCaveMemory.CaveAddress + 0x24;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));
         }
 
         /// <summary>

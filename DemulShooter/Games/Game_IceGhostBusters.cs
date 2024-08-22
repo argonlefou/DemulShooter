@@ -77,11 +77,7 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
-                                SetHack_Outputs();
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -96,11 +92,7 @@ namespace DemulShooter
                                     Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                     Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                     ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                    if (!_DisableInputHack)
-                                        SetHack();
-                                    else
-                                        Logger.WriteLog("Input Hack disabled");
-                                    SetHack_Outputs();
+                                    Apply_MemoryHacks();
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
                                 }
@@ -133,40 +125,17 @@ namespace DemulShooter
         }
 
         #region Memory Hack
-
-        private void SetHack()
+        
+        protected override void Apply_OutputsMemoryHack()
         {
-            //Not used
-        }
+            Create_OutputsDataBank();
+            _P1_RecoilStatus_CaveAddress = _OutputsDatabank_Address;
+            _P2_RecoilStatus_CaveAddress = _OutputsDatabank_Address + 4;
 
-        private void SetHack_Outputs()
-        {
-            CreateDataBank_Outputs();           
             SetHack_Recoil();
-
-            if (_HideCrosshair)
-            {
-                //Replacing crosshair X value in ECX by -300.0f
-                WriteBytes(_CrosshairHack_Address, new byte[]{ 0xB9, 0x00, 0x00, 0x96, 0xC3, 0x90, 0x90 });
-            }
-            else
-            {
-                //Putting back original code for crosshairs
-                //mov ecx,[ecx*8+08AD232C]
-                WriteBytes(_CrosshairHack_Address, new byte[] { 0x8B, 0x0C, 0xCD, 0x2C, 0x23, 0xAD, 0x08 });
-            }
-        }
-
-        private void CreateDataBank_Outputs()
-        {
-            //Creating data bank
-            //Codecave :
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            _P1_RecoilStatus_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P2_RecoilStatus_CaveAddress = CaveMemoryInput.CaveAddress + 4;
-            Logger.WriteLog("Custom output data will be stored at : 0x" + CaveMemoryInput.CaveAddress.ToString("X8"));
+            
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
 
         /// <summary>
@@ -219,6 +188,21 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("83 C0 24");
 
             CaveMemory.InjectToAddress(_BallShooter_InjectionStruct, "Recoil");
+        }
+
+        protected override void Apply_NoCrosshairMemoryHack()
+        {
+            if (_HideCrosshair)
+            {
+                //Replacing crosshair X value in ECX by -300.0f
+                WriteBytes(_CrosshairHack_Address, new byte[] { 0xB9, 0x00, 0x00, 0x96, 0xC3, 0x90, 0x90 });
+            }
+            else
+            {
+                //Putting back original code for crosshairs
+                //mov ecx,[ecx*8+08AD232C]
+                WriteBytes(_CrosshairHack_Address, new byte[] { 0x8B, 0x0C, 0xCD, 0x2C, 0x23, 0xAD, 0x08 });
+            }
         }
 
         #endregion

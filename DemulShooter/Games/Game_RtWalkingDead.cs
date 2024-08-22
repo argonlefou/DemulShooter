@@ -8,7 +8,6 @@ using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.Win32;
 
-
 namespace DemulShooter
 {
     class Game_RtWalkingDead : Game
@@ -81,9 +80,7 @@ namespace DemulShooter
                                 //_TargetProcess_Md5Hash = _KnownMd5Prints["Walking Dead - 01.05 - Teknoparrot Patched"];
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-
-                                SetHack_Outputs();
-
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -116,45 +113,21 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_OutputsMemoryHack()
         {
-            //Not used
-        }
+            Create_OutputsDataBank();
+            _P1_RecoilStatus_CaveAddress = _OutputsDatabank_Address;
+            _P2_RecoilStatus_CaveAddress = _OutputsDatabank_Address + 4;
+            _P1_DamageStatus_CaveAddress = _OutputsDatabank_Address + 0x10;
+            _P2_DamageStatus_CaveAddress = _OutputsDatabank_Address + 0x14;
+            _NoCrosshair_FldValue_CaveAddress = _OutputsDatabank_Address + 0x20;
+            WriteBytes(_NoCrosshair_FldValue_CaveAddress, BitConverter.GetBytes((float)(-1.0f)));
 
-        private void SetHack_Outputs()
-        {
-            CreateDataBank_Outputs();
             SetHack_Damage();
             SetHack_Recoil();
 
-            if (_HideCrosshair)
-            {
-                //Replacing the fld instruction (loading Cursor axis as float) by fld (-1)
-                WriteBytes(_NoCrosshair_Address, new byte[] { 0xD9, 0x05 });
-                WriteBytes(_NoCrosshair_Address + 2, BitConverter.GetBytes(_NoCrosshair_FldValue_CaveAddress));
-                WriteByte(_NoCrosshair_Address + 6, 0x90);
-            }
-            else
-            {
-                //Setting it back to default if it was changed by a previous instance of DemulSHooter
-                WriteBytes(_NoCrosshair_Address, new byte[] { 0xD9, 0x04, 0xCD, 0x8C, 0xEF, 0xAB, 0x08 });
-            }
-        }
-
-        private void CreateDataBank_Outputs()
-        {
-            //Creating data bank
-            //Codecave :
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            _P1_RecoilStatus_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P2_RecoilStatus_CaveAddress = CaveMemoryInput.CaveAddress + 4;
-            _P1_DamageStatus_CaveAddress = CaveMemoryInput.CaveAddress + 0x10;
-            _P2_DamageStatus_CaveAddress = CaveMemoryInput.CaveAddress + 0x14;
-            _NoCrosshair_FldValue_CaveAddress = CaveMemoryInput.CaveAddress + 0x20;
-            WriteBytes(_NoCrosshair_FldValue_CaveAddress, BitConverter.GetBytes((float)(-1.0f)));
-            Logger.WriteLog("Custom output data will be stored at : 0x" + CaveMemoryInput.CaveAddress.ToString("X8"));
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
 
         /// <summary>
@@ -244,6 +217,22 @@ namespace DemulShooter
                 Buffer.Add(0x90);
             }
             Win32API.WriteProcessMemory(ProcessHandle, _Recoil_InjectionStruct.InjectionOffset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+        }
+
+        protected override void Apply_NoCrosshairMemoryHack()
+        {
+            if (_HideCrosshair)
+            {
+                //Replacing the fld instruction (loading Cursor axis as float) by fld (-1)
+                WriteBytes(_NoCrosshair_Address, new byte[] { 0xD9, 0x05 });
+                WriteBytes(_NoCrosshair_Address + 2, BitConverter.GetBytes(_NoCrosshair_FldValue_CaveAddress));
+                WriteByte(_NoCrosshair_Address + 6, 0x90);
+            }
+            else
+            {
+                //Setting it back to default if it was changed by a previous instance of DemulSHooter
+                WriteBytes(_NoCrosshair_Address, new byte[] { 0xD9, 0x04, 0xCD, 0x8C, 0xEF, 0xAB, 0x08 });
+            }
         }
 
         #endregion

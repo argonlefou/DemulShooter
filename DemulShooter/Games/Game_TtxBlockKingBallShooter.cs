@@ -61,11 +61,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
-                            SetHack_Outputs();
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -151,7 +147,7 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             //Blocking input from Jconfig
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_AxisX);
@@ -160,29 +156,19 @@ namespace DemulShooter
             //Blocking "Screen touched clear to 0" loop
             //SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_BtnTriggerReset);
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 
-        private void SetHack_Outputs()
+        protected override void Apply_OutputsMemoryHack()
         {
-            CreateDataBank();
+            Create_OutputsDataBank();
+            _CtmDamage_CaveAddress = _OutputsDatabank_Address;
+
             SetHack_CustomDamageOutput();
 
             Logger.WriteLog("Outputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// 1st Memory created to store custom output data
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave InputMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            InputMemory.Open();
-            InputMemory.Alloc(0x800);
-            _CtmDamage_CaveAddress = InputMemory.CaveAddress;
-            Logger.WriteLog("Custom Output data will be stored at : 0x" + _CtmDamage_CaveAddress.ToString("X8"));
         }
 
         /// <summary>

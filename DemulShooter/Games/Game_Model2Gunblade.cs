@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
-using DsCore.Memory;
 using DsCore.RawInput;
 
 namespace DemulShooter
@@ -66,10 +65,7 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                                 break;
@@ -142,12 +138,16 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        /// <summary>
-        /// Creating a custom memory bank to store our data
-        /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            //At runtime, the game is reading 4 bytes with players axis values in that order :
+            _P1_X_CaveAddress = _InputsDatabank_Address;
+            _P2_X_CaveAddress = _InputsDatabank_Address + 1;
+            _P1_Y_CaveAddress = _InputsDatabank_Address + 2;
+            _P2_Y_CaveAddress = _InputsDatabank_Address + 3;
+            //And for buttons
+            _Buttons_CaveAddress = _InputsDatabank_Address + 8;
 
             //Buttons : The game is reading the Byte containing Buttons info. Replacing the real address with our own
             byte[] b = BitConverter.GetBytes(_Buttons_CaveAddress);
@@ -161,24 +161,8 @@ namespace DemulShooter
             WriteBytes(_P1_X_CaveAddress, new byte[] { 0x55, 0xAA, 0x7F, 0x7F });
             WriteByte(_Buttons_CaveAddress, 0xFF);
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        private void CreateDataBank()
-        {
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            //At runtime, the game is reading 4 bytes with players axis values in that order :
-            _P1_X_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P2_X_CaveAddress = CaveMemoryInput.CaveAddress + 1;
-            _P1_Y_CaveAddress = CaveMemoryInput.CaveAddress + 2;
-            _P2_Y_CaveAddress = CaveMemoryInput.CaveAddress + 3;
-            //And for buttons
-            _Buttons_CaveAddress = CaveMemoryInput.CaveAddress + 8;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + _P1_X_CaveAddress.ToString("X8"));
         }
 
         #endregion   

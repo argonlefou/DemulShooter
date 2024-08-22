@@ -116,6 +116,7 @@ namespace DemulShooter
 
             Dictionary<String, String> _LindberghRoms = new Dictionary<String, String>(){
                 {"2spicy","Too Spicy"},
+                {"gsquad","Ghost Squad Evolution"},
                 {"hotd4","House of The Dead 4"},
                 {"hotd4sp","House of The Dead 4 : Special"},
                 {"hotdex","House of The Dead : EX"},

@@ -98,15 +98,7 @@ namespace DemulShooter
                                 _GameWindowHandle = _TargetProcess.MainWindowHandle;
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-
-                                //Hiding crosshair option
-                                if (_HideCrosshair)
-                                    WriteByte(_DrawSightFlag_Address, 0);
-
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();                                
                             }
@@ -181,7 +173,7 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             SetHack_Btn();
 
@@ -220,12 +212,8 @@ namespace DemulShooter
             Buffer.Add(0x90);
             Buffer.Add(0x90);
             WriteBytes(0x082C7EE8, Buffer.ToArray());
-            
-            //Hiding crosshair option
-            if (_HideCrosshair)
-                WriteByte(_DrawSightFlag_Address, 0);
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 
@@ -265,7 +253,12 @@ namespace DemulShooter
             Buffer.Add(0xE9);
             Buffer.AddRange(BitConverter.GetBytes(jumpTo));
             Win32API.WriteProcessMemory(ProcessHandle, _Btn_Injection_Address, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
-        }       
+        }
+
+        protected override void Apply_NoCrosshairMemoryHack()
+        {
+            WriteByte(_DrawSightFlag_Address, 0);
+        }
 
         #endregion
 

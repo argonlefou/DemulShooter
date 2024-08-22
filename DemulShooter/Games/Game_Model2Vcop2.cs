@@ -70,10 +70,7 @@ namespace DemulShooter
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
-                                if (!_DisableInputHack)
-                                    SetHack();
-                                else
-                                    Logger.WriteLog("Input Hack disabled");
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                                 break;
@@ -147,9 +144,15 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            _P1_X_CaveAddress = _InputsDatabank_Address;
+            _P1_Y_CaveAddress = _InputsDatabank_Address + 0x04;
+            _P2_X_CaveAddress = _InputsDatabank_Address + 0x08;
+            _P2_Y_CaveAddress = _InputsDatabank_Address + 0x0C;
+            _Buttons_CaveAddress = _InputsDatabank_Address + 0x10;
+            _Reload_CaveAddress = _InputsDatabank_Address + 0x11;
 
             //Buttons : The game is reading the Byte containing Buttons info. Replacing the real address with our own
             byte[] b = BitConverter.GetBytes(_Buttons_CaveAddress);
@@ -171,24 +174,8 @@ namespace DemulShooter
             WriteByte(_Buttons_CaveAddress, 0xFF);
             WriteByte(_Reload_CaveAddress, 0x03);
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        /// <summary>
-        /// Creating a custom memory bank to store our data
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            _P1_X_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P1_Y_CaveAddress = CaveMemoryInput.CaveAddress + 0x04;
-            _P2_X_CaveAddress = CaveMemoryInput.CaveAddress + 0x08;
-            _P2_Y_CaveAddress = CaveMemoryInput.CaveAddress + 0x0C;
-            _Buttons_CaveAddress = CaveMemoryInput.CaveAddress + 0x10;
-            _Reload_CaveAddress = CaveMemoryInput.CaveAddress + 0x11;
         }
 
         private void SetHack_P1Axis(UInt32 InjectionOffset, UInt32 Length)

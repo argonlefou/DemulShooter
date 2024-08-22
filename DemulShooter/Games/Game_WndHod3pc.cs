@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Media;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
@@ -10,7 +8,6 @@ using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
 using DsCore.Win32;
-using Microsoft.Win32;
 
 namespace DemulShooter
 {
@@ -82,10 +79,7 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -160,7 +154,7 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             //Block Axis
             SetNops((UInt32)_TargetProcess_MemoryBaseAddress, _Nop_X);
@@ -179,7 +173,7 @@ namespace DemulShooter
             WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_X_Offset, new byte[] { 0x00, 0x00 });
             WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _P2_Y_Offset, new byte[] { 0x00, 0x00 });   
 
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 

@@ -98,7 +98,6 @@ namespace DemulShooter
             }
         }
 
-
         #region Outputs
 
         /// <summary>

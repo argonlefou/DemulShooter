@@ -106,7 +106,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             if (!_DisableInputHack)
-                                SetHack();
+                                Apply_InputsMemoryHack();
                             else
                                 Logger.WriteLog("Input Hack disabled"); RaiseGameHookedEvent();
                             _ProcessHooked = true;
@@ -238,7 +238,7 @@ namespace DemulShooter
 
         #region Memory Hack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();

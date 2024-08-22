@@ -83,7 +83,7 @@ namespace DemulShooterX64
                                     _UsbPluginsDll_BaseAddress = m.BaseAddress;
                                     Logger.WriteLog(_UsbPluginsDllName + " = 0x" + _UsbPluginsDll_BaseAddress);
                                     CheckExeMd5();
-                                    SetHack();
+                                    Apply_MemoryHacks();
                                     _ProcessHooked = true;
                                     RaiseGameHookedEvent();
                                     _ProcessHooked = true;
@@ -115,15 +115,19 @@ namespace DemulShooterX64
 
         #region MemoryHack
 
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             //+B85E4A --> NOP | 5 --> Nop mousebuttons and keyboard keys
-            SetNops(_TargetProcess_MemoryBaseAddress, _Nop_KeyboardAndMouse);
-            Logger.WriteLog("Memory Hack complete !");
-            Logger.WriteLog("-");
+            SetNops(_TargetProcess_MemoryBaseAddress, _Nop_KeyboardAndMouse);           
+        }
 
+        protected override void Apply_OutputsMemoryHack()
+        {
             SetHack_Recoil();
             SetHack_Damage();
+
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
 
         //To sync recoil pulse with fired bullets, we will retrieve the information when the game call the "PlayFireMV"

@@ -66,9 +66,7 @@ namespace DemulShooter
                             {
                                 String AssemblyDllPath = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", @"CowBoy_Data\Managed\Assembly-CSharp.dll");
                                 CheckMd5(AssemblyDllPath);
-                                if (_DisableInputHack)
-                                    Logger.WriteLog("Input Hack disabled");
-                                SetHack();
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -187,7 +185,7 @@ namespace DemulShooter
         /// <summary>
         /// Creating a custom memory bank to store our data
         /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
             //Creating Shared Memory access
             _Mmfh = new MMFH_WildWestShoutout();

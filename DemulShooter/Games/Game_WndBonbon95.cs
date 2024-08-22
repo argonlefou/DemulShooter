@@ -73,11 +73,7 @@ namespace DemulShooter
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
-                            SetHack_Outputs();
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                         }
@@ -152,9 +148,15 @@ namespace DemulShooter
         /// <summary>
         /// Genuine Hack, just blocking Axis and Triggers input to replace them.
         /// </summary>        
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            _P1_Buttons_CaveAddress = _InputsDatabank_Address;
+            _P1_X_CaveAddress = _InputsDatabank_Address + 4;
+            _P1_Y_CaveAddress = _InputsDatabank_Address + 8;
+            _P2_Buttons_CaveAddress = _InputsDatabank_Address + 0xC;
+            _P2_X_CaveAddress = _InputsDatabank_Address + 0x10;
+            _P2_Y_CaveAddress = _InputsDatabank_Address + 0x14;
 
             //Force the game to act as if MOUSE was choosen in the Players Controls reading function
             // Keyboard = 0
@@ -166,28 +168,9 @@ namespace DemulShooter
             //Create custom function to handle MOUSE controls update and call them
             SetHack_P1Controls();
             SetHack_P2Controls();
-
-            if (_HideCrosshair)
-                SetHack_NoCrosshair();
             
-            Logger.WriteLog("Memory Hack complete !");
+            Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
-        }
-
-        private void CreateDataBank()
-        {
-            //Creating data bank
-            //Codecave :
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            _P1_Buttons_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P1_X_CaveAddress = CaveMemoryInput.CaveAddress + 4;
-            _P1_Y_CaveAddress = CaveMemoryInput.CaveAddress + 8;
-            _P2_Buttons_CaveAddress = CaveMemoryInput.CaveAddress + 0xC;
-            _P2_X_CaveAddress = CaveMemoryInput.CaveAddress + 0x10;
-            _P2_Y_CaveAddress = CaveMemoryInput.CaveAddress + 0x14;
-            Logger.WriteLog("Custom input data will be stored at : 0x" + CaveMemoryInput.CaveAddress.ToString("X8"));
         }
 
         /// <summary>
@@ -283,72 +266,20 @@ namespace DemulShooter
             //Inject it
             CaveMemory.InjectToOffset(_P2_MouseControls_InjectionStruct, "P2 Controls");
         }
-
-        /// <summary>
-        /// To remove crosshair, we can force out-of -screen corrdinates when the game is drawing the needed texture
-        /// To find the texture, it looks like the _TextureDrawingCategoryIndex_Offset is 0x11 when the function is called to draw crosshair-related resources
-        /// And the ECX value (Texture ID ?) is 0x17 and 0x1C for Impact texture (untouched)
-        /// Other Id (0x192, 0x193, etc..) will be changed to not be visible
-        /// </summary>
-        private void SetHack_NoCrosshair()
+        
+        protected override void Apply_OutputsMemoryHack()
         {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-            List<Byte> Buffer = new List<Byte>();
+            Create_OutputsDataBank();
+            _P1_RecoilStatus_CaveAddress = _OutputsDatabank_Address;
+            _P2_RecoilStatus_CaveAddress = _OutputsDatabank_Address + 4;
 
-            //cmp dword ptr [Main95.exe+4BFB4],11
-            CaveMemory.Write_StrBytes("83 3D");
-            CaveMemory.Write_Bytes(BitConverter.GetBytes((UInt32)_TargetProcess_MemoryBaseAddress + _TextureDrawingCategoryIndex_Offset));
-            CaveMemory.Write_StrBytes("11"); 
-            //jne Originalcode
-            CaveMemory.Write_StrBytes("75 11");
-            //cmp ecx, 17
-            CaveMemory.Write_StrBytes("83 F9 1C");
-            //je OriginalCode
-            CaveMemory.Write_StrBytes("74 0C");
-            //cmp ecx, 1C
-            CaveMemory.Write_StrBytes("83 F9 17");
-            //je OriginalCode
-            CaveMemory.Write_StrBytes("74 07"); 
-            //Patch:
-            //mov eax, 3000
-            CaveMemory.Write_StrBytes("B8 00 03 00 00");
-            //jmp Next
-            CaveMemory.Write_StrBytes("EB 03");
-            //OriginalCode:
-            //mov eax,[ebx+54]
-            CaveMemory.Write_StrBytes("8B 43 54");
-            //mov [edi],eax
-            CaveMemory.Write_StrBytes("89 07");
-            //mov eax,[ebx+58]
-            CaveMemory.Write_StrBytes("8B 43 58");
-            //mov [edi+04],eax
-            CaveMemory.Write_StrBytes("89 47 04");
-
-            //Inject it
-            CaveMemory.InjectToOffset(_NoCrosshair_InjectionStruct, "No Crosshair");
-        }
-
-        private void SetHack_Outputs()
-        {
-            CreateDataBank_Outputs();
             SetHack_Recoil_P1();
             SetHack_Recoil_P2();
-        }
 
-        private void CreateDataBank_Outputs()
-        {
-            //Creating data bank
-            //Codecave :
-            Codecave CaveMemoryInput = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
-            CaveMemoryInput.Open();
-            CaveMemoryInput.Alloc(0x800);
-            _P1_RecoilStatus_CaveAddress = CaveMemoryInput.CaveAddress;
-            _P2_RecoilStatus_CaveAddress = CaveMemoryInput.CaveAddress + 4;
-            Logger.WriteLog("Custom output data will be stored at : 0x" + CaveMemoryInput.CaveAddress.ToString("X8"));
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
-
+        
         /// <summary>
         /// Intercepting some kind of call to draw impact texture when trigger is pressed
         /// </summary>
@@ -393,6 +324,52 @@ namespace DemulShooter
             
              //Inject it
             CaveMemory.InjectToOffset(_P2_Recoil_InjectionStruct, "P2 Recoil");
+        }
+
+        /// <summary>
+        /// To remove crosshair, we can force out-of -screen corrdinates when the game is drawing the needed texture
+        /// To find the texture, it looks like the _TextureDrawingCategoryIndex_Offset is 0x11 when the function is called to draw crosshair-related resources
+        /// And the ECX value (Texture ID ?) is 0x17 and 0x1C for Impact texture (untouched)
+        /// Other Id (0x192, 0x193, etc..) will be changed to not be visible
+        /// </summary>
+        protected override void Apply_NoCrosshairMemoryHack()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            List<Byte> Buffer = new List<Byte>();
+
+            //cmp dword ptr [Main95.exe+4BFB4],11
+            CaveMemory.Write_StrBytes("83 3D");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes((UInt32)_TargetProcess_MemoryBaseAddress + _TextureDrawingCategoryIndex_Offset));
+            CaveMemory.Write_StrBytes("11");
+            //jne Originalcode
+            CaveMemory.Write_StrBytes("75 11");
+            //cmp ecx, 17
+            CaveMemory.Write_StrBytes("83 F9 1C");
+            //je OriginalCode
+            CaveMemory.Write_StrBytes("74 0C");
+            //cmp ecx, 1C
+            CaveMemory.Write_StrBytes("83 F9 17");
+            //je OriginalCode
+            CaveMemory.Write_StrBytes("74 07");
+            //Patch:
+            //mov eax, 3000
+            CaveMemory.Write_StrBytes("B8 00 03 00 00");
+            //jmp Next
+            CaveMemory.Write_StrBytes("EB 03");
+            //OriginalCode:
+            //mov eax,[ebx+54]
+            CaveMemory.Write_StrBytes("8B 43 54");
+            //mov [edi],eax
+            CaveMemory.Write_StrBytes("89 07");
+            //mov eax,[ebx+58]
+            CaveMemory.Write_StrBytes("8B 43 58");
+            //mov [edi+04],eax
+            CaveMemory.Write_StrBytes("89 47 04");
+
+            //Inject it
+            CaveMemory.InjectToOffset(_NoCrosshair_InjectionStruct, "No Crosshair");
         }
 
         #endregion

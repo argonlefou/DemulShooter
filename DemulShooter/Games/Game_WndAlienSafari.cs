@@ -63,10 +63,7 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                            if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();                            
                         }
@@ -140,26 +137,17 @@ namespace DemulShooter
         /// <summary>
         /// Simple Hack : NOPing Axis procedures
         /// </summary>
-        private void SetHack()
+        protected override void Apply_InputsMemoryHack()
         {
-            CreateDataBank();
+            Create_InputsDataBank();
+            _P1_X_CaveAddress = _InputsDatabank_Address;
+            _P1_Y_CaveAddress = _InputsDatabank_Address + 0x04;
+
             //SetHack_X();
             SetHack_Y();
-        }
 
-        /// <summary>
-        /// Custom data storage
-        /// </summary>
-        private void CreateDataBank()
-        {
-            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
-            CaveMemory.Open();
-            CaveMemory.Alloc(0x800);
-
-            _P1_X_CaveAddress = CaveMemory.CaveAddress;
-            _P1_Y_CaveAddress = CaveMemory.CaveAddress + 0x04;
-
-            Logger.WriteLog("Custom data will be stored at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
+            Logger.WriteLog("Inputs Memory Hack complete !");
+            Logger.WriteLog("-");
         }
 
         private void SetHack_X()

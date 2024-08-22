@@ -177,6 +177,11 @@
             this.Btn_Rha_GamePath = new System.Windows.Forms.Button();
             this.Btn_Rha_InstallUnity = new System.Windows.Forms.Button();
             this.Txt_Rha_GamePath = new System.Windows.Forms.TextBox();
+            this.Tab_Raccoon = new System.Windows.Forms.TabPage();
+            this.groupBox21 = new System.Windows.Forms.GroupBox();
+            this.Btn_Raccoon_Patch = new System.Windows.Forms.Button();
+            this.Txt_Raccoon_FolderPath = new System.Windows.Forms.TextBox();
+            this.Btn_Raccoon_Open = new System.Windows.Forms.Button();
             this.Tab_RPCS3 = new System.Windows.Forms.TabPage();
             this.Txt_Rpcs3_Save = new System.Windows.Forms.Button();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
@@ -235,6 +240,10 @@
             this.Btn_Wws_InstallUnity = new System.Windows.Forms.Button();
             this.Txt_Wws_GamePath = new System.Windows.Forms.TextBox();
             this.Tab_Outputs = new System.Windows.Forms.TabPage();
+            this.groupBox19 = new System.Windows.Forms.GroupBox();
+            this.Cbox_NetOutputs = new System.Windows.Forms.CheckBox();
+            this.Cbox_WmOutputs = new System.Windows.Forms.CheckBox();
+            this.Cbox_Outputs = new System.Windows.Forms.CheckBox();
             this.Btn_SaveOutput = new System.Windows.Forms.Button();
             this.Grp_Outputs = new System.Windows.Forms.GroupBox();
             this.label21 = new System.Windows.Forms.Label();
@@ -243,7 +252,6 @@
             this.label23 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.Cbox_Outputs = new System.Windows.Forms.CheckBox();
             this.label22 = new System.Windows.Forms.Label();
             this.Txt_OutputRecoilOn = new System.Windows.Forms.TextBox();
             this.label25 = new System.Windows.Forms.Label();
@@ -254,9 +262,6 @@
             this.Bgw_XInput = new System.ComponentModel.BackgroundWorker();
             this.Cbo_PageSettings = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
-            this.groupBox19 = new System.Windows.Forms.GroupBox();
-            this.Cbox_WmOutputs = new System.Windows.Forms.CheckBox();
-            this.Cbox_NetOutputs = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.Tab_P1.SuspendLayout();
             this.Tab_P2.SuspendLayout();
@@ -290,6 +295,8 @@
             this.Gbox_OpGhost_Buttons.SuspendLayout();
             this.Tab_RabbidsHollywod.SuspendLayout();
             this.groupBox11.SuspendLayout();
+            this.Tab_Raccoon.SuspendLayout();
+            this.groupBox21.SuspendLayout();
             this.Tab_RPCS3.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox12.SuspendLayout();
@@ -298,8 +305,8 @@
             this.groupBox10.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.Tab_Outputs.SuspendLayout();
-            this.Grp_Outputs.SuspendLayout();
             this.groupBox19.SuspendLayout();
+            this.Grp_Outputs.SuspendLayout();
             this.SuspendLayout();
             // 
             // Btn_Save_P1
@@ -332,6 +339,7 @@
             this.tabControl1.Controls.Add(this.Tab_M2);
             this.tabControl1.Controls.Add(this.Tab_OpGhost);
             this.tabControl1.Controls.Add(this.Tab_RabbidsHollywod);
+            this.tabControl1.Controls.Add(this.Tab_Raccoon);
             this.tabControl1.Controls.Add(this.Tab_RPCS3);
             this.tabControl1.Controls.Add(this.Tab_SHA);
             this.tabControl1.Controls.Add(this.Tab_WildWest);
@@ -2018,6 +2026,57 @@
             this.Txt_Rha_GamePath.Size = new System.Drawing.Size(406, 22);
             this.Txt_Rha_GamePath.TabIndex = 69;
             // 
+            // Tab_Raccoon
+            // 
+            this.Tab_Raccoon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_Raccoon.Controls.Add(this.groupBox21);
+            this.Tab_Raccoon.Location = new System.Drawing.Point(4, 5);
+            this.Tab_Raccoon.Name = "Tab_Raccoon";
+            this.Tab_Raccoon.Size = new System.Drawing.Size(581, 334);
+            this.Tab_Raccoon.TabIndex = 21;
+            this.Tab_Raccoon.Text = "Raccoon Rampage";
+            this.Tab_Raccoon.UseVisualStyleBackColor = true;
+            // 
+            // groupBox21
+            // 
+            this.groupBox21.Controls.Add(this.Btn_Raccoon_Patch);
+            this.groupBox21.Controls.Add(this.Txt_Raccoon_FolderPath);
+            this.groupBox21.Controls.Add(this.Btn_Raccoon_Open);
+            this.groupBox21.Location = new System.Drawing.Point(5, 3);
+            this.groupBox21.Name = "groupBox21";
+            this.groupBox21.Size = new System.Drawing.Size(569, 100);
+            this.groupBox21.TabIndex = 73;
+            this.groupBox21.TabStop = false;
+            this.groupBox21.Text = "Select \"RSGame-Win64-Shipping.exe\" directory to patch the files :";
+            // 
+            // Btn_Raccoon_Patch
+            // 
+            this.Btn_Raccoon_Patch.Enabled = false;
+            this.Btn_Raccoon_Patch.Location = new System.Drawing.Point(209, 58);
+            this.Btn_Raccoon_Patch.Name = "Btn_Raccoon_Patch";
+            this.Btn_Raccoon_Patch.Size = new System.Drawing.Size(131, 36);
+            this.Btn_Raccoon_Patch.TabIndex = 2;
+            this.Btn_Raccoon_Patch.Text = "Patch !";
+            this.Btn_Raccoon_Patch.UseVisualStyleBackColor = true;
+            this.Btn_Raccoon_Patch.Click += new System.EventHandler(this.Btn_Raccoon_Patch_Click);
+            // 
+            // Txt_Raccoon_FolderPath
+            // 
+            this.Txt_Raccoon_FolderPath.Location = new System.Drawing.Point(6, 30);
+            this.Txt_Raccoon_FolderPath.Name = "Txt_Raccoon_FolderPath";
+            this.Txt_Raccoon_FolderPath.Size = new System.Drawing.Size(514, 22);
+            this.Txt_Raccoon_FolderPath.TabIndex = 1;
+            // 
+            // Btn_Raccoon_Open
+            // 
+            this.Btn_Raccoon_Open.Location = new System.Drawing.Point(526, 29);
+            this.Btn_Raccoon_Open.Name = "Btn_Raccoon_Open";
+            this.Btn_Raccoon_Open.Size = new System.Drawing.Size(37, 23);
+            this.Btn_Raccoon_Open.TabIndex = 0;
+            this.Btn_Raccoon_Open.Text = "...";
+            this.Btn_Raccoon_Open.UseVisualStyleBackColor = true;
+            this.Btn_Raccoon_Open.Click += new System.EventHandler(this.Btn_Raccoon_Open_Click);
+            // 
             // Tab_RPCS3
             // 
             this.Tab_RPCS3.Controls.Add(this.Txt_Rpcs3_Save);
@@ -2686,6 +2745,52 @@
             this.Tab_Outputs.Text = "Outputs";
             this.Tab_Outputs.UseVisualStyleBackColor = true;
             // 
+            // groupBox19
+            // 
+            this.groupBox19.Controls.Add(this.Cbox_NetOutputs);
+            this.groupBox19.Controls.Add(this.Cbox_WmOutputs);
+            this.groupBox19.Controls.Add(this.Cbox_Outputs);
+            this.groupBox19.Location = new System.Drawing.Point(5, 3);
+            this.groupBox19.Name = "groupBox19";
+            this.groupBox19.Size = new System.Drawing.Size(568, 101);
+            this.groupBox19.TabIndex = 57;
+            this.groupBox19.TabStop = false;
+            // 
+            // Cbox_NetOutputs
+            // 
+            this.Cbox_NetOutputs.AutoSize = true;
+            this.Cbox_NetOutputs.Enabled = false;
+            this.Cbox_NetOutputs.Location = new System.Drawing.Point(38, 67);
+            this.Cbox_NetOutputs.Name = "Cbox_NetOutputs";
+            this.Cbox_NetOutputs.Size = new System.Drawing.Size(124, 20);
+            this.Cbox_NetOutputs.TabIndex = 57;
+            this.Cbox_NetOutputs.Text = "Network Outputs";
+            this.Cbox_NetOutputs.UseVisualStyleBackColor = true;
+            this.Cbox_NetOutputs.CheckedChanged += new System.EventHandler(this.Cbox_NetOutputs_CheckedChanged);
+            // 
+            // Cbox_WmOutputs
+            // 
+            this.Cbox_WmOutputs.AutoSize = true;
+            this.Cbox_WmOutputs.Enabled = false;
+            this.Cbox_WmOutputs.Location = new System.Drawing.Point(38, 41);
+            this.Cbox_WmOutputs.Name = "Cbox_WmOutputs";
+            this.Cbox_WmOutputs.Size = new System.Drawing.Size(315, 20);
+            this.Cbox_WmOutputs.TabIndex = 56;
+            this.Cbox_WmOutputs.Text = "Window Messages outputs (MameHooker, etc...)";
+            this.Cbox_WmOutputs.UseVisualStyleBackColor = true;
+            this.Cbox_WmOutputs.CheckedChanged += new System.EventHandler(this.Cbox_WmOutputs_CheckedChanged);
+            // 
+            // Cbox_Outputs
+            // 
+            this.Cbox_Outputs.AutoSize = true;
+            this.Cbox_Outputs.Location = new System.Drawing.Point(13, -1);
+            this.Cbox_Outputs.Name = "Cbox_Outputs";
+            this.Cbox_Outputs.Size = new System.Drawing.Size(118, 20);
+            this.Cbox_Outputs.TabIndex = 1;
+            this.Cbox_Outputs.Text = "Enable Outputs";
+            this.Cbox_Outputs.UseVisualStyleBackColor = true;
+            this.Cbox_Outputs.CheckedChanged += new System.EventHandler(this.Cbox_Outputs_CheckedChanged);
+            // 
             // Btn_SaveOutput
             // 
             this.Btn_SaveOutput.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
@@ -2774,17 +2879,6 @@
             this.label10.TabIndex = 64;
             this.label10.Text = "Milliseconds";
             // 
-            // Cbox_Outputs
-            // 
-            this.Cbox_Outputs.AutoSize = true;
-            this.Cbox_Outputs.Location = new System.Drawing.Point(13, -1);
-            this.Cbox_Outputs.Name = "Cbox_Outputs";
-            this.Cbox_Outputs.Size = new System.Drawing.Size(118, 20);
-            this.Cbox_Outputs.TabIndex = 1;
-            this.Cbox_Outputs.Text = "Enable Outputs";
-            this.Cbox_Outputs.UseVisualStyleBackColor = true;
-            this.Cbox_Outputs.CheckedChanged += new System.EventHandler(this.Cbox_Outputs_CheckedChanged);
-            // 
             // label22
             // 
             this.label22.AutoSize = true;
@@ -2865,6 +2959,7 @@
             "m2Emulator",
             "Operation G.H.O.S.T",
             "Rabbids Hollywood Arcade",
+            "Raccoon Rampage",
             "RPCS3 (System 357)",
             "Silent Hill : The Arcade",
             "Wild West Shoutout",
@@ -2883,41 +2978,6 @@
             this.label39.Size = new System.Drawing.Size(104, 16);
             this.label39.TabIndex = 40;
             this.label39.Text = "Page selection :";
-            // 
-            // groupBox19
-            // 
-            this.groupBox19.Controls.Add(this.Cbox_NetOutputs);
-            this.groupBox19.Controls.Add(this.Cbox_WmOutputs);
-            this.groupBox19.Controls.Add(this.Cbox_Outputs);
-            this.groupBox19.Location = new System.Drawing.Point(5, 3);
-            this.groupBox19.Name = "groupBox19";
-            this.groupBox19.Size = new System.Drawing.Size(568, 101);
-            this.groupBox19.TabIndex = 57;
-            this.groupBox19.TabStop = false;
-            // 
-            // Cbox_WmOutputs
-            // 
-            this.Cbox_WmOutputs.AutoSize = true;
-            this.Cbox_WmOutputs.Enabled = false;
-            this.Cbox_WmOutputs.Location = new System.Drawing.Point(38, 41);
-            this.Cbox_WmOutputs.Name = "Cbox_WmOutputs";
-            this.Cbox_WmOutputs.Size = new System.Drawing.Size(315, 20);
-            this.Cbox_WmOutputs.TabIndex = 56;
-            this.Cbox_WmOutputs.Text = "Window Messages outputs (MameHooker, etc...)";
-            this.Cbox_WmOutputs.UseVisualStyleBackColor = true;
-            this.Cbox_WmOutputs.CheckedChanged += new System.EventHandler(this.Cbox_WmOutputs_CheckedChanged);
-            // 
-            // Cbox_NetOutputs
-            // 
-            this.Cbox_NetOutputs.AutoSize = true;
-            this.Cbox_NetOutputs.Enabled = false;
-            this.Cbox_NetOutputs.Location = new System.Drawing.Point(38, 67);
-            this.Cbox_NetOutputs.Name = "Cbox_NetOutputs";
-            this.Cbox_NetOutputs.Size = new System.Drawing.Size(124, 20);
-            this.Cbox_NetOutputs.TabIndex = 57;
-            this.Cbox_NetOutputs.Text = "Network Outputs";
-            this.Cbox_NetOutputs.UseVisualStyleBackColor = true;
-            this.Cbox_NetOutputs.CheckedChanged += new System.EventHandler(this.Cbox_NetOutputs_CheckedChanged);
             // 
             // Wnd_DemulShooterGui
             // 
@@ -2992,6 +3052,9 @@
             this.Tab_RabbidsHollywod.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
             this.groupBox11.PerformLayout();
+            this.Tab_Raccoon.ResumeLayout(false);
+            this.groupBox21.ResumeLayout(false);
+            this.groupBox21.PerformLayout();
             this.Tab_RPCS3.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
             this.groupBox12.ResumeLayout(false);
@@ -3004,10 +3067,10 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.Tab_Outputs.ResumeLayout(false);
-            this.Grp_Outputs.ResumeLayout(false);
-            this.Grp_Outputs.PerformLayout();
             this.groupBox19.ResumeLayout(false);
             this.groupBox19.PerformLayout();
+            this.Grp_Outputs.ResumeLayout(false);
+            this.Grp_Outputs.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3243,6 +3306,11 @@
         private System.Windows.Forms.GroupBox groupBox19;
         private System.Windows.Forms.CheckBox Cbox_NetOutputs;
         private System.Windows.Forms.CheckBox Cbox_WmOutputs;
+        private System.Windows.Forms.TabPage Tab_Raccoon;
+        private System.Windows.Forms.GroupBox groupBox21;
+        private System.Windows.Forms.Button Btn_Raccoon_Patch;
+        private System.Windows.Forms.TextBox Txt_Raccoon_FolderPath;
+        private System.Windows.Forms.Button Btn_Raccoon_Open;
     }
 }
 
