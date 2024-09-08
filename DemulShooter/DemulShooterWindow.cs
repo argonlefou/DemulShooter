@@ -615,7 +615,7 @@ namespace DemulShooter
                     {
                         case "aa":
                             {
-                                _Game = new Game_RtAliensArmageddon(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_RtAliensArmageddon(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             } break;
                         case "jp":
                             {

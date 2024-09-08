@@ -587,15 +587,15 @@ namespace DemulShooter
             if (!_DisableInputHack)
                 Apply_InputsMemoryHack();
             else
-                Logger.WriteLog("Input Hack disabled");
+                Logger.WriteLog("Input Hack disabled");            
+
+            Apply_OutputsMemoryHack();
 
             if (_HideCrosshair)
             {
                 Logger.WriteLog("Applying No-Crosshair hack...");
                 Apply_NoCrosshairMemoryHack();
             }
-
-            Apply_OutputsMemoryHack();
         }
 
         protected virtual void Apply_InputsMemoryHack()

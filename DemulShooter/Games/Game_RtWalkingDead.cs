@@ -6,7 +6,6 @@ using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Memory;
-using DsCore.Win32;
 
 namespace DemulShooter
 {
@@ -29,12 +28,11 @@ namespace DemulShooter
         private UInt32 _P2_RecoilStatus_CaveAddress = 0;
         private UInt32 _P1_DamageStatus_CaveAddress = 0;
         private UInt32 _P2_DamageStatus_CaveAddress = 0;
-        private UInt32 _NoCrosshair_FldValue_CaveAddress = 0;
 
         /*** MEMORY ADDRESSES **/
         private InjectionStruct _Recoil_InjectionStruct = new InjectionStruct(0x0808B1D9, 7);
         private InjectionStruct _Damage_InjectionStruct = new InjectionStruct(0x080762D6, 8);
-        private UInt32 _NoCrosshair_Address = 0x0806DFFC;
+        private InjectionStruct _NoCrosshair_InjectionStruct = new InjectionStruct(0x0806DF47, 8);
 
         /// <summary>
         /// Constructor
@@ -120,8 +118,6 @@ namespace DemulShooter
             _P2_RecoilStatus_CaveAddress = _OutputsDatabank_Address + 4;
             _P1_DamageStatus_CaveAddress = _OutputsDatabank_Address + 0x10;
             _P2_DamageStatus_CaveAddress = _OutputsDatabank_Address + 0x14;
-            _NoCrosshair_FldValue_CaveAddress = _OutputsDatabank_Address + 0x20;
-            WriteBytes(_NoCrosshair_FldValue_CaveAddress, BitConverter.GetBytes((float)(-1.0f)));
 
             SetHack_Damage();
             SetHack_Recoil();
@@ -155,24 +151,9 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("5F");
             //mov [esp+04],00000040
             CaveMemory.Write_StrBytes("C7 44 24 04 40 00 00 00");
-            //return
-            CaveMemory.Write_jmp(_Damage_InjectionStruct.InjectionReturnOffset);
-
-            Logger.WriteLog("Adding Damage Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - _Damage_InjectionStruct.InjectionOffset - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            for (int i = 0; i < _Damage_InjectionStruct.NeededNops; i++)
-            {
-                Buffer.Add(0x90);
-            }
-            Win32API.WriteProcessMemory(ProcessHandle, _Damage_InjectionStruct.InjectionOffset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            
+            //Inject it
+            CaveMemory.InjectToAddress(_Damage_InjectionStruct, "Damage");
         }
 
         /// <summary>
@@ -199,40 +180,30 @@ namespace DemulShooter
             //mov [esp],088C735C
             CaveMemory.Write_StrBytes("C7 04 24 5C 73 8C 08");
 
-            //return
-            CaveMemory.Write_jmp(_Recoil_InjectionStruct.InjectionReturnOffset);
-
-            Logger.WriteLog("Adding Recoil Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - _Recoil_InjectionStruct.InjectionOffset - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            for (int i = 0; i < _Recoil_InjectionStruct.NeededNops; i++)
-            {
-                Buffer.Add(0x90);
-            }
-            Win32API.WriteProcessMemory(ProcessHandle, _Recoil_InjectionStruct.InjectionOffset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            //Inject it
+            CaveMemory.InjectToAddress(_Recoil_InjectionStruct, "Recoil");
         }
 
+
+        /// <summary>
+        /// Originally, changing the fld value loaded with our own -1.0f stored in databank
+        /// Changing the parameter in the called function a bit further allow to do a simple Injection without custom stored value
+        /// </summary>
         protected override void Apply_NoCrosshairMemoryHack()
         {
-            if (_HideCrosshair)
-            {
-                //Replacing the fld instruction (loading Cursor axis as float) by fld (-1)
-                WriteBytes(_NoCrosshair_Address, new byte[] { 0xD9, 0x05 });
-                WriteBytes(_NoCrosshair_Address + 2, BitConverter.GetBytes(_NoCrosshair_FldValue_CaveAddress));
-                WriteByte(_NoCrosshair_Address + 6, 0x90);
-            }
-            else
-            {
-                //Setting it back to default if it was changed by a previous instance of DemulSHooter
-                WriteBytes(_NoCrosshair_Address, new byte[] { 0xD9, 0x04, 0xCD, 0x8C, 0xEF, 0xAB, 0x08 });
-            }
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //lea edx,[esp+18]
+            CaveMemory.Write_StrBytes("8D 54 24 18");
+            //mov [edx],BF800000
+            CaveMemory.Write_StrBytes("C7 02 00 00 80 BF");
+            //mov [esp+04],edx
+            CaveMemory.Write_StrBytes("89 54 24 04");
+
+            //InjectIt
+            CaveMemory.InjectToAddress(_NoCrosshair_InjectionStruct, "NoCrosshair");
         }
 
         #endregion

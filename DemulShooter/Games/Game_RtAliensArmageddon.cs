@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
+using DsCore.Memory;
 
 namespace DemulShooter
 {
@@ -12,6 +13,9 @@ namespace DemulShooter
     {
         //Rom loaded + Rom version check
         private UInt32 _RomLoaded_check_Instruction_v390 = 0x08088211;
+
+        private InjectionStruct _P1_NoCrosshair_InjectionStruct = new InjectionStruct(0x0807109C, 6);
+        private InjectionStruct _P2_NoCrosshair_InjectionStruct = new InjectionStruct(0x0807111A, 6);
 
         //Outputs Address
         private UInt32 _P1_Struct_Address = 0x08DAB920;
@@ -25,9 +29,11 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_RtAliensArmageddon(String RomName, bool DisableInputHack, bool Verbose)
+        public Game_RtAliensArmageddon(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
             : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
         {
+            _HideCrosshair = HideCrosshair;
+
             _KnownMd5Prints.Add("Aliens Armageddon - 03.90 USA", "fe95d8a34331b95d14f788220e6b8fed");
 
             _tProcess.Start();
@@ -61,7 +67,7 @@ namespace DemulShooter
                                 _TargetProcess_Md5Hash = _KnownMd5Prints["Aliens Armageddon - 03.90 USA"];
                                 Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
-
+                                Apply_MemoryHacks();
                                 _ProcessHooked = true;
                                 RaiseGameHookedEvent();
                             }
@@ -91,6 +97,61 @@ namespace DemulShooter
                 }
             }
         }
+
+        #region Memory Hack
+
+        /// <summary>
+        /// To remove crosshair, we will change the cursor drawinf location to -1.0 to hide it.
+        /// Small filtering added : looking at the player "playing" flag so that crosshair will still be visible on TEST menu
+        /// </summary>
+        protected override void Apply_NoCrosshairMemoryHack()
+        {
+            Apply_P1NoCrosshair_Hack();
+            Apply_P2NoCrosshair_Hack();
+        }
+
+        private void Apply_P1NoCrosshair_Hack()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            //fstp dword ptr [0890B2B0]
+            CaveMemory.Write_StrBytes("D9 1D B0 B2 90 08");
+            //cmp byte ptr [08DAB921],01
+            CaveMemory.Write_StrBytes("80 3D");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Struct_Address + 1));
+            CaveMemory.Write_StrBytes("01");
+            //jne exit
+            CaveMemory.Write_StrBytes("75 0A");
+            //mov [0890B2B0],BF800000
+            CaveMemory.Write_StrBytes("C7 05 B0 B2 90 08 00 00 80 BF");
+
+            //Inject it
+            CaveMemory.InjectToAddress(_P1_NoCrosshair_InjectionStruct, "P1 NoCrosshair");
+        }
+
+        private void Apply_P2NoCrosshair_Hack()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+            //fstp dword ptr [0890B2B4]
+            CaveMemory.Write_StrBytes("D9 1D B4 B2 90 08");
+            //cmp byte ptr [0x08DABAF1],01
+            CaveMemory.Write_StrBytes("80 3D");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Struct_Address + 1));
+            CaveMemory.Write_StrBytes("01");
+            //jne exit
+            CaveMemory.Write_StrBytes("75 0A");
+            //mov [0890B2B4],BF800000
+            CaveMemory.Write_StrBytes("C7 05 B4 B2 90 08 00 00 80 BF");
+
+            //InjectIt
+            CaveMemory.InjectToAddress(_P2_NoCrosshair_InjectionStruct, "P2 NoCrosshair");
+        }
+
+        #endregion
+
 
         #region Outputs
 
