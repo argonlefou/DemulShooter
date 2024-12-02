@@ -34,6 +34,8 @@ namespace DemulShooterX64
             _KnownMd5Prints.Add("Flycast v2.0", "84b08b9aa61d8c46ff47abcc77f690f7");
             _KnownMd5Prints.Add("Flycast v2.1", "cf56b386e1a9e82f5a92f8aadb2b6df9");
             _KnownMd5Prints.Add("Flycast v2.2", "1fa2952ada82345ae743bc9110c6dbec");
+            _KnownMd5Prints.Add("Flycast v2.3", "d5e819796226078c6ce51dc8f304550b");
+            _KnownMd5Prints.Add("Flycast v2.4", "3ac610caf584b9891de6b8a8924862e5");
             _tProcess.Start();
             Logger.WriteLog("Waiting for Flycast " + _RomName + " game to hook.....");
         }

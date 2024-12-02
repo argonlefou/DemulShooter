@@ -7,12 +7,13 @@ using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
-using DsCore.Win32;
 
 namespace DemulShooter
 {
     class Game_LindberghLgj : Game
     {
+        private const String GAMEDATA_FOLDER = @"MemoryData\lindbergh\lgj";
+
         //INPUT_STRUCT offset in game
         private const UInt32 INPUT_X_OFFSET = 0x134;
         private const UInt32 INPUT_Y_OFFSET = 0x138;
@@ -22,8 +23,7 @@ namespace DemulShooter
         private NopStruct _Nop_Axis_Y = new NopStruct(0x080A97FE, 8);
 
         //Codecave injection for Buttons
-        private UInt32 _Buttons_Injection_Address = 0x0840F40C;
-        private UInt32 _Buttons_Injection_Return_Address = 0x0840F412;
+        private InjectionStruct _Buttons_InjectionStruct = new InjectionStruct(0x0840F40C,6);
         
         //Base PTR to find P1 & P2 Input struct
         private UInt32 _Player1_InputPtr_Address = 0x087D3BB0;
@@ -35,15 +35,16 @@ namespace DemulShooter
         //Outputs
         private UInt32 _Outputs_Address = 0x087D186D;
         private UInt32 _Credits_Address = 0x08C08420;
+        private UInt32 _PlayersStatus_Address = 0x87D3DC0;
 
         //Custom recoil injection
-        private UInt32 _Recoil_Injection_Address = 0x080AFA22;
-        private UInt32 _Recoil_Injection_Return_Address = 0x080AFA28;
+        private InjectionStruct _Recoil_InjectionStruct = new InjectionStruct(0x080AFA22, 6);
         private UInt32 _P1_CustomRecoil_CaveAddress = 0;
         private UInt32 _P2_CustomRecoil_CaveAddress = 0;
 
         //Check instruction for game loaded
-        private UInt32 _RomLoaded_Check_Instruction = 0x0807925B;
+        private UInt32 _RomLoaded_Check_Instruction_Original = 0x0807925B;
+        private UInt32 _RomLoaded_check_Instruction_RevA = 0x0807934B;
 
         private UInt32 _Player1_InputStruct_Address = 0;
         private UInt32 _Player2_InputStruct_Address = 0;
@@ -59,6 +60,9 @@ namespace DemulShooter
         public Game_LindberghLgj(String RomName, bool DisableInputHack, bool Verbose)
             : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
         {
+            _KnownMd5Prints.Add("Let's Go Jungle - Original", "b3f71e9defa7f71d777958138e4a0ebb");
+            _KnownMd5Prints.Add("Let's Go Jungle - Rev.A", "875486650a16abce5b1901fd319001c0");
+
             _tProcess.Start();
             Logger.WriteLog("Waiting for Lindbergh " + _RomName + " game to hook.....");
         }
@@ -82,9 +86,13 @@ namespace DemulShooter
                         if (_TargetProcess_MemoryBaseAddress != IntPtr.Zero)
                         {
                             //To make sure BurgieLoader has loaded the rom entirely, we're looking for some random instruction to be present in memory before starting                            
-                            byte[] buffer = ReadBytes(_RomLoaded_Check_Instruction, 6);
+                            byte[] buffer = ReadBytes(_RomLoaded_Check_Instruction_Original, 6);
                             if (buffer[0] == 0x8B && buffer[1] == 0x1D && buffer[2] == 0xB0 && buffer[3] == 0x3B && buffer[4] == 0x7D && buffer[5] == 0x08)
                             {
+                                Logger.WriteLog("Let's Go Jungle - Original binary detected");
+                                _TargetProcess_Md5Hash = _KnownMd5Prints["Let's Go Jungle - Original"];
+                                ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
+
                                 buffer = ReadBytes(_Player1_InputPtr_Address, 4);
                                 _Player1_InputStruct_Address = BitConverter.ToUInt32(buffer, 0);
 
@@ -107,8 +115,38 @@ namespace DemulShooter
                             }
                             else
                             {
-                                Logger.WriteLog("Game not Loaded, waiting...");
-                            }
+                                buffer = ReadBytes(_RomLoaded_check_Instruction_RevA, 6);
+                                if (buffer[0] == 0x8B && buffer[1] == 0x1D && buffer[2] == 0x10 && buffer[3] == 0xBE && buffer[4] == 0x7D && buffer[5] == 0x08)
+                                {
+                                    Logger.WriteLog("Let's Go Jungle - Rev.A binary detected");
+                                    _TargetProcess_Md5Hash = _KnownMd5Prints["Let's Go Jungle - Rev.A"];
+                                    ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
+
+                                    buffer = ReadBytes(_Player1_InputPtr_Address, 4);
+                                    _Player1_InputStruct_Address = BitConverter.ToUInt32(buffer, 0);
+
+                                    buffer = ReadBytes(_Player2_InputPtr_Address, 4);
+                                    _Player2_InputStruct_Address = BitConverter.ToUInt32(buffer, 0);
+
+                                    if (_Player1_InputStruct_Address != 0 && _Player2_InputStruct_Address != 0)
+                                    {
+                                        _GameWindowHandle = _TargetProcess.MainWindowHandle;
+                                        Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
+                                        Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));                                    
+
+                                        Logger.WriteLog("P1 InputStruct address = 0x" + _Player1_InputStruct_Address.ToString("X8"));
+                                        Logger.WriteLog("P2 InputStruct address = 0x" + _Player2_InputStruct_Address.ToString("X8"));
+
+                                        Apply_MemoryHacks();
+                                        _ProcessHooked = true;
+                                        RaiseGameHookedEvent();                                    
+                                    }
+                                }
+                                else
+                                {
+                                    Logger.WriteLog("Game not Loaded, waiting...");
+                                }
+                            }                            
                         }
                     }
                 }
@@ -222,28 +260,21 @@ namespace DemulShooter
             //and al, 0xF0
             CaveMemory.Write_StrBytes("24 F0");
             //and [edx+08BECB79],FFFFFF0F
-            CaveMemory.Write_StrBytes("81 A2 79 CB BE 08 0F FF FF FF");
+            CaveMemory.Write_StrBytes("81 A2");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_Buttons_Address));
+            CaveMemory.Write_StrBytes("0F FF FF FF");
             //or [edx+08BECB79],al
-            CaveMemory.Write_StrBytes("08 82 79 CB BE 08");
+            CaveMemory.Write_StrBytes("08 82");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_Buttons_Address));
             //jmp exit
             CaveMemory.Write_StrBytes("E9 06 00 00 00");
             //OriginalCode
             //mov [edx+08BECB79],al
-            CaveMemory.Write_StrBytes("88 82 79 CB BE 08");
-            CaveMemory.Write_jmp(_Buttons_Injection_Return_Address);
+            CaveMemory.Write_StrBytes("88 82");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_Buttons_Address));
 
-            Logger.WriteLog("Adding Buttons Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - _Buttons_Injection_Address - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Buffer.Add(0x90);
-            Win32API.WriteProcessMemory(ProcessHandle, _Buttons_Injection_Address, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten); 
+            //Inject it
+            CaveMemory.InjectToAddress(_Buttons_InjectionStruct, "Recoil");
         }
 
         // amCreditIsEnough() => 0x084E4A2F ~~ 0x084E4AC4
@@ -264,6 +295,17 @@ namespace DemulShooter
             _P1_CustomRecoil_CaveAddress = _OutputsDatabank_Address;
             _P2_CustomRecoil_CaveAddress = _OutputsDatabank_Address + 0x04;
 
+            SetHack_Recoil();
+
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
+        /// <summary>
+        /// Intercepting the bullet count increase call to create our own recoil
+        /// </summary>
+        private void SetHack_Recoil()
+        {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
@@ -272,7 +314,7 @@ namespace DemulShooter
             //push eax
             CaveMemory.Write_StrBytes("50");
             //mov    eax,DWORD PTR [ebx+0x118] 
-            CaveMemory.Write_StrBytes("8B 83 18 01 00 00");       
+            CaveMemory.Write_StrBytes("8B 83 18 01 00 00");
             //shl eax, 2
             CaveMemory.Write_StrBytes("C1 E0 02");
             //add eax, _P1_CustomRecoil_CaveAddress
@@ -283,26 +325,11 @@ namespace DemulShooter
             //pop eax
             CaveMemory.Write_StrBytes("58");
             //mov ds:g_PlayerShotCounter, edx
-            CaveMemory.Write_StrBytes("89 15 A4 3B 7D 08");       
+            //ds:g_PlayerShotCounter is changing with build so we just read/copy the original code line
+            CaveMemory.Write_Bytes(ReadBytes(_Recoil_InjectionStruct.InjectionOffset, 6));
 
-            //return
-            CaveMemory.Write_jmp(_Recoil_Injection_Return_Address);
-
-            Logger.WriteLog("Adding Recoil Codecave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - _Recoil_Injection_Address - 5;
-            Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Buffer.Add(0x90);
-            Win32API.WriteProcessMemory(ProcessHandle, _Recoil_Injection_Address, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
-
-            Logger.WriteLog("Outputs Memory Hack complete !");
-            Logger.WriteLog("-");
+            //Inject it
+            CaveMemory.InjectToAddress(_Recoil_InjectionStruct, "Recoil");
         }
 
         #endregion
@@ -393,7 +420,7 @@ namespace DemulShooter
             _P1_Life = 0;
             _P2_Life = 0;
             //Checking this byte (player playing ?) otherwise the game is still enabing rumble during Attract Mode
-            if (ReadByte(0x87D3DC0) == 1)
+            if (ReadByte(_PlayersStatus_Address) == 1)
             {
                 if (P1_StructAddress != 0)
                 {
@@ -412,7 +439,7 @@ namespace DemulShooter
             }
 
             //Checking this byte (player playing ?) otherwise the game is still enabing rumble during Attract Mode
-            if (ReadByte(0x87D3DC4) == 1)
+            if (ReadByte(_PlayersStatus_Address + 4) == 1)
             {
                 if (P2_StructAddress != 0)
                 {

@@ -900,7 +900,7 @@ namespace DemulShooterX64
         }
         protected virtual IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (_Game != null && _Game.ProcessHooked)
+            if (_Game != null && _Game.ProcessHooked && !_NoInput)
             {
                 try
                 {
