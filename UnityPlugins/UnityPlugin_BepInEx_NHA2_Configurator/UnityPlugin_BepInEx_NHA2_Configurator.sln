@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityPlugin_BepInEx_NHA2_Configurator", "UnityPlugin_BepInEx_NHA2_Configurator.csproj", "{FB7FF287-8EFA-4EA0-8C6F-4867B15DB1FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FB7FF287-8EFA-4EA0-8C6F-4867B15DB1FB}.Debug|x86.ActiveCfg = Release|x86
+		{FB7FF287-8EFA-4EA0-8C6F-4867B15DB1FB}.Debug|x86.Build.0 = Release|x86
+		{FB7FF287-8EFA-4EA0-8C6F-4867B15DB1FB}.Release|x86.ActiveCfg = Release|x86
+		{FB7FF287-8EFA-4EA0-8C6F-4867B15DB1FB}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

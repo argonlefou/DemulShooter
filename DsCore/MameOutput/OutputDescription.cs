@@ -158,6 +158,21 @@ namespace DsCore.MameOutput
         public static readonly String P1_BallShooter = "P1_BallShooter";                   //
         public static readonly String P2_BallShooter = "P2_BallShooter";                   //
 
+        public static readonly String Lmp_Horn_R = "Lmp_Horn_R";                    //
+        public static readonly String Lmp_Horn_G = "Lmp_Horn_G";                    //
+        public static readonly String Lmp_Horn_B = "Lmp_Horn_B";                    //
+        public static readonly String Lmp_LeftBulletMark = "Lmp_LeftBulletMark";    //    
+        public static readonly String Lmp_RightBulletMark = "Lmp_RightBulletMark";  //
+        public static readonly String Lmp_W = "Lmp_W";                              // Medaru no gunman
+        public static readonly String Lmp_A = "Lmp_A";                              //
+        public static readonly String Lmp_N = "Lmp_N";                              //
+        public static readonly String Lmp_T = "Lmp_T";                              //
+        public static readonly String Lmp_E = "Lmp_E";                              //
+        public static readonly String Lmp_D = "Lmp_D";                              //
+        public static readonly String Lmp_LeftReload = "Lmp_LeftReload";            //
+        public static readonly String Lmp_RightReload = "Lmp_RightReload";          //
+        public static readonly String Lmp_Payout = "Lmp_Payout";
+
 
         public static readonly String P1_GunMotor = "P1_GunMotor";
         public static readonly String P2_GunMotor = "P2_GunMotor";

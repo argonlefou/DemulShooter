@@ -24,6 +24,7 @@ namespace DemulShooterX64
         {
             _KnownMd5Prints.Add("Night Hunter v2.0.6 - Clean Dump", "1d6cbc2b0ebaf0bacbcbea84aa0f4a27");
             _KnownMd5Prints.Add("Night Hunter v2.0.6 - Dongle patched", "d223a04447e84073a178a14d50349da8");
+            _KnownMd5Prints.Add("Night Hunter v3.0.2 - Clean Dump", "a7ddc5d05f9081b2fb5086cdd807deae");
             _tProcess.Start();
             Logger.WriteLog("Waiting for UNIS game " + _RomName + " game to hook.....");
         }
@@ -52,7 +53,7 @@ namespace DemulShooterX64
                             // the displayed window according to the Title, if DemulShooter is started before the game,  to hook the correct one
                             if (FindGameWindow_Equals("test_gun"))
                             {
-                                String AssemblyDllPath = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", @"qumo2_en_Data\Managed\Assembly-CSharp.dll");
+                                String AssemblyDllPath = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", _Target_Process_Name + @"_Data\Managed\Assembly-CSharp.dll");
                                 CheckMd5(AssemblyDllPath);
                                 if (_DisableInputHack)
                                     Logger.WriteLog("Input Hack disabled");

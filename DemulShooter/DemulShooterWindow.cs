@@ -666,6 +666,10 @@ namespace DemulShooter
                             {
                                 _Game = new Game_RwLGI3D(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
+                        case "mng":
+                            {
+                                _Game = new Game_RwGunman(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            }; break; 
                         case "og":
                             {
                                 _Game = new Game_RwOpGhost(_Rom.ToLower(), _NoInput, isVerbose);
@@ -745,6 +749,10 @@ namespace DemulShooter
                             {
                                 _Game = new Game_WndArtIsDead(_Rom.ToLower(), _NoInput, isVerbose);
                             } break;
+                        case "coltwws":
+                            {
+                                _Game = new Game_WndColtWildWestShootout(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            } break;
                         case "bugbust":
                             {
                                 _Game = new Game_WndBugBusters(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
@@ -811,7 +819,8 @@ namespace DemulShooter
                         case "bonbon":
                             {
                                 _Game = new Game_WndBonbon95(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
-                            }; break;                        
+                            }; break;
+                        
                         default:
                             break;
                     }

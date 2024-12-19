@@ -155,6 +155,7 @@ namespace DemulShooter
                 {"sgg","SEGA golden guns"},
                 {"lgi","Let's Go Island: Lost on the Island of Tropics"},
                 {"lgi3d","Let's go Island 3D"},
+                {"mng","Medaru no Gunman"},
                 {"og","Operation G.H.O.S.T"},
                 {"sdr","SEGA Dream Raiders"},
                 {"tha","Transformers : Human Alliance"}
@@ -176,6 +177,7 @@ namespace DemulShooter
                 {"ads","Alien Disco Safari"},
                 {"artdead","Art Is Dead"},
                 {"bugbust","Bug Busters"},
+                {"coltwws","Colt's Wild West Shootout"},
                 {"friction","Friction"},
                 {"hfa", "Heavy Fire Afghanistan"},
                 {"hfa2p","Heavy Fire Afghanistan (dual Player)"},
