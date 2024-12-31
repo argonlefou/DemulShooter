@@ -14,7 +14,7 @@ namespace DsCore.MameOutput
     {
         private Timer _SyncBlinkingTimer;
         private int _BlinkingValue = 0;
-        private bool _EnableBlinking = false;
+        private bool _EnableBlinking = true;
 
         public override int OutputValue
         {

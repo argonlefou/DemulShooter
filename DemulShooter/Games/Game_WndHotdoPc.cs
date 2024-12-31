@@ -30,6 +30,7 @@ namespace DemulShooter
         {                      
             _KnownMd5Prints.Add("Typing Of The Dead SEGA Windows", "da39156a426e3f3faca25d3c8cb2b401");
             _KnownMd5Prints.Add("Typing Of The Dead SEGA Windows STEAM", "9dcb7083e3e3ede186c9a809498a0d3b");
+            _KnownMd5Prints.Add("Typing of The Dead STEAM", "ac70ca4b6d310fe1d5f18965575ece68");
 
             _tProcess.Start();            
             Logger.WriteLog("Waiting for Windows Game " + _RomName + " game to hook.....");

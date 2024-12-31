@@ -386,6 +386,18 @@ namespace DemulShooterX64
                     }
                 }
 
+                //UDC Games
+                else if (_Target.Equals("udc"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "marss":
+                            {
+                                _Game = new Game_UdcMarsSortie(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                            }; break;
+                    }
+                }
+
                 //UNIS Games
                 else if (_Target.Equals("unis"))
                 {
@@ -425,7 +437,7 @@ namespace DemulShooterX64
                                 _Game = new Game_WndOpWolfReturn(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
                             }; break;
                     }
-                }                
+                }
 
                 //Wip Games
                 else if (_Target.Equals("wip"))

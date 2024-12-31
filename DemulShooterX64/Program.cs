@@ -45,6 +45,7 @@ namespace DemulShooterX64
                 {"flycast","Flycast v2.0"},
                 {"rpcs3", "RPCS3 (System 357)"},
                 {"seganu","SEGA Nu games"},
+                {"udc","United Distribution Company"},
                 {"unis","UNIS Technology"}, 
                 {"windows","Windows games"}                
             };
@@ -96,6 +97,10 @@ namespace DemulShooterX64
                 {"lma","Luigi's Mansion Arcade"}
             };
 
+            Dictionary<String, String> _UdcRoms = new Dictionary<String, String>(){
+                {"marss","Mars Sortie"}
+            };
+
             Dictionary<String, String> _UnisRoms = new Dictionary<String, String>(){
                 {"eai","Elevator Action invasion"},
                 {"nha","Night Hunter"},
@@ -145,7 +150,10 @@ namespace DemulShooterX64
                         DisplayDictionnaryList(_RPCS3_System357Roms);
                         Console.WriteLine("");
                         Console.WriteLine("SEGA Nu roms :");
-                        DisplayDictionnaryList(_SegaNuRoms);                        
+                        DisplayDictionnaryList(_SegaNuRoms);
+                        Console.WriteLine("");
+                        Console.WriteLine("UDC roms :");
+                        DisplayDictionnaryList(_UdcRoms);      
                         Console.WriteLine("");
                         Console.WriteLine("UNIS roms :");
                         DisplayDictionnaryList(_UnisRoms);
@@ -248,6 +256,14 @@ namespace DemulShooterX64
                             if (!CheckParameter(strRom, _SegaNuRoms))
                             {
                                 Console.WriteLine("Unsupported Saga Nu rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
+                        else if (strTarget.Equals("udc"))
+                        {
+                            if (!CheckParameter(strRom, _UdcRoms))
+                            {
+                                Console.WriteLine("Unsupported UDC rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
                         }
