@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Media;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
-using DsCore.Win32;
 
 namespace DemulShooter
 {
@@ -37,10 +34,9 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndColtWildWestShootout(String RomName, bool HideCrosshairs, bool DisableInputHack, bool Verbose)
-            : base(RomName, "Wild West Shootout", DisableInputHack, Verbose)
+        public Game_WndColtWildWestShootout(String RomName)
+            : base(RomName, "Wild West Shootout")
         {
-            _HideCrosshair = HideCrosshairs;
             _KnownMd5Prints.Add("Colt's Wild West Shootout", "97c9e516a287aab33a455a396dadaa45");
 
             _tProcess.Start();            

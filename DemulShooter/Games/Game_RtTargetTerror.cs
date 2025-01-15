@@ -37,8 +37,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_RtTargetTerror(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
+        public Game_RtTargetTerror(String RomName)
+            : base(RomName, "BudgieLoader")
         {
             _KnownMd5Prints.Add("Target Terror Gold - 2.12", "ff96481d27c47424bd7759f0213faf8f");
 

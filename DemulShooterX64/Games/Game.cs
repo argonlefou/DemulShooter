@@ -21,6 +21,13 @@ namespace DemulShooterX64
         public delegate void GameHookedHandler(object sender, EventArgs e);
         public event GameHookedHandler OnGameHooked;
 
+        //Games options
+        protected bool _HideCrosshair = false;
+        protected bool _HideGuns = false;
+        protected bool _DisableInputHack = false;
+        protected string _CustomTargetProcessName = string.Empty;
+        protected bool _VerboseEnable;
+
         #region Process variables
 
         protected System.Timers.Timer _tProcess;
@@ -30,10 +37,6 @@ namespace DemulShooterX64
         protected IntPtr _TargetProcess_MemoryBaseAddress = IntPtr.Zero;        
         protected IntPtr _ProcessHandle = IntPtr.Zero;
         protected IntPtr _GameWindowHandle = IntPtr.Zero;
-        protected bool _VerboseEnable;
-        protected bool _DisableWindow = false;
-        protected bool _DisableInputHack = false;
-        protected bool _HideCrosshair = false;
 
         //MD5 check of target binaries, may help to know if it's the wrong version or not compatible
         protected Dictionary<string, string> _KnownMd5Prints;
@@ -76,17 +79,17 @@ namespace DemulShooterX64
         /// <param name="RomName">DemumShooter [-rom] Parameter</param>
         /// <param name="TargetProcessName">Executable name to hook in process list</param>
         /// <param name="Verbose">Create a debug.txt file if TRUE</param>
-        public Game(String RomName, string TargetProcessName, bool DisableInputHack, bool Verbose)
+        public Game(String RomName, string TargetProcessName)
         {
+            GetGameOptions();
+
             _KnownMd5Prints = new Dictionary<string, string>();
             GetScreenResolution();
             Logger.WriteLog("Windows screen scaling : " + GetScreenScaling());
 
             _RomName = RomName;
-            _DisableInputHack = DisableInputHack;
-            _VerboseEnable = Verbose;
             _ProcessHooked = false;
-            _Target_Process_Name = Program.CustomTargetProcessName == string.Empty ? TargetProcessName : Program.CustomTargetProcessName;
+            _Target_Process_Name =  _CustomTargetProcessName == string.Empty ? TargetProcessName : _CustomTargetProcessName;
             Logger.WriteLog("Target process name : " + _Target_Process_Name + ".exe");
 
             CreateOutputList();
@@ -120,6 +123,36 @@ namespace DemulShooterX64
             if (OnGameHooked == null) return;
 
             OnGameHooked(this, new EventArgs());
+        }
+
+        private void GetGameOptions()
+        {
+            string[] sArgs = Environment.GetCommandLineArgs();
+            foreach (string sOption in sArgs)
+            {
+                if (sOption.ToLower().Equals("-nocrosshair"))
+                {
+                    _HideCrosshair = true;
+                }
+                else if (sOption.ToLower().Equals("-nogun"))
+                {
+                    _HideGuns = true;
+                }
+                else if (sOption.ToLower().Equals("-noinput"))
+                {
+                    _DisableInputHack = true;
+                }
+                else if (sOption.ToLower().StartsWith("-pname="))
+                {
+                    _CustomTargetProcessName = (sOption.ToLower().Split('='))[1].Trim();
+                    if (_CustomTargetProcessName.EndsWith(".exe"))
+                        _CustomTargetProcessName = _CustomTargetProcessName.Substring(0, _CustomTargetProcessName.Length - 4);
+                }
+                else if (sOption.ToLower().Equals("-v"))
+                {
+                    _VerboseEnable = true;
+                }
+            }
         }
 
         #region MD5 Verification

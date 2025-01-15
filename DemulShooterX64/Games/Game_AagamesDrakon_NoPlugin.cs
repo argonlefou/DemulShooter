@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.MemoryX64;
-using DsCore.Win32;
 using DsCore.RawInput;
-using System.Runtime.InteropServices;
+using DsCore.Win32;
 
 namespace DemulShooterX64
 {
@@ -54,10 +54,9 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_AagamesDrakon_NoPlugin(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "Game", DisableInputHack, Verbose)
+        public Game_AagamesDrakon_NoPlugin(String RomName)
+            : base(RomName, "Game")
         {
-            _HideCrosshair = HideCrosshair;
             _KnownMd5Prints.Add("Drakon Realm Keepers - Development Build v227996 [Original Dump]", "783a592917167b3a3a3e42f9f0717a06");
             _KnownMd5Prints.Add("Drakon Realm Keepers - Release Build v223011 [Original Dump]", "b9eaa606548f04d684876c17f48deaa3");
             _tProcess.Start();

@@ -19,8 +19,8 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_UnisNightHunterArcade(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "qumo2_en", DisableInputHack, Verbose)
+        public Game_UnisNightHunterArcade(String RomName)
+            : base(RomName, "qumo2_en")
         {
             _KnownMd5Prints.Add("Night Hunter v2.0.6 - Clean Dump", "1d6cbc2b0ebaf0bacbcbea84aa0f4a27");
             _KnownMd5Prints.Add("Night Hunter v2.0.6 - Dongle patched", "d223a04447e84073a178a14d50349da8");

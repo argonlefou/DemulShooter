@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
+using DsCore.Memory;
 using DsCore.Win32;
 
 namespace DemulShooter
@@ -18,15 +19,16 @@ namespace DemulShooter
         private UInt32 _PlayerStatus_Offset = 0x0059C378;
         private UInt32 _CreditsPtr_Offset = 0x005996C8;
         private UInt32 _PlayerInfoPtr_Offset = 0x00599688;
-
-        //Play the "Coins" sound when adding coin
-        //SoundPlayer _SndPlayer;
+        private InjectionStruct _Recoil_InjectionStruct = new InjectionStruct(0x00118C5F, 6);
+        private InjectionStruct _Damage_InjectionStruct = new InjectionStruct(0x0018B399, 6);
+        private UInt32 _Recoil_CaveAddress = 0;
+        private UInt32 _Damage_CaveAddress = 0;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndHotdoPc(String RomName, bool DisableInputHack, bool Verbose) 
-            : base (RomName, "HOTD_NG", DisableInputHack, Verbose)
+        public Game_WndHotdoPc(String RomName) 
+            : base (RomName, "HOTD_NG")
         {                      
             _KnownMd5Prints.Add("Typing Of The Dead SEGA Windows", "da39156a426e3f3faca25d3c8cb2b401");
             _KnownMd5Prints.Add("Typing Of The Dead SEGA Windows STEAM", "9dcb7083e3e3ede186c9a809498a0d3b");
@@ -59,7 +61,7 @@ namespace DemulShooter
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
                             ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;                            
                             RaiseGameHookedEvent();
                         }
@@ -84,6 +86,69 @@ namespace DemulShooter
                 }
             }
         }
+
+        #region Memory Hack
+
+        protected override void Apply_OutputsMemoryHack()
+        {
+            Create_OutputsDataBank();
+            _Recoil_CaveAddress = _OutputsDatabank_Address;
+            _Damage_CaveAddress = _OutputsDatabank_Address + 0x04;
+
+            SetHack_Recoil();
+            SetHack_Damage();
+
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
+        /// <summary>
+        /// Using Ammo count to compute recoil does not work :
+        /// - Game set ammo to zero before reloading (and trigger recoil)
+        /// - Gaitling gun has no ammo count -> no recoil
+        /// Using this codecave, we can intercept call in function when the vullet is fired
+        /// </summary>
+        private void SetHack_Recoil()
+        {   
+            List<Byte> Buffer = new List<Byte>();
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //cmp [esi+000007A0],bl
+            CaveMemory.Write_StrBytes("38 9E A0 07 00 00");
+            //mov byte ptr [_Recoil_CaveAddress],01
+            CaveMemory.Write_StrBytes("C6 05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_Recoil_CaveAddress));
+            CaveMemory.Write_StrBytes("01");
+
+            //Inject it
+            CaveMemory.InjectToOffset(_Recoil_InjectionStruct, "Recoil");
+        }
+
+        /// <summary>
+        /// To prevent false positive damage flag based on life number (set to 0 at the end of a level)
+        /// Intercepting call in function where player health is decreased when hit
+        /// </summary>
+        private void SetHack_Damage()
+        {
+            List<Byte> Buffer = new List<Byte>();
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //mov [esi+0000020C],edi
+            CaveMemory.Write_StrBytes("89 BE 0C 02 00 00");
+            //mov byte ptr [_Damage_CaveAddress],01
+            CaveMemory.Write_StrBytes("C6 05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_Damage_CaveAddress));
+            CaveMemory.Write_StrBytes("01");
+
+            //Inject it
+            CaveMemory.InjectToOffset(_Damage_InjectionStruct, "Damage");
+        }
+
+        #endregion
 
         #region Inputs
 
@@ -151,8 +216,11 @@ namespace DemulShooter
             if (P1_Status  != 0)
             {
                 //Custom Recoil
-                if (_P1_Ammo < _P1_LastAmmo)
+                if (ReadByte(_Recoil_CaveAddress) == 1)
+                {
                     SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                    WriteByte(_Recoil_CaveAddress, 0);
+                }
 
                 //[Clip Empty] custom Output
                 if (_P1_Ammo <= 0)
@@ -161,16 +229,16 @@ namespace DemulShooter
                     SetOutputValue(OutputId.P1_Clip, 1);
 
                 //[Damaged] custom Output                
-                if (_P1_Life < _P1_LastLife)
+                if (ReadByte(_Damage_CaveAddress) == 1)
+                {
                     SetOutputValue(OutputId.P1_Damaged, 1);
+                    WriteByte(_Damage_CaveAddress, 0);
+                }
             }
             else
             {
                 SetOutputValue(OutputId.P1_Clip, 0);
             }
-
-            _P1_LastAmmo = _P1_Ammo;
-            _P1_LastLife = _P1_Life;
 
             SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
             SetOutputValue(OutputId.P1_Life, _P1_Life);

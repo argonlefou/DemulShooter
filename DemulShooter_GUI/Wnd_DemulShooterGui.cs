@@ -150,18 +150,15 @@ namespace DemulShooter_GUI
             TXT_GSOZ_PEDAL_1.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Gsoz_Pedal_P1);
             TXT_GSOZ_PEDAL_2.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Gsoz_Pedal_P2);
 
-            //Fill Heavy Fire Afghanistan tab
-            Logger.WriteLog("Initializing GUI [Heavy Fire Afghanistan] pages...");
-            Txt_HF3_Browse.Text = Configurator.GetInstance().HF3_Path;
-            TrackBar_HF3_Cover.Value = Configurator.GetInstance().HF3_CoverSensibility;
-            Chk_HF3_ReverseCover.Checked = Configurator.GetInstance().HF3_ReverseCover;
-
-            //Fill Heavy Fire Shattered Spear tab
-            Logger.WriteLog("Initializing GUI [Heavy Fire S.S] pages...");
-            Txt_HF4_Browse.Text = Configurator.GetInstance().HF4_Path;
-            TrackBar_HF4_Cover.Value = Configurator.GetInstance().HF4_CoverSensibility;
-            Chk_HF4_ReverseCover.Checked = Configurator.GetInstance().HF4_ReverseCover;
-
+            //Fill Heavy Fire series tab
+            Logger.WriteLog("Initializing GUI [Heavy Fire series] pages...");
+            Gbox_HF_Cover.Enabled = false;
+            Gbox_HF_Grenade.Enabled = false;
+            Rdo_HF_MiddleGrenade.Checked = Configurator.GetInstance().HF_UseMiddleButtonAsGrenade;
+            Rdo_HF_MiddleCover.Checked = !Configurator.GetInstance().HF_UseMiddleButtonAsGrenade;
+            TrackBar_HF_Cover.Value = Configurator.GetInstance().HF_CoverSensibility;
+            Chk_HF_ReverseCover.Checked = Configurator.GetInstance().HF_ReverseCover;
+            
             //Fill Lethal Enforcers 3 tab
             Logger.WriteLog("Initializing GUI [Lethal Enforcers 3] pages...");
             Chk_Le3_EnablePedal1.Checked = Configurator.GetInstance().Le3_Pedal_P1_Enabled;
@@ -735,120 +732,29 @@ namespace DemulShooter_GUI
 
         #region Heavy Fire Afghanistan tab
 
-        private void Btn_HF3_Browse_Click(object sender, EventArgs e)
+        private void Rdo_HF_MiddleCover_CheckedChanged(object sender, EventArgs e)
         {
-            folderBrowserDialog1.Description = "Please select \"Heavy Fire Afghanistan\" installation folder";
-            if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                Configurator.GetInstance().HF3_Path = folderBrowserDialog1.SelectedPath;
-                Txt_HF3_Browse.Text = Configurator.GetInstance().HF3_Path;
-            }
+            Gbox_HF_Cover.Enabled = Rdo_HF_MiddleCover.Checked;
+            Gbox_HF_Grenade.Enabled = !Rdo_HF_MiddleCover.Checked;
+            Configurator.GetInstance().HF_UseMiddleButtonAsGrenade = !Rdo_HF_MiddleCover.Checked;
         }
-        private void Txt_HF3_Browse_TextChanged(object sender, EventArgs e)
-        {
-            Configurator.GetInstance().HF3_Path = Txt_HF3_Browse.Text;
-            if (Txt_HF3_Browse.Text.Length > 0)
-            {
-                Lbl_HFA_Version.Text = "Game version : ";
-                Lbl_HFA_Command.Text = "DemulShooter parameter : ";
-                Lbl_HFA_Version.Visible = true;
-                Lbl_HFA_Command.Visible = true;
 
-                //Getting game information
-                string sMD5 = string.Empty;
-                if (File.Exists(Configurator.GetInstance().HF3_Path + @"\HeavyFire3_Final.exe"))
-                {
-                    using (var md5 = MD5.Create())
-                    {
-                        using (var stream = File.OpenRead(Configurator.GetInstance().HF3_Path + @"\HeavyFire3_Final.exe"))
-                        {
-                            //Getting md5 calculation of destination file
-                            sMD5 = BitConverter.ToString(md5.ComputeHash(stream));
-                            if (sMD5.Equals("18-41-E5-71-28-6A-CB-17-A9-85-46-A4-39-C0-8E-57"))
-                            {
-                                Lbl_HFA_Version.Text += "Steam release";
-                                Lbl_HFA_Command.Text += "-rom=hfa or -rom=hfa2p";
-                            }
-                            else
-                            {
-                                Lbl_HFA_Version.Text += "Unknown version";
-                                Lbl_HFA_Command.Visible = false;
-                            }
-                        }
-                    }                      
-                }
-                else if (File.Exists(Configurator.GetInstance().HF3_Path + @"\HeavyFire3.exe"))
-                {
-                    using (var md5 = MD5.Create())
-                    {
-                        using (var stream = File.OpenRead(Configurator.GetInstance().HF3_Path + @"\HeavyFire3.exe"))
-                        {
-                            sMD5 = BitConverter.ToString(md5.ComputeHash(stream));
-                            if (sMD5.Equals("3F-49-95-1A-E8-23-28-17-A9-1E-F5-50-33-74-D6-B3"))
-                            {
-                                Lbl_HFA_Version.Text += "SKIDROW release";
-                                Lbl_HFA_Command.Text += "-rom=hfa or -rom=hfa2p";
-                            }
-                            else
-                            {
-                                Lbl_HFA_Version.Text += "Unknown version";
-                                Lbl_HFA_Command.Visible = false;
-                            }
-                        }
-                    }
-                }                
-                else
-                {
-                    Lbl_HFA_Version.Text = "No known executable name found ! ";
-                    Lbl_HFA_Command.Visible = false;
-                }                
-            }
-            else
-            {
-                Lbl_HFA_Version.Visible = false;
-                Lbl_HFA_Command.Visible = false;
-            }
-        }
-        private void Btn_HF3_Install_Click(object sender, EventArgs e)
+        private void Rdo_HF_MiddleClickGrenade_CheckedChanged(object sender, EventArgs e)
         {
-            InstallHeavyFireDll(Configurator.GetInstance().HF3_Path);                  
+            Gbox_HF_Grenade.Enabled = Rdo_HF_MiddleGrenade.Checked;
+            Gbox_HF_Cover.Enabled = !Rdo_HF_MiddleGrenade.Checked;
+            Configurator.GetInstance().HF_UseMiddleButtonAsGrenade = Rdo_HF_MiddleGrenade.Checked;
         }
-        private void InstallHeavyFireDll(string Path)
+        
+        private void TrackBar_HF_Cover_ValueChanged(object sender, EventArgs e)
         {
-            if (Path != string.Empty)
-            {
-                //Installing dinput8.dll DirectInput blocker  
-                try
-                {
-                    File.WriteAllBytes(Path + @"\dinput8.dll", DemulShooter_GUI.Properties.Resources.dinput8_blocker);
-                    MessageBox.Show(Path + @"\dinput8.dll succesfully installed", "DirectInput Blocker installation", MessageBoxButtons.OK, MessageBoxIcon.Information);                                    
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error installing " + Path + "\\dinput8.dll : \n\n" + ex.Message.ToString(), "DirectInput Blocker installation", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-
-                //Installing xinput1_3.dll
-                try
-                {
-                    File.WriteAllBytes(Path + @"\xinput1_3.dll", DemulShooter_GUI.Properties.Resources.xinput1_3);
-                    MessageBox.Show(Path + @"\xinput1_3.dll succesfully installed", "Xinput simulator installation", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error installing " + Path + "\\xinput1_3.dll : \n\n" + ex.Message.ToString(), "Xinput simulator installation", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }                        
-            }
+            Configurator.GetInstance().HF_CoverSensibility = TrackBar_HF_Cover.Value;
         }
-        private void TrackBar_HF3_Cover_ValueChanged(object sender, EventArgs e)
+        private void Chk_HF_ReverseCover_CheckedChanged(object sender, EventArgs e)
         {
-            Configurator.GetInstance().HF4_CoverSensibility = TrackBar_HF3_Cover.Value;
+            Configurator.GetInstance().HF_ReverseCover = Chk_HF_ReverseCover.Checked;
         }
-        private void Chk_HF3_ReverseCover_CheckedChanged(object sender, EventArgs e)
-        {
-            Configurator.GetInstance().HF3_ReverseCover = Chk_HF3_ReverseCover.Checked;
-        }
-        private void Btn_HF3_Save_Click(object sender, EventArgs e)
+        private void Btn_HF_Save_Click(object sender, EventArgs e)
         {
             if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
                 MessageBox.Show("Configuration saved !");
@@ -856,141 +762,7 @@ namespace DemulShooter_GUI
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        #endregion
-
-        #region Heavy Fire Shattered Spear tab
-
-        private void Btn_HF4_Browse_Click(object sender, EventArgs e)
-        {
-            folderBrowserDialog1.Description = "Please select \"Heavy Fire Shattered Spear\" installation folder";
-            if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                Configurator.GetInstance().HF4_Path = folderBrowserDialog1.SelectedPath;
-                Txt_HF4_Browse.Text = Configurator.GetInstance().HF4_Path;
-            }
-        }
-        private void Txt_HF4_Browse_TextChanged(object sender, EventArgs e)
-        {
-            Configurator.GetInstance().HF4_Path = Txt_HF4_Browse.Text;
-            if (Txt_HF4_Browse.Text.Length > 0)
-            {
-                Lbl_HF4_Version.Text = "Game version : ";
-                Lbl_HF4_Command.Text = "DemulShooter parameter : ";
-                Lbl_HF4_Version.Visible = true;
-                Lbl_HF4_Command.Visible = true;
-
-                //Getting game information
-                string sMD5 = string.Empty;
-                if (File.Exists(Configurator.GetInstance().HF4_Path + @"\hf4.exe"))
-                {
-                    using (var md5 = MD5.Create())
-                    {
-                        using (var stream = File.OpenRead(Configurator.GetInstance().HF4_Path + @"\hf4.exe"))
-                        {
-                            //Getting md5 calculation of destination file
-                            sMD5 = BitConverter.ToString(md5.ComputeHash(stream));
-                            if (sMD5.Equals("7F-8B-F2-0A-AB-A8-0A-C1-23-9E-FC-55-3D-94-A5-3F"))
-                            {
-                                Lbl_HF4_Version.Text += "Steam release";
-                                Lbl_HF4_Command.Text += "-rom=hfss or -rom=hfss2p";
-                            }
-                            else
-                            {
-                                Lbl_HF4_Version.Text += "Unknown version";
-                                Lbl_HF4_Command.Visible = false;
-                            }
-                        }
-                    }
-                }
-                else if (File.Exists(Configurator.GetInstance().HF4_Path + @"\HeavyFire4.exe"))
-                {
-                    using (var md5 = MD5.Create())
-                    {
-                        using (var stream = File.OpenRead(Configurator.GetInstance().HF4_Path + @"\HeavyFire4.exe"))
-                        {
-                            sMD5 = BitConverter.ToString(md5.ComputeHash(stream));
-                            if (sMD5.Equals("94-76-F9-BB-A4-8A-EA-6C-A0-4D-06-15-8B-E0-7F-1C"))
-                            {
-                                Lbl_HF4_Version.Text += "SKIDROW release";
-                                Lbl_HF4_Command.Text += "-rom=hfss or -rom=hfss2p";
-                            }
-                            else
-                            {
-                                Lbl_HF4_Version.Text += "Unknown version";
-                                Lbl_HF4_Command.Visible = false;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Lbl_HF4_Version.Text = "No known executable name found ! ";
-                    Lbl_HF4_Command.Visible = false;
-                }
-            }
-            else
-            {
-                Lbl_HF4_Version.Visible = false;
-                Lbl_HF4_Command.Visible = false;
-            }
-        }
-        private void Btn_HF4_Install_Click(object sender, EventArgs e)
-        {
-            InstallHeavyFireDll(Configurator.GetInstance().HF4_Path);
-
-            //Getting game information
-            string sMD5 = string.Empty;
-            if (File.Exists(Configurator.GetInstance().HF4_Path + @"\hf4.exe"))
-            {
-                using (var md5 = MD5.Create())
-                {
-                    using (var stream = File.OpenRead(Configurator.GetInstance().HF4_Path + @"\hf4.exe"))
-                    {
-                        //Getting md5 calculation of destination file
-                        sMD5 = BitConverter.ToString(md5.ComputeHash(stream));
-                        if (sMD5.Equals("7F-8B-F2-0A-AB-A8-0A-C1-23-9E-FC-55-3D-94-A5-3F"))
-                            MessageBox.Show("Steam version of game found.\n\nUse -rom=hfss or -rom=hfss2p for DemulShooter", "Game exe informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        else
-                            MessageBox.Show("Unknown version of the game, this may not work with DemulShooter", "Game exe informations", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
-            }
-            else if (File.Exists(Configurator.GetInstance().HF4_Path + @"\HeavyFire4.exe"))
-            {
-                using (var md5 = MD5.Create())
-                {
-                    using (var stream = File.OpenRead(Configurator.GetInstance().HF4_Path + @"\HeavyFire4.exe"))
-                    {
-                        sMD5 = BitConverter.ToString(md5.ComputeHash(stream));
-                        if (sMD5.Equals("94-76-F9-BB-A4-8A-EA-6C-A0-4D-06-15-8B-E0-7F-1C"))
-                            MessageBox.Show("SKIDROW version of game found.\n\nUse -rom=hfss or -rom=hfss2p for DemulShooter", "Game exe informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        else
-                            MessageBox.Show("Unknown version of the game, this may not work with DemulShooter", "Game exe informations", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Can't find any known game executable. Please verify your path", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }    
-        }
-        private void TrackBar_HF4_Cover_ValueChanged(object sender, EventArgs e)
-        {
-            Configurator.GetInstance().HF4_CoverSensibility = TrackBar_HF4_Cover.Value;
-        }
-        private void Chk_HF4_ReverseCover_CheckedChanged(object sender, EventArgs e)
-        {
-            Configurator.GetInstance().HF4_ReverseCover = Chk_HF4_ReverseCover.Checked;
-        }        
-        private void Btn_HF4_Save_Click(object sender, EventArgs e)
-        {
-            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
-                MessageBox.Show("Configuration saved !");
-            else
-                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        #endregion                  
+        #endregion      
         
         #region Lethal Enforcer 3 tab
 

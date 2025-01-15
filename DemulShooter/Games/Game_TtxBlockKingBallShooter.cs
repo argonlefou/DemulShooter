@@ -29,8 +29,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxBlockKingBallShooter(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", DisableInputHack, Verbose)
+        public Game_TtxBlockKingBallShooter(String RomName)
+            : base(RomName, "game")
         {
             _KnownMd5Prints.Add("Block King Ball Shooter v1.05 - Original", "42b7ab17909d13ff096f2b08ece6bf2a");
             _KnownMd5Prints.Add("Block King Ball Shooter v1.05 - For JConfig", "7e2fae81627c05a836033918e01046c6");

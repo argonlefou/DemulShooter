@@ -34,8 +34,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_PpmPoliceTrainer2(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
+        public Game_PpmPoliceTrainer2(String RomName)
+            : base(RomName, "BudgieLoader")
         {
             _KnownMd5Prints.Add("Police Trainer 2 - 0.0.1g11 - Original dump", "e40bd5c6a7f2c3a84281e115c25d3f20");
             _tProcess.Start();

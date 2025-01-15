@@ -32,8 +32,7 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_S357DeadStormPirates(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "rpcs3-gun", DisableInputHack, Verbose)
+        public Game_S357DeadStormPirates(String RomName): base(RomName, "rpcs3-gun")
         {
             _KnownMd5Prints.Add("RPCS3 v0.0.27 fork for System 357, GUN version", "3321f7771ae74e8027f0d4e18167d635");
             _tProcess.Start();

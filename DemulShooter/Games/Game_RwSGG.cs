@@ -55,16 +55,14 @@ namespace DemulShooter
 
         private Timer _Tmr_NoAutofireP1;
         private Timer _Tmr_NoAutofireP2;
-        private bool _DisableAutofire = false;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwSGG(String RomName, bool DisableAutofire, bool DisableInputHack, bool Verbose)
-            : base(RomName, "RingGunR_RingWide", DisableInputHack, Verbose)
+        public Game_RwSGG(String RomName)
+            : base(RomName, "RingGunR_RingWide")
         {
-            _DisableAutofire = DisableAutofire;
-            if (_DisableAutofire)
+            if (_NoAutoFire)
             {
                 _Tmr_NoAutofireP1 = new Timer();
                 _Tmr_NoAutofireP1.Interval = 20;
@@ -371,7 +369,7 @@ namespace DemulShooter
                 {
                     Apply_OR_ByteMask(_P1_Buttons_CaveAddress, 0x02);
                     //Force single shot instead of Auto-fire mode
-                    if (_DisableAutofire)
+                    if (_NoAutoFire)
                         _Tmr_NoAutofireP1.Start();
                 }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
@@ -396,7 +394,7 @@ namespace DemulShooter
                 {
                     Apply_OR_ByteMask(_P2_Buttons_CaveAddress, 0x02);
                     //Force single shot instead of Auto-fire mode
-                    if (_DisableAutofire)
+                    if (_NoAutoFire)
                         _Tmr_NoAutofireP2.Start();
                 }
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)

@@ -35,7 +35,8 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Bhapc(String RomName, bool DisableInputHack, bool Verbose) : base(RomName, "Buck", DisableInputHack, Verbose)
+        public Game_Bhapc(String RomName) : 
+            base(RomName, "Buck")
         {
             _KnownMd5Prints.Add("Big Buck Hunter Arcade v5.3.6 - PLAZA", "2a6f04726a2471adf68a27386898eabc");
             _tProcess.Start();

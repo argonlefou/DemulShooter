@@ -21,10 +21,9 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndDcop(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "DCOP", DisableInputHack, Verbose)
+        public Game_WndDcop(String RomName)
+            : base(RomName, "DCOP")
         {
-            _HideCrosshair = HideCrosshair;
             _KnownMd5Prints.Add("DCOP - Tenoke ISO - Original", "3940b478b0069635b579c8bd2a6729c1");
             
             _tProcess.Start();

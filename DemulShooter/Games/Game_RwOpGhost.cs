@@ -83,8 +83,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwOpGhost(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "gs2", DisableInputHack, Verbose)
+        public Game_RwOpGhost(String RomName)
+            : base(RomName, "gs2")
         {
             if (Configurator.GetInstance().OpGhost_EnableFreeplay)
                 _Credits_Freeplay = 1;

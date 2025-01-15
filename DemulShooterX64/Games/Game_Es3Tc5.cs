@@ -73,7 +73,7 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Es3Tc5(String RomName, bool DisableInputHack, bool Verbose) : base(RomName, "TimeCrisisGame-Win64-Shipping", DisableInputHack, Verbose)
+        public Game_Es3Tc5(String RomName) : base(RomName, "TimeCrisisGame-Win64-Shipping")
         {
             _KnownMd5Prints.Add("TimeCrisisGame-Win64-Shipping.exe - Original Dump", "5297b9296708d4f83181f244ee2bc3db");
             _tProcess.Start();

@@ -32,15 +32,12 @@ namespace DemulShooter
         private UInt32 _Paddemul_P2_X_Offset = 0x00037EB4;
         //private UInt32 _Paddemul_P2_Y_Offset                =   0x00037EB6;
 
-        protected bool _WidescreenHack;
         private List<WidescreenData> _ListWidescreenHacks;
 
 
-        public Game_DemulAtomiswave(String RomName, String DemulVersion, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
-            : base(RomName, "demul", DisableInputHack, Verbose)
+        public Game_DemulAtomiswave(String RomName, String DemulVersion)
+            : base(RomName, "demul")
         {
-            _DisableWindow = DisableWindow;
-            _WidescreenHack = WidescreenHack;
             _ListWidescreenHacks = new List<WidescreenData>();
 
             _tProcess.Start();

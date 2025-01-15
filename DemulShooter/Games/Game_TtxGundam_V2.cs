@@ -83,8 +83,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxGundam_V2(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", DisableInputHack, Verbose)
+        public Game_TtxGundam_V2(String RomName)
+            : base(RomName, "game")
         {
             _KnownMd5Prints.Add("Gundam : SoZ v1.01 - Dual Player, Unpatched I/O", "70af03a21a42d9042065fc65b7eb56f9");
             _KnownMd5Prints.Add("Gundam : SoZ v1.01 - Single Player, Pathched I/O", "d8cd539967cc3c23f620139ab4669d30");

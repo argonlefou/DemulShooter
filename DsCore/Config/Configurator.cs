@@ -222,42 +222,24 @@ namespace DsCore.Config
         #endregion        
 
         //HeavyFire games need to get Path and cover sensibility settings
-        private String _HF3_Path = string.Empty;
-        private int _HF3_CoverSensibility = 3;
-        private bool _HF3_ReverseCover = false;
-        private String _HF4_Path = string.Empty;
-        private int _HF4_CoverSensibility = 3;
-        private bool _HF4_ReverseCover = false;
+        private bool _HF_UseMiddleButtonAsGrenade = true;
+        private int _HF_CoverSensibility = 3;
+        private bool _HF_ReverseCover = false;
         #region Accessors
-        public String HF3_Path
+        public bool HF_UseMiddleButtonAsGrenade
         {
-            get { return _HF3_Path; }
-            set { _HF3_Path = value; }
+            get { return _HF_UseMiddleButtonAsGrenade; }
+            set { _HF_UseMiddleButtonAsGrenade = value; }
         }
-        public int HF3_CoverSensibility
+        public int HF_CoverSensibility
         {
-            get { return _HF3_CoverSensibility; }
-            set { _HF3_CoverSensibility = value; }
+            get { return _HF_CoverSensibility; }
+            set { _HF_CoverSensibility = value; }
         }
-        public bool HF3_ReverseCover
+        public bool HF_ReverseCover
         {
-            get { return _HF3_ReverseCover; }
-            set { _HF3_ReverseCover = value; }
-        }
-        public String HF4_Path
-        {
-            get { return _HF4_Path; }
-            set { _HF4_Path = value; }
-        }
-        public int HF4_CoverSensibility
-        {
-            get { return _HF4_CoverSensibility; }
-            set { _HF4_CoverSensibility = value; }
-        }
-        public bool HF4_ReverseCover
-        {
-            get { return _HF4_ReverseCover; }
-            set { _HF4_ReverseCover = value; }
+            get { return _HF_ReverseCover; }
+            set { _HF_ReverseCover = value; }
         }
         #endregion
 
@@ -658,36 +640,22 @@ namespace DsCore.Config
                                         _DIK_Dolphin_P2_RClick = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
                                     }
                                     catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("hf_usemiddlebuttonasgrenade"))
+                                {
+                                    if (!bool.TryParse(StrValue, out _HF_UseMiddleButtonAsGrenade))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
+                                else if (StrKey.ToLower().Equals("hf_coversensibility"))
+                                {
+                                    if (!int.TryParse(StrValue, out _HF_CoverSensibility))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
+                                else if (StrKey.ToLower().Equals("hf_reversecover"))
+                                {
+                                    if (!bool.TryParse(StrValue, out _HF_ReverseCover))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 } 
-                                else if (StrKey.ToLower().Equals("hf3_path"))
-                                {
-                                    _HF3_Path = StrValue;
-                                }
-                                else if (StrKey.ToLower().Equals("hf3_coversensibility"))
-                                {
-                                    if (!int.TryParse(StrValue, out _HF3_CoverSensibility))
-                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
-                                }
-                                else if (StrKey.ToLower().Equals("hf3_reversecover"))
-                                {
-                                    if (!bool.TryParse(StrValue, out _HF3_ReverseCover))
-                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
-                                }
-                                else if (StrKey.ToLower().Equals("hf4_path"))
-                                {
-                                    _HF4_Path = StrValue;
-                                }
-                                else if (StrKey.ToLower().Equals("hf4_coversensibility"))
-                                {
-                                    if (!int.TryParse(StrValue, out _HF4_CoverSensibility))
-                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
-                                }
-                                else if (StrKey.ToLower().Equals("hf4_reversecover"))
-                                {
-                                    if (!bool.TryParse(StrValue, out _HF4_ReverseCover))
-                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
-                                }
-
                                 else if (StrKey.ToLower().Equals("wws_path"))
                                 {
                                     _Wws_Path = StrValue;
@@ -1092,16 +1060,11 @@ namespace DsCore.Config
                         sr.WriteLine("P" + PlayerData.ID + "Analog_Manual_Ymax = " + PlayerData.AnalogManual_Ymax.ToString());
                     }
                     sr.WriteLine("");                    
-                    sr.WriteLine(";Heavy Fire Afghanistan settings");
-                    sr.WriteLine("HF3_Path = " + _HF3_Path);
-                    sr.WriteLine("HF3_CoverSensibility = " + _HF3_CoverSensibility.ToString());
-                    sr.WriteLine("HF3_ReverseCover = " + _HF3_ReverseCover.ToString());
-                    sr.WriteLine("");
-                    sr.WriteLine(";Heavy Fire Shattered Spear settings");
-                    sr.WriteLine("HF4_Path = " + _HF4_Path);
-                    sr.WriteLine("HF4_CoverSensibility = " + _HF4_CoverSensibility.ToString());
-                    sr.WriteLine("HF4_ReverseCover = " + _HF4_ReverseCover.ToString());
-                    sr.WriteLine("");
+                    sr.WriteLine(";Heavy Fire series settings");
+                    sr.WriteLine("HF_UseMiddleButtonAsGrenade = " + _HF_UseMiddleButtonAsGrenade);
+                    sr.WriteLine("HF_CoverSensibility = " + _HF_CoverSensibility.ToString());
+                    sr.WriteLine("HF_ReverseCover = " + _HF_ReverseCover.ToString());
+                    sr.WriteLine("");                    
                     sr.WriteLine(";Wild West Shoutout settings");
                     sr.WriteLine("WWS_Path = " + _Wws_Path);
                     sr.WriteLine("WWS_P1_COIN_KEY = " + _DIK_Wws_P1Coin.ToString());

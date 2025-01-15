@@ -39,8 +39,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxSha(String RomName, bool DisableInputHack, bool Verbose) 
-            : base (RomName, "KSHG", DisableInputHack, Verbose)
+        public Game_TtxSha(String RomName) 
+            : base (RomName, "KSHG")
         {
             _KnownMd5Prints.Add("Silent Hill Arcade - Original KSHG_no_cursor.exe", "0e58fd1c7bcb5e0cace0e4ee548ecd0c");
             _KnownMd5Prints.Add("Silent Hill Arcade - Original KSHG.exe", "2778219dcaf3d8e09fb197417b17dc1b");

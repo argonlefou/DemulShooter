@@ -101,35 +101,17 @@
             this.label9 = new System.Windows.Forms.Label();
             this.TXT_GSOZ_PEDAL_1 = new System.Windows.Forms.TextBox();
             this.Chk_GundamP1Pedal = new System.Windows.Forms.CheckBox();
-            this.Tab_HeavyFire3 = new System.Windows.Forms.TabPage();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.Chk_HF3_ReverseCover = new System.Windows.Forms.CheckBox();
-            this.Lbl_HFA_Command = new System.Windows.Forms.Label();
-            this.Lbl_HFA_Version = new System.Windows.Forms.Label();
-            this.Btn_HF3_Save = new System.Windows.Forms.Button();
-            this.label45 = new System.Windows.Forms.Label();
-            this.TrackBar_HF3_Cover = new System.Windows.Forms.TrackBar();
-            this.Btn_HF3_Browse = new System.Windows.Forms.Button();
+            this.Tab_HeavyFire = new System.Windows.Forms.TabPage();
+            this.Gbox_HF_Grenade = new System.Windows.Forms.GroupBox();
+            this.label27 = new System.Windows.Forms.Label();
+            this.Gbox_HF_Cover = new System.Windows.Forms.GroupBox();
             this.label40 = new System.Windows.Forms.Label();
-            this.Txt_HF3_Browse = new System.Windows.Forms.TextBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.Btn_HF3_Install = new System.Windows.Forms.Button();
-            this.label42 = new System.Windows.Forms.Label();
+            this.Rdo_HF_MiddleCover = new System.Windows.Forms.RadioButton();
+            this.label45 = new System.Windows.Forms.Label();
+            this.Chk_HF_ReverseCover = new System.Windows.Forms.CheckBox();
+            this.TrackBar_HF_Cover = new System.Windows.Forms.TrackBar();
+            this.Btn_HF_Save = new System.Windows.Forms.Button();
             this.label41 = new System.Windows.Forms.Label();
-            this.Tab_HeavyFire4 = new System.Windows.Forms.TabPage();
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.Chk_HF4_ReverseCover = new System.Windows.Forms.CheckBox();
-            this.Lbl_HF4_Command = new System.Windows.Forms.Label();
-            this.Lbl_HF4_Version = new System.Windows.Forms.Label();
-            this.Btn_HF4_Save = new System.Windows.Forms.Button();
-            this.label43 = new System.Windows.Forms.Label();
-            this.TrackBar_HF4_Cover = new System.Windows.Forms.TrackBar();
-            this.Btn_HF4_Browse = new System.Windows.Forms.Button();
-            this.label44 = new System.Windows.Forms.Label();
-            this.Txt_HF4_Browse = new System.Windows.Forms.TextBox();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.Btn_HF4_Install = new System.Windows.Forms.Button();
-            this.label46 = new System.Windows.Forms.Label();
             this.Tab_LethalEnforcer3 = new System.Windows.Forms.TabPage();
             this.Btn_Save_Le3 = new System.Windows.Forms.Button();
             this.label58 = new System.Windows.Forms.Label();
@@ -262,6 +244,7 @@
             this.Bgw_XInput = new System.ComponentModel.BackgroundWorker();
             this.Cbo_PageSettings = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
+            this.Rdo_HF_MiddleGrenade = new System.Windows.Forms.RadioButton();
             this.tabControl1.SuspendLayout();
             this.Tab_P1.SuspendLayout();
             this.Tab_P2.SuspendLayout();
@@ -277,14 +260,10 @@
             this.Tab_GSOZ.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
-            this.Tab_HeavyFire3.SuspendLayout();
-            this.groupBox7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TrackBar_HF3_Cover)).BeginInit();
-            this.groupBox4.SuspendLayout();
-            this.Tab_HeavyFire4.SuspendLayout();
-            this.groupBox8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TrackBar_HF4_Cover)).BeginInit();
-            this.groupBox9.SuspendLayout();
+            this.Tab_HeavyFire.SuspendLayout();
+            this.Gbox_HF_Grenade.SuspendLayout();
+            this.Gbox_HF_Cover.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TrackBar_HF_Cover)).BeginInit();
             this.Tab_LethalEnforcer3.SuspendLayout();
             this.groupBox14.SuspendLayout();
             this.groupBox15.SuspendLayout();
@@ -333,8 +312,7 @@
             this.tabControl1.Controls.Add(this.Tab_Dolphin);
             this.tabControl1.Controls.Add(this.Tab_EAInvasion);
             this.tabControl1.Controls.Add(this.Tab_GSOZ);
-            this.tabControl1.Controls.Add(this.Tab_HeavyFire3);
-            this.tabControl1.Controls.Add(this.Tab_HeavyFire4);
+            this.tabControl1.Controls.Add(this.Tab_HeavyFire);
             this.tabControl1.Controls.Add(this.Tab_LethalEnforcer3);
             this.tabControl1.Controls.Add(this.Tab_M2);
             this.tabControl1.Controls.Add(this.Tab_OpGhost);
@@ -1163,156 +1141,115 @@
             this.Chk_GundamP1Pedal.UseVisualStyleBackColor = true;
             this.Chk_GundamP1Pedal.CheckedChanged += new System.EventHandler(this.Chk_GundamP1Pedal_CheckedChanged);
             // 
-            // Tab_HeavyFire3
+            // Tab_HeavyFire
             // 
-            this.Tab_HeavyFire3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Tab_HeavyFire3.Controls.Add(this.groupBox7);
-            this.Tab_HeavyFire3.Controls.Add(this.groupBox4);
-            this.Tab_HeavyFire3.Controls.Add(this.label41);
-            this.Tab_HeavyFire3.Location = new System.Drawing.Point(4, 5);
-            this.Tab_HeavyFire3.Name = "Tab_HeavyFire3";
-            this.Tab_HeavyFire3.Size = new System.Drawing.Size(581, 334);
-            this.Tab_HeavyFire3.TabIndex = 9;
-            this.Tab_HeavyFire3.Text = "Heavy Fire Afghanistan";
-            this.Tab_HeavyFire3.UseVisualStyleBackColor = true;
+            this.Tab_HeavyFire.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_HeavyFire.Controls.Add(this.Rdo_HF_MiddleGrenade);
+            this.Tab_HeavyFire.Controls.Add(this.Rdo_HF_MiddleCover);
+            this.Tab_HeavyFire.Controls.Add(this.Gbox_HF_Grenade);
+            this.Tab_HeavyFire.Controls.Add(this.Gbox_HF_Cover);
+            this.Tab_HeavyFire.Controls.Add(this.Btn_HF_Save);
+            this.Tab_HeavyFire.Controls.Add(this.label41);
+            this.Tab_HeavyFire.Location = new System.Drawing.Point(4, 5);
+            this.Tab_HeavyFire.Name = "Tab_HeavyFire";
+            this.Tab_HeavyFire.Size = new System.Drawing.Size(581, 334);
+            this.Tab_HeavyFire.TabIndex = 9;
+            this.Tab_HeavyFire.Text = "Heavy Fire Afghanistan";
+            this.Tab_HeavyFire.UseVisualStyleBackColor = true;
             // 
-            // groupBox7
+            // Gbox_HF_Grenade
             // 
-            this.groupBox7.Controls.Add(this.Chk_HF3_ReverseCover);
-            this.groupBox7.Controls.Add(this.Lbl_HFA_Command);
-            this.groupBox7.Controls.Add(this.Lbl_HFA_Version);
-            this.groupBox7.Controls.Add(this.Btn_HF3_Save);
-            this.groupBox7.Controls.Add(this.label45);
-            this.groupBox7.Controls.Add(this.TrackBar_HF3_Cover);
-            this.groupBox7.Controls.Add(this.Btn_HF3_Browse);
-            this.groupBox7.Controls.Add(this.label40);
-            this.groupBox7.Controls.Add(this.Txt_HF3_Browse);
-            this.groupBox7.Location = new System.Drawing.Point(5, 1);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(569, 202);
-            this.groupBox7.TabIndex = 5;
-            this.groupBox7.TabStop = false;
+            this.Gbox_HF_Grenade.Controls.Add(this.label27);
+            this.Gbox_HF_Grenade.Location = new System.Drawing.Point(15, 190);
+            this.Gbox_HF_Grenade.Name = "Gbox_HF_Grenade";
+            this.Gbox_HF_Grenade.Size = new System.Drawing.Size(553, 82);
+            this.Gbox_HF_Grenade.TabIndex = 17;
+            this.Gbox_HF_Grenade.TabStop = false;
             // 
-            // Chk_HF3_ReverseCover
+            // label27
             // 
-            this.Chk_HF3_ReverseCover.AutoSize = true;
-            this.Chk_HF3_ReverseCover.Location = new System.Drawing.Point(10, 152);
-            this.Chk_HF3_ReverseCover.Name = "Chk_HF3_ReverseCover";
-            this.Chk_HF3_ReverseCover.Size = new System.Drawing.Size(145, 20);
-            this.Chk_HF3_ReverseCover.TabIndex = 14;
-            this.Chk_HF3_ReverseCover.Text = "Reverse cover side";
-            this.Chk_HF3_ReverseCover.UseVisualStyleBackColor = true;
-            this.Chk_HF3_ReverseCover.CheckedChanged += new System.EventHandler(this.Chk_HF3_ReverseCover_CheckedChanged);
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(12, 38);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(465, 16);
+            this.label27.TabIndex = 17;
+            this.label27.Text = "Cover and QTE will need original [A] / [S] / [D] / [W] / [SPACE] keyboard keys";
             // 
-            // Lbl_HFA_Command
+            // Gbox_HF_Cover
             // 
-            this.Lbl_HFA_Command.AutoSize = true;
-            this.Lbl_HFA_Command.Location = new System.Drawing.Point(111, 59);
-            this.Lbl_HFA_Command.Name = "Lbl_HFA_Command";
-            this.Lbl_HFA_Command.Size = new System.Drawing.Size(344, 16);
-            this.Lbl_HFA_Command.TabIndex = 13;
-            this.Lbl_HFA_Command.Text = "DemulShooter command line : -target=hfa / -target=hfa2p ";
-            this.Lbl_HFA_Command.Visible = false;
+            this.Gbox_HF_Cover.Controls.Add(this.label40);
+            this.Gbox_HF_Cover.Controls.Add(this.label45);
+            this.Gbox_HF_Cover.Controls.Add(this.Chk_HF_ReverseCover);
+            this.Gbox_HF_Cover.Controls.Add(this.TrackBar_HF_Cover);
+            this.Gbox_HF_Cover.Location = new System.Drawing.Point(15, 14);
+            this.Gbox_HF_Cover.Name = "Gbox_HF_Cover";
+            this.Gbox_HF_Cover.Size = new System.Drawing.Size(553, 162);
+            this.Gbox_HF_Cover.TabIndex = 16;
+            this.Gbox_HF_Cover.TabStop = false;
             // 
-            // Lbl_HFA_Version
+            // label40
             // 
-            this.Lbl_HFA_Version.AutoSize = true;
-            this.Lbl_HFA_Version.Location = new System.Drawing.Point(111, 43);
-            this.Lbl_HFA_Version.Name = "Lbl_HFA_Version";
-            this.Lbl_HFA_Version.Size = new System.Drawing.Size(166, 16);
-            this.Lbl_HFA_Version.TabIndex = 12;
-            this.Lbl_HFA_Version.Text = "Game Version : SKIDROW";
-            this.Lbl_HFA_Version.Visible = false;
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(12, 36);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(276, 16);
+            this.label40.TabIndex = 18;
+            this.label40.Text = "Player 1 Grenade will need [G] Keyboard key";
             // 
-            // Btn_HF3_Save
+            // Rdo_HF_MiddleCover
             // 
-            this.Btn_HF3_Save.Location = new System.Drawing.Point(192, 152);
-            this.Btn_HF3_Save.Name = "Btn_HF3_Save";
-            this.Btn_HF3_Save.Size = new System.Drawing.Size(180, 44);
-            this.Btn_HF3_Save.TabIndex = 11;
-            this.Btn_HF3_Save.Text = "Save";
-            this.Btn_HF3_Save.UseVisualStyleBackColor = true;
-            this.Btn_HF3_Save.Click += new System.EventHandler(this.Btn_HF3_Save_Click);
+            this.Rdo_HF_MiddleCover.AutoSize = true;
+            this.Rdo_HF_MiddleCover.Location = new System.Drawing.Point(30, 11);
+            this.Rdo_HF_MiddleCover.Name = "Rdo_HF_MiddleCover";
+            this.Rdo_HF_MiddleCover.Size = new System.Drawing.Size(236, 20);
+            this.Rdo_HF_MiddleCover.TabIndex = 15;
+            this.Rdo_HF_MiddleCover.TabStop = true;
+            this.Rdo_HF_MiddleCover.Text = "Use Middle Click for Player 1 Cover";
+            this.Rdo_HF_MiddleCover.UseVisualStyleBackColor = true;
+            this.Rdo_HF_MiddleCover.CheckedChanged += new System.EventHandler(this.Rdo_HF_MiddleCover_CheckedChanged);
             // 
             // label45
             // 
             this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(7, 114);
+            this.label45.Location = new System.Drawing.Point(12, 109);
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(162, 16);
             this.label45.TabIndex = 10;
             this.label45.Text = "\"Cover Mode\" Sensibility :";
             // 
-            // TrackBar_HF3_Cover
+            // Chk_HF_ReverseCover
             // 
-            this.TrackBar_HF3_Cover.Location = new System.Drawing.Point(175, 114);
-            this.TrackBar_HF3_Cover.Maximum = 5;
-            this.TrackBar_HF3_Cover.Minimum = 1;
-            this.TrackBar_HF3_Cover.Name = "TrackBar_HF3_Cover";
-            this.TrackBar_HF3_Cover.Size = new System.Drawing.Size(378, 45);
-            this.TrackBar_HF3_Cover.TabIndex = 1;
-            this.TrackBar_HF3_Cover.TickFrequency = 25;
-            this.TrackBar_HF3_Cover.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.TrackBar_HF3_Cover.Value = 3;
-            this.TrackBar_HF3_Cover.ValueChanged += new System.EventHandler(this.TrackBar_HF3_Cover_ValueChanged);
+            this.Chk_HF_ReverseCover.AutoSize = true;
+            this.Chk_HF_ReverseCover.Location = new System.Drawing.Point(15, 76);
+            this.Chk_HF_ReverseCover.Name = "Chk_HF_ReverseCover";
+            this.Chk_HF_ReverseCover.Size = new System.Drawing.Size(145, 20);
+            this.Chk_HF_ReverseCover.TabIndex = 14;
+            this.Chk_HF_ReverseCover.Text = "Reverse cover side";
+            this.Chk_HF_ReverseCover.UseVisualStyleBackColor = true;
+            this.Chk_HF_ReverseCover.CheckedChanged += new System.EventHandler(this.Chk_HF_ReverseCover_CheckedChanged);
             // 
-            // Btn_HF3_Browse
+            // TrackBar_HF_Cover
             // 
-            this.Btn_HF3_Browse.Location = new System.Drawing.Point(526, 16);
-            this.Btn_HF3_Browse.Name = "Btn_HF3_Browse";
-            this.Btn_HF3_Browse.Size = new System.Drawing.Size(27, 27);
-            this.Btn_HF3_Browse.TabIndex = 9;
-            this.Btn_HF3_Browse.Text = "...";
-            this.Btn_HF3_Browse.UseVisualStyleBackColor = true;
-            this.Btn_HF3_Browse.Click += new System.EventHandler(this.Btn_HF3_Browse_Click);
+            this.TrackBar_HF_Cover.Location = new System.Drawing.Point(180, 109);
+            this.TrackBar_HF_Cover.Maximum = 5;
+            this.TrackBar_HF_Cover.Minimum = 1;
+            this.TrackBar_HF_Cover.Name = "TrackBar_HF_Cover";
+            this.TrackBar_HF_Cover.Size = new System.Drawing.Size(367, 45);
+            this.TrackBar_HF_Cover.TabIndex = 1;
+            this.TrackBar_HF_Cover.TickFrequency = 25;
+            this.TrackBar_HF_Cover.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.TrackBar_HF_Cover.Value = 3;
+            this.TrackBar_HF_Cover.ValueChanged += new System.EventHandler(this.TrackBar_HF_Cover_ValueChanged);
             // 
-            // label40
+            // Btn_HF_Save
             // 
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(7, 21);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(101, 16);
-            this.label40.TabIndex = 8;
-            this.label40.Text = "Game location :";
-            // 
-            // Txt_HF3_Browse
-            // 
-            this.Txt_HF3_Browse.Location = new System.Drawing.Point(114, 18);
-            this.Txt_HF3_Browse.Name = "Txt_HF3_Browse";
-            this.Txt_HF3_Browse.Size = new System.Drawing.Size(406, 22);
-            this.Txt_HF3_Browse.TabIndex = 7;
-            this.Txt_HF3_Browse.TextChanged += new System.EventHandler(this.Txt_HF3_Browse_TextChanged);
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.Btn_HF3_Install);
-            this.groupBox4.Controls.Add(this.label42);
-            this.groupBox4.Location = new System.Drawing.Point(5, 224);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(569, 103);
-            this.groupBox4.TabIndex = 3;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Dll installation";
-            // 
-            // Btn_HF3_Install
-            // 
-            this.Btn_HF3_Install.Location = new System.Drawing.Point(192, 52);
-            this.Btn_HF3_Install.Name = "Btn_HF3_Install";
-            this.Btn_HF3_Install.Size = new System.Drawing.Size(180, 46);
-            this.Btn_HF3_Install.TabIndex = 10;
-            this.Btn_HF3_Install.Text = "Install";
-            this.Btn_HF3_Install.UseVisualStyleBackColor = true;
-            this.Btn_HF3_Install.Click += new System.EventHandler(this.Btn_HF3_Install_Click);
-            // 
-            // label42
-            // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(7, 29);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(456, 16);
-            this.label42.TabIndex = 11;
-            this.label42.Text = "Click this button to install needed Dinput and Xinput dll into the game\'s folder." +
-                "";
+            this.Btn_HF_Save.Location = new System.Drawing.Point(217, 284);
+            this.Btn_HF_Save.Name = "Btn_HF_Save";
+            this.Btn_HF_Save.Size = new System.Drawing.Size(145, 37);
+            this.Btn_HF_Save.TabIndex = 11;
+            this.Btn_HF_Save.Text = "Save";
+            this.Btn_HF_Save.UseVisualStyleBackColor = true;
+            this.Btn_HF_Save.Click += new System.EventHandler(this.Btn_HF_Save_Click);
             // 
             // label41
             // 
@@ -1321,156 +1258,6 @@
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(0, 16);
             this.label41.TabIndex = 2;
-            // 
-            // Tab_HeavyFire4
-            // 
-            this.Tab_HeavyFire4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Tab_HeavyFire4.Controls.Add(this.groupBox8);
-            this.Tab_HeavyFire4.Controls.Add(this.groupBox9);
-            this.Tab_HeavyFire4.Location = new System.Drawing.Point(4, 5);
-            this.Tab_HeavyFire4.Name = "Tab_HeavyFire4";
-            this.Tab_HeavyFire4.Size = new System.Drawing.Size(581, 334);
-            this.Tab_HeavyFire4.TabIndex = 10;
-            this.Tab_HeavyFire4.Text = "Heavy Fire Shattered Spear";
-            this.Tab_HeavyFire4.UseVisualStyleBackColor = true;
-            // 
-            // groupBox8
-            // 
-            this.groupBox8.Controls.Add(this.Chk_HF4_ReverseCover);
-            this.groupBox8.Controls.Add(this.Lbl_HF4_Command);
-            this.groupBox8.Controls.Add(this.Lbl_HF4_Version);
-            this.groupBox8.Controls.Add(this.Btn_HF4_Save);
-            this.groupBox8.Controls.Add(this.label43);
-            this.groupBox8.Controls.Add(this.TrackBar_HF4_Cover);
-            this.groupBox8.Controls.Add(this.Btn_HF4_Browse);
-            this.groupBox8.Controls.Add(this.label44);
-            this.groupBox8.Controls.Add(this.Txt_HF4_Browse);
-            this.groupBox8.Location = new System.Drawing.Point(5, 1);
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(569, 202);
-            this.groupBox8.TabIndex = 7;
-            this.groupBox8.TabStop = false;
-            // 
-            // Chk_HF4_ReverseCover
-            // 
-            this.Chk_HF4_ReverseCover.AutoSize = true;
-            this.Chk_HF4_ReverseCover.Location = new System.Drawing.Point(10, 152);
-            this.Chk_HF4_ReverseCover.Name = "Chk_HF4_ReverseCover";
-            this.Chk_HF4_ReverseCover.Size = new System.Drawing.Size(145, 20);
-            this.Chk_HF4_ReverseCover.TabIndex = 16;
-            this.Chk_HF4_ReverseCover.Text = "Reverse cover side";
-            this.Chk_HF4_ReverseCover.UseVisualStyleBackColor = true;
-            this.Chk_HF4_ReverseCover.CheckedChanged += new System.EventHandler(this.Chk_HF4_ReverseCover_CheckedChanged);
-            // 
-            // Lbl_HF4_Command
-            // 
-            this.Lbl_HF4_Command.AutoSize = true;
-            this.Lbl_HF4_Command.Location = new System.Drawing.Point(111, 59);
-            this.Lbl_HF4_Command.Name = "Lbl_HF4_Command";
-            this.Lbl_HF4_Command.Size = new System.Drawing.Size(344, 16);
-            this.Lbl_HF4_Command.TabIndex = 15;
-            this.Lbl_HF4_Command.Text = "DemulShooter command line : -target=hfa / -target=hfa2p ";
-            this.Lbl_HF4_Command.Visible = false;
-            // 
-            // Lbl_HF4_Version
-            // 
-            this.Lbl_HF4_Version.AutoSize = true;
-            this.Lbl_HF4_Version.Location = new System.Drawing.Point(111, 43);
-            this.Lbl_HF4_Version.Name = "Lbl_HF4_Version";
-            this.Lbl_HF4_Version.Size = new System.Drawing.Size(166, 16);
-            this.Lbl_HF4_Version.TabIndex = 14;
-            this.Lbl_HF4_Version.Text = "Game Version : SKIDROW";
-            this.Lbl_HF4_Version.Visible = false;
-            // 
-            // Btn_HF4_Save
-            // 
-            this.Btn_HF4_Save.Location = new System.Drawing.Point(192, 152);
-            this.Btn_HF4_Save.Name = "Btn_HF4_Save";
-            this.Btn_HF4_Save.Size = new System.Drawing.Size(180, 44);
-            this.Btn_HF4_Save.TabIndex = 11;
-            this.Btn_HF4_Save.Text = "Save";
-            this.Btn_HF4_Save.UseVisualStyleBackColor = true;
-            this.Btn_HF4_Save.Click += new System.EventHandler(this.Btn_HF4_Save_Click);
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(7, 114);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(162, 16);
-            this.label43.TabIndex = 10;
-            this.label43.Text = "\"Cover Mode\" Sensibility :";
-            // 
-            // TrackBar_HF4_Cover
-            // 
-            this.TrackBar_HF4_Cover.Location = new System.Drawing.Point(175, 114);
-            this.TrackBar_HF4_Cover.Maximum = 5;
-            this.TrackBar_HF4_Cover.Minimum = 1;
-            this.TrackBar_HF4_Cover.Name = "TrackBar_HF4_Cover";
-            this.TrackBar_HF4_Cover.Size = new System.Drawing.Size(378, 45);
-            this.TrackBar_HF4_Cover.TabIndex = 1;
-            this.TrackBar_HF4_Cover.TickFrequency = 25;
-            this.TrackBar_HF4_Cover.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.TrackBar_HF4_Cover.Value = 3;
-            this.TrackBar_HF4_Cover.ValueChanged += new System.EventHandler(this.TrackBar_HF4_Cover_ValueChanged);
-            // 
-            // Btn_HF4_Browse
-            // 
-            this.Btn_HF4_Browse.Location = new System.Drawing.Point(526, 16);
-            this.Btn_HF4_Browse.Name = "Btn_HF4_Browse";
-            this.Btn_HF4_Browse.Size = new System.Drawing.Size(27, 27);
-            this.Btn_HF4_Browse.TabIndex = 9;
-            this.Btn_HF4_Browse.Text = "...";
-            this.Btn_HF4_Browse.UseVisualStyleBackColor = true;
-            this.Btn_HF4_Browse.Click += new System.EventHandler(this.Btn_HF4_Browse_Click);
-            // 
-            // label44
-            // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(7, 21);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(101, 16);
-            this.label44.TabIndex = 8;
-            this.label44.Text = "Game location :";
-            // 
-            // Txt_HF4_Browse
-            // 
-            this.Txt_HF4_Browse.Location = new System.Drawing.Point(114, 18);
-            this.Txt_HF4_Browse.Name = "Txt_HF4_Browse";
-            this.Txt_HF4_Browse.Size = new System.Drawing.Size(406, 22);
-            this.Txt_HF4_Browse.TabIndex = 7;
-            this.Txt_HF4_Browse.TextChanged += new System.EventHandler(this.Txt_HF4_Browse_TextChanged);
-            // 
-            // groupBox9
-            // 
-            this.groupBox9.Controls.Add(this.Btn_HF4_Install);
-            this.groupBox9.Controls.Add(this.label46);
-            this.groupBox9.Location = new System.Drawing.Point(5, 224);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(569, 103);
-            this.groupBox9.TabIndex = 6;
-            this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "Dll installation";
-            // 
-            // Btn_HF4_Install
-            // 
-            this.Btn_HF4_Install.Location = new System.Drawing.Point(192, 52);
-            this.Btn_HF4_Install.Name = "Btn_HF4_Install";
-            this.Btn_HF4_Install.Size = new System.Drawing.Size(180, 46);
-            this.Btn_HF4_Install.TabIndex = 10;
-            this.Btn_HF4_Install.Text = "Install";
-            this.Btn_HF4_Install.UseVisualStyleBackColor = true;
-            this.Btn_HF4_Install.Click += new System.EventHandler(this.Btn_HF4_Install_Click);
-            // 
-            // label46
-            // 
-            this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(7, 29);
-            this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(456, 16);
-            this.label46.TabIndex = 11;
-            this.label46.Text = "Click this button to install needed Dinput and Xinput dll into the game\'s folder." +
-                "";
             // 
             // Tab_LethalEnforcer3
             // 
@@ -2953,8 +2740,7 @@
             "Dolphin",
             "Elevator Action Invasion",
             "Gundam : SoZ",
-            "Heavy Fire Afghanistan",
-            "Heavy Fire Shattered Spear",
+            "Heavy Fire series",
             "Lethal Enforcers 3",
             "m2Emulator",
             "Operation G.H.O.S.T",
@@ -2978,6 +2764,19 @@
             this.label39.Size = new System.Drawing.Size(104, 16);
             this.label39.TabIndex = 40;
             this.label39.Text = "Page selection :";
+            // 
+            // Rdo_HF_MiddleGrenade
+            // 
+            this.Rdo_HF_MiddleGrenade.AutoSize = true;
+            this.Rdo_HF_MiddleGrenade.Checked = true;
+            this.Rdo_HF_MiddleGrenade.Location = new System.Drawing.Point(30, 188);
+            this.Rdo_HF_MiddleGrenade.Name = "Rdo_HF_MiddleGrenade";
+            this.Rdo_HF_MiddleGrenade.Size = new System.Drawing.Size(253, 20);
+            this.Rdo_HF_MiddleGrenade.TabIndex = 18;
+            this.Rdo_HF_MiddleGrenade.TabStop = true;
+            this.Rdo_HF_MiddleGrenade.Text = "Use Middle Click for Player 1 Grenade";
+            this.Rdo_HF_MiddleGrenade.UseVisualStyleBackColor = true;
+            this.Rdo_HF_MiddleGrenade.CheckedChanged += new System.EventHandler(this.Rdo_HF_MiddleClickGrenade_CheckedChanged);
             // 
             // Wnd_DemulShooterGui
             // 
@@ -3020,19 +2819,13 @@
             this.groupBox6.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
-            this.Tab_HeavyFire3.ResumeLayout(false);
-            this.Tab_HeavyFire3.PerformLayout();
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TrackBar_HF3_Cover)).EndInit();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            this.Tab_HeavyFire4.ResumeLayout(false);
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox8.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TrackBar_HF4_Cover)).EndInit();
-            this.groupBox9.ResumeLayout(false);
-            this.groupBox9.PerformLayout();
+            this.Tab_HeavyFire.ResumeLayout(false);
+            this.Tab_HeavyFire.PerformLayout();
+            this.Gbox_HF_Grenade.ResumeLayout(false);
+            this.Gbox_HF_Grenade.PerformLayout();
+            this.Gbox_HF_Cover.ResumeLayout(false);
+            this.Gbox_HF_Cover.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TrackBar_HF_Cover)).EndInit();
             this.Tab_LethalEnforcer3.ResumeLayout(false);
             this.Tab_LethalEnforcer3.PerformLayout();
             this.groupBox14.ResumeLayout(false);
@@ -3142,33 +2935,11 @@
         private System.Windows.Forms.Button Btn_Save_Gsoz;
         private System.Windows.Forms.ComboBox Cbo_PageSettings;
         private System.Windows.Forms.Label label39;
-        private System.Windows.Forms.TabPage Tab_HeavyFire3;
-        private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.TrackBar TrackBar_HF3_Cover;
+        private System.Windows.Forms.TabPage Tab_HeavyFire;
+        private System.Windows.Forms.TrackBar TrackBar_HF_Cover;
         private System.Windows.Forms.Label label41;
-        private System.Windows.Forms.Button Btn_HF3_Install;
-        private System.Windows.Forms.Button Btn_HF3_Browse;
-        private System.Windows.Forms.Label label40;
-        private System.Windows.Forms.TextBox Txt_HF3_Browse;
-        private System.Windows.Forms.Label label42;
-        private System.Windows.Forms.Button Btn_HF3_Save;
+        private System.Windows.Forms.Button Btn_HF_Save;
         private System.Windows.Forms.Label label45;
-        private System.Windows.Forms.TabPage Tab_HeavyFire4;
-        private System.Windows.Forms.GroupBox groupBox8;
-        private System.Windows.Forms.Button Btn_HF4_Save;
-        private System.Windows.Forms.Label label43;
-        private System.Windows.Forms.TrackBar TrackBar_HF4_Cover;
-        private System.Windows.Forms.Button Btn_HF4_Browse;
-        private System.Windows.Forms.Label label44;
-        private System.Windows.Forms.TextBox Txt_HF4_Browse;
-        private System.Windows.Forms.GroupBox groupBox9;
-        private System.Windows.Forms.Button Btn_HF4_Install;
-        private System.Windows.Forms.Label label46;
-        private System.Windows.Forms.Label Lbl_HFA_Command;
-        private System.Windows.Forms.Label Lbl_HFA_Version;
-        private System.Windows.Forms.Label Lbl_HF4_Command;
-        private System.Windows.Forms.Label Lbl_HF4_Version;
         private System.Windows.Forms.Label label47;
         private System.Windows.Forms.TextBox Txt_ActLabs_Y4;
         private System.Windows.Forms.Label label48;
@@ -3301,8 +3072,7 @@
         private System.Windows.Forms.Button Btn_EAI_Patch;
         private System.Windows.Forms.TextBox Txt_EAI_FolderPath;
         private System.Windows.Forms.Button Btn_EAI_Open;
-        private System.Windows.Forms.CheckBox Chk_HF3_ReverseCover;
-        private System.Windows.Forms.CheckBox Chk_HF4_ReverseCover;
+        private System.Windows.Forms.CheckBox Chk_HF_ReverseCover;
         private System.Windows.Forms.GroupBox groupBox19;
         private System.Windows.Forms.CheckBox Cbox_NetOutputs;
         private System.Windows.Forms.CheckBox Cbox_WmOutputs;
@@ -3311,6 +3081,12 @@
         private System.Windows.Forms.Button Btn_Raccoon_Patch;
         private System.Windows.Forms.TextBox Txt_Raccoon_FolderPath;
         private System.Windows.Forms.Button Btn_Raccoon_Open;
+        private System.Windows.Forms.GroupBox Gbox_HF_Cover;
+        private System.Windows.Forms.RadioButton Rdo_HF_MiddleCover;
+        private System.Windows.Forms.GroupBox Gbox_HF_Grenade;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label label40;
+        private System.Windows.Forms.RadioButton Rdo_HF_MiddleGrenade;
     }
 }
 

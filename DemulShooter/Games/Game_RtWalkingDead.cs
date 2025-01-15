@@ -38,11 +38,9 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_RtWalkingDead(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
+        public Game_RtWalkingDead(String RomName)
+            : base(RomName, "BudgieLoader")
         {
-            _HideCrosshair = HideCrosshair;
-
             _KnownMd5Prints.Add("Walking Dead - 01.05 - Teknoparrot Patched", "5158b185b977b38749845be958caddb6");
             _KnownMd5Prints.Add("Walking Dead - 01.05 - Original dump", "6951619cd907173862c5eb337e263af5");
 

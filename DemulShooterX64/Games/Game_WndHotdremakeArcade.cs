@@ -19,8 +19,8 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndHotdremakeArcade(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "The House of the Dead Remake", DisableInputHack, Verbose)
+        public Game_WndHotdremakeArcade(String RomName)
+            : base(RomName, "The House of the Dead Remake")
         {
             _KnownMd5Prints.Add("House of the dead Remake - GOG v1.0.0.4", "4cd32190b44d7c2d6b8ca52d0d372692"); //exe = D5FCA0B03AE64D1D0E75B795BD6CCA9F
             _KnownMd5Prints.Add("House of the dead Remake - GOG v1.03", "5e7afcfc9ae4aa8396be7007268bfe12");

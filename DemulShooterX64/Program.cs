@@ -25,9 +25,6 @@ namespace DemulShooterX64
 
         static String strTarget = string.Empty;
         static String strRom = string.Empty;
-        static String strCustomTargetProcessName = string.Empty;
-        public static String CustomTargetProcessName
-        { get { return strCustomTargetProcessName; } }
 
         static void Main(string[] args)
         {
@@ -162,13 +159,14 @@ namespace DemulShooterX64
                         DisplayDictionnaryList(_WindowsRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
-                        Console.WriteLine(" -pname=[ProcessName] : change the name of the expected executable instead of expecting specific name like game.exe");
-                        Console.WriteLine(" -profile=[ConfigFileName] : specify a config file name for DemulShooterX64 to load");
-                        Console.WriteLine(" -noinput \tDisable any input hack");
-                        Console.WriteLine(" -nocrosshair \tHide in-game crosshair (Only for Unity-based Games");
+                        Console.WriteLine(" -nocrosshair \t\tHide in-game crosshair (game dependant)");
+                        Console.WriteLine(" -noinput \t\tDisable any input hack");
+                        Console.WriteLine(" -nogun \t\tHide in-game weapon model (game dependant)");
+                        Console.WriteLine(" -pname=[ProcessName]\tchange the name of the expected executable instead of expecting specific name like game.exe");
+                        Console.WriteLine(" -profile=[ConfigFile]\tspecify a config file name for DemulShooterX64 to load");
                         Console.WriteLine(" -usesinglemouse \tUse standard mouse instead of Lightguns");
-                        Console.WriteLine(" -? -h --help\tShow this help");
-                        Console.WriteLine(" -v --verbose\tEnable output to log file");
+                        Console.WriteLine(" -? -h --help\t\tShow this help");
+                        Console.WriteLine(" -v --verbose\t\tEnable output to log file");
 
                         ExitConsole();
                     }
@@ -190,14 +188,6 @@ namespace DemulShooterX64
                             ExitConsole();
                         }
                     }
-
-                    else if (args[i].ToLower().StartsWith("-pname"))
-                    {
-                        strCustomTargetProcessName = (args[i].ToLower().Split('='))[1].Trim();
-                        if (strCustomTargetProcessName.EndsWith(".exe"))
-                            strCustomTargetProcessName = strCustomTargetProcessName.Substring(0, strCustomTargetProcessName.Length - 4);
-                    }
-
                 }
 
                 if (strTarget == String.Empty)

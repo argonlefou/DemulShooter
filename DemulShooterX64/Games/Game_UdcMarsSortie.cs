@@ -24,10 +24,9 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_UdcMarsSortie(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "Shooter", DisableInputHack, Verbose)
+        public Game_UdcMarsSortie(String RomName)
+            : base(RomName, "Shooter")
         {
-            _HideCrosshair = HideCrosshair;
             _KnownMd5Prints.Add("Mars Sortie v1.46.9 - Original", "01a643a3f615a22338c2505bcb1b9609");
             
             _tProcess.Start();

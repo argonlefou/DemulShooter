@@ -51,11 +51,9 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_RtJurassicPark(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
+        public Game_RtJurassicPark(String RomName)
+            : base(RomName, "BudgieLoader")
         {
-            _HideCrosshair = HideCrosshair;
-
             //Only for documentation, version check is done by reading code position in memory, as we don't have access to the ELF path
             _KnownMd5Prints.Add("Jurassic Park - v1.08 (unpatched ?)", "f24794f1bc8bf93031206578e4bdabf5");
             _KnownMd5Prints.Add("Jurassic Park - v1.08", "c62483935c2ea3c8387f33b3c8b89c6b");            

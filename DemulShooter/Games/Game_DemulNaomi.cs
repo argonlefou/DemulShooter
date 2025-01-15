@@ -11,8 +11,8 @@ namespace DemulShooter
 {
     class Game_DemulNaomi : Game_Demul
     {
-        public Game_DemulNaomi(String RomName, String DemulVersion, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
-            : base(RomName, "naomi", DemulVersion, DisableInputHack, Verbose, DisableWindow, WidescreenHack)
+        public Game_DemulNaomi(String RomName, String DemulVersion)
+            : base(RomName, "naomi", DemulVersion)
         {}
 
         #region Memory Hack

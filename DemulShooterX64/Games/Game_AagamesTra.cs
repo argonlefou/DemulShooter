@@ -36,10 +36,9 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_AagamesTra(String RomName, bool HideCorsshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "Game", DisableInputHack, Verbose)
+        public Game_AagamesTra(String RomName)
+            : base(RomName, "Game")
         {
-            _HideCrosshair = HideCorsshair;
             _KnownMd5Prints.Add("Tomb Raider Arcade - Clean Dump (dongle patched)", "7fccfcaa13ebe72043a32601de6d1a6b");
             _PlayerCrosshairAxis = new POINT[4];
             _PlayerShootAxis = new Vector3[4];

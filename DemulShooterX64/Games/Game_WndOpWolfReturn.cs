@@ -22,10 +22,9 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndOpWolfReturn(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "OperationWolf", DisableInputHack, Verbose)
+        public Game_WndOpWolfReturn(String RomName)
+            : base(RomName, "OperationWolf")
         {
-            _HideCrosshair = HideCrosshair;
             _KnownMd5Prints.Add("Operation Wolf Returns - COG", "6c32e74cda2fd1953245158382cf188a");
             _tProcess.Start();
             Logger.WriteLog("Waiting for Coastal " + _RomName + " game to hook.....");

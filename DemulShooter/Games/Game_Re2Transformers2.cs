@@ -72,11 +72,9 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Re2Transformers2(String RomName, bool HideCrosshairs, bool DisableInputHack, bool Verbose)
-            : base(RomName, "Transformers2", DisableInputHack, Verbose)
+        public Game_Re2Transformers2(String RomName)
+            : base(RomName, "Transformers2")
         {
-            _HideCrosshair = HideCrosshairs;
-
             _KnownMd5Prints.Add("Transformers Shadow Rising v180605 - Original Dump", "b3b1f4ad6408d6ee946761a00f761455");
             _tProcess.Start();
 

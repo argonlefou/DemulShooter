@@ -35,11 +35,9 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_IceGhostBusters(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
+        public Game_IceGhostBusters(String RomName)
+            : base(RomName, "BudgieLoader")
         {
-            _HideCrosshair = HideCrosshair;
-
             //Only for documentation, version check is done by reading code position in memory, as we don't have access to the ELF path
             _KnownMd5Prints.Add("Ghostbusters - v1.15", "8de0a59ff3c10420959038d6769b646c");
             _KnownMd5Prints.Add("Ghostbusters - v1.17", "ce10cf8f57b0fffd7fc5437622033b3a");            

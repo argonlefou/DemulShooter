@@ -29,7 +29,8 @@ namespace DemulShooterX64
         protected UInt64 _GameRAMPtr_Offset = 0x2087490;
         protected UInt64 _GameRAM_Address = 0;
 
-        public Game_Flycast(String RomName, bool DisableInputHack, bool Verbose) : base(RomName, "flycast", DisableInputHack, Verbose)
+        public Game_Flycast(String RomName) : 
+            base(RomName, "flycast")
         {
             _KnownMd5Prints.Add("Flycast v2.0", "84b08b9aa61d8c46ff47abcc77f690f7");
             _KnownMd5Prints.Add("Flycast v2.1", "cf56b386e1a9e82f5a92f8aadb2b6df9");

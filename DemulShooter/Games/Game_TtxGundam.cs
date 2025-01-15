@@ -89,8 +89,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxGundam(String RomName, bool Pedal1_Enable, HardwareScanCode Pedal1_Key, bool Pedal2_Enable, HardwareScanCode Pedal2_Key, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", DisableInputHack, Verbose)
+        public Game_TtxGundam(String RomName, bool Pedal1_Enable, HardwareScanCode Pedal1_Key, bool Pedal2_Enable, HardwareScanCode Pedal2_Key)
+            : base(RomName, "game")
         {
             _Pedal1_Enable = Pedal1_Enable;
             _Pedal1_Key = Pedal1_Key;

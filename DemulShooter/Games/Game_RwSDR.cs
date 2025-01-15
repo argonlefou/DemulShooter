@@ -38,8 +38,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwSDR(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", DisableInputHack, Verbose)
+        public Game_RwSDR(String RomName)
+            : base(RomName, "game")
         {
             _KnownMd5Prints.Add("Sega Dream Raider - Unpatched Header", "abedceb2135ab50c1182dda31153667687f53469");
             _KnownMd5Prints.Add("Sega Dream Raider - Patched Header", "ee96b126534355d96c12449291bdc44bb2d13e29");

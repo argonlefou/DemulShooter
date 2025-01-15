@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
+using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
 using DsCore.Win32;
-using DsCore.MameOutput;
 
 namespace DemulShooter
 {
@@ -61,10 +61,9 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndReload(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose) 
-            : base(RomName, "Reload", DisableInputHack, Verbose)
+        public Game_WndReload(String RomName) 
+            : base(RomName, "Reload")
         {
-            _HideCrosshair = HideCrosshair;
             _KnownMd5Prints.Add("Reload v1.0.0.1 - IGG", "aaaf22c6671c12176d8317d4cc4b478d");
             _KnownMd5Prints.Add("Reload v1.0.0.1 - Unknown release 1", "f3c4068a49f07aa99d2a92544d5c5748");
             _KnownMd5Prints.Add("Reload v1.0.0.1 - Unknown release 2", "2e1e22229c90b53153d2c015371e643a");   

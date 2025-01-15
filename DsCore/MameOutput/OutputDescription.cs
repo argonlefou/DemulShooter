@@ -206,7 +206,7 @@ namespace DsCore.MameOutput
         public static readonly String P1_Ammo = "P1_Ammo";
         public static readonly String P2_Ammo = "P2_Ammo";
         public static readonly String P3_Ammo = "P3_Ammo";
-        public static readonly String P4_Ammo = "P1_Ammo";
+        public static readonly String P4_Ammo = "P4_Ammo";
         public static readonly String P1_CtmRecoil = "P1_CtmRecoil";
         public static readonly String P2_CtmRecoil = "P2_CtmRecoil";
         public static readonly String P3_CtmRecoil = "P3_CtmRecoil";

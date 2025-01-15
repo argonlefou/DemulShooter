@@ -28,18 +28,18 @@ namespace DemulShooter
         private byte _P4_LastWeaponType;
         private byte _bP1_LastAmmo;
         private byte _bP2_LastAmmo;
-        private byte _P3_LastAmmo;
-        private byte _P4_LastAmmo;
+        private byte _bP3_LastAmmo;
+        private byte _bP4_LastAmmo;
         private byte _bP1_LastLife;
         private byte _bP2_LastLife;
-        private byte _P3_LastLife;
-        private byte _P4_LastLife;
+        private byte _bP3_LastLife;
+        private byte _bP4_LastLife;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_KonamiWartran(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", DisableInputHack, Verbose)
+        public Game_KonamiWartran(String RomName)
+            : base(RomName, "game")
         {
             _KnownMd5Prints.Add("Wartran Original dump", "4c987ea93e8dbd5a6aa624e504a4706c");
 
@@ -207,7 +207,7 @@ namespace DemulShooter
             //Player3
             P3_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P3_Life_Offset);
             SetOutputValue(OutputId.P3_Life, P3_Life);
-            if (P3_Life < _P3_LastLife)
+            if (P3_Life < _bP3_LastLife)
                 SetOutputValue(OutputId.P3_Damaged, 1);
 
             if (P3_Life > 0)
@@ -217,7 +217,7 @@ namespace DemulShooter
                 P3_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P3_WeaponStruct_Offset + 0x10 + P3_WeaponType);
                 if (P3_WeaponType == _P3_LastWeaponType)
                 {
-                    if (P3_Ammo < _P3_LastAmmo)
+                    if (P3_Ammo < _bP3_LastAmmo)
                         SetOutputValue(OutputId.P3_CtmRecoil, 1);
                     if (P3_Ammo > 0)
                         SetOutputValue(OutputId.P3_Clip, 1);
@@ -228,7 +228,7 @@ namespace DemulShooter
             //Player4
             P4_Life = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P4_Life_Offset);
             SetOutputValue(OutputId.P4_Life, P4_Life);
-            if (P4_Life < _P4_LastLife)
+            if (P4_Life < _bP4_LastLife)
                 SetOutputValue(OutputId.P4_Damaged, 1);
 
             if (P4_Life > 0)
@@ -238,7 +238,7 @@ namespace DemulShooter
                 P4_Ammo = ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _P4_WeaponStruct_Offset + 0x10 + P4_WeaponType);
                 if (P4_WeaponType == _P4_LastWeaponType)
                 {
-                    if (P4_Ammo < _P4_LastAmmo)
+                    if (P4_Ammo < _bP4_LastAmmo)
                         SetOutputValue(OutputId.P4_CtmRecoil, 1);
                     if (P4_Ammo > 0)
                         SetOutputValue(OutputId.P4_Clip, 1);
@@ -249,12 +249,12 @@ namespace DemulShooter
 
             _bP1_LastAmmo = P1_Ammo;
             _bP2_LastAmmo = P2_Ammo;
-            _P3_LastAmmo = P3_Ammo;
-            _P4_LastAmmo = P4_Ammo;
+            _bP3_LastAmmo = P3_Ammo;
+            _bP4_LastAmmo = P4_Ammo;
             _bP1_LastLife = P1_Life;
             _bP2_LastLife = P2_Life;
-            _P3_LastLife = P3_Life;
-            _P4_LastLife = P4_Life;
+            _bP3_LastLife = P3_Life;
+            _bP4_LastLife = P4_Life;
             _P1_LastWeaponType = P1_WeaponType;
             _P2_LastWeaponType = P2_WeaponType;
             _P3_LastWeaponType = P3_WeaponType;

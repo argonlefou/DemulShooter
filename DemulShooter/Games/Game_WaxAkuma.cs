@@ -53,8 +53,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WaxAkuma(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", DisableInputHack, Verbose)
+        public Game_WaxAkuma(String RomName)
+            : base(RomName, "game")
         {
             _KnownMd5Prints.Add("Akuma Mortis Immortal v81.07 - Original Dump", "4143b362a0cced0f6633974c710d91f9");
             _KnownMd5Prints.Add("Akuma Mortis Immortal v81.07 - Boot patched v1", "a8deac2b2c90187cce90fb09f767a695");

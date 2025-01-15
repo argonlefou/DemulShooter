@@ -57,8 +57,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_LindberghLgj(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
+        public Game_LindberghLgj(String RomName)
+            : base(RomName, "BudgieLoader")
         {
             _KnownMd5Prints.Add("Let's Go Jungle - Original", "b3f71e9defa7f71d777958138e4a0ebb");
             _KnownMd5Prints.Add("Let's Go Jungle - Rev.A", "875486650a16abce5b1901fd319001c0");

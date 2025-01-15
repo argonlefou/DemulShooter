@@ -39,8 +39,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_CxbxVcop3(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "cxbxr-ldr", DisableInputHack, Verbose)
+        public Game_CxbxVcop3(String RomName)
+            : base(RomName, "cxbxr-ldr")
         {
             _tProcess.Start();
             Logger.WriteLog("Waiting for Chihiro " + _RomName + " game to hook.....");

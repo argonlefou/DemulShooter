@@ -33,10 +33,9 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Es4PointBlankX(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "PBX100-2-NA-MPR0-A63", DisableInputHack, Verbose)
+        public Game_Es4PointBlankX(String RomName)
+            : base(RomName, "PBX100-2-NA-MPR0-A63")
         {
-            _HideCrosshair = HideCrosshair;
             _KnownMd5Prints.Add("Point Blank X - ROM PBX100-2-NA-MPR0-A63 - Original", "9aea1303f133b424c661ec897c67bf9e");
             _KnownMd5Prints.Add("Point Blank X - ROM PBX100-2-NA-MPR0-A63 - Patched", "70432507a3a9b66592d561259a9741ed");
             

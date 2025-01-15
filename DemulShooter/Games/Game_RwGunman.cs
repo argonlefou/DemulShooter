@@ -46,11 +46,9 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwGunman(String RomName, bool HideGameCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "gunman_dxF", DisableInputHack, Verbose)
+        public Game_RwGunman(String RomName)
+            : base(RomName, "gunman_dxF")
         {
-            _HideCrosshair = HideGameCrosshair;
-
             //_KnownMd5Prints.Add("gunman_dxD.exe - build 8796", "304bdb086204d6fa53eb65ad7073a2e0");   // Different code !
             _KnownMd5Prints.Add("gunman_dxF.exe - build 8796", "ffd6e3c06a2bf4a0abbe0961589432cc");
             _KnownMd5Prints.Add("gunman_dxR.exe - build 8796", "12666f3917779bf2bda624224a2dd346");

@@ -34,11 +34,9 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndAdCop95(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "adcop95", DisableInputHack, Verbose)
+        public Game_WndAdCop95(String RomName)
+            : base(RomName, "adcop95")
         {
-            _HideCrosshair = HideCrosshair;
-
             _KnownMd5Prints.Add("ADCOP v1.06 - Original exe", "e5ee4b73028672d5b30a5f0f38e0a05a");
             _tProcess.Start();
 

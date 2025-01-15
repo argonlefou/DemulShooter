@@ -42,8 +42,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxHauntedMuseum(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", DisableInputHack, Verbose)
+        public Game_TtxHauntedMuseum(String RomName)
+            : base(RomName, "game")
         {
             _KnownMd5Prints.Add("Haunted Museum v1.00 - Original", "ea27e06f3f918697fe9f924e728f5e80");
             _KnownMd5Prints.Add("Haunted Museum v1.00 - For JConfig", "792b34d2451c7a6c1fd347a29aaf0b35");

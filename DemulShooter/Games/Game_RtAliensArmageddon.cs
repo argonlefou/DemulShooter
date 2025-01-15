@@ -29,11 +29,9 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_RtAliensArmageddon(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
+        public Game_RtAliensArmageddon(String RomName)
+            : base(RomName, "BudgieLoader")
         {
-            _HideCrosshair = HideCrosshair;
-
             _KnownMd5Prints.Add("Aliens Armageddon - 03.90 USA", "fe95d8a34331b95d14f788220e6b8fed");
 
             _tProcess.Start();

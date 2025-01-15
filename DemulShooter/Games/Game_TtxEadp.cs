@@ -52,8 +52,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxEadp(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", DisableInputHack, Verbose)
+        public Game_TtxEadp(String RomName)
+            : base(RomName, "game")
         {
             _KnownMd5Prints.Add("Elevator Action Dead Parade - Original", "59dbaf264bb96323cb3127dee0f809ca");
             _KnownMd5Prints.Add("Elevator Action Dead Parade - For JConfig", "1bc36915ac4a4658feeca80ca1b6ca10");

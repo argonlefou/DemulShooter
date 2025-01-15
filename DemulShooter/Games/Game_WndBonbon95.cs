@@ -40,11 +40,9 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndBonbon95(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "Main95", DisableInputHack, Verbose)
+        public Game_WndBonbon95(String RomName)
+            : base(RomName, "Main95")
         {
-            _HideCrosshair = HideCrosshair;
-
             _KnownMd5Prints.Add("BONBON v1.04 - Original exe", "cd2d16ab00750d4c2ddf010aa5402407");
             _tProcess.Start();
 

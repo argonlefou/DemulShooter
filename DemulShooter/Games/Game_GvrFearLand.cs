@@ -39,8 +39,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_GvrFearLand(String RomName, bool AlternativeGameplay, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", DisableInputHack, Verbose)
+        public Game_GvrFearLand(String RomName, bool AlternativeGameplay)
+            : base(RomName, "game")
         {
             _AlternativeGameplay = AlternativeGameplay;
             _KnownMd5Prints.Add("Haunted Museum 2 v1.01 - Original", "0320d68acfb7ee7b4784ed43b113f0a0");

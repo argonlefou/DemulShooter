@@ -83,8 +83,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_KonamiLethalEnforcers3(String RomName, bool DisableInputHack, bool Verbose) 
-            : base (RomName, "game_patched", DisableInputHack, Verbose)
+        public Game_KonamiLethalEnforcers3(String RomName) 
+            : base (RomName, "game_patched")
         {
             _KnownMd5Prints.Add("Lethal Enforcer 3 v2005-04-15-1 - Original game.exe", "1d338c452c7b087bc7aad823a74bb023");
             _KnownMd5Prints.Add("Lethal Enforcer 3 v2005-04-15-1 - DemulShooter compatible game.exe", "ce1359efe2dde0ac02280bfe8c96681d");

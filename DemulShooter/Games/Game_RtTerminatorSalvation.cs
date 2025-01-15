@@ -38,8 +38,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_RtTerminatorSalvation(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BudgieLoader", DisableInputHack, Verbose)
+        public Game_RtTerminatorSalvation(String RomName)
+            : base(RomName, "BudgieLoader")
         {
             _KnownMd5Prints.Add("Terminator Salvation - 01.25 USA", "b1e68e0f4dc1db9ec04a1c0e83c9913e");
 

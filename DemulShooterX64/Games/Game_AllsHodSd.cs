@@ -36,7 +36,8 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_AllsHodSd(String RomName, bool DisableInputHack, bool Verbose) : base(RomName, "Hodzero-Win64-Shipping", DisableInputHack, Verbose)
+        public Game_AllsHodSd(String RomName) :
+            base(RomName, "Hodzero-Win64-Shipping")
         {            
             _KnownMd5Prints.Add("Hodzero-Win64-Shipping.exe - Original Dump", "cde48c217d04caa64ee24a72f73dcce4");
             //Add amdaemon check ? (difference between original/Jconfig)

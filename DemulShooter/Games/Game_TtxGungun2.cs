@@ -37,8 +37,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxGungun2(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", DisableInputHack, Verbose)
+        public Game_TtxGungun2(String RomName)
+            : base(RomName, "game")
         {
             _KnownMd5Prints.Add("Music Gun Gun 2 v1.01 JPN - Original", "590677da06b758728a1dd607cbf032de");
             _KnownMd5Prints.Add("Music Gun Gun 2 v1.01 JPN - For JConfig", "57fb4970df6ef979d7ffc044e6161e84");

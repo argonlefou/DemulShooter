@@ -41,8 +41,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndHod3pc(String RomName, bool DisableInputHack, bool Verbose) 
-            : base (RomName, "hod3pc", DisableInputHack, Verbose)
+        public Game_WndHod3pc(String RomName) 
+            : base (RomName, "hod3pc")
         {
             _KnownMd5Prints.Add("hod3pc SEGA Windows", "4bf19dcb7f0182596d93f038189f2301");
             _KnownMd5Prints.Add("hod3pc RELOADED cracked", "3a4501d39bbb7271712421fb992ad37b");

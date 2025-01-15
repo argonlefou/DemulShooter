@@ -34,11 +34,9 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndAdCopOverseas(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "adcopsea", DisableInputHack, Verbose)
+        public Game_WndAdCopOverseas(String RomName)
+            : base(RomName, "adcopsea")
         {
-            _HideCrosshair = HideCrosshair;
-
             _KnownMd5Prints.Add("ADCOP Overseas Mission - Original exe", "7e02a4e85cf1ed8c672e077b86cb370a");
             _tProcess.Start();
 

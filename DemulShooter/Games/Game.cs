@@ -21,6 +21,16 @@ namespace DemulShooter
         public delegate void GameHookedHandler(object sender, EventArgs e);
         public event GameHookedHandler OnGameHooked;
 
+        //Games options
+        protected bool _NoAutoFire = false;
+        protected bool _HideCrosshair = false;
+        protected bool _HideGuns = false;
+        protected bool _DisableInputHack = false;
+        protected bool _DisableWindow = false;
+        protected string _CustomTargetProcessName = string.Empty;
+        protected bool _VerboseEnable;
+        protected bool _WidescreenHack = false ;           
+
         #region Process variables
 
         protected System.Timers.Timer _tProcess;
@@ -30,10 +40,7 @@ namespace DemulShooter
         protected IntPtr _TargetProcess_MemoryBaseAddress = IntPtr.Zero;        
         protected IntPtr _ProcessHandle = IntPtr.Zero;
         protected IntPtr _GameWindowHandle = IntPtr.Zero;
-        protected bool _VerboseEnable;
-        protected bool _DisableWindow = false;
-        protected bool _DisableInputHack = false;
-        protected bool _HideCrosshair = false;
+
 
         //MD5 check of target binaries, may help to know if it's the wrong version or not compatible
         protected Dictionary<string, string> _KnownMd5Prints;
@@ -65,13 +72,21 @@ namespace DemulShooter
 
         protected int _P1_Life = 0;
         protected int _P2_Life = 0;
+        protected int _P3_Life = 0;
+        protected int _P4_Life = 0;
         protected int _P1_Ammo = 0;
         protected int _P2_Ammo = 0;
+        protected int _P3_Ammo = 0;
+        protected int _P4_Ammo = 0;
 
         protected int _P1_LastLife = 0;
         protected int _P2_LastLife = 0;
+        protected int _P3_LastLife = 0;
+        protected int _P4_LastLife = 0;
         protected int _P1_LastAmmo = 0;
         protected int _P2_LastAmmo = 0;
+        protected int _P3_LastAmmo = 0;
+        protected int _P4_LastAmmo = 0;
 
         #endregion
 
@@ -81,8 +96,10 @@ namespace DemulShooter
         /// <param name="RomName">DemumShooter [-rom] Parameter</param>
         /// <param name="TargetProcessName">Executable name to hook in process list</param>
         /// <param name="Verbose">Create a debug.txt file if TRUE</param>
-        public Game(String RomName, String TargetProcessName, bool DisableInputHack, bool Verbose)
+        public Game(String RomName, String TargetProcessName)
         {
+            GetGameOptions();
+
             _KnownMd5Prints = new Dictionary<String, String>();
             GetScreenResolution();
             Logger.WriteLog("Windows screen scaling : " + GetScreenScaling());
@@ -91,10 +108,8 @@ namespace DemulShooter
             _clientWindowLocation = new POINT(0, 0);
 
             _RomName = RomName;
-            _DisableInputHack = DisableInputHack;
-            _VerboseEnable = Verbose;
             _ProcessHooked = false;
-            _Target_Process_Name = Program.CustomTargetProcessName == string.Empty ? TargetProcessName : Program.CustomTargetProcessName;
+            _Target_Process_Name = _CustomTargetProcessName == string.Empty ? TargetProcessName : _CustomTargetProcessName;
             Logger.WriteLog("Target process name : " + _Target_Process_Name + ".exe");
 
             CreateOutputList();
@@ -128,6 +143,49 @@ namespace DemulShooter
             if (OnGameHooked == null) return;
 
             OnGameHooked(this, new EventArgs());
+        }
+
+        private void GetGameOptions()
+        {
+            string[] sArgs = Environment.GetCommandLineArgs();
+            foreach (string sOption in sArgs)
+            {
+                if (sOption.ToLower().Equals("-noautofire"))
+                {
+                    _NoAutoFire = true;
+                }
+                else if (sOption.ToLower().Equals("-nocrosshair"))
+                {
+                    _HideCrosshair = true;
+                }
+                else if (sOption.ToLower().Equals("-nogun"))
+                {
+                    _HideGuns = true;
+                }
+                else if (sOption.ToLower().Equals("-noinput"))
+                {
+                    _DisableInputHack = true;
+                }
+                else if (sOption.ToLower().Equals("-noresize"))
+                {
+                    _DisableWindow = true;
+                }
+                else if (sOption.ToLower().StartsWith("-pname="))
+                {
+                    _CustomTargetProcessName = (sOption.ToLower().Split('='))[1].Trim();
+                    if (_CustomTargetProcessName.EndsWith(".exe"))
+                        _CustomTargetProcessName = _CustomTargetProcessName.Substring(0, _CustomTargetProcessName.Length - 4);
+                }
+                else if (sOption.ToLower().Equals("-v"))
+                {
+                    _VerboseEnable = true;
+                }
+                else if (sOption.ToLower().Equals("-widescreen"))
+                {
+                    _WidescreenHack = true;
+                }
+                 
+            }
         }
 
         #region MD5 Verification
@@ -609,7 +667,7 @@ namespace DemulShooter
                 CaveMemoryInputs.Open();
                 CaveMemoryInputs.Alloc(0x800);
                 _InputsDatabank_Address = CaveMemoryInputs.CaveAddress;
-                Logger.WriteLog("Custom output data will be stored at : 0x" + CaveMemoryInputs.CaveAddress.ToString("X8"));
+                Logger.WriteLog("Custom input data will be stored at : 0x" + CaveMemoryInputs.CaveAddress.ToString("X8"));
             }
             catch (Exception Ex)
             {

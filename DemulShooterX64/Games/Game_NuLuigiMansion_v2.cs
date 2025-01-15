@@ -33,7 +33,7 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_NuLuigiMansion_v2(String RomName, bool DisableInputHack, bool Verbose) : base(RomName, "vacuum", DisableInputHack, Verbose)
+        public Game_NuLuigiMansion_v2(String RomName) : base(RomName, "vacuum")
         {
             _KnownMd5Prints.Add("VACUUM.EXE - Original Dump", "5120bbe464b35f4cc894238bd9f9e11b");
             _KnownMd5Prints.Add("VACUUM.EXE - 'SpeedFix'", "8ddfab1cd2140670d9437738c9c331c8");

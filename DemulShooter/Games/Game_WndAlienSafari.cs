@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Media;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Memory;
-using DsCore.RawInput;
-using DsCore.Win32;
 
 
 namespace DemulShooter
@@ -29,8 +25,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndAlienSafari(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "Alien", DisableInputHack, Verbose)
+        public Game_WndAlienSafari(String RomName)
+            : base(RomName, "Alien")
         {
             _KnownMd5Prints.Add("Alien 1.0.0.1 - ToEng", "8b9db55dd8bf8af653f30fc0301cad6c");
             _KnownMd5Prints.Add("Alien 1.0.0.1 - Original", "2618455f69182c9c47e2d8a959cd00e9");

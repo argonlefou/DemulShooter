@@ -24,10 +24,6 @@ namespace DemulShooter
 
         static String strTarget = string.Empty;
         static String strRom = string.Empty;
-        static String strCustomTargetProcessName = string.Empty;
-        public static String CustomTargetProcessName
-        { get {return strCustomTargetProcessName;} }
-
 
         static void Main(string[] args)
         {
@@ -262,19 +258,19 @@ namespace DemulShooter
                         DisplayDictionnaryList(_WindowsRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Supported [options] :");
-                        Console.WriteLine(" -pname=[ProcessName] : change the name of the expected executable instead of expecting specific name like game.exe");
-                        Console.WriteLine(" -profile=[ConfigFile] : specify a config file name for DemulShooter to load");
-                        Console.WriteLine(" -ddinumber \tDolphin's DirectInput number for P2 device");
-                        Console.WriteLine(" -hardffl \tAlternative gameplay for Fright Fear Land / Haunted Museum 2(see README.TXT)");
-                        Console.WriteLine(" -noautofire \tDisable in-game autofire for SEGA Golden Gun");
-                        Console.WriteLine(" -nocrosshair \tHide in-game crosshair (Only for \"Reload\" on Windows and \"Rambo\" on Lindbergh");
-                        Console.WriteLine(" -noinput \tDisable any input hack");
-                        Console.WriteLine(" -noresize \tFix Demul exit fullscreen bug, when shooting upper left corner");
-                        Console.WriteLine(" \t\tNote : Demul GUI will not respond anymore to clicks");
+                        Console.WriteLine(" -ddinumber \t\tDolphin's DirectInput number for P2 device");
+                        Console.WriteLine(" -hardffl \t\tAlternative gameplay for Fright Fear Land / Haunted Museum 2");
+                        Console.WriteLine(" -noautofire \t\tDisable in-game autofire for SEGA Golden Gun");
+                        Console.WriteLine(" -nocrosshair \t\tHide in-game crosshair (game dependant)");
+                        Console.WriteLine(" -nogun \t\tHide in-game weapon model (game dependant)");
+                        Console.WriteLine(" -noinput \t\tDisable any input hack");
+                        Console.WriteLine(" -noresize \t\tFix Demul exit fullscreen bug, when shooting upper left corner");
+                        Console.WriteLine(" -pname=[ProcessName]\tchange the name of the expected executable instead of expecting specific name like game.exe");
+                        Console.WriteLine(" -profile=[ConfigFile]\tspecify a config file name for DemulShooter to load");
                         Console.WriteLine(" -usesinglemouse \tUse standard mouse instead of Lightguns");
-                        Console.WriteLine(" -widescreen \tDemul Widescreen hack");                        
-                        Console.WriteLine(" -? -h --help\tShow this help");
-                        Console.WriteLine(" -v --verbose\tEnable output to log file");
+                        Console.WriteLine(" -widescreen \t\tDemul Widescreen hack");
+                        Console.WriteLine(" -? -h --help\t\tShow this help");
+                        Console.WriteLine(" -v --verbose\t\tEnable output to log file");
 
                         ExitConsole();
                     }
@@ -298,13 +294,6 @@ namespace DemulShooter
                                 ExitConsole();
                             }
                         }
-                    }
-
-                    else if (args[i].ToLower().StartsWith("-pname"))
-                    {
-                        strCustomTargetProcessName = (args[i].ToLower().Split('='))[1].Trim();
-                        if (strCustomTargetProcessName.EndsWith(".exe"))
-                            strCustomTargetProcessName = strCustomTargetProcessName.Substring(0, strCustomTargetProcessName.Length - 4);
                     }
                 }
 

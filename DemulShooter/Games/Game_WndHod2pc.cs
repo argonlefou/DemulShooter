@@ -45,8 +45,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndHod2pc(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "hod2", DisableInputHack, Verbose)
+        public Game_WndHod2pc(String RomName)
+            : base(RomName, "hod2")
         {
             _KnownMd5Prints.Add("hod2.exe PC-ISOZONE - uncracked", "97c9e516a287aab33a455a396dadaa45");
             _KnownMd5Prints.Add("hod2.exe PC-ISOZONE - cracked", "eb51d3856997581ed3aa8ecb7d6d8d07");

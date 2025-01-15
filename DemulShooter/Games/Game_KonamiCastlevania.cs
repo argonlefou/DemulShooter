@@ -56,8 +56,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_KonamiCastlevania(String RomName, bool DisableInputHack, bool Verbose) 
-            : base (RomName, "HCV", DisableInputHack, Verbose)
+        public Game_KonamiCastlevania(String RomName) 
+            : base (RomName, "HCV")
         {
             _KnownMd5Prints.Add("Castlevania Arcade v2009-04-22 - clean dump", "8a6dd00e254df6ad68a944da8add6235");
         

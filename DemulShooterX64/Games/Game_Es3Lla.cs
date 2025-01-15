@@ -19,7 +19,8 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Es3Lla(string RomName, bool DisableInputHack, bool Verbose): base(RomName, "DomeShooterGame-Win64-Shipping", DisableInputHack, Verbose)
+        public Game_Es3Lla(string RomName): 
+            base(RomName, "DomeShooterGame-Win64-Shipping")
         {
             _tProcess.Start();
             Logger.WriteLog("Waiting for ES3 " + _RomName + " game to hook.....");

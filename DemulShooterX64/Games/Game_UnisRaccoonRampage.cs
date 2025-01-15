@@ -79,8 +79,8 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_UnisRaccoonRampage(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "RSGame-Win64-Shipping", DisableInputHack, Verbose)
+        public Game_UnisRaccoonRampage(String RomName)
+            : base(RomName, "RSGame-Win64-Shipping")
         {
             _KnownMd5Prints.Add("Raccon Rampage v1.4 clean dump", "d3d3a8b3c7a8f7254d3c7641bb91bd03");
             _KnownMd5Prints.Add("Racoon Rampage v1.4 patched by Argonlefou", "8e3a7b0e5c1065c5669c3f169e5a5c5f");

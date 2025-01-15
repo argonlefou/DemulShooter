@@ -16,7 +16,7 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_FlycastNinjaslt(String RomName, bool DisableInputHack, bool Verbose) : base(RomName, DisableInputHack, Verbose)
+        public Game_FlycastNinjaslt(String RomName) : base(RomName)
         { 
             if (RomName.Equals("ninjaslt"))
             {

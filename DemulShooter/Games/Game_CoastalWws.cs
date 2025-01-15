@@ -32,8 +32,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_CoastalWws(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "CowBoy", DisableInputHack, Verbose)
+        public Game_CoastalWws(String RomName)
+            : base(RomName, "CowBoy")
         {
             _KnownMd5Prints.Add("Wild West Shoutout original dump", "4f543c469818c1db8bc856be84f0131e");
             _tProcess.Start();

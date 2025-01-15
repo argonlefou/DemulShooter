@@ -7,8 +7,6 @@ using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
-using DsCore.Win32;
-using System.Text;
 
 namespace DemulShooter
 {
@@ -49,8 +47,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_RwLGI3D(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "LGI", DisableInputHack, Verbose)
+        public Game_RwLGI3D(String RomName)
+            : base(RomName, "LGI")
         {
             _KnownMd5Prints.Add("Let's Go Island - For TeknoParrot", "ef9e3625684e0d52eab5bc1f0c68c7c3");
             _KnownMd5Prints.Add("Let's Go Island - For JConfig", "49c5de5df60f475a965b2d894b3477c6");

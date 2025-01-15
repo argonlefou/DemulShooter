@@ -21,8 +21,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndArtIsDead(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "gungallery", DisableInputHack, Verbose)
+        public Game_WndArtIsDead(String RomName)
+            : base(RomName, "gungallery")
         {
             _KnownMd5Prints.Add("Art Is Dead", "4cc4e814647a1d9f315fa1be4ac3d92a");
 

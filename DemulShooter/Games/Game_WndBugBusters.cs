@@ -60,11 +60,9 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndBugBusters(String RomName, bool HideGameCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "BBPC", DisableInputHack, Verbose)
+        public Game_WndBugBusters(String RomName)
+            : base(RomName, "BBPC")
         {
-            _HideCrosshair = HideGameCrosshair;
-
             _KnownMd5Prints.Add("Bug Buster v1.0.0.1 - Original exe", "832f2fa9ef018d390b7b477f4240ca8e");
             _KnownMd5Prints.Add("Bug Buster v1.0.0.1 - NO-CD patched", "7d4195bdfbfa843cac8af85616abbc21");
             _tProcess.Start();

@@ -52,7 +52,6 @@ namespace DemulShooterX64
 
         //Game options
         private Game _Game;
-        private bool _HideGameCrosshair = false;
         private string _Rom = String.Empty;
         private string _Target = String.Empty;
         private bool _NoInput = false;
@@ -127,10 +126,6 @@ namespace DemulShooterX64
                 else if (Args[i].ToLower().Equals("-ipcoutputs"))
                 {
                     _EnableOutputsIpc = true;
-                }
-                else if (Args[i].ToLower().Equals("-nocrosshair"))
-                {
-                    _HideGameCrosshair = true;
                 }
                 else if (Args[i].ToLower().Equals("-noinput"))
                 {
@@ -291,15 +286,15 @@ namespace DemulShooterX64
                     {
                         case "drk":
                             {
-                                _Game = new Game_AagamesDrakon(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                                _Game = new Game_AagamesDrakon(_Rom.ToLower());
                             }break;
                         case "rha":
                             {
-                                _Game = new Game_AagamesRha(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                                _Game = new Game_AagamesRha(_Rom.ToLower());
                             }; break;
                         case "tra":
                             {
-                                _Game = new Game_AagamesTra(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                                _Game = new Game_AagamesTra(_Rom.ToLower());
                             }; break;
                     }
                 }
@@ -311,7 +306,7 @@ namespace DemulShooterX64
                     {
                         case "hodsd":
                             {
-                                _Game = new Game_AllsHodSd(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_AllsHodSd(_Rom.ToLower());
                             }; break;
                     }
                 }
@@ -323,7 +318,7 @@ namespace DemulShooterX64
                     {
                         case "tc5":
                             {
-                                _Game = new Game_Es3Tc5(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_Es3Tc5(_Rom.ToLower());
                             }; break;
                     }
                 }
@@ -334,11 +329,11 @@ namespace DemulShooterX64
                     if (_Rom.ToLower().Equals("confmiss") || _Rom.ToLower().StartsWith("deathcox") || _Rom.ToLower().StartsWith("hotd2")
                         || _Rom.ToLower().Equals("lupinsho") || _Rom.ToLower().Equals("mok"))
                     {
-                        _Game = new Game_FlycastNaomi(_Rom.ToLower(), _NoInput, isVerbose);
+                        _Game = new Game_FlycastNaomi(_Rom.ToLower());
                     }
                     else if (_Rom.ToLower().StartsWith("ninjaslt"))
                     {
-                        _Game = new Game_FlycastNinjaslt(_Rom.ToLower(), _NoInput, isVerbose);
+                        _Game = new Game_FlycastNinjaslt(_Rom.ToLower());
                     }
                     /*else if (_Rom.ToLower().Equals("braveff"))
                     {
@@ -350,7 +345,7 @@ namespace DemulShooterX64
                     }*/
                     else
                     {
-                        _Game = new Game_FlycastAtomiswave(_Rom.ToLower(), _NoInput, isVerbose);
+                        _Game = new Game_FlycastAtomiswave(_Rom.ToLower());
                     }
                 }
 
@@ -361,15 +356,15 @@ namespace DemulShooterX64
                     {
                         case "deadstorm":
                             {
-                                _Game = new Game_S357DeadStormPirates(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_S357DeadStormPirates(_Rom.ToLower());
                             }; break;
                         case "de4d":
                             {
-                                _Game = new Game_S357DarkEscape(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_S357DarkEscape(_Rom.ToLower());
                             }; break;
                         case "sailorz":
                             {
-                                _Game = new Game_S357SailorZombie(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_S357SailorZombie(_Rom.ToLower());
                             }; break;
                     }
                 }
@@ -381,7 +376,7 @@ namespace DemulShooterX64
                     {
                         case "lma":
                             {
-                                _Game = new Game_NuLuigiMansion_v2(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_NuLuigiMansion_v2(_Rom.ToLower());
                             }; break;
                     }
                 }
@@ -393,7 +388,7 @@ namespace DemulShooterX64
                     {
                         case "marss":
                             {
-                                _Game = new Game_UdcMarsSortie(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                                _Game = new Game_UdcMarsSortie(_Rom.ToLower());
                             }; break;
                     }
                 }
@@ -403,15 +398,15 @@ namespace DemulShooterX64
                 {
                     if (_Rom.ToLower().Equals("eai"))
                     {
-                        _Game = new Game_UnisElevatorActionInvasion(_Rom.ToLower(), _NoInput, isVerbose);
+                        _Game = new Game_UnisElevatorActionInvasion(_Rom.ToLower());
                     }
                     else if (_Rom.ToLower().Equals("nha"))
                     {
-                        _Game = new Game_UnisNightHunterArcade(_Rom.ToLower(), _NoInput, isVerbose);
+                        _Game = new Game_UnisNightHunterArcade(_Rom.ToLower());
                     }
                     else if (_Rom.ToLower().Equals("racramp"))
                     {
-                        _Game = new Game_UnisRaccoonRampage(_Rom.ToLower(), _NoInput, isVerbose);
+                        _Game = new Game_UnisRaccoonRampage(_Rom.ToLower());
                     }
                 }
 
@@ -422,19 +417,19 @@ namespace DemulShooterX64
                     {
                         case "bhapc":
                             {
-                                _Game = new Game_Bhapc(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_Bhapc(_Rom.ToLower());
                             } break;
                         case "dcop":
                             {
-                                _Game = new Game_WndDcop(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                                _Game = new Game_WndDcop(_Rom.ToLower());
                             } break;
                         case "hotdra":
                             {
-                                _Game = new Game_WndHotdremakeArcade(_Rom.ToLower(), _NoInput, isVerbose);
+                                _Game = new Game_WndHotdremakeArcade(_Rom.ToLower());
                             } break;
                         case "opwolfr":
                             {
-                                _Game = new Game_WndOpWolfReturn(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                                _Game = new Game_WndOpWolfReturn(_Rom.ToLower());
                             }; break;
                     }
                 }
@@ -446,7 +441,7 @@ namespace DemulShooterX64
                     {
                         case "drakon":
                             {
-                                _Game = new Game_AagamesDrakon_NoPlugin(_Rom.ToLower(), _HideGameCrosshair, _NoInput, isVerbose);
+                                _Game = new Game_AagamesDrakon_NoPlugin(_Rom.ToLower());
                             }; break;
 
                         default: break;

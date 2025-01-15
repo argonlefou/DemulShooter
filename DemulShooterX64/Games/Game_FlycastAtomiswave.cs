@@ -13,7 +13,7 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_FlycastAtomiswave(String RomName, bool DisableInputHack, bool Verbose) : base(RomName, DisableInputHack, Verbose)
+        public Game_FlycastAtomiswave(String RomName) : base(RomName)
         { }
 
         #region Outputs

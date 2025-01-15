@@ -37,10 +37,9 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_AagamesRha(String RomName, bool HideCrosshair, bool DisableInputHack, bool Verbose)
-            : base(RomName, "Game", DisableInputHack, Verbose)
+        public Game_AagamesRha(String RomName)
+            : base(RomName, "Game")
         {
-            _HideCrosshair = HideCrosshair;
             _PlayerCrosshairAxis = new POINT[4];
             _PlayerShootAxis = new Vector3[4];
             _KnownMd5Prints.Add("Rabbids Hollywood Arcade - Clean Dump", "2dac74521cd3bb08b61f93830bf2660d");

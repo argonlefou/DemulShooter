@@ -34,8 +34,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_GvrAliens(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "aliens dehasped", DisableInputHack, Verbose)
+        public Game_GvrAliens(String RomName)
+            : base(RomName, "aliens dehasped")
         {
             _KnownMd5Prints.Add("Aliens Extermination v1.03 US - Dehasped + No StaticPath patched", "30c8725c19d07fbebb68903f8f068052");
             _KnownMd5Prints.Add("Aliens Extermination v1.03 US - Dehasped", "9ed286aafe474a16c07f7d62b5c06ecb");

@@ -41,8 +41,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_GvrFarCry(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "FarCry_r", DisableInputHack, Verbose)
+        public Game_GvrFarCry(String RomName)
+            : base(RomName, "FarCry_r")
         {
             _KnownMd5Prints.Add("Far Cry Paradise", "263325AC3F7685CBA12B280D8E927A5D");
             _KnownMd5Prints.Add("Far Cry Paradise by Mohkerz", "557d065632eaa3c8adb5764df1609976");

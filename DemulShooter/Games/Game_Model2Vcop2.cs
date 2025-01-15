@@ -7,7 +7,6 @@ using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Memory;
 using DsCore.RawInput;
-using DsCore.Win32;
 
 namespace DemulShooter
 {
@@ -16,8 +15,8 @@ namespace DemulShooter
         /*** MEMORY ADDRESSES **/
         private UInt32 _Buttons_Injection_Offset = 0x000C88F0;
         private UInt32 _Reload_Injection_Offset = 0x000C89B8;
-        private UInt32 _P1_Axis_Injection_Offset_1 = 0x000CAAF5;
-        private UInt32 _P2_Axis_Injection_Offset_1 = 0x000CAB2F;
+        private InjectionStruct _P1_Axis_InjectionStruct = new InjectionStruct(0x000CAAF5, 8);
+        private InjectionStruct _P2_Axis_InjectionStruct = new InjectionStruct(0x000CAB2F, 8);
         private UInt32 _P1_X_CaveAddress;
         private UInt32 _P1_Y_CaveAddress;
         private UInt32 _P2_X_CaveAddress;
@@ -35,8 +34,8 @@ namespace DemulShooter
         /// Constructor
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
-        public Game_Model2Vcop2(String RomName, bool DisableInputHack, bool Verbose)
-            : base(RomName, "EMULATOR", DisableInputHack, Verbose)
+        public Game_Model2Vcop2(String RomName)
+            : base(RomName, "EMULATOR")
         {   
             _KnownMd5Prints.Add("Model2Emulator 1.1a", "26bd488f9a391dcac1c5099014aa1c9e");
             _KnownMd5Prints.Add("Model2Emulator 1.1a multicpu", "ac59ce7cfb95d6d639c0f0d1afba1192");
@@ -162,10 +161,9 @@ namespace DemulShooter
             WriteBytes((UInt32)_TargetProcess_MemoryBaseAddress + _Reload_Injection_Offset + 1, b);
 
             //Axis
-            SetHack_P1Axis(_P1_Axis_Injection_Offset_1, 8);
-            SetHack_P2Axis(_P2_Axis_Injection_Offset_1, 8);
+            SetHack_P1Axis();
+            SetHack_P2Axis();
 
-            //Initial values
             //Initial values
             WriteBytes(_P1_X_CaveAddress, BitConverter.GetBytes((Int32)0xA5));
             WriteBytes(_P1_Y_CaveAddress, BitConverter.GetBytes((Int32)0xC0));
@@ -178,7 +176,7 @@ namespace DemulShooter
             Logger.WriteLog("-");
         }
 
-        private void SetHack_P1Axis(UInt32 InjectionOffset, UInt32 Length)
+        private void SetHack_P1Axis()
         {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
             CaveMemory.Open();
@@ -191,26 +189,12 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 15");
             b = BitConverter.GetBytes(_P1_Y_CaveAddress);
             CaveMemory.Write_Bytes(b);
-            //return
-            CaveMemory.Write_jmp((UInt32)_TargetProcess_MemoryBaseAddress + InjectionOffset + Length);
 
-            Logger.WriteLog("Adding P1Axis CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess_MemoryBaseAddress + InjectionOffset) - 5;
-            List<byte> Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Buffer.Add(0x90);
-            Buffer.Add(0x90);
-            Buffer.Add(0x90);
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess_MemoryBaseAddress + InjectionOffset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            //Inject it
+            CaveMemory.InjectToOffset(_P1_Axis_InjectionStruct, "P1 Axis");
         }
 
-        private void SetHack_P2Axis(UInt32 InjectionOffset, UInt32 Length)
+        private void SetHack_P2Axis()
         {
             Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
             CaveMemory.Open();
@@ -223,23 +207,9 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 15");
             b = BitConverter.GetBytes(_P2_Y_CaveAddress);
             CaveMemory.Write_Bytes(b);
-            //return
-            CaveMemory.Write_jmp((UInt32)_TargetProcess_MemoryBaseAddress + InjectionOffset + Length);
 
-            Logger.WriteLog("Adding P2Axis CodeCave at : 0x" + CaveMemory.CaveAddress.ToString("X8"));
-
-            //Code injection
-            IntPtr ProcessHandle = _TargetProcess.Handle;
-            UInt32 bytesWritten = 0;
-            UInt32 jumpTo = 0;
-            jumpTo = CaveMemory.CaveAddress - ((UInt32)_TargetProcess_MemoryBaseAddress + InjectionOffset) - 5;
-            List<byte> Buffer = new List<byte>();
-            Buffer.Add(0xE9);
-            Buffer.AddRange(BitConverter.GetBytes(jumpTo));
-            Buffer.Add(0x90);
-            Buffer.Add(0x90);
-            Buffer.Add(0x90);
-            Win32API.WriteProcessMemory(ProcessHandle, (UInt32)_TargetProcess_MemoryBaseAddress + InjectionOffset, Buffer.ToArray(), (UInt32)Buffer.Count, ref bytesWritten);
+            //Inject it
+            CaveMemory.InjectToOffset(_P2_Axis_InjectionStruct, "P2 Axis");
         }
         
         #endregion   
@@ -336,73 +306,67 @@ namespace DemulShooter
             UInt32 iTemp = ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + _GameInfoPtr_Offset);
             _GameInfo_BaseAddress = ReadPtr(iTemp + 0x550);
 
+            int GameStatus = ReadByte(_GameInfo_BaseAddress + 0x0050003D);
             int P1_Status = ReadByte(_GameInfo_BaseAddress + 0x00502088);
             int P2_Status = ReadByte(_GameInfo_BaseAddress + 0x0050208C);
-            _P1_Life = ReadByte(_GameInfo_BaseAddress + 0x00502090);
-            _P2_Life = ReadByte(_GameInfo_BaseAddress + 0x00502094);
-            _P1_Ammo = ReadByte(_GameInfo_BaseAddress + 0x00507260);
-            _P2_Ammo = ReadByte(_GameInfo_BaseAddress + 0x00507264);
+            _P1_Life = 0;
+            _P2_Life = 0;
+            _P1_Ammo = 0;
+            _P2_Ammo = 0;
+            int P1_Clip = 0;
+            int P2_Clip = 0;
 
-            if (P1_Status == 1)
+            if (GameStatus == 1)
             {
-                //Custom Recoil
-                if (_P1_Ammo < _P1_LastAmmo)
-                    SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                if (P1_Status == 1)
+                {
+                    _P1_Life = ReadByte(_GameInfo_BaseAddress + 0x00502090);
+                    _P1_Ammo = ReadByte(_GameInfo_BaseAddress + 0x00507260);
 
-                //[Clip Empty] custom Output
-                if (_P1_Ammo <= 0)
-                    SetOutputValue(OutputId.P1_Clip, 0);
-                else
-                    SetOutputValue(OutputId.P1_Clip, 1);
+                    //Custom Recoil
+                    if (_P1_Ammo < _P1_LastAmmo)
+                        SetOutputValue(OutputId.P1_CtmRecoil, 1);
 
-                //[Damaged] custom Output                
-                if (_P1_Life < _P1_LastLife)
-                    SetOutputValue(OutputId.P1_Damaged, 1);
+                    //[Clip Empty] custom Output
+                    if (_P1_Ammo > 0)
+                        P1_Clip = 1;
 
-                _P1_LastAmmo = _P1_Ammo;
-                _P1_LastLife = _P1_Life;
-            }
-            else
-            {
-                SetOutputValue(OutputId.P1_Clip, 0);
-                _P1_Ammo = 0;
-                _P1_LastAmmo = 0;
-                _P1_Life = 0;
-                _P1_LastLife = 0;
-            }
+                    //[Damaged] custom Output                
+                    if (_P1_Life < _P1_LastLife)
+                        SetOutputValue(OutputId.P1_Damaged, 1);
 
-            if (P2_Status == 1)
-            {
-                //Custom Recoil
-                if (_P2_Ammo < _P2_LastAmmo)
-                    SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                    _P1_LastAmmo = _P1_Ammo;
+                    _P1_LastLife = _P1_Life;
+                }
 
-                //[Clip Empty] custom Output
-                if (_P2_Ammo <= 0)
-                    SetOutputValue(OutputId.P2_Clip, 0);
-                else
-                    SetOutputValue(OutputId.P2_Clip, 1);
+                if (P2_Status == 1)
+                {
+                    _P2_Life = ReadByte(_GameInfo_BaseAddress + 0x00502094);
+                    _P2_Ammo = ReadByte(_GameInfo_BaseAddress + 0x00507264);
 
-                //[Damaged] custom Output                
-                if (_P2_Life < _P2_LastLife)
-                    SetOutputValue(OutputId.P2_Damaged, 1);
+                    //Custom Recoil
+                    if (_P2_Ammo < _P2_LastAmmo)
+                        SetOutputValue(OutputId.P2_CtmRecoil, 1);
 
-                _P2_LastAmmo = _P2_Ammo;
-                _P2_LastLife = _P2_Life;
-            }
-            else
-            {
-                SetOutputValue(OutputId.P2_Clip, 0);
-                _P2_Ammo = 0;
-                _P2_LastAmmo = 0;
-                _P2_Life = 0;
-                _P2_LastLife = 0;
+                    //[Clip Empty] custom Output
+                    if (_P2_Ammo <= 0)
+                        P2_Clip = 1;
+
+                    //[Damaged] custom Output                
+                    if (_P2_Life < _P2_LastLife)
+                        SetOutputValue(OutputId.P2_Damaged, 1);
+
+                    _P2_LastAmmo = _P2_Ammo;
+                    _P2_LastLife = _P2_Life;
+                }
             }
 
             SetOutputValue(OutputId.P1_Life, _P1_Life);
             SetOutputValue(OutputId.P2_Life, _P2_Life);
             SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
             SetOutputValue(OutputId.P2_Ammo, _P2_Ammo);
+            SetOutputValue(OutputId.P1_Clip, P1_Clip);
+            SetOutputValue(OutputId.P1_Clip, P2_Clip);
             SetOutputValue(OutputId.Credits, ReadByte(ReadPtr((UInt32)_TargetProcess_MemoryBaseAddress + _CreditsPtr_Offset) + 0x128));
         }
 

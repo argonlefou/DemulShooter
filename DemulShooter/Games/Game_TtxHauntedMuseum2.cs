@@ -49,8 +49,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_TtxHauntedMuseum2(String RomName, bool AlternativeGameplay, bool DisableInputHack, bool Verbose)
-            : base(RomName, "game", DisableInputHack, Verbose)
+        public Game_TtxHauntedMuseum2(String RomName, bool AlternativeGameplay)
+            : base(RomName, "game")
         {
             _AlternativeGameplay = AlternativeGameplay;
 

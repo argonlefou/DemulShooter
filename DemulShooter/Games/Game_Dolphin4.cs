@@ -42,8 +42,8 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Dolphin4(String RomName, UInt32 DinputNumber, bool DisableInputHack, bool Verbose)
-            : base(RomName, "Dolphin", DisableInputHack, Verbose)
+        public Game_Dolphin4(String RomName, UInt32 DinputNumber)
+            : base(RomName, "Dolphin")
         {
             _DinputNumber = DinputNumber;
             _KnownMd5Prints.Add("","");

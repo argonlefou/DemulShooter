@@ -29,7 +29,6 @@ namespace DemulShooter
         protected UInt32 _Paddemul_P2_X_Offset = 0x00037EB4;
         protected UInt32 _Paddemul_P2_Y_Offset = 0x00037EB6;
 
-        protected bool _WidescreenHack;
         private List<WidescreenData> _ListWidescreenHacks;
        
         /*** Process variables **/
@@ -44,13 +43,11 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_Demul(String RomName, String SystemName, String DemulVersion, bool DisableInputHack, bool Verbose, bool DisableWindow, bool WidescreenHack)
-            : base(RomName, "demul", DisableInputHack, Verbose)
+        public Game_Demul(String RomName, String SystemName, String DemulVersion)
+            : base(RomName, "demul")
         {
             _SystemName = SystemName;
             _DemulVersion = DemulVersion;
-            _DisableWindow = DisableWindow;
-            _WidescreenHack = WidescreenHack;
             _ListWidescreenHacks = new List<WidescreenData>();
             _KnownMd5Prints.Add("Demul 0.7a_180428", "ce0a6fd5552903311a8935b6f60e26ad");
             _KnownMd5Prints.Add("Demul 0.582", "ab4e7654e7b3a4743e9753221cc48fcd");
