@@ -1,0 +1,5 @@
+Copy the following files from the original game :
+
+ Assembly-CSharp.dll  
+ UnityEngine.dll  
+

@@ -52,6 +52,7 @@ namespace DemulShooter
                 {"rawthrill","TeknoParrot Loader"},
                 {"ringedge2", "RingEdge2 Games"},
                 {"ringwide","TeknoParrot Loader / JConfig"},
+                {"sega", "Unclassified SEGA Amusement Arcade"},
                 {"ttx","Taito Type X"},
                 {"windows","Windows games"}
             };            
@@ -145,6 +146,10 @@ namespace DemulShooter
 
             Dictionary<String, String> _RingEdge2Roms = new Dictionary<String, String>(){
                 {"tsr","Transformers : Shadow Rising"}
+            };
+
+            Dictionary<String, String> _SegaRoms = new Dictionary<String, String>(){
+                {"pvz","Plants VS Zombies : The Last stand"}
             };
 
             Dictionary<String, String> _RingSystemRoms = new Dictionary<String, String>(){
@@ -250,6 +255,9 @@ namespace DemulShooter
                         Console.WriteLine("");
                         Console.WriteLine("Ringedge2 roms :");
                         DisplayDictionnaryList(_RingEdge2Roms);
+                        Console.WriteLine("");
+                        Console.WriteLine("SEGA roms :");
+                        DisplayDictionnaryList(_SegaRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Taito Type X Games :");
                         DisplayDictionnaryList(_TtxRoms);
@@ -417,6 +425,14 @@ namespace DemulShooter
                             if (!CheckParameter(strRom, _RingSystemRoms))
                             {
                                 Console.WriteLine("Unsupported RingWide rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
+                        else if (strTarget.Equals("sega"))
+                        {
+                            if (!CheckParameter(strRom, _SegaRoms))
+                            {
+                                Console.WriteLine("Unsupported SEGA rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
                         }

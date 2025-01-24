@@ -668,6 +668,20 @@ namespace DemulShooter
                     }
                 }
 
+                //Various SEGA Roms
+                else if (_Target.Equals("sega"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "pvz":
+                            {
+                                _Game = new Game_SegaPvzLastStand(_Rom.ToLower());
+                            }; break;
+                        default: 
+                            break;
+                    }
+                }
+
                 //TTX game
                 else if (_Target.Equals("ttx"))
                 {
@@ -746,7 +760,7 @@ namespace DemulShooter
                         case "hfss":
                             {
                                 _Game = new Game_WndHeavyFire4Pc(_Rom.ToLower());
-                            }; break;                        
+                            }; break;
                         case "hod2pc":
                             {
                                 _Game = new Game_WndHod2pc(_Rom.ToLower());
@@ -790,7 +804,6 @@ namespace DemulShooter
                             {
                                 _Game = new Game_WndBonbon95(_Rom.ToLower());
                             }; break;
-                        
                         default:
                             break;
                     }

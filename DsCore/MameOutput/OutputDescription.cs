@@ -197,6 +197,9 @@ namespace DsCore.MameOutput
         public static readonly String DoorA = "DoorA";
         public static readonly String ElevatorLedsStatus = "ElevatorLedsStatus";
 
+        public static readonly String TicketDrive = "TicketDrive";
+        public static readonly String TicketMeter = "TicketMeter";
+
 
         //Custom Outputs
         public static readonly String P1_CtmLmpStart = "P1_CtmLmpStart";

@@ -180,6 +180,9 @@ namespace DsCore.MameOutput
         Lmp_LeftReload,
         Lmp_RightReload,
         Lmp_Payout,
+        TicketDrive,
+        TicketMeter,
+
 
         Credits = 1000,
         P1_CtmLmpStart,
