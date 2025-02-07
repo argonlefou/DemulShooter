@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Config\Configurator.cs" />
     <Compile Include="Config\PlayerSettings.cs" />
+    <Compile Include="IPC\DsTcp_InputData.cs" />
     <Compile Include="IPC\DsTcp_InputData_Dcop.cs" />
     <Compile Include="IPC\DsTcp_InputData_Drakon.cs" />
     <Compile Include="IPC\DsTcp_InputData_Marss.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="IPC\DsTcp_InputData_OpwolfReturn.cs" />
     <Compile Include="IPC\DsTcp_InputData_Pvz.cs" />
     <Compile Include="IPC\DsTcp_OutputData_Dcop.cs" />
+    <Compile Include="IPC\DsTcp_OutputData_DinoInvasion.cs" />
     <Compile Include="IPC\DsTcp_OutputData_Drakon.cs" />
     <Compile Include="IPC\DsTcp_OutputData_Marss.cs" />
     <Compile Include="IPC\DsTcp_OutputData_PointBlankX.cs" />

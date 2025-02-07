@@ -188,7 +188,8 @@ namespace DemulShooter
                 {"hod3pc","House of the Dead III"},
                 {"hodo","House of the Dead Overkill"},
                 {"pgbeat", "Project Green Beat"},
-                {"reload","Reload"},
+                {"reload","Reload"}
+                //{"spray", "Spray Gun"}
             };
 
             if (args.Length > 0)

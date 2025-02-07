@@ -781,6 +781,10 @@ namespace DemulShooter
                             {
                                 _Game = new Game_WndReload(_Rom.ToLower());
                             }; break;
+                        case "spray":
+                            {
+                                _Game = new Game_WndSpray(_Rom.ToLower());
+                            }; break;
                         default:
                             break;
                     }

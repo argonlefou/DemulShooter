@@ -160,7 +160,7 @@ namespace DemulShooterX64
             {
                 try
                 {
-                    Logger.WriteLog(" + [" + c.DeviceType.ToString() + "] " + c.DeviceName);
+                    Logger.WriteLog("[Handle=0x" + c.DeviceHandle.ToString("X16") + "] [" + c.DeviceType.ToString() + "] " + c.DeviceName);
                 }
                 catch (Exception ex)
                 {
@@ -442,6 +442,10 @@ namespace DemulShooterX64
                         case "drakon":
                             {
                                 _Game = new Game_AagamesDrakon_NoPlugin(_Rom.ToLower());
+                            }; break;
+                        case "dino":
+                            {
+                                _Game = new Game_UnisDinoInvasion(_Rom.ToLower());
                             }; break;
 
                         default: break;

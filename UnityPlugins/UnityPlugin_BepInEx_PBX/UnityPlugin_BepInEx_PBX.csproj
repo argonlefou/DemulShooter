@@ -63,6 +63,7 @@
     <Compile Include="patch\mGlobalData.cs" />
     <Compile Include="patch\mInputWrapper.cs" />
     <Compile Include="patch\mPlayer.cs" />
+    <Compile Include="patch\mUIPlayerPanel.cs" />
     <Compile Include="PointBlankX_Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TcpInputData.cs" />
