@@ -17,7 +17,7 @@ namespace UnityPlugin_BepInEx_PBX
     {
         public const String pluginGuid = "argonlefou.demulshooter.pbx";
         public const String pluginName = "PBX DemulShooter Plugin";
-        public const String pluginVersion = "3.0.0.0";
+        public const String pluginVersion = "4.0.0.0";
         public const String pluginConfigFile = "PBX_BepInEx_DemulShooter_Plugin.ini";
         public static BepInEx.Logging.ManualLogSource MyLogger;
 

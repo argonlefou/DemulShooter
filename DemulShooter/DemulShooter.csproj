@@ -121,6 +121,7 @@
     <Compile Include="Games\Game_LindberghLgj.cs" />
     <Compile Include="Games\Game_LindberghRambo.cs" />
     <Compile Include="Games\Game_Es4PointBlankX.cs" />
+    <Compile Include="Games\Game_WndMadBullets.cs" />
     <Compile Include="Games\Game_WndProjectGreenBeat.cs" />
     <Compile Include="Games\Game_WndReload.cs" />
     <Compile Include="Games\Game_RwLGI.cs" />

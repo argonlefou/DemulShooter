@@ -369,6 +369,17 @@ namespace DemulShooterX64
                     }
                 }
 
+                else if (_Target.Equals("rawthrill"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "nerfa":
+                            {
+                                _Game = new Game_RtNerfArcade(_Rom.ToLower());
+                            }; break;
+                    }
+                }
+
                 //SEGA NU Games
                 else if (_Target.Equals("seganu"))
                 {
@@ -446,6 +457,10 @@ namespace DemulShooterX64
                         case "dino":
                             {
                                 _Game = new Game_UnisDinoInvasion(_Rom.ToLower());
+                            }; break;
+                        case "rha":
+                            {
+                                _Game = new Game_AagamesRha_New(_Rom.ToLower());
                             }; break;
 
                         default: break;

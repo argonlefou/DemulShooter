@@ -187,6 +187,7 @@ namespace DemulShooter
                 {"hod2pc","House of the Dead II"},
                 {"hod3pc","House of the Dead III"},
                 {"hodo","House of the Dead Overkill"},
+                {"madbul", "Mad Bullets"},
                 {"pgbeat", "Project Green Beat"},
                 {"reload","Reload"}
                 //{"spray", "Spray Gun"}

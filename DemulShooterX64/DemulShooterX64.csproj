@@ -71,6 +71,7 @@
     <Compile Include="Games\Game_AagamesDrakon.cs" />
     <Compile Include="Games\Game_AagamesDrakon_NoPlugin.cs" />
     <Compile Include="Games\Game_AagamesRha.cs" />
+    <Compile Include="Games\Game_AagamesRha_New.cs" />
     <Compile Include="Games\Game_AagamesTra.cs" />
     <Compile Include="Games\Game_Es3Tc5.cs" />
     <Compile Include="Games\Game_Flycast.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Games\Game_Es3Lla.cs" />
     <Compile Include="Games\Game_NuLuigiMansion.cs" />
     <Compile Include="Games\Game_AllsHodSd.cs" />
+    <Compile Include="Games\Game_RtNerfArcade.cs" />
     <Compile Include="Games\Game_UdcMarsSortie.cs" />
     <Compile Include="Games\Game_UnisDinoInvasion.cs" />
     <Compile Include="Games\Game_UnisRaccoonRampage.cs" />

@@ -173,6 +173,21 @@ namespace DsCore.MameOutput
         public static readonly String Lmp_RightReload = "Lmp_RightReload";          //
         public static readonly String Lmp_Payout = "Lmp_Payout";
 
+        public static readonly String P1_Lmp_SeatPuck = "P1_Lmp_SeatPuck";              //
+        public static readonly String P1_Lmp_SeatMarquee = "P1_Lmp_SeatMarquee";        //
+        public static readonly String P1_Lmp_SeatSpeaker_R = "P1_Lmp_SeatSpeaker_R";    //
+        public static readonly String P1_Lmp_SeatSpeaker_O = "P1_Lmp_SeatSpeaker_O";    //
+        public static readonly String P1_Lmp_SeatSpeaker_B = "P1_Lmp_SeatSpeaker_B";    //
+        public static readonly String P2_Lmp_SeatPuck = "P2_Lmp_SeatPuck";              //
+        public static readonly String P2_Lmp_SeatMarquee = "P2_Lmp_SeatMarquee";        //Raw Thrill Nerf Arcade
+        public static readonly String P2_Lmp_SeatSpeaker_R = "P2_Lmp_SeatSpeaker_R";    //
+        public static readonly String P2_Lmp_SeatSpeaker_O = "P2_Lmp_SeatSpeaker_O";    //
+        public static readonly String P2_Lmp_SeatSpeaker_B = "P2_Lmp_SeatSpeaker_B";    //
+        public static readonly String Lmp_TMolding_R = "Lmp_TMolding_R";                //
+        public static readonly String Lmp_TMolding_G = "Lmp_TMolding_G";                //
+        public static readonly String Lmp_TMolding_B = "Lmp_TMolding_B";                //
+        public static readonly String Lmp_SeatDownLight = "Lmp_SeatDownLight";          //
+
 
         public static readonly String P1_GunMotor = "P1_GunMotor";
         public static readonly String P2_GunMotor = "P2_GunMotor";

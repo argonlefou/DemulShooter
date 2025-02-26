@@ -41,6 +41,7 @@ namespace DemulShooterX64
                 {"es3","Namco ES3 games"},
                 {"flycast","Flycast v2.0"},
                 {"rpcs3", "RPCS3 (System 357)"},
+                {"rawthrill","Raw Thrill Arcade"},
                 {"seganu","SEGA Nu games"},
                 {"udc","United Distribution Company"},
                 {"unis","UNIS Technology"}, 
@@ -88,6 +89,10 @@ namespace DemulShooterX64
                 {"deadstorm","Dead Storm Pirates"},
                 {"de4d","Dark Escape 4D"},
                 {"sailorz","Sailor Zombies"}
+            };
+
+            Dictionary<String, String> _RawThrillRoms = new Dictionary<String, String>(){
+                {"nerfa","Nerf Arcade"}
             };
 
             Dictionary<String, String> _SegaNuRoms = new Dictionary<String, String>(){
@@ -145,6 +150,9 @@ namespace DemulShooterX64
                         Console.WriteLine("");
                         Console.WriteLine("RPCS3 (System 357) roms :");
                         DisplayDictionnaryList(_RPCS3_System357Roms);
+                        Console.WriteLine("");
+                        Console.WriteLine("Raw Thrill roms :");
+                        DisplayDictionnaryList(_RawThrillRoms);
                         Console.WriteLine("");
                         Console.WriteLine("SEGA Nu roms :");
                         DisplayDictionnaryList(_SegaNuRoms);
@@ -240,7 +248,15 @@ namespace DemulShooterX64
                                 Console.WriteLine("Unsupported RPCS3 rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
-                        }  
+                        }
+                        else if (strTarget.Equals("rawthrill"))
+                        {
+                            if (!CheckParameter(strRom, _RawThrillRoms))
+                            {
+                                Console.WriteLine("Unsupported Raw Thrill rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        } 
                         else if (strTarget.Equals("seganu"))
                         {
                             if (!CheckParameter(strRom, _SegaNuRoms))

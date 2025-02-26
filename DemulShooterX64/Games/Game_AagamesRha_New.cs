@@ -11,10 +11,10 @@ using DsCore.RawInput;
 
 namespace DemulShooterX64
 {
-    class Game_UnisDinoInvasion : Game
+    class Game_AagamesRha_New : Game
     {
         private DsTcp_Client _Tcpclient;
-        private DsTcp_OutputData_DinoInvasion _OutputData;
+        private DsTcp_OutputData_Rha _OutputData;
         private DsTcp_InputData _InputData;
 
         //Thread-safe operation on input/output data
@@ -23,13 +23,15 @@ namespace DemulShooterX64
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_UnisDinoInvasion(String RomName)
-            : base(RomName, "konglong")
+        public Game_AagamesRha_New(String RomName)
+            : base(RomName, "Game")
         {
-            _KnownMd5Prints.Add("DinoInvasion EN v1.2.8 - Original", "30aacfb5fb65d409e7bd6baee679ba2d");
-
+            _KnownMd5Prints.Add("Rabbids Hollywood Arcade - Clean Dump", "2dac74521cd3bb08b61f93830bf2660d");
+            _KnownMd5Prints.Add("Rabbids Hollywood Arcade - Patch by Ducon v2 (dongle+operator)", "72b58266f2d1311b2ba2e7c96ca774fa");
+            _KnownMd5Prints.Add("Rabbids Hollywood Arcade - Patch by Ducon v3 (dongle+operator+attract mode)", "7edf14803ae7d43d14e7459b2baa651e");
+            _KnownMd5Prints.Add("Rabbids Hollywood Arcade - Patch by Argon (dongle)", "1e74554181161f8a83084e02beeec5fc");
             _tProcess.Start();
-            Logger.WriteLog("Waiting for " + _RomName + " game to hook.....");
+            Logger.WriteLog("Waiting for Adrenaline Amusements game " + _RomName + " game to hook.....");
         }
 
         /// <summary>
@@ -54,7 +56,7 @@ namespace DemulShooterX64
                         {
                             // The game may start with other Windows than the main one (BepInEx console, other stuff.....) so we need to filter
                             // the displayed window according to the Title, if DemulShooter is started before the game,  to hook the correct one
-                            if (FindGameWindow_Equals("shoulie_konglong"))
+                            if (FindGameWindow_Equals("RabbidsShooter"))
                             {
                                 String AssemblyDllPath = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", _Target_Process_Name + @"_Data\Managed\Assembly-CSharp.dll");
                                 CheckMd5(AssemblyDllPath);
@@ -62,7 +64,7 @@ namespace DemulShooterX64
                                 _InputData = new DsTcp_InputData();
 
                                 //Start TcpClient to dial with Unity Game
-                                _OutputData = new DsTcp_OutputData_DinoInvasion();
+                                _OutputData = new DsTcp_OutputData_Rha();
                                 _Tcpclient = new DsTcp_Client("127.0.0.1", DsTcp_Client.DS_TCP_CLIENT_PORT);
                                 _Tcpclient.PacketReceived += DsTcp_Client_PacketReceived;
                                 _Tcpclient.TcpConnected += DsTcp_client_TcpConnected;
@@ -102,7 +104,7 @@ namespace DemulShooterX64
             }
         }
 
-        ~Game_UnisDinoInvasion()
+        ~Game_AagamesRha_New()
         {
             if (_Tcpclient != null)
                 _Tcpclient.Disconnect();
@@ -138,21 +140,29 @@ namespace DemulShooterX64
                     double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
                     Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
-                    //Coordinates are Window size range, but inverted Y
-                    int X_Value = PlayerData.RIController.Computed_X;
-                    int Y_Value = (int)TotalResY - PlayerData.RIController.Computed_Y;
+                    double dRatio = TotalResX / TotalResY;
+                    Logger.WriteLog("Game Window ratio = " + dRatio);
 
-                    if (X_Value < 0)
-                        X_Value = 0;
-                    if (Y_Value < 0)
-                        Y_Value = 0;
-                    if (X_Value > (int)TotalResX)
-                        X_Value = (int)TotalResX;
-                    if (Y_Value > (int)TotalResY)
-                        Y_Value = (int)TotalResY;
+                    //Crosshair X => [0 - ?]
+                    //Crosshair Y => [0 -  1080]
+                    double dMaxY = 1080.0;
+                    double dMaxX = dMaxY * dRatio;
 
-                    PlayerData.RIController.Computed_X = X_Value;
-                    PlayerData.RIController.Computed_Y = Y_Value;
+                    float fX = Convert.ToSingle(Math.Round(PlayerData.RIController.Computed_X / TotalResX, 2));
+                    float fY = 1.0f - Convert.ToSingle(Math.Round(PlayerData.RIController.Computed_Y / TotalResY, 2));
+
+                    if (fX < 0)
+                        fX = 0;
+                    if (fY < 0)
+                        fY = 0;
+                    if (fX > 1.0f)
+                        fX = 1.0f;
+                    if (fY > 1.0f)
+                        fY = 1.0f;
+
+                    PlayerData.RIController.Computed_X = (int)(fX * 1000); ;
+                    PlayerData.RIController.Computed_Y = (int)(fY * 1000);
+
                     return true;
                 }
                 catch (Exception ex)
@@ -174,16 +184,16 @@ namespace DemulShooterX64
         {
             if (!_DisableInputHack)
             {
-                float AxisX = PlayerData.RIController.Computed_X;
-                float AxisY = PlayerData.RIController.Computed_Y;
+                float AxisX = (float)PlayerData.RIController.Computed_X / 1000.0f;
+                float AxisY = (float)PlayerData.RIController.Computed_Y / 1000.0f;
 
-                _InputData.Axis_X[PlayerData.ID -1] = AxisX;
-                _InputData.Axis_Y[PlayerData.ID -1] = AxisY;
+                _InputData.Axis_X[PlayerData.ID - 1] = AxisX;
+                _InputData.Axis_Y[PlayerData.ID - 1] = AxisY;
 
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
-                    _InputData.Trigger[PlayerData.ID -1] = 1;
+                    _InputData.Trigger[PlayerData.ID - 1] = 1;
                 if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
-                    _InputData.Trigger[PlayerData.ID -1] = 0;
+                    _InputData.Trigger[PlayerData.ID - 1] = 0;
 
                 if (_HideCrosshair)
                     _InputData.HideCrosshairs = 1;
@@ -204,18 +214,14 @@ namespace DemulShooterX64
         protected override void CreateOutputList()
         {
             _Outputs = new List<GameOutput>();
-            _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P1_CtmLmpStart, OutputId.P1_CtmLmpStart, 500));
-            _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P2_CtmLmpStart, OutputId.P2_CtmLmpStart, 500));
-            _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P3_CtmLmpStart, OutputId.P3_CtmLmpStart, 500));
-            _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P4_CtmLmpStart, OutputId.P4_CtmLmpStart, 500));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P3_CtmRecoil, OutputId.P3_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P4_CtmRecoil, OutputId.P4_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
-            _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
-            _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
-            _Outputs.Add(new GameOutput(OutputDesciption.P3_Ammo, OutputId.P3_Ammo));
-            _Outputs.Add(new GameOutput(OutputDesciption.P4_Ammo, OutputId.P4_Ammo));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
+            _Outputs.Add(new GameOutput(OutputDesciption.P3_Life, OutputId.P3_Life));
+            _Outputs.Add(new GameOutput(OutputDesciption.P4_Life, OutputId.P4_Life));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P3_Damaged, OutputId.P3_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
@@ -239,43 +245,18 @@ namespace DemulShooterX64
             if (e.Packet.GetHeader() == DsTcp_TcpPacket.PacketHeader.Outputs)
             {
                 _OutputData.Update(e.Packet.GetPayload());
-
-                //Handling Start Lamps based on player status
-                if (_OutputData.IsPlaying[0] == 0)
-                    SetOutputValue(OutputId.P1_CtmLmpStart, -1);
-                else
-                    SetOutputValue(OutputId.P1_CtmLmpStart, 0);
-
-                if (_OutputData.IsPlaying[1] == 0)
-                    SetOutputValue(OutputId.P2_CtmLmpStart, -1);
-                else
-                    SetOutputValue(OutputId.P2_CtmLmpStart, 0);
-
-                if (_OutputData.IsPlaying[2] == 0)
-                    SetOutputValue(OutputId.P3_CtmLmpStart, -1);
-                else
-                    SetOutputValue(OutputId.P3_CtmLmpStart, 0);
-
-                if (_OutputData.IsPlaying[3] == 0)
-                    SetOutputValue(OutputId.P4_CtmLmpStart, -1);
-                else
-                    SetOutputValue(OutputId.P4_CtmLmpStart, 0);
-
                 SetOutputValue(OutputId.P1_CtmRecoil, _OutputData.Recoil[0]);
                 SetOutputValue(OutputId.P2_CtmRecoil, _OutputData.Recoil[1]);
                 SetOutputValue(OutputId.P3_CtmRecoil, _OutputData.Recoil[2]);
                 SetOutputValue(OutputId.P4_CtmRecoil, _OutputData.Recoil[3]);
-
-                SetOutputValue(OutputId.P1_Ammo, (int)_OutputData.Ammo[0]);
-                SetOutputValue(OutputId.P2_Ammo, (int)_OutputData.Ammo[1]);
-                SetOutputValue(OutputId.P3_Ammo, (int)_OutputData.Ammo[2]);
-                SetOutputValue(OutputId.P4_Ammo, (int)_OutputData.Ammo[3]);
-
+                SetOutputValue(OutputId.P1_Life, (int)_OutputData.Life[0]);
+                SetOutputValue(OutputId.P2_Life, (int)_OutputData.Life[1]);
+                SetOutputValue(OutputId.P3_Life, (int)_OutputData.Life[2]);
+                SetOutputValue(OutputId.P4_Life, (int)_OutputData.Life[3]);
                 SetOutputValue(OutputId.P1_Damaged, _OutputData.Damaged[0]);
                 SetOutputValue(OutputId.P2_Damaged, _OutputData.Damaged[1]);
                 SetOutputValue(OutputId.P3_Damaged, _OutputData.Damaged[2]);
                 SetOutputValue(OutputId.P4_Damaged, _OutputData.Damaged[3]);
-
                 SetOutputValue(OutputId.P1_Credits, (int)_OutputData.Credits[0]);
                 SetOutputValue(OutputId.P2_Credits, (int)_OutputData.Credits[1]);
                 SetOutputValue(OutputId.P3_Credits, (int)_OutputData.Credits[2]);

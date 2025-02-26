@@ -773,6 +773,10 @@ namespace DemulShooter
                             {
                                 _Game = new Game_WndHotdoPc(_Rom.ToLower());
                             }; break;
+                        case "madbul":
+                            {
+                                _Game = new Game_WndMadBullets(_Rom.ToLower());
+                            }; break;
                         case "pgbeat":
                             {
                                 _Game = new Game_WndProjectGreenBeat(_Rom.ToLower());
@@ -780,11 +784,7 @@ namespace DemulShooter
                         case "reload":
                             {
                                 _Game = new Game_WndReload(_Rom.ToLower());
-                            }; break;
-                        case "spray":
-                            {
-                                _Game = new Game_WndSpray(_Rom.ToLower());
-                            }; break;
+                            }; break;                        
                         default:
                             break;
                     }
@@ -807,6 +807,10 @@ namespace DemulShooter
                         case "bonbon":
                             {
                                 _Game = new Game_WndBonbon95(_Rom.ToLower());
+                            }; break;
+                        case "spray":
+                            {
+                                _Game = new Game_WndSpray(_Rom.ToLower());
                             }; break;
                         default:
                             break;
