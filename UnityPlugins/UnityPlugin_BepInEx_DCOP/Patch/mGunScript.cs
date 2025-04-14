@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace UnityPlugin_BepInEx_DCOP
+namespace DCop_BepInEx_DemulShooter_Plugin
 {
     class mGunScript
     {
@@ -14,9 +14,9 @@ namespace UnityPlugin_BepInEx_DCOP
             {
                 //Dcop_Plugin.MyLogger.LogMessage("mGunScript.Update() => Gunenabled=" + ___gunEnabled + ", Ammo=" + ___ammoCount);
                 if (___gunEnabled)
-                    Dcop_Plugin.OutputData.P1_Ammo = (byte)___ammoCount;
+                    DemulShooter_Plugin.OutputData.P1_Ammo = (byte)___ammoCount;
                 else
-                    Dcop_Plugin.OutputData.P1_Ammo = 0;
+                    DemulShooter_Plugin.OutputData.P1_Ammo = 0;
                 return true;
             }
         }

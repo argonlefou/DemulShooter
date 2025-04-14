@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace UnityPlugin_BepInEx_PBX
+namespace PointBlankX_BepInEx_DemulShooter_Plugin
 {
     public class INIFile
     {

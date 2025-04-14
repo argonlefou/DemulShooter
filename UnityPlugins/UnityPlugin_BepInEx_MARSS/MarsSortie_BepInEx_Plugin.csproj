@@ -8,8 +8,8 @@
     <ProjectGuid>{E449E30F-D61F-428B-BEC1-D716E716EB6D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnityPlugin_BepInEx_MarsSortie</RootNamespace>
-    <AssemblyName>MarsSortie_BepInEx_Plugin</AssemblyName>
+    <RootNamespace>MarsSortie_BepInEx_DemulShooter_Plugin</RootNamespace>
+    <AssemblyName>MarsSortie_BepInEx_DemulShooter_Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -55,7 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MarsSortie_BepInEx_Plugin.cs" />
+    <Compile Include="DemulShooter_Plugin.cs" />
     <Compile Include="Patch\mMRCQ\mSignalKey.cs" />
     <Compile Include="Patch\mNow\mBulletCounter.cs" />
     <Compile Include="PluginController.cs" />

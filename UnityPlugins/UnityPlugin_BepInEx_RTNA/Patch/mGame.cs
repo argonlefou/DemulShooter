@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace UnityPlugin_BepInEx_RTNA
+namespace NerfArcade_BepInEx_DemulShooter_Plugin
 {
     class mGame
     {

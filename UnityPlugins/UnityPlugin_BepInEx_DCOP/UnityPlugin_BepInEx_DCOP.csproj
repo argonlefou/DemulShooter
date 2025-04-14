@@ -8,8 +8,8 @@
     <ProjectGuid>{E449E30F-D61F-428B-BEC1-D716E716EB6D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnityPlugin_BepInEx_DCOP</RootNamespace>
-    <AssemblyName>DCOP_BepInEx_DemulShooter_Plugin</AssemblyName>
+    <RootNamespace>DCop_BepInEx_DemulShooter_Plugin</RootNamespace>
+    <AssemblyName>DCop_BepInEx_DemulShooter_Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -55,7 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dcop_Plugin.cs" />
+    <Compile Include="DemulShooter_Plugin.cs" />
     <Compile Include="Patch\mGunScript.cs" />
     <Compile Include="Patch\mLifeTracker.cs" />
     <Compile Include="Patch\mSetMousecursor.cs" />

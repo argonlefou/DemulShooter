@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityPlugin_BepInEx_PBX
+namespace PointBlankX_BepInEx_DemulShooter_Plugin
 {
     public class TcpOutputData
     {

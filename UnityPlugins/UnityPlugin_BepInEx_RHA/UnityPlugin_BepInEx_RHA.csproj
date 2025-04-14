@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E789542F-DE89-4ED2-8026-423017377093}</ProjectGuid>
+    <ProjectGuid>{E449E30F-D61F-428B-BEC1-D716E716EB6D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnityPlugin_BepInEx_RHA</RootNamespace>
-    <AssemblyName>RHA_BepInEx_DemulShooter_Plugin</AssemblyName>
+    <RootNamespace>RabbidsHollywood_BepInEx_DemulShooter_Plugin</RootNamespace>
+    <AssemblyName>RabbidsHollywood_BepInEx_DemulShooter_Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -34,7 +34,8 @@
     <Reference Include="0Harmony">
       <HintPath>UnityLibs\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp">
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>UnityLibs\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
@@ -47,7 +48,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine">
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>UnityLibs\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
@@ -55,21 +57,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Demulshooter_Plugin.cs" />
-    <Compile Include="mArcadeGamePlayManager.cs" />
-    <Compile Include="mGunDetection.cs" />
-    <Compile Include="mApplicationManager.cs" />
-    <Compile Include="mCrosshairWindow.cs" />
-    <Compile Include="mArcadeManager.cs" />
-    <Compile Include="mKaboomManager.cs" />
-    <Compile Include="mLanguageLocalizer.cs" />
-    <Compile Include="mLevelSelectorWindow.cs" />
-    <Compile Include="mNewInputManager.cs" />
-    <Compile Include="mOperatorMenu.cs" />
-    <Compile Include="mPlayerPrefs.cs" />
-    <Compile Include="mWorldSelectorWindow.cs" />
+    <Compile Include="Patch\mLEDManager.cs" />
+    <Compile Include="Patch\mPlayerManager.cs" />
+    <Compile Include="Patch\SBK\mApplicationManager.cs" />
+    <Compile Include="Patch\mArcadeGamePlayManager.cs" />
+    <Compile Include="Patch\mArcadeManager.cs" />
+    <Compile Include="Patch\mCrosshairWindow.cs" />
+    <Compile Include="Patch\mGunDetection.cs" />
+    <Compile Include="Patch\mKaboomManager.cs" />
+    <Compile Include="Patch\mLanguageLocalizer.cs" />
+    <Compile Include="Patch\mLevelSelectorWindow.cs" />
+    <Compile Include="Patch\mNewInputManager.cs" />
+    <Compile Include="Patch\mPlayerPrefs.cs" />
+    <Compile Include="Patch\mWorldSelectorWindow.cs" />
+    <Compile Include="PluginController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RHA_MemoryMappedFile_Controller.cs" />
+    <Compile Include="TcpInputData.cs" />
+    <Compile Include="TcpOutputData.cs" />
+    <Compile Include="TcpPacket.cs" />
+    <Compile Include="DemulShooter_Plugin.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

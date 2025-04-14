@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityPlugin_BepInEx_DCOP
+namespace DCop_BepInEx_DemulShooter_Plugin
 {
     public class TcpInputData
     {

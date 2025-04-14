@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Now;
 
-namespace UnityPlugin_BepInEx_MarsSortie.Patch.mNow
+namespace MarsSortie_BepInEx_DemulShooter_Plugin.Patch.mNow
 {
     class mBulletCounter
     {
@@ -10,7 +10,7 @@ namespace UnityPlugin_BepInEx_MarsSortie.Patch.mNow
         {
             static bool Prefix(PlayerPanel ___playerPanel, int count)
             {
-                MarsSortie_BepInEx_Plugin.MyLogger.LogMessage("SetBulletCount: " + ___playerPanel.playerIndex + ", count=" + count);
+                DemulShooter_Plugin.MyLogger.LogMessage("SetBulletCount: " + ___playerPanel.playerIndex + ", count=" + count);
                 return true;
             }
         }

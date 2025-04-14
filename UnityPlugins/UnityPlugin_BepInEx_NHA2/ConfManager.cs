@@ -24,8 +24,8 @@ namespace UnityPlugin_BepInEx_NHA2
         { get { return (float)_ResolutionWidth; } }
         public float ResolutionHeight
         { get { return (float)_ResolutionHeight; } }
-        public NightHunterArcade2_Plugin.InputMode InputMode
-        { get { return _InputMode == 1 ? NightHunterArcade2_Plugin.InputMode.DemulShooter : NightHunterArcade2_Plugin.InputMode.Mouse; } }
+        public DemulShooter_Plugin.InputMode InputMode
+        { get { return _InputMode == 1 ? DemulShooter_Plugin.InputMode.DemulShooter : DemulShooter_Plugin.InputMode.Mouse; } }
         public bool RemoveCrosshair
         { get { return _RemoveCrosshair == 1 ? true : false; } }
         public bool RemoveLaser
@@ -63,63 +63,63 @@ namespace UnityPlugin_BepInEx_NHA2
                                 if (StrKey.Equals("Fullscreen"))
                                 {
                                     if (int.TryParse(StrValue, out _Fullscreen))
-                                        NightHunterArcade2_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _Fullscreen.ToString());
+                                        DemulShooter_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _Fullscreen.ToString());
                                     else
-                                        NightHunterArcade2_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                        DemulShooter_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
                                 else if (StrKey.Equals("ResolutionWidth"))
                                 {
                                     if (int.TryParse(StrValue, out _ResolutionWidth))
-                                        NightHunterArcade2_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _ResolutionWidth.ToString());
+                                        DemulShooter_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _ResolutionWidth.ToString());
                                     else
-                                        NightHunterArcade2_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                        DemulShooter_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
                                 else if (StrKey.Equals("ResolutionHeight"))
                                 {
                                     if (int.TryParse(StrValue, out _ResolutionHeight))
-                                        NightHunterArcade2_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _ResolutionHeight.ToString());
+                                        DemulShooter_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _ResolutionHeight.ToString());
                                     else
-                                        NightHunterArcade2_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                        DemulShooter_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
                                 else if (StrKey.Equals("InputMode"))
                                 {
                                     if (int.TryParse(StrValue, out _InputMode))
-                                        NightHunterArcade2_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _InputMode.ToString());
+                                        DemulShooter_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _InputMode.ToString());
                                     else
-                                        NightHunterArcade2_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                        DemulShooter_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
                                 else if (StrKey.Equals("RemoveCrosshair"))
                                 {
                                     if (int.TryParse(StrValue, out _RemoveCrosshair))
-                                        NightHunterArcade2_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _RemoveCrosshair.ToString());
+                                        DemulShooter_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _RemoveCrosshair.ToString());
                                     else
-                                        NightHunterArcade2_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                        DemulShooter_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
                                 else if (StrKey.Equals("RemoveLaser"))
                                 {
                                     if (int.TryParse(StrValue, out _RemoveLaser))
-                                        NightHunterArcade2_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _RemoveLaser.ToString());
+                                        DemulShooter_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _RemoveLaser.ToString());
                                     else
-                                        NightHunterArcade2_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                        DemulShooter_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
                                 else if (StrKey.Equals("RemoveGun"))
                                 {
                                     if (int.TryParse(StrValue, out _RemoveGun))
-                                        NightHunterArcade2_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _RemoveGun.ToString());
+                                        DemulShooter_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => _" + StrKey + "=" + _RemoveGun.ToString());
                                     else
-                                        NightHunterArcade2_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                        DemulShooter_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
                             }
                         }
                         line = sr.ReadLine();
                     }
                     sr.Close();
-                    NightHunterArcade2_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => Configuration file succesfuly loaded");
+                    DemulShooter_Plugin.MyLogger.LogMessage("ConfManager.Readconf() => Configuration file succesfuly loaded");
                 }
             }
             catch (Exception ex)
             {
-                NightHunterArcade2_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error reading " + ConfigFilePath + " : " + ex.Message);
+                DemulShooter_Plugin.MyLogger.LogError("ConfManager.Readconf() => Error reading " + ConfigFilePath + " : " + ex.Message);
             }
         }
     }

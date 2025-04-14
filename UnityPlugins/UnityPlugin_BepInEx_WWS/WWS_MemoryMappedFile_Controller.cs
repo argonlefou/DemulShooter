@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace UnityPlugin_BepInEx_WWS
+namespace WildWestShootout_BepInEx_DemulShooter_Plugin
 {
     public class WWS_MemoryMappedFile_Controller
     {

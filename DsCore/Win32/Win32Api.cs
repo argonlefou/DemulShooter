@@ -46,6 +46,9 @@ namespace DsCore.Win32
         public static extern IntPtr GetDC(IntPtr hWnd);
 
         [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
+
+        [DllImport("user32.dll", SetLastError = true)]
         public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
         #endregion

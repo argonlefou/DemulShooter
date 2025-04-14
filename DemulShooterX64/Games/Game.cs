@@ -1130,5 +1130,21 @@ namespace DemulShooterX64
             }
             return sTitle;
         }
+
+        /// <summary>
+        /// Check a series of bytes agains some awaited values
+        /// </summary>
+        protected bool CheckBytes(IntPtr AddressToCheck, byte[] BytesToFind)
+        {
+            Logger.WriteLog("Checking Bytes at 0x" + AddressToCheck.ToString("X8") + "...");
+            byte[] ReadBuffer = ReadBytes(AddressToCheck, (uint)BytesToFind.Length);
+            for (int i = 0; i < BytesToFind.Length; i++)
+            {
+                Logger.WriteLog("Read: 0x" + ReadBuffer[i].ToString("X2") + ", Awaited: 0x" + BytesToFind[i].ToString("X2"));
+                if (ReadBuffer[i] != BytesToFind[i])
+                    return false;
+            }
+            return true;
+        }
     }
 }

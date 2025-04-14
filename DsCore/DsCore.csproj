@@ -71,9 +71,13 @@
     <Compile Include="IPC\DsTcp_OutputData_DinoInvasion.cs" />
     <Compile Include="IPC\DsTcp_OutputData_Drakon.cs" />
     <Compile Include="IPC\DsTcp_OutputData_Marss.cs" />
+    <Compile Include="IPC\DsTcp_OutputData_MechaTornado.cs" />
     <Compile Include="IPC\DsTcp_OutputData_Nerf.cs" />
+    <Compile Include="IPC\DsTcp_OutputData_OnePoint.cs" />
     <Compile Include="IPC\DsTcp_OutputData_PointBlankX.cs" />
     <Compile Include="IPC\DsTcp_OutputData_Rha.cs" />
+    <Compile Include="IPC\DsTcp_OutputData_WaterSprite2.cs" />
+    <Compile Include="IPC\DsTcp_OutputData_WaterWar2.cs" />
     <Compile Include="IPC\MappedMemoryFileHelper.cs" />
     <Compile Include="IPC\MappedMemoryFile_Helper_old.cs" />
     <Compile Include="IPC\MMFH_HotdRemakeArcade.cs" />

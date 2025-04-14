@@ -8,8 +8,8 @@
     <ProjectGuid>{E449E30F-D61F-428B-BEC1-D716E716EB6D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnityPlugin_BepInEx_RTNA</RootNamespace>
-    <AssemblyName>RTNA_BepInEx_DemulShooter_Plugin</AssemblyName>
+    <RootNamespace>NerfArcade_BepInEx_DemulShooter_Plugin</RootNamespace>
+    <AssemblyName>NerfArcade_BepInEx_DemulShooter_Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -59,10 +59,13 @@
     <Reference Include="UnityEngine.InputModule">
       <HintPath>UnityLibs\UnityEngine.InputModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>UnityLibs\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="INIFile.cs" />
-    <Compile Include="NerfArcade_Plugin.cs" />
+    <Compile Include="DemulShooter_Plugin.cs" />
     <Compile Include="Patch\mGame.cs" />
     <Compile Include="Patch\mIOManager.cs" />
     <Compile Include="Patch\mPlayerInfo.cs" />

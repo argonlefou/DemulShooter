@@ -4,5 +4,6 @@ Copy the following files from the original game :
  UnityEngine.AnimationModule.dll  
  UnityEngine.CoreModule.dll  
  UnityEngine.InputModule.dll  
+ UnityEngine.UIModule.dll  
  UnityEngine.dll  
 

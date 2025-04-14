@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace UnityPlugin_BepInEx_RTNA
+namespace NerfArcade_BepInEx_DemulShooter_Plugin
 {
     class mSys_Linux
     {
@@ -12,7 +12,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix()
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("Sys_Linux.CreateUSBMountRules()");
+                DemulShooter_Plugin.MyLogger.LogMessage("Sys_Linux.CreateUSBMountRules()");
                 return false;
             }
         }
@@ -21,7 +21,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix()
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("Sys_Linux.CreateFlushBufferScript()");
+                DemulShooter_Plugin.MyLogger.LogMessage("Sys_Linux.CreateFlushBufferScript()");
                 return false;
             }
         }

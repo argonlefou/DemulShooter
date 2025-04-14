@@ -4,14 +4,14 @@ using BepInEx;
 using HarmonyLib;
 using UnityEngine;
 
-namespace UnityPlugin_BepInEx_WWS
+namespace WildWestShootout_BepInEx_DemulShooter_Plugin
 {
     [BepInPlugin(pluginGuid, pluginName, pluginVersion)]
     public class Demulshooter_Plugin : BaseUnityPlugin
     {
         public const String pluginGuid = "argonlefou.demulshooter.wws";
-        public const String pluginName = "WWS DemulShooter Plugin";
-        public const String pluginVersion = "1.0.0.0";
+        public const String pluginName = "WildWestShootout_BepInEx_DemulShooter_Plugin";
+        public const String pluginVersion = "2.0.0.0";
 
         static String MAPPED_FILE_NAME = "DemulShooter_MMF_Wws";
         static String MUTEX_NAME = "DemulShooter_Mutex_Wws";

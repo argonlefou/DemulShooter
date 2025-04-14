@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace UnityPlugin_BepInEx_RTNA
+namespace NerfArcade_BepInEx_DemulShooter_Plugin
 {
     public class INIFile
     {

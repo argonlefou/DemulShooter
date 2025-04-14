@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
-namespace UnityPlugin_BepInEx_PBX
+namespace PointBlankX_BepInEx_DemulShooter_Plugin
 {
     class mBootSceneController
     {

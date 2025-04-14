@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace UnityPlugin_BepInEx_RTNA
+namespace NerfArcade_BepInEx_DemulShooter_Plugin
 {
     class mUnityNatives
     {
@@ -12,7 +12,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(ref int p1Tickets, ref int p2Tickets)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.ReadTicketsOwed()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.ReadTicketsOwed()");
                 return false;
             }
         }
@@ -22,7 +22,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int p1Tickets, int p2Tickets)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.WriteTicketsOwed()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.WriteTicketsOwed()");
                 return false;
             }
         }
@@ -36,7 +36,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(ref CoinAudits_ForReadWrite coinAud, ref bool __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.ReadCoinAuditsFromFile()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.ReadCoinAuditsFromFile()");
                 __result = false;
                 return false;
             }
@@ -47,7 +47,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(ref CoinAudits_ForReadWrite coinAud)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.WriteCoinAuditsToFile()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.WriteCoinAuditsToFile()");
                 return false;
             }
         }
@@ -57,7 +57,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(ref float rebootTime, ref float rebootDelay)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.GetPeriodicRebootInfo()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.GetPeriodicRebootInfo()");
                 return false;
             }
         }
@@ -67,7 +67,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(IntPtr pub, IntPtr priv)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.GetRIOKeys()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.GetRIOKeys()");
                 return false;
             }
         }
@@ -77,7 +77,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix([MarshalAs(UnmanagedType.FunctionPtr)] HaspLoginDelegate callbackPointer)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.SetHaspLoginDelegate()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.SetHaspLoginDelegate()");
                 return false;
             }
         }
@@ -90,7 +90,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int featureID, ref int handle, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.HaspLogin()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.HaspLogin()");
                 __result = (int)HaspErrorCode.STATUS_OK;
                 return false;
             }
@@ -101,7 +101,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix([MarshalAs(UnmanagedType.FunctionPtr)] HaspLogoutDelegate callbackPointer)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.SetHaspLogoutDelegate()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.SetHaspLogoutDelegate()");
                 return false;
             }
         }
@@ -114,7 +114,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int handle, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.HaspLogout()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.HaspLogout()");
                 __result = (int)HaspErrorCode.STATUS_OK;
                 return false;
             }
@@ -125,7 +125,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix([MarshalAs(UnmanagedType.FunctionPtr)] HaspReadDelegate callbackPointer)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.SetHaspReadDelegate()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.SetHaspReadDelegate()");
                 return false;
             }
         }
@@ -138,7 +138,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int handle, ref int dongleVersion, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.HaspReadDongleVersion()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.HaspReadDongleVersion()");
                 dongleVersion = 1;
                 __result = (int)HaspErrorCode.STATUS_OK;
                 return false;
@@ -150,7 +150,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int handle, ref int coinCount, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.HaspReadLifetimeCoinCount()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.HaspReadLifetimeCoinCount()");
                 coinCount = 0;
                 __result = (int)HaspErrorCode.STATUS_OK;
                 return false;
@@ -162,7 +162,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int handle, ref byte countryCode, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.HaspReadCountryCode()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.HaspReadCountryCode()");
                 countryCode = 0;
                 __result = (int)HaspErrorCode.STATUS_OK;
                 return false;
@@ -177,7 +177,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int handle, ref byte cabType, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("DongleControl.HaspReadCabType() : handle=" + handle);
+                DemulShooter_Plugin.MyLogger.LogMessage("DongleControl.HaspReadCabType() : handle=" + handle);
                 cabType = (byte)FactorySetUpConsts.CABINET_IDS.DEFAULT; //0
                 __result = (int)HaspErrorCode.STATUS_OK;
                 return false;
@@ -196,9 +196,9 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int handle, ref byte cabTemplate, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("DongleControl.HaspReadCabTemplate() : handle=" + handle);
+                DemulShooter_Plugin.MyLogger.LogMessage("DongleControl.HaspReadCabTemplate() : handle=" + handle);
                 __result = (int)HaspErrorCode.STATUS_OK;
-                cabTemplate = NerfArcade_Plugin.CabTemplate;
+                cabTemplate = DemulShooter_Plugin.CabTemplate;
                 return false;
             }
         }
@@ -211,7 +211,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int handle, ref int serialNum, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("DongleControl.HaspReadCabSerialNum() : handle=" + handle);
+                DemulShooter_Plugin.MyLogger.LogMessage("DongleControl.HaspReadCabSerialNum() : handle=" + handle);
                 serialNum = 11871514;
                 __result = (int)HaspErrorCode.STATUS_OK;
                 return false;
@@ -223,7 +223,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix([MarshalAs(UnmanagedType.FunctionPtr)] HaspWriteDelegate callbackPointer)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("UnityNatives.SetHaspWriteDelegate()");
+                DemulShooter_Plugin.MyLogger.LogMessage("UnityNatives.SetHaspWriteDelegate()");
                 return false;
             }
         }
@@ -233,7 +233,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int handle, ref int coinCount, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("DongleControl.HaspWriteLifetimeCoinCount() : handle=" + handle + ", coinCount=" + coinCount);
+                DemulShooter_Plugin.MyLogger.LogMessage("DongleControl.HaspWriteLifetimeCoinCount() : handle=" + handle + ", coinCount=" + coinCount);
                 __result = (int)HaspErrorCode.STATUS_OK;
                 return false;
             }
@@ -244,7 +244,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int handle, ref byte countryCode, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("DongleControl.HaspWriteCountryCode() : handle=" + handle + ", countryCode=" + countryCode);
+                DemulShooter_Plugin.MyLogger.LogMessage("DongleControl.HaspWriteCountryCode() : handle=" + handle + ", countryCode=" + countryCode);
                 __result = (int)HaspErrorCode.STATUS_OK;
                 return false;
             }
@@ -255,7 +255,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int handle, ref byte cabType, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("DongleControl.HaspWriteCabType() : handle=" + handle + ", cabType=" + cabType);
+                DemulShooter_Plugin.MyLogger.LogMessage("DongleControl.HaspWriteCabType() : handle=" + handle + ", cabType=" + cabType);
                 __result = (int)HaspErrorCode.STATUS_OK;
                 return false;
             }
@@ -266,7 +266,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int handle, ref byte cabTemplate, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("DongleControl.HaspWriteCabTemplate() : handle=" + handle + ", cabTemplate=" + cabTemplate);
+                DemulShooter_Plugin.MyLogger.LogMessage("DongleControl.HaspWriteCabTemplate() : handle=" + handle + ", cabTemplate=" + cabTemplate);
                 __result = (int)HaspErrorCode.STATUS_OK;
                 return false;
             }
@@ -277,7 +277,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int handle, ref int serialNum, ref int __result)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("DongleControl.HaspWriteCabSerialNum() : handle=" + handle + ", serialNum=" + serialNum);
+                DemulShooter_Plugin.MyLogger.LogMessage("DongleControl.HaspWriteCabSerialNum() : handle=" + handle + ", serialNum=" + serialNum);
                 __result = (int)HaspErrorCode.STATUS_OK;
                 return false;
             }

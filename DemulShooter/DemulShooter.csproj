@@ -63,8 +63,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Games\Game_CoastalWws.cs" />
-    <Compile Include="Games\Game_IceGhostBusters.cs" />
+    <Compile Include="Games\Game_ArcadepcHsfr.cs" />
+    <Compile Include="Games\Game_ArcadepcMechaTornado.cs" />
+    <Compile Include="Games\Game_ArcadepcWws.cs" />
+    <Compile Include="Games\Game_CxbxGsquad.cs" />
+    <Compile Include="Games\Game_CxbxHod3.cs" />
+    <Compile Include="Games\Game_CxbxVcop3.cs" />
+    <Compile Include="Games\Game_ArcadepcGhostBusters.cs" />
     <Compile Include="Games\Game_KonamiCastlevania.cs" />
     <Compile Include="Games\Game_KonamiLethalEnforcer3.cs" />
     <Compile Include="Games\Game_KonamiWartran.cs" />
@@ -82,6 +87,7 @@
     <Compile Include="Games\Game_RtWalkingDead.cs" />
     <Compile Include="Games\Game_RwGunman.cs" />
     <Compile Include="Games\Game_TtxGundam_V2.cs" />
+    <Compile Include="Games\Game_ArcadePcWaterSprite2.cs" />
     <Compile Include="Games\Game_WaxAkuma.cs" />
     <Compile Include="Games\Game_WndAdCop95.cs" />
     <Compile Include="Games\Game_WndAdCopOverseas.cs" />
@@ -99,7 +105,7 @@
     <Compile Include="Games\Game.cs" />
     <Compile Include="Games\Game_WndArtIsDead.cs" />
     <Compile Include="Games\Game_WndBE.cs" />
-    <Compile Include="Games\Game_CxbxVcop3.cs" />
+    <Compile Include="Games\Game_CxbxVcop3_Old.cs" />
     <Compile Include="Games\Game_Demul.cs" />
     <Compile Include="Games\Game_DemulAtomiswave.cs" />
     <Compile Include="Games\Game_DemulHikaru.cs" />
@@ -140,7 +146,8 @@
     <Compile Include="Games\Game_WndSpray.cs" />
     <Compile Include="Games\Game_WndWartran.cs" />
     <Compile Include="Games\Game_TtxBlockKingBallShooter.cs" />
-    <Compile Include="Games\Game_SegaPvzLastStand.cs" />
+    <Compile Include="Games\Game_ArcadepcPvzLastStand.cs" />
+    <Compile Include="Games\Game_ArcadepcWaterWar2.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

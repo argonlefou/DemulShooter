@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace UnityPlugin_BepInEx_PBX
+namespace PointBlankX_BepInEx_DemulShooter_Plugin
 {
     class mBNUsioController
     {  
@@ -14,9 +14,9 @@ namespace UnityPlugin_BepInEx_PBX
             {
                 //PointBlankX_Plugin.MyLogger.LogMessage("mBNUsioController.setStartLED() => idx : " + idx.ToString() + ", isOn: " + isOn.ToString());
                 if (idx == 1)
-                    PointBlankX_Plugin.OutputData.P1_StartLED = isOn == true ? (byte)1 : (byte)0;
+                    DemulShooter_Plugin.OutputData.P1_StartLED = isOn == true ? (byte)1 : (byte)0;
                 else if (idx == 2)
-                    PointBlankX_Plugin.OutputData.P2_StartLED = isOn == true ? (byte)1 : (byte)0;                
+                    DemulShooter_Plugin.OutputData.P2_StartLED = isOn == true ? (byte)1 : (byte)0;                
             }
         }
 
@@ -30,9 +30,9 @@ namespace UnityPlugin_BepInEx_PBX
             {
                 //PointBlankX_Plugin.MyLogger.LogMessage("mBNUsioController.setLED() => idx : " + idx.ToString() + ", isOn: " + isOn.ToString());
                 if (idx == 1)
-                    PointBlankX_Plugin.OutputData.P1_LED = isOn == true ? (byte)1 : (byte)0;
+                    DemulShooter_Plugin.OutputData.P1_LED = isOn == true ? (byte)1 : (byte)0;
                 else if (idx == 2)
-                    PointBlankX_Plugin.OutputData.P2_LED = isOn == true ? (byte)1 : (byte)0;
+                    DemulShooter_Plugin.OutputData.P2_LED = isOn == true ? (byte)1 : (byte)0;
             }
         }
 

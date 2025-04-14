@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace UnityPlugin_BepInEx_PBX
+namespace PointBlankX_BepInEx_DemulShooter_Plugin
 {
     class mPlayer
     {
@@ -19,9 +19,9 @@ namespace UnityPlugin_BepInEx_PBX
                 if (__instance.playerData.state == PlayerData.PlayerState.Active)
                 {
                     if (__instance.getName() == "P1")
-                        PointBlankX_Plugin.OutputData.P1_Recoil = 1;
+                        DemulShooter_Plugin.OutputData.P1_Recoil = 1;
                     else if (__instance.getName() == "P2")
-                        PointBlankX_Plugin.OutputData.P2_Recoil = 1;
+                        DemulShooter_Plugin.OutputData.P2_Recoil = 1;
                 }
 
                 return true;

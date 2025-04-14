@@ -2,7 +2,7 @@
 using MRCQ;
 using System;
 
-namespace UnityPlugin_BepInEx_MarsSortie.Patch
+namespace MarsSortie_BepInEx_DemulShooter_Plugin.Patch
 {
     class mGameDatabase
     {
@@ -26,13 +26,13 @@ namespace UnityPlugin_BepInEx_MarsSortie.Patch
                 switch (station)
                 {
                     case 0:
-                        MarsSortie_BepInEx_Plugin.OutputData.P1_Credits = (UInt16)__result; break;
+                        DemulShooter_Plugin.OutputData.P1_Credits = (UInt16)__result; break;
                     case 1:
-                        MarsSortie_BepInEx_Plugin.OutputData.P2_Credits = (UInt16)__result; break;
+                        DemulShooter_Plugin.OutputData.P2_Credits = (UInt16)__result; break;
                     case 2:
-                        MarsSortie_BepInEx_Plugin.OutputData.P3_Credits = (UInt16)__result; break;
+                        DemulShooter_Plugin.OutputData.P3_Credits = (UInt16)__result; break;
                     case 3:
-                        MarsSortie_BepInEx_Plugin.OutputData.P4_Credits = (UInt16)__result; break;
+                        DemulShooter_Plugin.OutputData.P4_Credits = (UInt16)__result; break;
 
                     default: break;         
                 }

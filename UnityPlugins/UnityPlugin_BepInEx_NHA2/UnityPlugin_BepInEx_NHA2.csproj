@@ -8,8 +8,8 @@
     <ProjectGuid>{CE8D6901-EED9-4966-B9D4-D63397E1535D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnityPlugin_BepInEx_NHA2</RootNamespace>
-    <AssemblyName>NHA2_BepInEx_DemulShooter_Plugin</AssemblyName>
+    <RootNamespace>NightHunter2_BepInEx_DemulShooter_Plugin</RootNamespace>
+    <AssemblyName>NightHunter2_BepInEx_DemulShooter_Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -57,25 +57,25 @@
   <ItemGroup>
     <Compile Include="ConfManager.cs" />
     <Compile Include="mconfig_gun.cs" />
-    <Compile Include="mdog_check_new.cs" />
-    <Compile Include="mGame Device_data_gun_core.cs" />
-    <Compile Include="mgame_mark_3d_obj.cs" />
-    <Compile Include="mgame_player_is_hit.cs" />
-    <Compile Include="mgun_body.cs" />
-    <Compile Include="mgun_body_tx_wuti.cs" />
-    <Compile Include="minput_obj_change_bullet.cs" />
-    <Compile Include="mnew_game_gui_connect_player_slider.cs" />
-    <Compile Include="mzzp_houtai_manage_check_control.cs" />
-    <Compile Include="minput_manage.cs" />
-    <Compile Include="mshow_info_manage_for_objs.cs" />
-    <Compile Include="mtest_screen.cs" />
-    <Compile Include="mzhichi_hanshu_pos.cs" />
+    <Compile Include="Patch\mdog_check_new.cs" />
+    <Compile Include="Patch\mGame Device_data_gun_core.cs" />
+    <Compile Include="Patch\mgame_mark_3d_obj.cs" />
+    <Compile Include="Patch\mgame_player_is_hit.cs" />
+    <Compile Include="Patch\mgun_body.cs" />
+    <Compile Include="Patch\mgun_body_tx_wuti.cs" />
+    <Compile Include="Patch\minput_obj_change_bullet.cs" />
+    <Compile Include="Patch\mnew_game_gui_connect_player_slider.cs" />
+    <Compile Include="Patch\mzzp_houtai_manage_check_control.cs" />
+    <Compile Include="Patch\minput_manage.cs" />
+    <Compile Include="Patch\mshow_info_manage_for_objs.cs" />
+    <Compile Include="Patch\mtest_screen.cs" />
+    <Compile Include="Patch\mzhichi_hanshu_pos.cs" />
     <Compile Include="NHA2_MemoryMappedFile_Controller.cs" />
-    <Compile Include="NightHunterArcade2_Plugin.cs" />
+    <Compile Include="DemulShooter_Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="mgame_device_sub_gun.cs" />
+    <Compile Include="Patch\mgame_device_sub_gun.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

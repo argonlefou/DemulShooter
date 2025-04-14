@@ -740,7 +740,7 @@ namespace DemulShooter
             {
                 for (int i = 0; i < Offsets.Length; i++)
                 {
-                    Buffer = ReadBytes(Ptr + Offsets[i], 8);
+                    Buffer = ReadBytes(Ptr + Offsets[i], 4);
                     Ptr = BitConverter.ToUInt32(Buffer, 0);
 
                     if (Ptr == 0)
@@ -1155,6 +1155,22 @@ namespace DemulShooter
                 sTitle = builder.ToString();
             }
             return sTitle;
+        }
+
+        /// <summary>
+        /// Check a series of bytes agains some awaited values
+        /// </summary>
+        protected bool CheckBytes(UInt32 AddressToCheck, byte[] BytesToFind)
+        {
+            Logger.WriteLog("Checking Bytes at 0x" + AddressToCheck.ToString("X8") + "...");
+            byte[] ReadBuffer = ReadBytes(AddressToCheck, (uint)BytesToFind.Length);
+            for (int i = 0; i < BytesToFind.Length; i++)
+            {
+                Logger.WriteLog("Read: 0x" + ReadBuffer[i].ToString("X2") + ", Awaited: 0x" + BytesToFind[i].ToString("X2"));
+                if (ReadBuffer[i] != BytesToFind[i])
+                    return false;
+            }
+            return true;
         }
     }
 }

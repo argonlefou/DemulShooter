@@ -3,7 +3,7 @@ using MRCQ;
 using System;
 using System.Xml;
 
-namespace UnityPlugin_BepInEx_MarsSortie.Patch.mMRCQ
+namespace MarsSortie_BepInEx_DemulShooter_Plugin.Patch.mMRCQ
 {
     class mSignalKey
     {
@@ -15,11 +15,11 @@ namespace UnityPlugin_BepInEx_MarsSortie.Patch.mMRCQ
         {
             static void Postfix(XmlNode signal, bool isInputSignal, ref string ___simulator, string ___device, string ___name)
             {
-                MarsSortie_BepInEx_Plugin.MyLogger.LogMessage("---------- SIGNAL-----------");
-                MarsSortie_BepInEx_Plugin.MyLogger.LogMessage("IsInput=" + isInputSignal);
-                MarsSortie_BepInEx_Plugin.MyLogger.LogMessage("name=" + ___name);
-                MarsSortie_BepInEx_Plugin.MyLogger.LogMessage("device=" + ___device);
-                MarsSortie_BepInEx_Plugin.MyLogger.LogMessage("key='" + ___simulator + "'");
+                DemulShooter_Plugin.MyLogger.LogMessage("---------- SIGNAL-----------");
+                DemulShooter_Plugin.MyLogger.LogMessage("IsInput=" + isInputSignal);
+                DemulShooter_Plugin.MyLogger.LogMessage("name=" + ___name);
+                DemulShooter_Plugin.MyLogger.LogMessage("device=" + ___device);
+                DemulShooter_Plugin.MyLogger.LogMessage("key='" + ___simulator + "'");
                 
                 bool flag = false;
                 string oldsim = ___simulator;
@@ -38,7 +38,7 @@ namespace UnityPlugin_BepInEx_MarsSortie.Patch.mMRCQ
                     default: break;
                 }
                 if (flag)
-                    MarsSortie_BepInEx_Plugin.MyLogger.LogMessage("MRCQ.SignalKey.Ctor(): changed Key for " + ___name + " Signal from [" + oldsim + "] to [" + ___simulator + "]" );
+                    DemulShooter_Plugin.MyLogger.LogMessage("MRCQ.SignalKey.Ctor(): changed Key for " + ___name + " Signal from [" + oldsim + "] to [" + ___simulator + "]" );
             }
         }
 
@@ -51,7 +51,7 @@ namespace UnityPlugin_BepInEx_MarsSortie.Patch.mMRCQ
         {
             static bool Prefix(ref string ___simulator, string ___outputKeyName, bool ___isVKey, ref int ___mouse)
             {
-                if (MarsSortie_BepInEx_Plugin.EnableInputHack)
+                if (DemulShooter_Plugin.EnableInputHack)
                 {
                     //Remove mouse buttons
                     if (___mouse != -1)

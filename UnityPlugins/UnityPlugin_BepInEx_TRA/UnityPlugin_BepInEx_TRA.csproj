@@ -8,8 +8,8 @@
     <ProjectGuid>{76E588AE-0F09-42AE-9D6B-F738780916A5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnityPlugin_BepInEx_TRA</RootNamespace>
-    <AssemblyName>TRA_BepInEx_DemulShooter_Plugin</AssemblyName>
+    <RootNamespace>TombRaider_BepInEx_DemulShooter_Plugin</RootNamespace>
+    <AssemblyName>TombRaider_BepInEx_DemulShooter_Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -56,13 +56,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DemulShooter_Plugin.cs" />
-    <Compile Include="mArcadeManager.cs" />
-    <Compile Include="mCheatsManager.cs" />
-    <Compile Include="mCrosshairWindow.cs" />
-    <Compile Include="mInputManager.cs" />
-    <Compile Include="mKaboomManager.cs" />
-    <Compile Include="mLanguageLocalizer.cs" />
-    <Compile Include="mOperatorMenu.cs" />
+    <Compile Include="Patch\mArcadeManager.cs" />
+    <Compile Include="Patch\mCheatsManager.cs" />
+    <Compile Include="Patch\mCrosshairWindow.cs" />
+    <Compile Include="Patch\mInputManager.cs" />
+    <Compile Include="Patch\mKaboomManager.cs" />
+    <Compile Include="Patch\mLanguageLocalizer.cs" />
+    <Compile Include="Patch\mOperatorMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TRA_MemoryMappedFile_Controller.cs" />
   </ItemGroup>

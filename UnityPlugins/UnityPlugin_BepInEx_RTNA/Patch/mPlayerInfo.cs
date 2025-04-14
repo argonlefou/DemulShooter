@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace UnityPlugin_BepInEx_RTNA
+namespace NerfArcade_BepInEx_DemulShooter_Plugin
 {
     class mPlayerInfo
     {
@@ -12,7 +12,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(int ___m_playerIndex)
             {
-                NerfArcade_Plugin.OutputData.Recoil[___m_playerIndex] = 1;
+                DemulShooter_Plugin.OutputData.Recoil[___m_playerIndex] = 1;
                 return true;
             }
         }

@@ -3,7 +3,7 @@ using HarmonyLib;
 using Pvz;
 using UnityEngine;
 
-namespace UnityPlugin_BepInEx_PVZ
+namespace PvZ_BepInEx_DemulShooter_Plugin
 {
     class mPvzCore
     {
@@ -15,14 +15,14 @@ namespace UnityPlugin_BepInEx_PVZ
         {
             static void Postfix(Pvz.PvzCore __instance)
             {
-                if (PvZ_BepInEx_Plugin.EnableInputHack)
+                if (DemulShooter_Plugin.EnableInputHack)
                 {
                     PropertyInfo[] Pis = __instance.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
                     foreach (PropertyInfo Pi in Pis)
                     {
                         if (Pi.Name.Equals("inputPosition"))
                         {
-                            Pi.SetValue(__instance, new Vector3(PvZ_BepInEx_Plugin.PluginPlayerController.Axis_X, PvZ_BepInEx_Plugin.PluginPlayerController.Axis_Y), null);
+                            Pi.SetValue(__instance, new Vector3(DemulShooter_Plugin.PluginPlayerController.Axis_X, DemulShooter_Plugin.PluginPlayerController.Axis_Y), null);
                             break;
                         }
                     }

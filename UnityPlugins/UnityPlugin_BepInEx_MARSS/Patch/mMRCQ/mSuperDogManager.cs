@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace UnityPlugin_BepInEx_MarsSortie.Patch
+namespace MarsSortie_BepInEx_DemulShooter_Plugin.Patch
 {
     class mSuperDogManager
     {
@@ -12,7 +12,7 @@ namespace UnityPlugin_BepInEx_MarsSortie.Patch
         {
             static bool Prefix(int featureId, MRCQ.SuperDogManager.EncryptionArray enArr, ref bool __result)
             {
-                MarsSortie_BepInEx_Plugin.MyLogger.LogMessage("MRCQ.SuperDogManager.DoCheckKey()");
+                DemulShooter_Plugin.MyLogger.LogMessage("MRCQ.SuperDogManager.DoCheckKey()");
                 __result = true;
                 return false;
             }

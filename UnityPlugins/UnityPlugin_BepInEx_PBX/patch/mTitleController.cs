@@ -2,7 +2,7 @@
 using System.Reflection.Emit;
 using HarmonyLib;
 
-namespace UnityPlugin_BepInEx_PBX.patch
+namespace PointBlankX_BepInEx_DemulShooter_Plugin.patch
 {
     class mTitleController
     {
@@ -25,7 +25,7 @@ namespace UnityPlugin_BepInEx_PBX.patch
                     {
                         codes[i].opcode = OpCodes.Ldc_R4;
                         codes[i].operand = 0.0f;
-                        PointBlankX_Plugin.MyLogger.LogMessage("UIPlayerPanel.Update(): Patched INSERT COIN Title/Demo panel");
+                        DemulShooter_Plugin.MyLogger.LogMessage("UIPlayerPanel.Update(): Patched INSERT COIN Title/Demo panel");
                         break;
                     }
                 }

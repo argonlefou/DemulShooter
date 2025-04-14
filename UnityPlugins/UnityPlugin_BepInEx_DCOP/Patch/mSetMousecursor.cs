@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace UnityPlugin_BepInEx_DCOP.Patch
+namespace DCop_BepInEx_DemulShooter_Plugin.Patch
 {
     class mSetMousecursor
     {
@@ -12,8 +12,8 @@ namespace UnityPlugin_BepInEx_DCOP.Patch
         {
             static bool Prefix()
             {
-                Dcop_Plugin.MyLogger.LogWarning("mSetMousecursor.ShowCursor()");
-                if (Dcop_Plugin.CrossHairVisibility == false)
+                DemulShooter_Plugin.MyLogger.LogWarning("mSetMousecursor.ShowCursor()");
+                if (DemulShooter_Plugin.CrossHairVisibility == false)
                     UnityEngine.Cursor.visible = false;
                 else
                     UnityEngine.Cursor.visible = true;
@@ -26,8 +26,8 @@ namespace UnityPlugin_BepInEx_DCOP.Patch
         {
             static bool Prefix(ref int cursorNumber)
             {
-                Dcop_Plugin.MyLogger.LogWarning("mSetMousecursor.SetCursor() => cursorNumber=" + cursorNumber);
-                if (Dcop_Plugin.CrossHairVisibility == false)
+                DemulShooter_Plugin.MyLogger.LogWarning("mSetMousecursor.SetCursor() => cursorNumber=" + cursorNumber);
+                if (DemulShooter_Plugin.CrossHairVisibility == false)
                     cursorNumber = -1;  //-1 makes the original function call HideCursor()
                 return true;
             }

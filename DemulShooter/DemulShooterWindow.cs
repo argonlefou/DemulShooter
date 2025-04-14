@@ -54,7 +54,6 @@ namespace DemulShooter
         private string _DemulVersion = String.Empty;
         private bool _HardFfl = false;
         private double _ForceScalingX = 1.0;
-        private bool _UseSingleMouse = false;
         private bool _NoInput = false;
 
         //InterProcessCommunication (Memory Mapped Files)
@@ -159,12 +158,7 @@ namespace DemulShooter
                     {
                         _DemulVersion = _Target.Substring(5, 3);
                     }
-                }
-                else if (Args[i].ToLower().Equals("-usesinglemouse"))
-                {
-                    _UseSingleMouse = true;
-                }
-                              
+                }       
             }
             if (_TrayIcon != null)
                 _TrayIcon.Text += "[" + _Target + "] [" + _Rom + "]";
@@ -351,13 +345,23 @@ namespace DemulShooter
                 */
 
                  //Coastal Games
-                if (_Target.Equals("coastal"))
+                if (_Target.Equals("arcadepc"))
                 {
                     switch (_Rom.ToLower())
                     {
+                        case "gbusters":
+                            {
+                                _Game = new Game_ArcadepcGhostBusters(_Rom.ToLower());
+                            } break;
+
+                        case "pvz":
+                            {
+                                _Game = new Game_ArcadepcPvzLastStand(_Rom.ToLower());
+                            }; break;
+
                         case "wws":
                             {
-                                _Game = new Game_CoastalWws(_Rom.ToLower());
+                                _Game = new Game_ArcadepcWws(_Rom.ToLower());
                             }; break;
 
                         default : 
@@ -372,7 +376,7 @@ namespace DemulShooter
                     {
                         case "vcop3":
                             {
-                                _Game = new Game_CxbxVcop3(_Rom.ToLower());
+                                _Game = new Game_CxbxVcop3_Old(_Rom.ToLower());
                             }; break;
 
                         default : 
@@ -458,20 +462,6 @@ namespace DemulShooter
                         case "fearland":
                             {
                                 _Game = new Game_GvrFearLand(_Rom.ToLower(), _HardFfl);
-                            } break;
-                        default:
-                            break;
-                    }
-                }
-
-                    //GlobalVR game
-                else if (_Target.Equals("ice"))
-                {
-                    switch (_Rom.ToLower())
-                    {
-                        case "gbusters":
-                            {
-                                _Game = new Game_IceGhostBusters(_Rom.ToLower());
                             } break;
                         default:
                             break;
@@ -668,20 +658,6 @@ namespace DemulShooter
                     }
                 }
 
-                //Various SEGA Roms
-                else if (_Target.Equals("sega"))
-                {
-                    switch (_Rom.ToLower())
-                    {
-                        case "pvz":
-                            {
-                                _Game = new Game_SegaPvzLastStand(_Rom.ToLower());
-                            }; break;
-                        default: 
-                            break;
-                    }
-                }
-
                 //TTX game
                 else if (_Target.Equals("ttx"))
                 {
@@ -807,10 +783,42 @@ namespace DemulShooter
                         case "bonbon":
                             {
                                 _Game = new Game_WndBonbon95(_Rom.ToLower());
-                            }; break;
+                            }; break;                        
                         case "spray":
                             {
                                 _Game = new Game_WndSpray(_Rom.ToLower());
+                            }; break;
+
+
+                        case "hsfr":
+                            {
+                                _Game = new Game_ArcadepcHsfr(_Rom.ToLower());
+                            }break;
+                        case "mecht":
+                            {
+                                _Game = new Game_ArcadepcMechaTornado(_Rom.ToLower());
+                            }break;
+                        case "hwspr2":
+                            {
+                                _Game = new Game_ArcadepcWaterSprite2(_Rom.ToLower());
+                            }; break;
+                        case "hwwar2":
+                            {
+                                _Game = new Game_ArcadepcWaterWar2(_Rom.ToLower());
+                            }; break;
+
+
+                        case "gsquad":
+                            {
+                                _Game = new Game_CxbxGsquad(_Rom.ToLower());
+                            }; break;
+                        case "hod3":
+                            {
+                                _Game = new Game_CxbxHod3(_Rom.ToLower());
+                            }; break;                        
+                        case "vcop3":
+                            {
+                                _Game = new Game_CxbxVcop3(_Rom.ToLower());
                             }; break;
                         default:
                             break;
@@ -989,10 +997,10 @@ namespace DemulShooter
                                 Logger.WriteLog("Device rawinput data (Hex) = [ " + Player.RIController.Computed_X.ToString("X8") + ", " + Player.RIController.Computed_Y.ToString("X8") + " ]");
 
                                 //Overrriding RAWINPUT data (relative movement) for single mouse by a call to GetCursorPos WIN32 API
-                                //That way we can get mouse position as if it's Absolute position
-                                if (_UseSingleMouse)
-                                {
-                                    Logger.WriteLog("Switching to Single Mouse procedure :");
+                                //That way we can get mouse position as if it's Absolute position                               
+                                if (Controller.DeviceType == RawInputDeviceType.RIM_TYPEMOUSE && Controller.IsRelativeCoordinates)
+                                {                                 
+                                    Logger.WriteLog("Relative positionning detected, switching to cursor position :");
                                     POINT p = new POINT();
                                     if (Win32API.GetCursorPos(out p))
                                     {
@@ -1014,7 +1022,7 @@ namespace DemulShooter
                                 _Game.GetScreenResolution();
                                 Logger.WriteLog("PrimaryScreen Size (Px) = [ " + _Game.ScreenWidth + "x" + _Game.ScreenHeight + " ]");
 
-                                if (!_UseSingleMouse)
+                                if (!Controller.IsRelativeCoordinates)
                                 {
                                     //If manual calibration override for analog guns
                                     if (Player.RIController.DeviceType == RawInputDeviceType.RIM_TYPEHID && Player.AnalogAxisRangeOverride)

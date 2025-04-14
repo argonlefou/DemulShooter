@@ -36,26 +36,28 @@ namespace DemulShooterX64
             bool isTrace = false;
 
             Dictionary<String, String> _SystemTargets = new Dictionary<String, String>(){
-                {"aagames","Adrenaline Amusements"},
+                {"arcadepc","Various modern PC Arcade Games without dedicated system"},
                 {"alls","SEGA Amusement Linkage Live System games"},
                 {"es3","Namco ES3 games"},
                 {"flycast","Flycast v2.0"},
                 {"rpcs3", "RPCS3 (System 357)"},
                 {"rawthrill","Raw Thrill Arcade"},
                 {"seganu","SEGA Nu games"},
-                {"udc","United Distribution Company"},
-                {"unis","UNIS Technology"}, 
                 {"windows","Windows games"}                
-            };
-
-            Dictionary<String, String> _AagamesRoms = new Dictionary<String, String>(){
-                {"drk", "Drakon Realm Keepers"},
-                {"rha", "Rabbids Hollywood Arcade"},
-                {"tra", "Tomb Raider Arcade"}
             };
 
             Dictionary<String, String> _AllsRoms = new Dictionary<String, String>(){
                 {"hodsd","House of the Dead : Scarlet Down"}
+            };
+
+            Dictionary<String, String> _ArcadepcRoms = new Dictionary<String, String>(){
+                {"drk", "Drakon Realm Keepers"},
+                {"eai","Elevator Action invasion"},                
+                {"marss", "Mars Sortie"},
+                {"nha","Night Hunter"},
+                {"racramp", "Raccoon Rampage Arcade"},
+                {"rha", "Rabbids Hollywood Arcade"},
+                {"tra", "Tomb Raider Arcade"}      
             };
 
             Dictionary<String, String> _Es3Roms = new Dictionary<String, String>(){
@@ -85,28 +87,18 @@ namespace DemulShooterX64
                 {"xtrmhnt2","Extreme Hunting 2"}
             };
 
-            Dictionary<String, String> _RPCS3_System357Roms = new Dictionary<String, String>(){
-                {"deadstorm","Dead Storm Pirates"},
-                {"de4d","Dark Escape 4D"},
-                {"sailorz","Sailor Zombies"}
-            };
-
             Dictionary<String, String> _RawThrillRoms = new Dictionary<String, String>(){
                 {"nerfa","Nerf Arcade"}
             };
 
+            Dictionary<String, String> _RPCS3_System357Roms = new Dictionary<String, String>(){
+                {"deadstorm","Dead Storm Pirates"},
+                {"de4d","Dark Escape 4D"},
+                {"sailorz","Sailor Zombies"}
+            };            
+
             Dictionary<String, String> _SegaNuRoms = new Dictionary<String, String>(){
                 {"lma","Luigi's Mansion Arcade"}
-            };
-
-            Dictionary<String, String> _UdcRoms = new Dictionary<String, String>(){
-                {"marss","Mars Sortie"}
-            };
-
-            Dictionary<String, String> _UnisRoms = new Dictionary<String, String>(){
-                {"eai","Elevator Action invasion"},
-                {"nha","Night Hunter"},
-                {"racramp", "Raccoon Rampage Arcade"}
             };
 
             Dictionary<String, String> _WindowsRoms = new Dictionary<String, String>(){
@@ -136,8 +128,8 @@ namespace DemulShooterX64
                         DisplayDictionnaryList(_SystemTargets);
                         Console.WriteLine("");
                         Console.WriteLine("Supported [rom] :");
-                        Console.WriteLine("Adrenaline Amusements Games roms :");
-                        DisplayDictionnaryList(_AagamesRoms);
+                        Console.WriteLine("Arcade PRC Roms :");
+                        DisplayDictionnaryList(_ArcadepcRoms);
                         Console.WriteLine("");
                         Console.WriteLine("ALLS roms :");
                         DisplayDictionnaryList(_AllsRoms);
@@ -155,13 +147,7 @@ namespace DemulShooterX64
                         DisplayDictionnaryList(_RawThrillRoms);
                         Console.WriteLine("");
                         Console.WriteLine("SEGA Nu roms :");
-                        DisplayDictionnaryList(_SegaNuRoms);
-                        Console.WriteLine("");
-                        Console.WriteLine("UDC roms :");
-                        DisplayDictionnaryList(_UdcRoms);      
-                        Console.WriteLine("");
-                        Console.WriteLine("UNIS roms :");
-                        DisplayDictionnaryList(_UnisRoms);
+                        DisplayDictionnaryList(_SegaNuRoms);                            
                         Console.WriteLine("");
                         Console.WriteLine("Windows games :");
                         DisplayDictionnaryList(_WindowsRoms);
@@ -172,7 +158,6 @@ namespace DemulShooterX64
                         Console.WriteLine(" -nogun \t\tHide in-game weapon model (game dependant)");
                         Console.WriteLine(" -pname=[ProcessName]\tchange the name of the expected executable instead of expecting specific name like game.exe");
                         Console.WriteLine(" -profile=[ConfigFile]\tspecify a config file name for DemulShooterX64 to load");
-                        Console.WriteLine(" -usesinglemouse \tUse standard mouse instead of Lightguns");
                         Console.WriteLine(" -? -h --help\t\tShow this help");
                         Console.WriteLine(" -v --verbose\t\tEnable output to log file");
 
@@ -209,11 +194,11 @@ namespace DemulShooterX64
                     if (args[i].ToLower().StartsWith("-rom"))
                     {
                         strRom = (args[i].ToLower().Split('='))[1].Trim();
-                        if (strTarget.StartsWith("aagames"))
+                        if (strTarget.StartsWith("arcadepc"))
                         {
-                            if (!CheckParameter(strRom, _AagamesRoms))
+                            if (!CheckParameter(strRom, _ArcadepcRoms))
                             {
-                                Console.WriteLine("\n\n\tUnsupported Adrenaline Amusements Game rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                Console.WriteLine("\n\n\tUnsupported Arcade PC rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
                         }
@@ -264,23 +249,7 @@ namespace DemulShooterX64
                                 Console.WriteLine("Unsupported Saga Nu rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
-                        }
-                        else if (strTarget.Equals("udc"))
-                        {
-                            if (!CheckParameter(strRom, _UdcRoms))
-                            {
-                                Console.WriteLine("Unsupported UDC rom parameter : \"" + strRom + "\". See help for supported roms list");
-                                ExitConsole();
-                            }
-                        }
-                        else if (strTarget.Equals("unis"))
-                        {
-                            if (!CheckParameter(strRom, _UnisRoms))
-                            {
-                                Console.WriteLine("Unsupported UNIS rom parameter : \"" + strRom + "\". See help for supported roms list");
-                                ExitConsole();
-                            }
-                        }
+                        }                        
                         else if (strTarget.Equals("windows"))
                         {
                             if (!CheckParameter(strRom, _WindowsRoms))

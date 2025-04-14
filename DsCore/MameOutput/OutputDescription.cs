@@ -140,6 +140,8 @@ namespace DsCore.MameOutput
         public static readonly String P2_LmpHead = "P2_LmpHead";        //
         public static readonly String P2_LmpFoot = "P2_LmpFoot";        //
         public static readonly String P2_LmpFront = "P2_LmpFront";      ///
+        public static readonly String P3_LmpFront = "P3_LmpFront";
+        public static readonly String P4_LmpFront = "P4_LmpFront";
         public static readonly String LmpLever = "Lmp_Lever";      //Transformers Shadow Rising
         public static readonly String LmpDownlight = "Lmp_Downlight";  //Transformers Shadow Rising
 
@@ -188,6 +190,30 @@ namespace DsCore.MameOutput
         public static readonly String Lmp_TMolding_B = "Lmp_TMolding_B";                //
         public static readonly String Lmp_SeatDownLight = "Lmp_SeatDownLight";          //
 
+        public static readonly String P1_WaterFire = "P1_WaterFire";            //
+        public static readonly String P2_WaterFire = "P2_WaterFire";            //
+        public static readonly String WaterPump = "WaterPump";                  //
+        public static readonly String P1_BigGun = "P1_BigGun";                  // Happy Water War 2
+        public static readonly String P2_BigGun = "P2_BigGun";                  //
+        public static readonly String P1_TicketFeeder = "P2_TicketFeeder";      //
+        public static readonly String P2_TicketFeeder = "P2_TicketFeeder";      //
+
+        public static readonly String P3_WaterFire = "P3_WaterFire";
+        public static readonly String P4_WaterFire = "P4_WaterFire";
+        public static readonly String P3_BigGun = "P3_BigGun";                  // 
+        public static readonly String P4_BigGun = "P4_BigGun";                  //
+        public static readonly String P3_TicketFeeder = "P3_TicketFeeder";      //
+        public static readonly String P4_TicketFeeder = "P4_TicketFeeder";      //Hot Shots Fire Rescue
+        public static readonly String P1_ChairShake = "P1_ChairShake";          //
+        public static readonly String P2_ChairShake = "P2_ChairShake";          //
+        public static readonly String P3_ChairShake = "P3_ChairShake";          //
+        public static readonly String P4_ChairShake = "P4_ChairShake";          //
+        public static readonly String SmokeSwitch = "SmokeSwitch";            //
+
+        public static readonly String P1_Shaker = "P1_Shaker";      //
+        public static readonly String P2_Shaker = "P2_Shaker";      //  Mech Tornado
+        public static readonly String P3_Shaker = "P3_Shaker";      //
+        public static readonly String P4_Shaker = "P4_Shaker";      //
 
         public static readonly String P1_GunMotor = "P1_GunMotor";
         public static readonly String P2_GunMotor = "P2_GunMotor";

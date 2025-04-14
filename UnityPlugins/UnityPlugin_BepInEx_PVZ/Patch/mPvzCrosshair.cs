@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Pvz;
 
-namespace UnityPlugin_BepInEx_PVZ.Patch
+namespace PvZ_BepInEx_DemulShooter_Plugin.Patch
 {
     class mPvzCrosshair
     {
@@ -13,7 +13,7 @@ namespace UnityPlugin_BepInEx_PVZ.Patch
         {
             static bool Prefix(ref bool ___show)
             {
-                if (!PvZ_BepInEx_Plugin.CrossHairVisibility)
+                if (!DemulShooter_Plugin.CrossHairVisibility)
                     ___show = false;
 
                 return true;

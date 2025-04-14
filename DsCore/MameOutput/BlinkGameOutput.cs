@@ -22,11 +22,17 @@ namespace DsCore.MameOutput
                     _OutputValue = value;
                     _IsBlinking = false;
                 }
+                else if (value == 1)
+                {
+                    _BlinkTimer.Stop();
+                    _OutputValue = value;
+                    _IsBlinking = false;
+                }
                 else
                 {
                     if (!_IsBlinking)
                     {
-                        _OutputValue = value;
+                        _OutputValue = 1;
                         _BlinkTimer.Start();
                         _IsBlinking = true;
                     }

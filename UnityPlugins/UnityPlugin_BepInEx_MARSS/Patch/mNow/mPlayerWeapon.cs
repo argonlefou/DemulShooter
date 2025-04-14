@@ -2,7 +2,7 @@
 using HarmonyLib;
 using Now;
 
-namespace UnityPlugin_BepInEx_MarsSortie.Patch.mNow
+namespace MarsSortie_BepInEx_DemulShooter_Plugin.Patch.mNow
 {
     class mPlayerWeapon
     {

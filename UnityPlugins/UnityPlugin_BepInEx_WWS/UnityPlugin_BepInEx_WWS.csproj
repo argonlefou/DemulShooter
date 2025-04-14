@@ -8,8 +8,8 @@
     <ProjectGuid>{22622F95-CDC3-442D-B427-4AAAE127E0C2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnityPlugin_BepInEx_WWS</RootNamespace>
-    <AssemblyName>WWS_BepInEx_DemulShooter_Plugin</AssemblyName>
+    <RootNamespace>WildWestShootout_BepInEx_DemulShooter_Plugin</RootNamespace>
+    <AssemblyName>WildWestShootout_BepInEx_DemulShooter_Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -65,17 +65,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Demulshooter_Plugin.cs" />
-    <Compile Include="mBaseCom.cs" />
-    <Compile Include="mPlayerUIController.cs" />
-    <Compile Include="mGameBeginUIController.cs" />
-    <Compile Include="mGameStart.cs" />
-    <Compile Include="mBaseCamera.cs" />
-    <Compile Include="mGameChooseUI2.cs" />
-    <Compile Include="mGameUIController.cs" />
-    <Compile Include="mLSerialPort.cs" />
-    <Compile Include="mBaseGun.cs" />
+    <Compile Include="Patch\mBaseCom.cs" />
+    <Compile Include="Patch\mPlayerUIController.cs" />
+    <Compile Include="Patch\mGameBeginUIController.cs" />
+    <Compile Include="Patch\mGameStart.cs" />
+    <Compile Include="Patch\mBaseCamera.cs" />
+    <Compile Include="Patch\mGameChooseUI2.cs" />
+    <Compile Include="Patch\mGameUIController.cs" />
+    <Compile Include="Patch\mLSerialPort.cs" />
+    <Compile Include="Patch\mBaseGun.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="mShowGamePointController.cs" />
+    <Compile Include="Patch\mShowGamePointController.cs" />
     <Compile Include="WWS_MemoryMappedFile_Controller.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

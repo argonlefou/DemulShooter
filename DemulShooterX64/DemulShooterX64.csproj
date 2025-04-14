@@ -68,11 +68,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DemulShooterWindowX64.cs" />
-    <Compile Include="Games\Game_AagamesDrakon.cs" />
-    <Compile Include="Games\Game_AagamesDrakon_NoPlugin.cs" />
-    <Compile Include="Games\Game_AagamesRha.cs" />
-    <Compile Include="Games\Game_AagamesRha_New.cs" />
-    <Compile Include="Games\Game_AagamesTra.cs" />
+    <Compile Include="Games\Game_ArcadepcDrakon.cs" />
+    <Compile Include="Games\Game_ArcadepcDrakon_NoPlugin.cs" />
+    <Compile Include="Games\Game_ArcadepcRha_Old.cs" />
+    <Compile Include="Games\Game_ArcadepcRha.cs" />
+    <Compile Include="Games\Game_ArcadepcTra.cs" />
     <Compile Include="Games\Game_Es3Tc5.cs" />
     <Compile Include="Games\Game_Flycast.cs" />
     <Compile Include="Games\Game_FlycastAtomiswave.cs" />
@@ -80,19 +80,20 @@
     <Compile Include="Games\Game_FlycastNinjaslt.cs" />
     <Compile Include="Games\Game_NuLuigiMansion_v2.cs" />
     <Compile Include="Games\Game.cs" />
-    <Compile Include="Games\Game_Bhapc.cs" />
+    <Compile Include="Games\Game_WndBhapc.cs" />
     <Compile Include="Games\Game_Es3Lla.cs" />
     <Compile Include="Games\Game_NuLuigiMansion.cs" />
     <Compile Include="Games\Game_AllsHodSd.cs" />
     <Compile Include="Games\Game_RtNerfArcade.cs" />
-    <Compile Include="Games\Game_UdcMarsSortie.cs" />
-    <Compile Include="Games\Game_UnisDinoInvasion.cs" />
-    <Compile Include="Games\Game_UnisRaccoonRampage.cs" />
+    <Compile Include="Games\Game_ArcadepcMarsSortie.cs" />
+    <Compile Include="Games\Game_ArcadepcDinoInvasion.cs" />
+    <Compile Include="Games\Game_ArcadepcOnePoint.cs" />
+    <Compile Include="Games\Game_ArcadepcRaccoonRampage.cs" />
     <Compile Include="Games\Game_S357DarkEscape.cs" />
     <Compile Include="Games\Game_S357DeadStormPirates.cs" />
     <Compile Include="Games\Game_S357SailorZombie.cs" />
-    <Compile Include="Games\Game_UnisElevatorActionInvasion.cs" />
-    <Compile Include="Games\Game_UnisNightHunterArcade.cs" />
+    <Compile Include="Games\Game_ArcadepcElevatorActionInvasion.cs" />
+    <Compile Include="Games\Game_ArcadepcNightHunterArcade.cs" />
     <Compile Include="Games\Game_WndDcop.cs" />
     <Compile Include="Games\Game_WndHotdremakeArcade.cs" />
     <Compile Include="Games\Game_WndOpWolfReturn.cs" />

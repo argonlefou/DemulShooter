@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace UnityPlugin_BepInEx_TRA
+namespace TombRaider_BepInEx_DemulShooter_Plugin
 {
     public class TRA_MemoryMappedFile_Controller
     {

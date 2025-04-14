@@ -8,8 +8,8 @@
     <ProjectGuid>{9410FC87-5B6E-403E-8381-3C854E2690AC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnityPlugin_BepInEx_PBX</RootNamespace>
-    <AssemblyName>PBX_BepInEx_DemulShooter_Plugin</AssemblyName>
+    <RootNamespace>PointBlankX_BepInEx_DemulShooter_Plugin</RootNamespace>
+    <AssemblyName>PointBlankX_BepInEx_DemulShooter_Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -65,7 +65,7 @@
     <Compile Include="patch\mPlayer.cs" />
     <Compile Include="patch\mTitleController.cs" />
     <Compile Include="patch\mUIPlayerPanel.cs" />
-    <Compile Include="PointBlankX_Plugin.cs" />
+    <Compile Include="DemulShooter_Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TcpInputData.cs" />
     <Compile Include="TcpOutputData.cs" />

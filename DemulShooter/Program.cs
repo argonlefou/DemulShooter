@@ -35,6 +35,7 @@ namespace DemulShooter
             bool isTrace = false;
 
             Dictionary<String,String> _SystemTargets = new Dictionary<String,String> (){
+                {"arcadepc","Various modern PC Arcade Games without dedicated system"},
                 {"chihiro","Cxbx-Reloaded"},
                 {"coastal","Coastal Arcade"},
                 {"demul057","Demul v0.57"},
@@ -52,17 +53,18 @@ namespace DemulShooter
                 {"rawthrill","TeknoParrot Loader"},
                 {"ringedge2", "RingEdge2 Games"},
                 {"ringwide","TeknoParrot Loader / JConfig"},
-                {"sega", "Unclassified SEGA Amusement Arcade"},
                 {"ttx","Taito Type X"},
                 {"windows","Windows games"}
-            };            
+            };
+
+            Dictionary<String, String> _ArcadepcRoms = new Dictionary<String, String>(){
+                {"gbusters","Ghostbusters"},
+                {"pvz","Plants VS Zombies : The Last stand"},
+                {"wws","Wild West Shootout"}
+            };
 
             Dictionary<String, String> _ChihiroRoms = new Dictionary<String, String>(){
                 {"vcop3","Virtua Cop 3"}
-            };
-
-            Dictionary<String, String> _CoastalRoms = new Dictionary<String, String>(){
-                {"wws","Wild West Shootout"}
             };
 
             Dictionary<String, String> _DemulRoms = new Dictionary<String, String>(){
@@ -99,10 +101,6 @@ namespace DemulShooter
                 {"aliens","Aliens Extermination Dehasped (2nd dump, x86 and x64, no need for VM)"},
                 {"farcry","Far Cry : Paradise Lost"},
                 {"fearland","Fright Fear Land"}
-            };
-
-            Dictionary<String, String> _IceRoms = new Dictionary<String, String>(){
-                {"gbusters","Ghostbusters"}
             };
 
             Dictionary<String, String> _KonamiRoms = new Dictionary<String, String>(){
@@ -146,10 +144,6 @@ namespace DemulShooter
 
             Dictionary<String, String> _RingEdge2Roms = new Dictionary<String, String>(){
                 {"tsr","Transformers : Shadow Rising"}
-            };
-
-            Dictionary<String, String> _SegaRoms = new Dictionary<String, String>(){
-                {"pvz","Plants VS Zombies : The Last stand"}
             };
 
             Dictionary<String, String> _RingSystemRoms = new Dictionary<String, String>(){
@@ -213,8 +207,8 @@ namespace DemulShooter
                         DisplayDictionnaryList(_SystemTargets);
                         Console.WriteLine("");
                         Console.WriteLine("Supported [rom] :");                        
-                        Console.WriteLine("Coastal roms :");
-                        DisplayDictionnaryList(_CoastalRoms);
+                        Console.WriteLine("Arcadepc roms :");
+                        DisplayDictionnaryList(_ArcadepcRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Chihiro roms :");
                         DisplayDictionnaryList(_ChihiroRoms);
@@ -232,10 +226,7 @@ namespace DemulShooter
                         DisplayDictionnaryList(_GlobalVrRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Gamewax Games :");
-                        DisplayDictionnaryList(_GamewaxRoms);
-                        Console.WriteLine("");
-                        Console.WriteLine("ICE Games :");
-                        DisplayDictionnaryList(_IceRoms);
+                        DisplayDictionnaryList(_GamewaxRoms);                        
                         Console.WriteLine("");
                         Console.WriteLine("Konami Games :");
                         DisplayDictionnaryList(_KonamiRoms);
@@ -256,10 +247,7 @@ namespace DemulShooter
                         DisplayDictionnaryList(_RingSystemRoms);
                         Console.WriteLine("");
                         Console.WriteLine("Ringedge2 roms :");
-                        DisplayDictionnaryList(_RingEdge2Roms);
-                        Console.WriteLine("");
-                        Console.WriteLine("SEGA roms :");
-                        DisplayDictionnaryList(_SegaRoms);
+                        DisplayDictionnaryList(_RingEdge2Roms);                        
                         Console.WriteLine("");
                         Console.WriteLine("Taito Type X Games :");
                         DisplayDictionnaryList(_TtxRoms);
@@ -277,7 +265,6 @@ namespace DemulShooter
                         Console.WriteLine(" -noresize \t\tFix Demul exit fullscreen bug, when shooting upper left corner");
                         Console.WriteLine(" -pname=[ProcessName]\tchange the name of the expected executable instead of expecting specific name like game.exe");
                         Console.WriteLine(" -profile=[ConfigFile]\tspecify a config file name for DemulShooter to load");
-                        Console.WriteLine(" -usesinglemouse \tUse standard mouse instead of Lightguns");
                         Console.WriteLine(" -widescreen \t\tDemul Widescreen hack");
                         Console.WriteLine(" -? -h --help\t\tShow this help");
                         Console.WriteLine(" -v --verbose\t\tEnable output to log file");
@@ -326,11 +313,11 @@ namespace DemulShooter
                                 ExitConsole();
                             }
                         }
-                        else if (strTarget.StartsWith("coastal"))
+                        else if (strTarget.StartsWith("arcadepc"))
                         {
-                            if (!CheckParameter(strRom, _CoastalRoms))
+                            if (!CheckParameter(strRom, _ArcadepcRoms))
                             {
-                                Console.WriteLine("Unsupported Coastal rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                Console.WriteLine("Unsupported Arcadepc rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
                         }
@@ -363,14 +350,6 @@ namespace DemulShooter
                             if (!CheckParameter(strRom, _GlobalVrRoms))
                             {
                                 Console.WriteLine("Unsupported GlobalVR rom parameter : \"" + strRom + "\". See help for supported roms list");
-                                ExitConsole();
-                            }
-                        }
-                        else if (strTarget.Equals("ice"))
-                        {
-                            if (!CheckParameter(strRom, _IceRoms))
-                            {
-                                Console.WriteLine("Unsupported ICE rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
                         }
@@ -429,15 +408,7 @@ namespace DemulShooter
                                 Console.WriteLine("Unsupported RingWide rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
-                        }
-                        else if (strTarget.Equals("sega"))
-                        {
-                            if (!CheckParameter(strRom, _SegaRoms))
-                            {
-                                Console.WriteLine("Unsupported SEGA rom parameter : \"" + strRom + "\". See help for supported roms list");
-                                ExitConsole();
-                            }
-                        }
+                        }                        
                         else if (strTarget.Equals("ttx"))
                         {
                             if (!CheckParameter(strRom, _TtxRoms))

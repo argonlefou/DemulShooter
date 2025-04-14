@@ -2,7 +2,7 @@
 using HarmonyLib;
 using UnityEngine;
 
-namespace UnityPlugin_BepInEx_RTNA
+namespace NerfArcade_BepInEx_DemulShooter_Plugin
 {
     class mIOManager
     {
@@ -14,7 +14,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(ref bool value)
             {
-                NerfArcade_Plugin.MyLogger.LogMessage("IOManager.set_m_UseRio() : value=" + value);
+                DemulShooter_Plugin.MyLogger.LogMessage("IOManager.set_m_UseRio() : value=" + value);
                 value = false;
                 return false;
             }
@@ -32,7 +32,7 @@ namespace UnityPlugin_BepInEx_RTNA
             {
                 //NerfArcade_Plugin.MyLogger.LogMessage("IOManager.ButtonNewlyPressed() : inputIn=" + inputIn.ToString());
                 //Mouse + Keyboard controls   
-                if (!NerfArcade_Plugin.EnableInputHack)
+                if (!DemulShooter_Plugin.EnableInputHack)
                 {
                     for (int i = 0; i < ___m_DigitalInputData.Length; i++)
                     {
@@ -94,10 +94,10 @@ namespace UnityPlugin_BepInEx_RTNA
                             case (int)(int)DigitalGameInput.Coin1: iKeyPressed = Input.GetKey(KeyCode.Alpha5) ? (uint)1 : (uint)0; break;
                             case (int)DigitalGameInput.Coin2: iKeyPressed = Input.GetKey(KeyCode.Alpha6) ? (uint)1 : (uint)0; break;
                             case (int)DigitalGameInput.DBV: iKeyPressed = Input.GetKey(KeyCode.Alpha7) ? (uint)1 : (uint)0; break;
-                            case (int)DigitalGameInput.GunShoulder1: iKeyPressed = NerfArcade_Plugin.PluginControllers[0].GetButton(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Action) ? (uint)1 : (uint)0; break;
-                            case (int)DigitalGameInput.GunShoulder2: iKeyPressed = NerfArcade_Plugin.PluginControllers[1].GetButton(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Action) ? (uint)1 : (uint)0; break;
-                            case (int)DigitalGameInput.GunTrigger1: iKeyPressed = NerfArcade_Plugin.PluginControllers[0].GetButton(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Trigger) ? (uint)1 : (uint)0; break;
-                            case (int)DigitalGameInput.GunTrigger2: iKeyPressed = NerfArcade_Plugin.PluginControllers[1].GetButton(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Trigger) ? (uint)1 : (uint)0; break;
+                            case (int)DigitalGameInput.GunShoulder1: iKeyPressed = DemulShooter_Plugin.PluginControllers[0].GetButton(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Action) ? (uint)1 : (uint)0; break;
+                            case (int)DigitalGameInput.GunShoulder2: iKeyPressed = DemulShooter_Plugin.PluginControllers[1].GetButton(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Action) ? (uint)1 : (uint)0; break;
+                            case (int)DigitalGameInput.GunTrigger1: iKeyPressed = DemulShooter_Plugin.PluginControllers[0].GetButton(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Trigger) ? (uint)1 : (uint)0; break;
+                            case (int)DigitalGameInput.GunTrigger2: iKeyPressed = DemulShooter_Plugin.PluginControllers[1].GetButton(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Trigger) ? (uint)1 : (uint)0; break;
                             case (int)DigitalGameInput.Service: iKeyPressed = Input.GetKey(KeyCode.Alpha0) ? (uint)1 : (uint)0; break;
                             case (int)DigitalGameInput.Start1: iKeyPressed = Input.GetKey(KeyCode.Alpha1) ? (uint)1 : (uint)0; break;
                             case (int)DigitalGameInput.Start2: iKeyPressed = Input.GetKey(KeyCode.Alpha2) ? (uint)1 : (uint)0; break;
@@ -121,10 +121,10 @@ namespace UnityPlugin_BepInEx_RTNA
                     MethodInfo mi = __instance.GetType().GetMethod("SetAnalogValue", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                     if (mi != null)
                     {
-                        mi.Invoke(__instance, new object[] { AnalogGameInput.Gun1X, NerfArcade_Plugin.PluginControllers[0].Axis_X });
-                        mi.Invoke(__instance, new object[] { AnalogGameInput.Gun1Y, NerfArcade_Plugin.PluginControllers[0].Axis_Y });
-                        mi.Invoke(__instance, new object[] { AnalogGameInput.Gun2X, NerfArcade_Plugin.PluginControllers[1].Axis_X });
-                        mi.Invoke(__instance, new object[] { AnalogGameInput.Gun2Y, NerfArcade_Plugin.PluginControllers[1].Axis_Y });
+                        mi.Invoke(__instance, new object[] { AnalogGameInput.Gun1X, DemulShooter_Plugin.PluginControllers[0].Axis_X });
+                        mi.Invoke(__instance, new object[] { AnalogGameInput.Gun1Y, DemulShooter_Plugin.PluginControllers[0].Axis_Y });
+                        mi.Invoke(__instance, new object[] { AnalogGameInput.Gun2X, DemulShooter_Plugin.PluginControllers[1].Axis_X });
+                        mi.Invoke(__instance, new object[] { AnalogGameInput.Gun2Y, DemulShooter_Plugin.PluginControllers[1].Axis_Y });
                     }
                 }
 

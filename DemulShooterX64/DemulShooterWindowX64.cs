@@ -56,7 +56,6 @@ namespace DemulShooterX64
         private string _Target = String.Empty;
         private bool _NoInput = false;
         private double _ForceScalingX = 1.0;
-        private bool _UseSingleMouse = false;
 
         //InterProcessCommunication (Memory Mapped Files)
         private const String DEMULSHOOTER_INPUTS_MMF_NAME = "DemulShooter_MMF_Inputs";
@@ -142,10 +141,6 @@ namespace DemulShooterX64
                 else if (Args[i].ToLower().StartsWith("-target"))
                 {
                     _Target = (Args[i].Split('='))[1].Trim();
-                }
-                else if (Args[i].ToLower().Equals("-usesinglemouse"))
-                {
-                    _UseSingleMouse = true;
                 }
             }
             if (_TrayIcon != null)
@@ -280,21 +275,37 @@ namespace DemulShooterX64
                 */
 
                 //Adrenaline Amusements Games
-                if (_Target.Equals("aagames"))
+                if (_Target.Equals("arcadepc"))
                 {
                     switch (_Rom.ToLower())
                     {
                         case "drk":
                             {
-                                _Game = new Game_AagamesDrakon(_Rom.ToLower());
+                                _Game = new Game_ArcadepcDrakon(_Rom.ToLower());
                             }break;
+                        case "eai":
+                            {
+                                _Game = new Game_ArcadepcElevatorActionInvasion(_Rom.ToLower());
+                            }break;
+                        case "marss":
+                            {
+                                _Game = new Game_ArcadepcMarsSortie(_Rom.ToLower());
+                            }; break;
+                        case "nha":
+                            {
+                                _Game = new Game_ArcadepcNightHunterArcade(_Rom.ToLower());
+                            } break;
+                        case "racramp":
+                            {
+                                _Game = new Game_ArcadepcRaccoonRampage(_Rom.ToLower());
+                            } break;
                         case "rha":
                             {
-                                _Game = new Game_AagamesRha(_Rom.ToLower());
+                                _Game = new Game_ArcadepcRha(_Rom.ToLower());
                             }; break;
                         case "tra":
                             {
-                                _Game = new Game_AagamesTra(_Rom.ToLower());
+                                _Game = new Game_ArcadepcTra(_Rom.ToLower());
                             }; break;
                     }
                 }
@@ -392,35 +403,6 @@ namespace DemulShooterX64
                     }
                 }
 
-                //UDC Games
-                else if (_Target.Equals("udc"))
-                {
-                    switch (_Rom.ToLower())
-                    {
-                        case "marss":
-                            {
-                                _Game = new Game_UdcMarsSortie(_Rom.ToLower());
-                            }; break;
-                    }
-                }
-
-                //UNIS Games
-                else if (_Target.Equals("unis"))
-                {
-                    if (_Rom.ToLower().Equals("eai"))
-                    {
-                        _Game = new Game_UnisElevatorActionInvasion(_Rom.ToLower());
-                    }
-                    else if (_Rom.ToLower().Equals("nha"))
-                    {
-                        _Game = new Game_UnisNightHunterArcade(_Rom.ToLower());
-                    }
-                    else if (_Rom.ToLower().Equals("racramp"))
-                    {
-                        _Game = new Game_UnisRaccoonRampage(_Rom.ToLower());
-                    }
-                }
-
                 //Windows games
                 else if (_Target.Equals("windows"))
                 {
@@ -428,7 +410,7 @@ namespace DemulShooterX64
                     {
                         case "bhapc":
                             {
-                                _Game = new Game_Bhapc(_Rom.ToLower());
+                                _Game = new Game_WndBhapc(_Rom.ToLower());
                             } break;
                         case "dcop":
                             {
@@ -452,15 +434,19 @@ namespace DemulShooterX64
                     {
                         case "drakon":
                             {
-                                _Game = new Game_AagamesDrakon_NoPlugin(_Rom.ToLower());
+                                _Game = new Game_ArcadepcDrakon_NoPlugin(_Rom.ToLower());
                             }; break;
                         case "dino":
                             {
-                                _Game = new Game_UnisDinoInvasion(_Rom.ToLower());
+                                _Game = new Game_ArcadepcDinoInvasion(_Rom.ToLower());
+                            }; break;
+                        case "onept":
+                            {
+                                _Game = new Game_ArcadepcOnePoint(_Rom.ToLower());
                             }; break;
                         case "rha":
                             {
-                                _Game = new Game_AagamesRha_New(_Rom.ToLower());
+                                _Game = new Game_ArcadepcRha(_Rom.ToLower());
                             }; break;
 
                         default: break;
@@ -629,9 +615,9 @@ namespace DemulShooterX64
 
                                 //Overrriding RAWINPUT data (relative movement) for single mouse by a call to GetCursorPos WIN32 API
                                 //That way we can get mouse position as if it's Absolute position
-                                if (_UseSingleMouse)
+                                if (Controller.DeviceType == RawInputDeviceType.RIM_TYPEMOUSE && Controller.IsRelativeCoordinates)
                                 {
-                                    Logger.WriteLog("Switching to Single Mouse procedure :");
+                                    Logger.WriteLog("Relative positionning detected, switching to cursor position :");
                                     POINT p = new POINT();
                                     if (Win32API.GetCursorPos(out p))
                                     {
@@ -653,7 +639,7 @@ namespace DemulShooterX64
                                 _Game.GetScreenResolution();
                                 Logger.WriteLog("PrimaryScreen Size (Px) = [ " + _Game.ScreenWidth + "x" + _Game.ScreenHeight + " ]");
 
-                                if (!_UseSingleMouse)
+                                if (!Controller.IsRelativeCoordinates)
                                 {
                                     //If manual calibration override for analog guns
                                     if (Player.RIController.DeviceType == RawInputDeviceType.RIM_TYPEHID && Player.AnalogAxisRangeOverride)

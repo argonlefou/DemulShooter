@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace UnityPlugin_BepInEx_DCOP
+namespace DCop_BepInEx_DemulShooter_Plugin
 {
     /*class mU_policeLight
     {

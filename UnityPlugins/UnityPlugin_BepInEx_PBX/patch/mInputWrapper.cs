@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace UnityPlugin_BepInEx_PBX
+namespace PointBlankX_BepInEx_DemulShooter_Plugin
 {
     class mInputWrapper
     {
@@ -14,7 +14,7 @@ namespace UnityPlugin_BepInEx_PBX
             static bool Prefix(ref bool __result)
             {
                 //PointBlankX_Plugin.MyLogger.LogMessage("InputWrapper.isCreditAdded()");
-                __result = UnityEngine.Input.GetKeyDown(PointBlankX_Plugin.Credits_KeyCode);
+                __result = UnityEngine.Input.GetKeyDown(DemulShooter_Plugin.Credits_KeyCode);
                 return false;
             }
         }
@@ -29,16 +29,16 @@ namespace UnityPlugin_BepInEx_PBX
             {
                 __result = false;
                 //PointBlankX_Plugin.MyLogger.LogWarning("InputWrapper.isStartPressed() => " + playerName);
-                if (playerName.Equals("P1") && Input.GetKeyDown(PointBlankX_Plugin.P1_Start_KeyCode))
+                if (playerName.Equals("P1") && Input.GetKeyDown(DemulShooter_Plugin.P1_Start_KeyCode))
                 {
-                    PointBlankX_Plugin.MyLogger.LogWarning("InputWrapper.isStartPressed() => P1 Start Detected");
+                    DemulShooter_Plugin.MyLogger.LogWarning("InputWrapper.isStartPressed() => P1 Start Detected");
                     __result = true;
                     return false;
                 }
 
-                if (playerName.Equals("P2") && Input.GetKeyDown(PointBlankX_Plugin.P2_Start_KeyCode))
+                if (playerName.Equals("P2") && Input.GetKeyDown(DemulShooter_Plugin.P2_Start_KeyCode))
                 {
-                    PointBlankX_Plugin.MyLogger.LogWarning("InputWrapper.isStartPressed() => P2 start Detected");
+                    DemulShooter_Plugin.MyLogger.LogWarning("InputWrapper.isStartPressed() => P2 start Detected");
                     __result = true;
                     return false;
                 }
@@ -55,12 +55,12 @@ namespace UnityPlugin_BepInEx_PBX
         {
             static bool Prefix(string playerName, ref int ___p1ShootFrameCount, ref int ___p2ShootFrameCount, ref float ___p1ShootHoldTime, ref float ___p2ShootHoldTime, float ___rapidFireShootInterval, ref bool __result, bool allowRapidFire = false)
             {
-                if (PointBlankX_Plugin.EnableInputHack)
+                if (DemulShooter_Plugin.EnableInputHack)
                 {
                     //PointBlankX_Plugin.MyLogger.LogWarning("InputWrapper.isShooting() => Player: " + playerName + "allowRapidFire: " + allowRapidFire);
                     if (playerName == "P1")
                     {
-                        if (PointBlankX_Plugin.P1_Trigger_ButtonState == 0)
+                        if (DemulShooter_Plugin.P1_Trigger_ButtonState == 0)
                         {
                             ___p1ShootFrameCount = 0;
                             ___p1ShootHoldTime = 0f;
@@ -85,7 +85,7 @@ namespace UnityPlugin_BepInEx_PBX
                     }
                     else
                     {
-                        if (PointBlankX_Plugin.P2_Trigger_ButtonState == 0)
+                        if (DemulShooter_Plugin.P2_Trigger_ButtonState == 0)
                         {
                             ___p2ShootFrameCount = 0;
                             ___p2ShootHoldTime = 0f;
@@ -124,16 +124,16 @@ namespace UnityPlugin_BepInEx_PBX
         {
             static bool Prefix(string playerName, ref Vector2 __result)
             {
-                if (PointBlankX_Plugin.EnableInputHack)
+                if (DemulShooter_Plugin.EnableInputHack)
                 {
                     //PointBlankX_Plugin.MyLogger.LogWarning("InputWrapper.getPositionOnScreen() => " + playerName + " : " + playerName.ToString());
                     if (playerName.Equals("P1"))
                     {
-                        __result = PointBlankX_Plugin.P1_Axis;
+                        __result = DemulShooter_Plugin.P1_Axis;
                     }
                     else if (playerName.Equals("P2"))
                     {
-                        __result = PointBlankX_Plugin.P2_Axis;
+                        __result = DemulShooter_Plugin.P2_Axis;
                     }
                     return false;
                 }

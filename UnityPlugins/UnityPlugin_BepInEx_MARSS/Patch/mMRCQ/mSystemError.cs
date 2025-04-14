@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace UnityPlugin_BepInEx_MarsSortie.Patch
+namespace MarsSortie_BepInEx_DemulShooter_Plugin.Patch
 {
     class mSystemError
     {

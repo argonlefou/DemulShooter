@@ -161,6 +161,17 @@ namespace DsCore.RawInput
 
         //If the controller is Mouse device, we will use the following struct 
         private RawInputDataMouse _RawInputDataMouse;
+        //Adding some field to know if the device is "relative" (i.e normal mouse) or "Absolute" (i.e lightgun)
+        public bool IsRelativeCoordinates
+        { 
+            get 
+            {
+                if (DeviceType == RawInputDeviceType.RIM_TYPEMOUSE)
+                    return _RawInputDataMouse.data.usFlags == 0 ? true : false;
+                else
+                    return false;
+            } 
+        }
 
         //HidP variables
         private HidPCaps _Caps;

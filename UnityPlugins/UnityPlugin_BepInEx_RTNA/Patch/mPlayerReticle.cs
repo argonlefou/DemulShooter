@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace UnityPlugin_BepInEx_RTNA
+namespace NerfArcade_BepInEx_DemulShooter_Plugin
 {
     class mPlayerReticle
     {
@@ -13,7 +13,7 @@ namespace UnityPlugin_BepInEx_RTNA
         {
             static bool Prefix(ref float ___m_LaserStartWidth, Animator[] ___m_ReticleAnimators, GunState ___m_CurrentGunState, PlayerInfo ___m_PlayerInfo, int ___m_PlayerIndex)
             {
-                if (!NerfArcade_Plugin.CrossHairVisibility)
+                if (!DemulShooter_Plugin.CrossHairVisibility)
                 {
                     //Removing reticle by changing the animator scale to 0
                     if (___m_PlayerInfo.m_playerState == PlayerState.NameEntry && SingletonMonoBehaviour<UI_Manager>.Instance.NameEntry_ShouldShowReticle(___m_PlayerIndex))

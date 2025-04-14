@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace UnityPlugin_BepInEx_PBX
+namespace PointBlankX_BepInEx_DemulShooter_Plugin
 {
     class mGlobalData
     {
@@ -12,8 +12,8 @@ namespace UnityPlugin_BepInEx_PBX
         {
             static void Postfix(ref bool ___isCrosshairVisible)
             {
-                ___isCrosshairVisible = PointBlankX_Plugin.CrossHairVisibility;
-                PointBlankX_Plugin.MyLogger.LogMessage("mGlobalData() => isCrosshairVisible: " + ___isCrosshairVisible);
+                ___isCrosshairVisible = DemulShooter_Plugin.CrossHairVisibility;
+                DemulShooter_Plugin.MyLogger.LogMessage("mGlobalData() => isCrosshairVisible: " + ___isCrosshairVisible);
             }
         }
     }

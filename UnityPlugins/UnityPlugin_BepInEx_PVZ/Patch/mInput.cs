@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace UnityPlugin_BepInEx_PVZ.Patch
+namespace PvZ_BepInEx_DemulShooter_Plugin.Patch
 {
     class mInput
     {
@@ -13,9 +13,9 @@ namespace UnityPlugin_BepInEx_PVZ.Patch
         {
             static bool Prefix(string buttonName, ref bool __result)
             {
-                if (buttonName.Equals("Fire1") && PvZ_BepInEx_Plugin.EnableInputHack)
+                if (buttonName.Equals("Fire1") && DemulShooter_Plugin.EnableInputHack)
                 {
-                    __result = PvZ_BepInEx_Plugin.PluginPlayerController.GetButton(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Trigger);
+                    __result = DemulShooter_Plugin.PluginPlayerController.GetButton(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Trigger);
                     return false;
                 }
                 return true;
@@ -30,11 +30,11 @@ namespace UnityPlugin_BepInEx_PVZ.Patch
         {
             static bool Prefix(string buttonName, ref bool __result)
             {
-                if (buttonName.Equals("Fire1") && PvZ_BepInEx_Plugin.EnableInputHack)
+                if (buttonName.Equals("Fire1") && DemulShooter_Plugin.EnableInputHack)
                 {
-                    __result = PvZ_BepInEx_Plugin.PluginPlayerController.GetButtonDown(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Trigger);
+                    __result = DemulShooter_Plugin.PluginPlayerController.GetButtonDown(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Trigger);
                     if (__result)
-                        PvZ_BepInEx_Plugin.MyLogger.LogWarning("Trigger down");
+                        DemulShooter_Plugin.MyLogger.LogWarning("Trigger down");
                     return false;
                 }
                 return true;
@@ -49,11 +49,11 @@ namespace UnityPlugin_BepInEx_PVZ.Patch
         {
             static bool Prefix(string buttonName, ref bool __result)
             {
-                if (buttonName.Equals("Fire1") && PvZ_BepInEx_Plugin.EnableInputHack)
+                if (buttonName.Equals("Fire1") && DemulShooter_Plugin.EnableInputHack)
                 {
-                    __result = PvZ_BepInEx_Plugin.PluginPlayerController.GetButtonUp(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Trigger);
+                    __result = DemulShooter_Plugin.PluginPlayerController.GetButtonUp(UnityPlugin_BepInEx_Core.PluginController.MyInputButtons.Trigger);
                     if (__result)
-                        PvZ_BepInEx_Plugin.MyLogger.LogWarning("Trigger up");
+                        DemulShooter_Plugin.MyLogger.LogWarning("Trigger up");
                     return false;
                 }
                 return true;

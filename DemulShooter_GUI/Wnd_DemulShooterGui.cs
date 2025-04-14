@@ -9,6 +9,7 @@ using DsCore;
 using DsCore.Config;
 using DsCore.RawInput;
 using DsCore.Win32;
+using System.Drawing;
 
 namespace DemulShooter_GUI
 {    
@@ -40,6 +41,9 @@ namespace DemulShooter_GUI
         /*** Controllers ***/
         private List<GUI_Player> _GUI_Players;
         private List<GUI_AnalogCalibration> _GUI_AnalogCalibrations;
+
+        /*** Timer used to display some kind of crosshair to test aim ***/
+        private Timer CrosshairAimTimer;
 
         /// <summary>
         /// Construcor
@@ -241,6 +245,9 @@ namespace DemulShooter_GUI
             ApplyKeyboardHook();                               
             
             Cbo_PageSettings.SelectedIndex = 0;
+
+            CrosshairAimTimer = new Timer();
+            CrosshairAimTimer.Tick += new EventHandler(CrosshairAimTimer_Tick);  
         }
                
 
@@ -260,8 +267,20 @@ namespace DemulShooter_GUI
                         if (Player.DeviceName == Controller.DeviceName)
                         {
                             Controller.ProcessRawInputData(RawInputHandle);
-                            _GUI_Players[Player.ID - 1].UpdateGui();
-                            _GUI_AnalogCalibrations[Player.ID - 1].UpdateValues();                           
+
+                            if (tabControl1.SelectedTab == Tab_P1 || tabControl1.SelectedTab == Tab_P2 || tabControl1.SelectedTab == Tab_P3 || tabControl1.SelectedTab == Tab_P4)
+                                _GUI_Players[Player.ID - 1].UpdateGui();
+                            else if (tabControl1.SelectedTab == Tab_AnalogCalib)
+                                _GUI_AnalogCalibrations[Player.ID - 1].UpdateValues();
+                            else if (tabControl1.SelectedTab == Tab_ActLAbs)
+                            {
+                                if ((Player.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
+                                {
+                                    DrawCrosshair(Player);
+                                }
+                            }
+
+                                                       
                         }  
                     }
                 }
@@ -441,6 +460,122 @@ namespace DemulShooter_GUI
                 MessageBox.Show("Configuration saved !");
             else
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void DrawCrosshair(PlayerSettings Player)
+        {
+            if (Chk_DspCorrectedCrosshair.Checked)
+            {
+                Color CrosshairColor = Color.Crimson;
+                if (Player.ID == 2)
+                    CrosshairColor = Color.Blue;
+                else if (Player.ID == 3)
+                    CrosshairColor = Color.LimeGreen;
+                else if (Player.ID == 4)
+                    CrosshairColor = Color.Gold;
+
+                Player.RIController.Computed_X = ScreenScale(Player.RIController.Computed_X, Player.RIController.Axis_X_Min, Player.RIController.Axis_X_Max, 0, Screen.PrimaryScreen.WorkingArea.Width);
+                Player.RIController.Computed_Y = ScreenScale(Player.RIController.Computed_Y, Player.RIController.Axis_Y_Min, Player.RIController.Axis_Y_Max, 0, Screen.PrimaryScreen.WorkingArea.Height);
+
+                if (Configurator.GetInstance().Act_Labs_Offset_Enable)
+                {
+                    Player.RIController.Computed_X += Player.Act_Labs_Offset_X;
+                    Player.RIController.Computed_Y += Player.Act_Labs_Offset_Y;
+                }
+
+                IntPtr desktopPtr = Win32API.GetDC(IntPtr.Zero);
+                Graphics g = Graphics.FromHdc(desktopPtr);
+                SolidBrush b = new SolidBrush(CrosshairColor);
+                Pen p = new Pen(b, 2);
+                g.DrawEllipse(p, Player.RIController.Computed_X - 20, Player.RIController.Computed_Y - 20, 40, 40);
+                g.DrawEllipse(p, Player.RIController.Computed_X - 2, Player.RIController.Computed_Y - 2, 4, 4);
+
+                g.Dispose();
+                Win32API.ReleaseDC(IntPtr.Zero, desktopPtr);
+
+                CrosshairAimTimer.Interval = 300;
+                CrosshairAimTimer.Start();
+            }
+        }
+
+        private void CrosshairAimTimer_Tick(object sender, EventArgs e)
+        {
+            CrosshairAimTimer.Stop();
+            Win32API.InvalidateRect(IntPtr.Zero, IntPtr.Zero, true);            
+        }
+
+        /// <summary>
+        /// Contains value inside min-max range
+        /// </summary>
+        protected int Clamp(int val, int minVal, int maxVal)
+        {
+            if (val > maxVal) return maxVal;
+            else if (val < minVal) return minVal;
+            else return val;
+        }
+
+        /// <summary>
+        /// Transforming 0x0000-0xFFFF absolute rawdata to absolute x,y position on Desktop resolution
+        /// </summary>
+        public int ScreenScale(int val, int fromMinVal, int fromMaxVal, int toMinVal, int toMaxVal)
+        {
+            return ScreenScale(val, fromMinVal, fromMinVal, fromMaxVal, toMinVal, toMinVal, toMaxVal);
+        }
+        protected int ScreenScale(int val, int fromMinVal, int fromOffVal, int fromMaxVal, int toMinVal, int toOffVal, int toMaxVal)
+        {
+            double fromRange;
+            double frac;
+            if (fromMaxVal > fromMinVal)
+            {
+                val = Clamp(val, fromMinVal, fromMaxVal);
+                if (val > fromOffVal)
+                {
+                    fromRange = (double)(fromMaxVal - fromOffVal);
+                    frac = (double)(val - fromOffVal) / fromRange;
+                }
+                else if (val < fromOffVal)
+                {
+                    fromRange = (double)(fromOffVal - fromMinVal);
+                    frac = (double)(val - fromOffVal) / fromRange;
+                }
+                else
+                    return toOffVal;
+            }
+            else if (fromMinVal > fromMaxVal)
+            {
+                val = Clamp(val, fromMaxVal, fromMinVal);
+                if (val > fromOffVal)
+                {
+                    fromRange = (double)(fromMinVal - fromOffVal);
+                    frac = (double)(fromOffVal - val) / fromRange;
+                }
+                else if (val < fromOffVal)
+                {
+                    fromRange = (double)(fromOffVal - fromMaxVal);
+                    frac = (double)(fromOffVal - val) / fromRange;
+                }
+                else
+                    return toOffVal;
+            }
+            else
+                return toOffVal;
+            double toRange;
+            if (toMaxVal > toMinVal)
+            {
+                if (frac >= 0)
+                    toRange = (double)(toMaxVal - toOffVal);
+                else
+                    toRange = (double)(toOffVal - toMinVal);
+                return toOffVal + (int)(toRange * frac);
+            }
+            else
+            {
+                if (frac >= 0)
+                    toRange = (double)(toOffVal - toMaxVal);
+                else
+                    toRange = (double)(toMinVal - toOffVal);
+                return toOffVal - (int)(toRange * frac);
+            }
         }
 
         #endregion
