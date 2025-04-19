@@ -143,7 +143,7 @@
     <Compile Include="Games\Game_TtxHauntedMuseum.cs" />
     <Compile Include="Games\Game_TtxHauntedMuseum2.cs" />
     <Compile Include="Games\Game_TtxSha.cs" />
-    <Compile Include="Games\Game_WndSpray.cs" />
+    <Compile Include="Game_WndSpray.cs" />
     <Compile Include="Games\Game_WndWartran.cs" />
     <Compile Include="Games\Game_TtxBlockKingBallShooter.cs" />
     <Compile Include="Games\Game_ArcadepcPvzLastStand.cs" />

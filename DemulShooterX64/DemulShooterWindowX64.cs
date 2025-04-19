@@ -408,6 +408,10 @@ namespace DemulShooterX64
                 {
                     switch (_Rom.ToLower())
                     {
+                        case "bbhut":
+                            {
+                                _Game = new Game_WndBigBuckHunterUltimate(_Rom.ToLower());
+                            } break;
                         case "bhapc":
                             {
                                 _Game = new Game_WndBhapc(_Rom.ToLower());

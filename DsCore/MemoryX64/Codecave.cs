@@ -57,6 +57,28 @@ namespace DsCore.MemoryX64
                 return false;
         }
 
+        /// <summary>
+        /// To call an absolute X64 Address, using the following sequence :
+        /// call RIP+2
+        /// JMP 08 (to jump over the RIP+2 address and get back to code)
+        /// </summary>
+        /// <param name="AbsoluteAddress"></param>
+        /// <returns></returns>
+        public bool Write_call_absolute(UInt64 AbsoluteAddress)
+        {
+            List<Byte> Buffer = new List<byte>();
+            Buffer.Add(0xFF);
+            Buffer.Add(0x15);
+            Buffer.Add(0x02);
+            Buffer.Add(0x00);
+            Buffer.Add(0x00);
+            Buffer.Add(0x00);
+            Buffer.Add(0xEB);
+            Buffer.Add(0x08);
+            Buffer.AddRange(BitConverter.GetBytes(AbsoluteAddress));
+            return Write_Bytes(Buffer.ToArray());
+        }
+
         //jmp [Address]
         public bool Write_jmp(UInt64 AbsoluteAddress)
         {
@@ -140,7 +162,6 @@ namespace DsCore.MemoryX64
             Buffer.Add(0x00);
             Buffer.Add(0x00);
             Buffer.AddRange(BitConverter.GetBytes(_Cave_Address));
-            Buffer.Add(0x90);
             for (int i = 0; i < iStruct.NeededNops; i++)
             {
                 Buffer.Add(0x90);
@@ -174,7 +195,6 @@ namespace DsCore.MemoryX64
             Buffer.Add(0x00);
             Buffer.Add(0x00);
             Buffer.AddRange(BitConverter.GetBytes(_Cave_Address));
-            Buffer.Add(0x90);
             for (int i = 0; i < iStruct.NeededNops; i++)
             {
                 Buffer.Add(0x90);
@@ -183,6 +203,55 @@ namespace DsCore.MemoryX64
             //For "crash" debug purpose, sometimes I need to create the codecave to examine it, without making the game jump to it.
             if (!bCreateButNotInject)
                 Win32API.WriteProcessMemoryX64(_ProcessHandle, (IntPtr)iStruct.InjectionOffset, Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
+        }
+
+        /// <summary>
+        /// Asolute jump Codecave will need 14 bytes to be written.
+        /// When space is limited, we can use a Trampoline address to use a short 5-bytes long short jump to some close free area
+        /// In which we will be able to write the 14-bytes long JMP
+        /// </summary>
+        /// <param name="iStruct"></param>
+        /// <param name="TrampolineAddress"></param>
+        /// <param name="sCodeCaveName"></param>
+        /// <param name="bCreateButNotInject"></param>
+        public void InjectToOffset_WithTrampoline(InjectionStruct iStruct, UInt64 TrampolineOffset, string sCodeCaveName, bool bCreateButNotInject = false)
+        {
+            //Jump back
+            Write_jmp((UInt64)_ModuleBaseAddress + iStruct.InjectionReturnOffset);
+
+            Logger.WriteLog("Adding " + sCodeCaveName + " CodeCave at : 0x" + _Cave_Address.ToString("X16"));
+
+            //Code injection
+            //1st Step : writing the long jump in the Trampoline
+            List<byte> Buffer = new List<byte>();
+            UIntPtr bytesWritten = UIntPtr.Zero;
+            Buffer = new List<byte>();
+            Buffer.Add(0xFF);
+            Buffer.Add(0x25);
+            Buffer.Add(0x00);
+            Buffer.Add(0x00);
+            Buffer.Add(0x00);
+            Buffer.Add(0x00);
+            Buffer.AddRange(BitConverter.GetBytes(_Cave_Address));
+            
+            //For "crash" debug purpose, sometimes I need to create the codecave to examine it, without making the game jump to it.
+            if (!bCreateButNotInject)
+                Win32API.WriteProcessMemoryX64(_ProcessHandle, (IntPtr)((UInt64)_ModuleBaseAddress + TrampolineOffset), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
+
+            //2nd step : writing the short jump
+            Buffer = new List<byte>();
+            Buffer.Add(0xE9);
+            Buffer.AddRange(BitConverter.GetBytes((UInt32)(TrampolineOffset - iStruct.InjectionOffset - 5)));
+            
+            //InjectionStruct inner NeededNops is based on 14-bytes length absolute jump injection
+            //Using a custom one for 5-bytes length short JMP
+            uint NeededNops = iStruct.Length - 5;
+            for (int i = 0; i < NeededNops; i++)
+            {
+                Buffer.Add(0x90);
+            }
+            if (!bCreateButNotInject)
+                Win32API.WriteProcessMemoryX64(_ProcessHandle, (IntPtr)((UInt64)_ModuleBaseAddress + iStruct.InjectionOffset), Buffer.ToArray(), (UIntPtr)Buffer.Count, out bytesWritten);
         }
     }
 }
