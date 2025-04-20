@@ -18,11 +18,16 @@ namespace DemulShooterX64
         private UInt64 _BaseFirearm_ToggleRendering_Function_Offset = 0x0067B890;
         private UInt64 _Cursor_SetVisible_Function_Offset = 0x0236CA10;
         private UInt64 _ControlManager_ValidateControler_Function_Offset = 0x0066F520;
+        private UInt64 _Unity_Screen_GetWidth_FunctionPointer_Offset = 0x03241AC0;
+        private UInt64 _Unity_Screen_GetHeight_FunctionPointer_Offset = 0x03241AC8;
         private UInt64 _ForceUseMouse_Offset = 0x006762BE;
         private UInt64 _ForceWeaponRenderingOff_Offset = 0x0067B9C9;
+        private UInt64 _ForceWeaponDisplayZAxis_1_Offset = 0x0067A108;
+        private UInt64 _ForceWeaponDisplayZAxis_2_Offset = 0x0067A112;
         private NopStruct _Nop_ValidateController = new NopStruct(0x00066F62D, 2);
         private NopStruct _Nop_PlayMuzzleFlash = new NopStruct(0x00067CD0C, 5);
         private InjectionStruct _Axis_InjectionStruct = new InjectionStruct(0x00676506, 5);
+        private InjectionStruct _GetResolution_InjectionStruct = new InjectionStruct(0x006765BA, 14);
         private InjectionStruct _Buttons_InjectionStruct = new InjectionStruct(0x00678DB5, 15);
         private InjectionStruct _NoGuns_InjectionStruct = new InjectionStruct(0x0067A231, 14);
         private InjectionStruct _NoCrosshair_InjectionStruct = new InjectionStruct(0x0060C008, 7);
@@ -36,6 +41,8 @@ namespace DemulShooterX64
         private UInt64 _P1_Axis_CaveAddress = 0;
         private UInt64 _P2_Axis_CaveAddress = 0;
         private UInt64 _Buttons_CaveAddress = 0;
+        private UInt64 _ScreenWidth_CaveAddress = 0;
+        private UInt64 _ScreenHeight_CaveAddress = 0;
 
         //Outputs
         private UInt64 _Recoil_CaveAddress = 0;
@@ -138,7 +145,25 @@ namespace DemulShooterX64
                     double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
                     Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
 
-                    //Coordinates are Window size range, but inverted Y
+                    //Changing game resolution in options will not change the desktop res but the Unity "screen" size
+                    //This results in an offset with real aim if desktop res is different from the game res
+                    //For that, we will read the Unity screen res from our memory to rescale inputs as needed
+                    double UnityScreenWidth = 1920.0;
+                    double UnityScreenHeight = 1080.0;
+                    if (_ScreenWidth_CaveAddress != 0 && _ScreenHeight_CaveAddress != 0)
+                    {
+                        Int32 iWidth = BitConverter.ToInt32(ReadBytes((IntPtr)_ScreenWidth_CaveAddress, 4), 0);
+                        Int32 iHeight = BitConverter.ToInt32(ReadBytes((IntPtr)_ScreenHeight_CaveAddress, 4), 0);
+                        if (iWidth != 0 && iHeight != 0)
+                        {
+                            UnityScreenWidth = (double)iWidth;
+                            UnityScreenHeight = (double)iHeight;
+                        }
+                    }
+
+                    PlayerData.RIController.Computed_X = Convert.ToInt16(Math.Round(UnityScreenWidth * PlayerData.RIController.Computed_X / TotalResX));
+                    PlayerData.RIController.Computed_Y = Convert.ToInt16(UnityScreenHeight - Math.Round(UnityScreenHeight * PlayerData.RIController.Computed_Y / TotalResY));
+
                     int X_Value = PlayerData.RIController.Computed_X;
                     int Y_Value = (int)TotalResY - PlayerData.RIController.Computed_Y;
 
@@ -146,13 +171,10 @@ namespace DemulShooterX64
                         X_Value = 0;
                     if (Y_Value < 0)
                         Y_Value = 0;
-                    if (X_Value > (int)TotalResX)
-                        X_Value = (int)TotalResX;
-                    if (Y_Value > (int)TotalResY)
-                        Y_Value = (int)TotalResY;
-
-                    PlayerData.RIController.Computed_X = X_Value;
-                    PlayerData.RIController.Computed_Y = Y_Value;
+                    if (X_Value > (int)UnityScreenWidth)
+                        X_Value = (int)UnityScreenWidth;
+                    if (Y_Value > (int)UnityScreenHeight)
+                        Y_Value = (int)UnityScreenHeight;
 
                     return true;
                 }
@@ -174,14 +196,61 @@ namespace DemulShooterX64
             _P1_Axis_CaveAddress = _InputsDatabank_Address;
             _P2_Axis_CaveAddress = _InputsDatabank_Address + 0x08;
             _Buttons_CaveAddress = _InputsDatabank_Address + 0x10;
+            _ScreenWidth_CaveAddress = _InputsDatabank_Address + 0x20;
+            _ScreenHeight_CaveAddress = _InputsDatabank_Address + 0x28;
 
+            SetHack_GetResolution();
             SetHack_InGameAxis();
             SetHack_Buttons();
 
             Logger.WriteLog("Inputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
-        
+
+        /// <summary>
+        /// When in Fullscreen mode, if resolution is changed in game option, the game keeps the desktop rez and changes Unity Screen width/Heigh
+        /// Resulting in an offset in aiming when data is computed based on the desktop resolution (in fullscreen)
+        /// Injecting a codecave at the end of BBH_character.PlayerAvatar.GetInputScreenPos() will allow us to call Screen.Width and Screen.Height to store it for Demulshooter
+        /// </summary>
+        private void SetHack_GetResolution()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _GameAssemblyDll_BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //mov rax,[GameAssembly.dll+_Unity_Screen_GetWidth_FunctionPointer_Offset]
+            CaveMemory.Write_StrBytes("48 A1");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes((UInt64)_GameAssemblyDll_BaseAddress + _Unity_Screen_GetWidth_FunctionPointer_Offset));
+            //call rax
+            CaveMemory.Write_StrBytes("FF D0");
+            //mov [_ScreenWidth_CaveAddress], rax
+            CaveMemory.Write_StrBytes("48 A3");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_ScreenWidth_CaveAddress));
+
+            //mov rax,[GameAssembly.dll+_Unity_Screen_GetHeight_FunctionPointer_Offset]
+            CaveMemory.Write_StrBytes("48 A1");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes((UInt64)_GameAssemblyDll_BaseAddress + _Unity_Screen_GetHeight_FunctionPointer_Offset));
+            //call rax
+            CaveMemory.Write_StrBytes("FF D0");
+            //mov [_ScreenHeight_CaveAddress], rax
+            CaveMemory.Write_StrBytes("48 A3");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_ScreenHeight_CaveAddress));
+
+            //mov eax,2AAAAAAB
+            CaveMemory.Write_StrBytes("B8 AB AA AA 2A");
+            //imul edi
+            CaveMemory.Write_StrBytes("F7 EF");
+            //cvtdq2ps xmm0,xmm0
+            CaveMemory.Write_StrBytes("0F 5B C0");
+            //sar edx,1
+            CaveMemory.Write_StrBytes("D1 FA");
+            //mov eax,edx
+            CaveMemory.Write_StrBytes("8B C2");
+
+            //Inject it
+            CaveMemory.InjectToOffset(_GetResolution_InjectionStruct, "Resolution");
+        }
+
         private void SetHack_InGameAxis()
         {
             //ControllerManager.Validatecontroller() force return 1 even if call to Rewired.Player.get_JoystickCount is 0
@@ -221,8 +290,7 @@ namespace DemulShooterX64
             CaveMemory.Write_StrBytes("59");
 
             //Inject it
-            CaveMemory.InjectToOffset_WithTrampoline(_Axis_InjectionStruct, _Axis_TrampolineJmp_Offset, "Axis");
-             
+            CaveMemory.InjectToOffset_WithTrampoline(_Axis_InjectionStruct, _Axis_TrampolineJmp_Offset, "Axis");             
         }
 
         /// <summary>
@@ -253,6 +321,8 @@ namespace DemulShooterX64
             CaveMemory.Write_StrBytes("48 31 C0");
             //mov al,[rbx]
             CaveMemory.Write_StrBytes("8A 03");
+            //mov byte ptr [rbx],00
+            CaveMemory.Write_StrBytes("C6 03 00");
             //mov rbx,[rsp+40]
             CaveMemory.Write_StrBytes("48 8B 5C 24 40");
             //mov rbp,[rsp+48]
@@ -345,6 +415,16 @@ namespace DemulShooterX64
 
         private void Apply_NoGunsMemoryHack()
         {
+            //Crossbow are not hidden with the following parts of the hack (calling Basefirearm.ToggleRendering())
+            //So adding a second hack, which is changing the z position of the 3d model so that it's not visible
+            //(changing X or Y is having an impact on the aiming position, but z (toward or behind screen) is not
+            //
+            //Note that setting Z position to 0 is good enough for the crossbow not to be visible, but guns are longer and the tip can be seen
+            //Changing for negative value will require more bytes and codecave, so we will just keep the next part following which was originally working for guns
+            WriteBytes((IntPtr)((UInt64)_GameAssemblyDll_BaseAddress + _ForceWeaponDisplayZAxis_1_Offset), new byte[] { 0x31, 0xC0, 0x90 });
+            WriteBytes((IntPtr)((UInt64)_GameAssemblyDll_BaseAddress + _ForceWeaponDisplayZAxis_2_Offset), new byte[] { 0x31, 0xC0, 0x90 });
+
+
             //First, noping the call to PlayMuzzleFlash() to remove muzzle flash effect 
             SetNops(_GameAssemblyDll_BaseAddress, _Nop_PlayMuzzleFlash);
 
