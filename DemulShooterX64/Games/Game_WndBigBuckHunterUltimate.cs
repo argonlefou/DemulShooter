@@ -273,8 +273,12 @@ namespace DemulShooterX64
             CaveMemory.Write_StrBytes("51");
             //mov rcx,[rbx+70]
             CaveMemory.Write_StrBytes("48 8B 4B 70");
-            //movzx rcx,byte ptr [rcx+24]
-            CaveMemory.Write_StrBytes("48 0F B6 49 24");
+            //Getteing either PlayerID (rcx+24) or ControllerID(rcx+28)
+            //Using PlayerID: both guns will need to be set in DemulShooter to play not-simultaneous multiplayer : game will pick P1 device for player 1 turn and P2 device for player 2 turn.
+            //Using ControllerID: both guns will be needed for simultaneous multiplayer, but only P1 Device will be used at each player turn when they are separate.
+            //Choosing solution #2 as it's more how the game should play            
+            //movzx rcx,byte ptr [rcx+28]
+            CaveMemory.Write_StrBytes("48 0F B6 49 28");
             //shl rcx,03
             CaveMemory.Write_StrBytes("48 C1 E1 03");
             //mov rax, _P1_Axis_CaveAddress
@@ -304,7 +308,11 @@ namespace DemulShooterX64
 
             //mov rbx,[rdi+70]
             CaveMemory.Write_StrBytes("48 8B 5F 70");
-            //movzx rbx,byte ptr [rbx+28]
+            //Getteing either PlayerID (rbx+24) or ControllerID(rbx+28)
+            //Using PlayerID, both guns will need to be set in DemulShooter to play not-simultaneous multiplayer : game will pick P1 device for player 1 turn and P2 device for player 2 turn
+            //Using ControllerID, both guns will be needed for simultaneous multiplayer, but only P1 Device will be used at each player turn when they are separate.
+            //Choosing solution #2 as it's more how the game should play
+            //movzx rbx,byte ptr [rbx+28]                   
             CaveMemory.Write_StrBytes("48 0F B6 5B 28");
             //shl rbx,04
             CaveMemory.Write_StrBytes("48 C1 E3 04");
