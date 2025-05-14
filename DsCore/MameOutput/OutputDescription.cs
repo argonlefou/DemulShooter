@@ -241,6 +241,16 @@ namespace DsCore.MameOutput
         public static readonly String TicketDrive = "TicketDrive";
         public static readonly String TicketMeter = "TicketMeter";
 
+        public static readonly String P1_LmpBonusWeapon = "P1_LmpBonusWeapon";
+        public static readonly String P2_LmpBonusWeapon = "P2_LmpBonusWeapon";
+        public static readonly String P3_LmpBonusWeapon = "P3_LmpBonusWeapon";
+        public static readonly String P4_LmpBonusWeapon = "P4_LmpBonusWeapon";
+        public static readonly String BonusWeaponLamp = "BonusWeaponLamp";
+        public static readonly String SeatVibrationLamp = "SeatVibrationLamp";
+        public static readonly String WaterFallLamp = "WaterFallLamp";
+        public static readonly String WaterLevelLamp = "WaterLevelLamp";
+
+
 
         //Custom Outputs
         public static readonly String P1_CtmLmpStart = "P1_CtmLmpStart";

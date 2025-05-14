@@ -168,7 +168,12 @@ namespace DemulShooter_GUI
             Chk_Le3_EnablePedal1.Checked = Configurator.GetInstance().Le3_Pedal_P1_Enabled;
             Chk_Le3_EnablePedal2.Checked = Configurator.GetInstance().Le3_Pedal_P2_Enabled;
             TXT_LE3_PEDAL_1.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Le3_Pedal_P1);
-            TXT_LE3_PEDAL_2.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Le3_Pedal_P2);            
+            TXT_LE3_PEDAL_2.Text = GetKeyStringFromScanCode((int)Configurator.GetInstance().DIK_Le3_Pedal_P2);
+
+            //Fill Mission Impossible tab
+            Logger.WriteLog("Initializing GUI [Mission Impossible] pages...");
+            Rdo_MIA_Merge.Checked = Configurator.GetInstance().MissionImpossible_MergeTriggers;
+            Rdo_MIA_Separate.Checked = !Configurator.GetInstance().MissionImpossible_MergeTriggers;
 
             //Fill Operation GHOST Tab
             Logger.WriteLog("Initializing GUI [Operation G.H.O.S.T] pages...");
@@ -927,6 +932,29 @@ namespace DemulShooter_GUI
                 MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        #region Mission Impossible Tab
+
+        private void Rdo_MIA_Merge_CheckedChanged(object sender, EventArgs e)
+        {
+            Configurator.GetInstance().MissionImpossible_MergeTriggers = Rdo_MIA_Merge.Checked;
+        }
+
+        private void Rdo_MIA_Separate_CheckedChanged(object sender, EventArgs e)
+        {
+            Configurator.GetInstance().MissionImpossible_MergeTriggers = Rdo_MIA_Merge.Checked;
+        }
+
+        private void Btn_MisImp_Save_Click(object sender, EventArgs e)
+        {
+            if (Configurator.GetInstance().WriteConf(AppDomain.CurrentDomain.BaseDirectory + @"\" + CONF_FILENAME))
+                MessageBox.Show("Configuration saved !");
+            else
+                MessageBox.Show("Impossible to save DemulShooter config file.", "DemulShooter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        
+
+        #endregion
+
         #endregion
 
         #region Operation Ghost Tab
@@ -1515,5 +1543,7 @@ namespace DemulShooter_GUI
             }
             return true;
         }
+
+       
     }        
 }

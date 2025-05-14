@@ -291,6 +291,10 @@ namespace DemulShooterX64
                             {
                                 _Game = new Game_ArcadepcMarsSortie(_Rom.ToLower());
                             }; break;
+                        case "misimp":
+                            {
+                                _Game = new Game_ArcadePcMissionImpossible(_Rom.ToLower());
+                            }; break;
                         case "nha":
                             {
                                 _Game = new Game_ArcadepcNightHunterArcade(_Rom.ToLower());
@@ -443,6 +447,10 @@ namespace DemulShooterX64
                         case "dino":
                             {
                                 _Game = new Game_ArcadepcDinoInvasion(_Rom.ToLower());
+                            }; break;
+                        case "mechd":
+                            {
+                                _Game = new Game_ArcadePcMechaDino(_Rom.ToLower());
                             }; break;
                         case "onept":
                             {

@@ -242,8 +242,8 @@ namespace DsCore.Config
             set { _HF_ReverseCover = value; }
         }
         #endregion
-
-        //Gundam Data
+        
+        //Lethal Enforcer 3 Data
         private HardwareScanCode _DIK_Le3_Pedal_P1 = HardwareScanCode.DIK_G;
         private HardwareScanCode _DIK_Le3_Pedal_P2 = HardwareScanCode.DIK_H;
         private bool _Le3_Pedal_P1_Enabled = false;
@@ -271,31 +271,13 @@ namespace DsCore.Config
         }
         #endregion
 
-        //Wild West Shoutout Path and Keys
-        private String _Wws_Path = string.Empty;
-        private HardwareScanCode _DIK_Wws_Test = HardwareScanCode.DIK_0;
-        private HardwareScanCode _DIK_Wws_P1Coin = HardwareScanCode.DIK_5;
-        private HardwareScanCode _DIK_Wws_P2Coin = HardwareScanCode.DIK_6;
+        //Mission Impossible Arcade options
+        private bool _MissionImpossible_MergeTriggers = true;
         #region Accessors
-        public String Wws_Path
+        public bool MissionImpossible_MergeTriggers
         {
-            get { return _Wws_Path; }
-            set { _Wws_Path = value; }
-        }
-        public HardwareScanCode DIK_Wws_Test
-        {
-            get { return _DIK_Wws_Test; }
-            set { _DIK_Wws_Test = value; }
-        }
-        public HardwareScanCode DIK_Wws_P1Coin
-        {
-            get { return _DIK_Wws_P1Coin; }
-            set { _DIK_Wws_P1Coin = value; }
-        }
-        public HardwareScanCode DIK_Wws_P2Coin
-        {
-            get { return _DIK_Wws_P2Coin; }
-            set { _DIK_Wws_P2Coin = value; }
+            get { return _MissionImpossible_MergeTriggers; }
+            set { _MissionImpossible_MergeTriggers = value; }
         }
         #endregion
 
@@ -437,7 +419,35 @@ namespace DsCore.Config
             set { _DIK_Tsr_Credits = value; }
         }
         #endregion
-        
+
+        //Wild West Shoutout Path and Keys
+        private String _Wws_Path = string.Empty;
+        private HardwareScanCode _DIK_Wws_Test = HardwareScanCode.DIK_0;
+        private HardwareScanCode _DIK_Wws_P1Coin = HardwareScanCode.DIK_5;
+        private HardwareScanCode _DIK_Wws_P2Coin = HardwareScanCode.DIK_6;
+        #region Accessors
+        public String Wws_Path
+        {
+            get { return _Wws_Path; }
+            set { _Wws_Path = value; }
+        }
+        public HardwareScanCode DIK_Wws_Test
+        {
+            get { return _DIK_Wws_Test; }
+            set { _DIK_Wws_Test = value; }
+        }
+        public HardwareScanCode DIK_Wws_P1Coin
+        {
+            get { return _DIK_Wws_P1Coin; }
+            set { _DIK_Wws_P1Coin = value; }
+        }
+        public HardwareScanCode DIK_Wws_P2Coin
+        {
+            get { return _DIK_Wws_P2Coin; }
+            set { _DIK_Wws_P2Coin = value; }
+        }
+        #endregion
+
         //Outputs settings
         private bool _OutputEnabled = false;
         private bool _Wm_OutputEnabled = true;
@@ -879,6 +889,11 @@ namespace DsCore.Config
                                     }
                                     catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
                                 }
+                                else if (StrKey.ToLower().Equals("mia_merge_triggers"))
+                                {
+                                    if (!bool.TryParse(StrValue, out _MissionImpossible_MergeTriggers))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
+                                }
                                 else if (StrKey.ToLower().Equals("outputenabled"))
                                 {
                                     if (!bool.TryParse(StrValue, out _OutputEnabled))
@@ -1107,6 +1122,9 @@ namespace DsCore.Config
                     sr.WriteLine("EAI_MENU_UP_KEY = " + _DIK_Eai_MenuUp.ToString());
                     sr.WriteLine("EAI_MENU_DOWN_KEY = " + _DIK_Eai_MenuDown.ToString());
                     sr.WriteLine("EAI_MENU_ENTER_KEY = " + _DIK_Eai_MenuEnter.ToString());
+                    sr.WriteLine("");
+                    sr.WriteLine(";Mission Impossible Arcade options");
+                    sr.WriteLine("MIA_MERGE_TRIGGERS = " + _MissionImpossible_MergeTriggers.ToString());
                     sr.WriteLine("");
                     sr.WriteLine(";Output Settings");
                     sr.WriteLine("OutputEnabled = " + _OutputEnabled.ToString());

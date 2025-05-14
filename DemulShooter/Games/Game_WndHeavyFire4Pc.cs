@@ -903,7 +903,7 @@ namespace DemulShooter
                 }
                 if (ReadByte(_Recoil_CaveAddress + 0x03) == 1)
                 {
-                    SetOutputValue(OutputId.P3_CtmRecoil, 1);
+                    SetOutputValue(OutputId.P4_CtmRecoil, 1);
                     WriteByte(_Recoil_CaveAddress + 0x03, 0);
                 }
 

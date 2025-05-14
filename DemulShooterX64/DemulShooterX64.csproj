@@ -70,6 +70,8 @@
     <Compile Include="DemulShooterWindowX64.cs" />
     <Compile Include="Games\Game_ArcadepcDrakon.cs" />
     <Compile Include="Games\Game_ArcadepcDrakon_NoPlugin.cs" />
+    <Compile Include="Games\Game_ArcadePcMechaDino.cs" />
+    <Compile Include="Games\Game_ArcadePcMissionImpossible.cs" />
     <Compile Include="Games\Game_ArcadepcRha_Old.cs" />
     <Compile Include="Games\Game_ArcadepcRha.cs" />
     <Compile Include="Games\Game_ArcadepcTra.cs" />

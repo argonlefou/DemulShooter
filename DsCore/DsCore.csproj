@@ -71,7 +71,9 @@
     <Compile Include="IPC\DsTcp_OutputData_DinoInvasion.cs" />
     <Compile Include="IPC\DsTcp_OutputData_Drakon.cs" />
     <Compile Include="IPC\DsTcp_OutputData_Marss.cs" />
+    <Compile Include="IPC\DsTcp_OutputData_MechaDino.cs" />
     <Compile Include="IPC\DsTcp_OutputData_MechaTornado.cs" />
+    <Compile Include="IPC\DsTcp_OutputData_MissionImpossible.cs" />
     <Compile Include="IPC\DsTcp_OutputData_Nerf.cs" />
     <Compile Include="IPC\DsTcp_OutputData_OnePoint.cs" />
     <Compile Include="IPC\DsTcp_OutputData_PointBlankX.cs" />

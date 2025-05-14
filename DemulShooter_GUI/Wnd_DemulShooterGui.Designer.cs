@@ -102,11 +102,12 @@
             this.TXT_GSOZ_PEDAL_1 = new System.Windows.Forms.TextBox();
             this.Chk_GundamP1Pedal = new System.Windows.Forms.CheckBox();
             this.Tab_HeavyFire = new System.Windows.Forms.TabPage();
+            this.Rdo_HF_MiddleGrenade = new System.Windows.Forms.RadioButton();
+            this.Rdo_HF_MiddleCover = new System.Windows.Forms.RadioButton();
             this.Gbox_HF_Grenade = new System.Windows.Forms.GroupBox();
             this.label27 = new System.Windows.Forms.Label();
             this.Gbox_HF_Cover = new System.Windows.Forms.GroupBox();
             this.label40 = new System.Windows.Forms.Label();
-            this.Rdo_HF_MiddleCover = new System.Windows.Forms.RadioButton();
             this.label45 = new System.Windows.Forms.Label();
             this.Chk_HF_ReverseCover = new System.Windows.Forms.CheckBox();
             this.TrackBar_HF_Cover = new System.Windows.Forms.TrackBar();
@@ -244,7 +245,12 @@
             this.Bgw_XInput = new System.ComponentModel.BackgroundWorker();
             this.Cbo_PageSettings = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
-            this.Rdo_HF_MiddleGrenade = new System.Windows.Forms.RadioButton();
+            this.Tab_MissionImpossible = new System.Windows.Forms.TabPage();
+            this.Btn_MisImp_Save = new System.Windows.Forms.Button();
+            this.Rdo_MIA_Merge = new System.Windows.Forms.RadioButton();
+            this.Rdo_MIA_Separate = new System.Windows.Forms.RadioButton();
+            this.label42 = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.tabControl1.SuspendLayout();
             this.Tab_P1.SuspendLayout();
             this.Tab_P2.SuspendLayout();
@@ -286,6 +292,8 @@
             this.Tab_Outputs.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.Grp_Outputs.SuspendLayout();
+            this.Tab_MissionImpossible.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // Btn_Save_P1
@@ -315,6 +323,7 @@
             this.tabControl1.Controls.Add(this.Tab_HeavyFire);
             this.tabControl1.Controls.Add(this.Tab_LethalEnforcer3);
             this.tabControl1.Controls.Add(this.Tab_M2);
+            this.tabControl1.Controls.Add(this.Tab_MissionImpossible);
             this.tabControl1.Controls.Add(this.Tab_OpGhost);
             this.tabControl1.Controls.Add(this.Tab_RabbidsHollywod);
             this.tabControl1.Controls.Add(this.Tab_Raccoon);
@@ -1157,6 +1166,31 @@
             this.Tab_HeavyFire.Text = "Heavy Fire Afghanistan";
             this.Tab_HeavyFire.UseVisualStyleBackColor = true;
             // 
+            // Rdo_HF_MiddleGrenade
+            // 
+            this.Rdo_HF_MiddleGrenade.AutoSize = true;
+            this.Rdo_HF_MiddleGrenade.Checked = true;
+            this.Rdo_HF_MiddleGrenade.Location = new System.Drawing.Point(30, 188);
+            this.Rdo_HF_MiddleGrenade.Name = "Rdo_HF_MiddleGrenade";
+            this.Rdo_HF_MiddleGrenade.Size = new System.Drawing.Size(253, 20);
+            this.Rdo_HF_MiddleGrenade.TabIndex = 18;
+            this.Rdo_HF_MiddleGrenade.TabStop = true;
+            this.Rdo_HF_MiddleGrenade.Text = "Use Middle Click for Player 1 Grenade";
+            this.Rdo_HF_MiddleGrenade.UseVisualStyleBackColor = true;
+            this.Rdo_HF_MiddleGrenade.CheckedChanged += new System.EventHandler(this.Rdo_HF_MiddleClickGrenade_CheckedChanged);
+            // 
+            // Rdo_HF_MiddleCover
+            // 
+            this.Rdo_HF_MiddleCover.AutoSize = true;
+            this.Rdo_HF_MiddleCover.Location = new System.Drawing.Point(30, 11);
+            this.Rdo_HF_MiddleCover.Name = "Rdo_HF_MiddleCover";
+            this.Rdo_HF_MiddleCover.Size = new System.Drawing.Size(236, 20);
+            this.Rdo_HF_MiddleCover.TabIndex = 15;
+            this.Rdo_HF_MiddleCover.TabStop = true;
+            this.Rdo_HF_MiddleCover.Text = "Use Middle Click for Player 1 Cover";
+            this.Rdo_HF_MiddleCover.UseVisualStyleBackColor = true;
+            this.Rdo_HF_MiddleCover.CheckedChanged += new System.EventHandler(this.Rdo_HF_MiddleCover_CheckedChanged);
+            // 
             // Gbox_HF_Grenade
             // 
             this.Gbox_HF_Grenade.Controls.Add(this.label27);
@@ -1195,18 +1229,6 @@
             this.label40.Size = new System.Drawing.Size(276, 16);
             this.label40.TabIndex = 18;
             this.label40.Text = "Player 1 Grenade will need [G] Keyboard key";
-            // 
-            // Rdo_HF_MiddleCover
-            // 
-            this.Rdo_HF_MiddleCover.AutoSize = true;
-            this.Rdo_HF_MiddleCover.Location = new System.Drawing.Point(30, 11);
-            this.Rdo_HF_MiddleCover.Name = "Rdo_HF_MiddleCover";
-            this.Rdo_HF_MiddleCover.Size = new System.Drawing.Size(236, 20);
-            this.Rdo_HF_MiddleCover.TabIndex = 15;
-            this.Rdo_HF_MiddleCover.TabStop = true;
-            this.Rdo_HF_MiddleCover.Text = "Use Middle Click for Player 1 Cover";
-            this.Rdo_HF_MiddleCover.UseVisualStyleBackColor = true;
-            this.Rdo_HF_MiddleCover.CheckedChanged += new System.EventHandler(this.Rdo_HF_MiddleCover_CheckedChanged);
             // 
             // label45
             // 
@@ -2743,6 +2765,7 @@
             "Heavy Fire series",
             "Lethal Enforcers 3",
             "m2Emulator",
+            "Mission Impossible",
             "Operation G.H.O.S.T",
             "Rabbids Hollywood Arcade",
             "Raccoon Rampage",
@@ -2765,18 +2788,76 @@
             this.label39.TabIndex = 40;
             this.label39.Text = "Page selection :";
             // 
-            // Rdo_HF_MiddleGrenade
+            // Tab_MissionImpossible
             // 
-            this.Rdo_HF_MiddleGrenade.AutoSize = true;
-            this.Rdo_HF_MiddleGrenade.Checked = true;
-            this.Rdo_HF_MiddleGrenade.Location = new System.Drawing.Point(30, 188);
-            this.Rdo_HF_MiddleGrenade.Name = "Rdo_HF_MiddleGrenade";
-            this.Rdo_HF_MiddleGrenade.Size = new System.Drawing.Size(253, 20);
-            this.Rdo_HF_MiddleGrenade.TabIndex = 18;
-            this.Rdo_HF_MiddleGrenade.TabStop = true;
-            this.Rdo_HF_MiddleGrenade.Text = "Use Middle Click for Player 1 Grenade";
-            this.Rdo_HF_MiddleGrenade.UseVisualStyleBackColor = true;
-            this.Rdo_HF_MiddleGrenade.CheckedChanged += new System.EventHandler(this.Rdo_HF_MiddleClickGrenade_CheckedChanged);
+            this.Tab_MissionImpossible.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_MissionImpossible.Controls.Add(this.groupBox4);
+            this.Tab_MissionImpossible.Controls.Add(this.label42);
+            this.Tab_MissionImpossible.Controls.Add(this.Btn_MisImp_Save);
+            this.Tab_MissionImpossible.Location = new System.Drawing.Point(4, 5);
+            this.Tab_MissionImpossible.Name = "Tab_MissionImpossible";
+            this.Tab_MissionImpossible.Size = new System.Drawing.Size(581, 334);
+            this.Tab_MissionImpossible.TabIndex = 22;
+            this.Tab_MissionImpossible.Text = "Mission Impossible";
+            this.Tab_MissionImpossible.UseVisualStyleBackColor = true;
+            // 
+            // Btn_MisImp_Save
+            // 
+            this.Btn_MisImp_Save.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Btn_MisImp_Save.Location = new System.Drawing.Point(217, 284);
+            this.Btn_MisImp_Save.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_MisImp_Save.Name = "Btn_MisImp_Save";
+            this.Btn_MisImp_Save.Size = new System.Drawing.Size(145, 37);
+            this.Btn_MisImp_Save.TabIndex = 33;
+            this.Btn_MisImp_Save.Text = "Save Config";
+            this.Btn_MisImp_Save.UseVisualStyleBackColor = true;
+            this.Btn_MisImp_Save.Click += new System.EventHandler(this.Btn_MisImp_Save_Click);
+            // 
+            // Rdo_MIA_Merge
+            // 
+            this.Rdo_MIA_Merge.AutoSize = true;
+            this.Rdo_MIA_Merge.Checked = true;
+            this.Rdo_MIA_Merge.Location = new System.Drawing.Point(35, 34);
+            this.Rdo_MIA_Merge.Name = "Rdo_MIA_Merge";
+            this.Rdo_MIA_Merge.Size = new System.Drawing.Size(119, 20);
+            this.Rdo_MIA_Merge.TabIndex = 34;
+            this.Rdo_MIA_Merge.TabStop = true;
+            this.Rdo_MIA_Merge.Text = "Merge Triggers";
+            this.Rdo_MIA_Merge.UseVisualStyleBackColor = true;
+            this.Rdo_MIA_Merge.CheckedChanged += new System.EventHandler(this.Rdo_MIA_Merge_CheckedChanged);
+            // 
+            // Rdo_MIA_Separate
+            // 
+            this.Rdo_MIA_Separate.AutoSize = true;
+            this.Rdo_MIA_Separate.Location = new System.Drawing.Point(35, 60);
+            this.Rdo_MIA_Separate.Name = "Rdo_MIA_Separate";
+            this.Rdo_MIA_Separate.Size = new System.Drawing.Size(136, 20);
+            this.Rdo_MIA_Separate.TabIndex = 35;
+            this.Rdo_MIA_Separate.TabStop = true;
+            this.Rdo_MIA_Separate.Text = "Separate Triggers";
+            this.Rdo_MIA_Separate.UseVisualStyleBackColor = true;
+            this.Rdo_MIA_Separate.CheckedChanged += new System.EventHandler(this.Rdo_MIA_Separate_CheckedChanged);
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label42.Location = new System.Drawing.Point(28, 126);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(522, 120);
+            this.label42.TabIndex = 36;
+            this.label42.Text = resources.GetString("label42.Text");
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.Rdo_MIA_Merge);
+            this.groupBox4.Controls.Add(this.Rdo_MIA_Separate);
+            this.groupBox4.Location = new System.Drawing.Point(10, 3);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(552, 100);
+            this.groupBox4.TabIndex = 37;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Triggers configuration :";
             // 
             // Wnd_DemulShooterGui
             // 
@@ -2864,6 +2945,10 @@
             this.groupBox19.PerformLayout();
             this.Grp_Outputs.ResumeLayout(false);
             this.Grp_Outputs.PerformLayout();
+            this.Tab_MissionImpossible.ResumeLayout(false);
+            this.Tab_MissionImpossible.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3087,6 +3172,12 @@
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label40;
         private System.Windows.Forms.RadioButton Rdo_HF_MiddleGrenade;
+        private System.Windows.Forms.TabPage Tab_MissionImpossible;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.RadioButton Rdo_MIA_Merge;
+        private System.Windows.Forms.RadioButton Rdo_MIA_Separate;
+        private System.Windows.Forms.Label label42;
+        private System.Windows.Forms.Button Btn_MisImp_Save;
     }
 }
 
