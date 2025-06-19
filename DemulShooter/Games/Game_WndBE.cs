@@ -49,7 +49,7 @@ namespace DemulShooter
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_WndBE(String RomName, String GamePath)
+        public Game_WndBE(String RomName)
             : base(RomName, "BEGame")
         {
             _KnownMd5Prints.Add("Blue Estate CODEX - Cracked", "188605d4083377e4ee3552b4c89f52fb");
@@ -104,7 +104,7 @@ namespace DemulShooter
                                 Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                                 CheckExeMd5();
                                 ReadGameDataFromMd5Hash(GAMEDATA_FOLDER);
-                                Apply_MemoryHacks();
+                                //Apply_MemoryHacks();
                                 _ProcessHooked = true;                                
                             }
                         }

@@ -92,6 +92,7 @@
     <Compile Include="Games\Game_WndAdCop95.cs" />
     <Compile Include="Games\Game_WndAdCopOverseas.cs" />
     <Compile Include="Games\Game_WndAlienSafari.cs" />
+    <Compile Include="Games\Game_WndBlueEstate.cs" />
     <Compile Include="Games\Game_WndBonbon95.cs" />
     <Compile Include="Games\Game_WndBugBusters.cs" />
     <Compile Include="Games\Game_WndColtWildWestShootout.cs" />

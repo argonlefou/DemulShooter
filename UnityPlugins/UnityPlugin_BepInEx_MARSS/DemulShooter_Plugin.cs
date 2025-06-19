@@ -15,7 +15,7 @@ namespace MarsSortie_BepInEx_DemulShooter_Plugin
     {
         public const String pluginGuid = "argonlefou.demulshooter.marssortie";
         public const String pluginName = "MarsSortie_BepInEx_DemulShooter_Plugin";
-        public const String pluginVersion = "2.0.0.0";
+        public const String pluginVersion = "3.0.0.0";
 
         public static BepInEx.Logging.ManualLogSource MyLogger;
 

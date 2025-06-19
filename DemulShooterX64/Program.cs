@@ -36,8 +36,8 @@ namespace DemulShooterX64
             bool isTrace = false;
 
             Dictionary<String, String> _SystemTargets = new Dictionary<String, String>(){
-                {"arcadepc","Various modern PC Arcade Games without dedicated system"},
                 {"alls","SEGA Amusement Linkage Live System games"},
+                {"arcadepc","Various modern PC Arcade Games without dedicated system"},                
                 {"es3","Namco ES3 games"},
                 {"flycast","Flycast v2.0"},
                 {"rpcs3", "RPCS3 (System 357)"},

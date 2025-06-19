@@ -69,7 +69,7 @@
             // Lbl_ProductManu
             // 
             this.Lbl_ProductManu.AutoSize = true;
-            this.Lbl_ProductManu.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Lbl_ProductManu.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Lbl_ProductManu.Location = new System.Drawing.Point(81, 7);
             this.Lbl_ProductManu.Name = "Lbl_ProductManu";
             this.Lbl_ProductManu.Size = new System.Drawing.Size(0, 13);

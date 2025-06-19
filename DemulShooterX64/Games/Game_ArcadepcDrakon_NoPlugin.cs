@@ -636,38 +636,6 @@ namespace DemulShooterX64
             }
         }
 
-
-        public override IntPtr KeyboardHookCallback(IntPtr KeyboardHookID, int nCode, IntPtr wParam, IntPtr lParam)
-        {
-            if (!_DisableInputHack)
-            {
-                if (nCode >= 0)
-                {
-                    KBDLLHOOKSTRUCT s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
-                    if ((UInt32)wParam == Win32Define.WM_KEYDOWN)
-                    {
-                        if (s.scanCode == HardwareScanCode.DIK_K)
-                        {
-                            Int16 x = 400;
-                            Int16 y = 300;
-                            Win32API.SendMessage(_GameWindowHandle, Win32Define.WM_LBUTTONDOWN, new IntPtr(1), (IntPtr)((y << 16) | (x & 0xFFFF)));
-                        }
-                    }
-                    else if ((UInt32)wParam == Win32Define.WM_KEYUP)
-                    {
-                        if (s.scanCode == HardwareScanCode.DIK_K)
-                        {
-                            Int16 x = 400;
-                            Int16 y = 300;
-                            Win32API.SendMessage(_GameWindowHandle, Win32Define.WM_LBUTTONUP, IntPtr.Zero, (IntPtr)((y << 16) | (x & 0xFFFF)));
-                        }
-                    }
-                }
-            }
-            return Win32API.CallNextHookEx(KeyboardHookID, nCode, wParam, lParam);
-        }
-
-
         #endregion
 
         #region Outputs

@@ -70,6 +70,7 @@
     <Compile Include="Patch\mHistoryDataManager.cs" />
     <Compile Include="Patch\mPlayer.cs" />
     <Compile Include="Patch\mPlayerGunBase.cs" />
+    <Compile Include="Patch\mUIManager.cs" />
     <Compile Include="Patch\mUIShootPoint.cs" />
     <Compile Include="Patch\UGGameShell\mGameSetting.cs" />
     <Compile Include="Patch\mInputManager.cs" />

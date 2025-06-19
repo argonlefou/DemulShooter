@@ -45,7 +45,6 @@ namespace DemulShooter
                 {"es4","Namco ES4 games"},
                 {"gamewax","Gamewax Arcade"},
                 {"globalvr","Global VR"},
-                {"ice","ICE Games"},
                 {"konami","Konami Arcade"},
                 {"lindbergh","TeknoParrot Loader"},
                 {"model2","Nebula Model2Emulator v1.1a"},
@@ -64,7 +63,10 @@ namespace DemulShooter
             };
 
             Dictionary<String, String> _ChihiroRoms = new Dictionary<String, String>(){
-                {"vcop3","Virtua Cop 3"}
+                {"gsquad","Ghost Squad"},
+                {"hod3","House Of The Dead 3"},
+                {"vcop3","Virtua Cop 3"},
+                {"vcop3_old","Virtua Cop 3 (main Cxbx branch)"}
             };
 
             Dictionary<String, String> _DemulRoms = new Dictionary<String, String>(){

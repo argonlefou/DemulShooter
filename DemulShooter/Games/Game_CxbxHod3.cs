@@ -68,6 +68,7 @@ namespace DemulShooter
             : base(RomName, "cxbxr-ldr")
         {
             _tProcess.Start();
+            _KnownMd5Prints.Add("Cxbxr-ldr.exe - Chihiro-DS 1.0", "d3675f7bb270072f33d9106497dd9bbc");  
             Logger.WriteLog("Waiting for Chihiro " + _RomName + " game to hook.....");
         }
 

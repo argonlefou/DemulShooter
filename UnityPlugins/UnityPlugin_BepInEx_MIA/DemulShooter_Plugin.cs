@@ -17,7 +17,7 @@ namespace MissionImpossible_BepInEx_DemulShooter_Plugin
     {
         public const String pluginGuid = "argonlefou.demulshooter.missionimpossible";
         public const String pluginName = "MissionImpossible_BepInEx_DemulShooter_Plugin";
-        public const String pluginVersion = "1.0.0.0";
+        public const String pluginVersion = "2.0.0.0";
         public const String pluginConfigFile = "MissionImpossible_BepInEx_DemulShooter_Plugin.ini";
 
         public static BepInEx.Logging.ManualLogSource MyLogger;

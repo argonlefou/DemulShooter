@@ -461,6 +461,13 @@ namespace DemulShooterX64
                                 _Game = new Game_ArcadepcRha(_Rom.ToLower());
                             }; break;
 
+
+                        case "be":
+                            {
+                                _Game = new Game_WndBlueEstate(_Rom.ToLower());
+                            }; break;
+                       
+
                         default: break;
                     }
                 }

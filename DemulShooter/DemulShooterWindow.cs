@@ -374,9 +374,22 @@ namespace DemulShooter
                 {
                     switch (_Rom.ToLower())
                     {
-                        case "vcop3":
+                        case "vcop3_old":
                             {
                                 _Game = new Game_CxbxVcop3_Old(_Rom.ToLower());
+                            }; break;
+
+                        case "gsquad":
+                            {
+                                _Game = new Game_CxbxGsquad(_Rom.ToLower());
+                            }; break;
+                        case "hod3":
+                            {
+                                _Game = new Game_CxbxHod3(_Rom.ToLower());
+                            }; break;
+                        case "vcop3":
+                            {
+                                _Game = new Game_CxbxVcop3(_Rom.ToLower());
                             }; break;
 
                         default : 
@@ -808,20 +821,16 @@ namespace DemulShooter
                             }; break;
 
 
-                        case "gsquad":
+                        case "be":
                             {
-                                _Game = new Game_CxbxGsquad(_Rom.ToLower());
-                            }; break;
-                        case "hod3":
-                            {
-                                _Game = new Game_CxbxHod3(_Rom.ToLower());
-                            }; break;                        
-                        case "vcop3":
-                            {
-                                _Game = new Game_CxbxVcop3(_Rom.ToLower());
-                            }; break;
+                                _Game = new Game_WndBlueEstate(_Rom.ToLower());
+                            };break;
+
                         default:
                             break;
+
+
+                            
                     }
                 }
 

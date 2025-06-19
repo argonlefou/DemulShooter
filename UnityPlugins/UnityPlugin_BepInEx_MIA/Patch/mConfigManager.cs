@@ -4,6 +4,18 @@ namespace MissionImpossible_BepInEx_DemulShooter_Plugin.Patch
 {
     class mConfigManager
     {
+        /// <summary>
+        /// Unlock Mission 3
+        /// </summary>
+        [HarmonyPatch(typeof(ConfigManager), MethodType.Constructor)]
+        class CCtor
+        {
+            static void Postfix(ref int ___m_mission1Progress, ref int ___m_mission2Progress, ref int ___m_mission3Progress, ref bool ___m_mission3Unlocked)
+            {
+                //___m_mission3Unlocked = true;
+            }
+        }
+
         [HarmonyPatch(typeof(ConfigManager), "GetAssetBundleCacheDirOnUnityEditor")]
         class GetAssetBundleCacheDirOnUnityEditor
         {
@@ -35,25 +47,5 @@ namespace MissionImpossible_BepInEx_DemulShooter_Plugin.Patch
                 DemulShooter_Plugin.MyLogger.LogMessage("ConfigManager.Awake() -> Screen=" + ___SCREEN_WIDTH + "x" + ___SCREEN_HEIGHT);
             }
         }*/
-
-        /// <summary>
-        /// Changing Unity ScreenResolution will only impact 3D rendering
-        /// 2D sprites will stay on original resolution rendering, but there's a general 2DCanvas here to be able to change that
-        /// </summary>
-        [HarmonyPatch(typeof(UIManager), "Update")]
-        class Update
-        {
-            static void Postfix(UIManager __instance)
-            {
-                if (DemulShooter_Plugin.ChangeResolution)
-                {
-                    foreach (UnityEngine.UI.CanvasScaler cs in __instance.MainCanvas2D.GetComponents<UnityEngine.UI.CanvasScaler>())
-                    {
-                        cs.scaleFactor = (float)DemulShooter_Plugin.ScreenWidth / DemulShooter_Plugin.ORIGINAL_WIDTH;
-                    }
-                }
-            }
-        }
-
     }
 }

@@ -38,7 +38,7 @@ namespace DemulShooter_GUI
                 try
                 {
                     Logger.WriteLog("Adding " + Controller.DeviceName);
-                    AddDevice(Controller.DeviceName);
+                    AddDevice("[" + Controller.DHidUsage + "] " + Controller.ManufacturerName + " - " + Controller.ProductName );
                 }
                 catch (Exception ex)
                 {
@@ -49,12 +49,12 @@ namespace DemulShooter_GUI
             if (_PlayerData.DeviceName.Length > 0)
             {
                 Logger.WriteLog("Current selected device : " + _PlayerData.DeviceName);
-                for (int i = 0; i < Cbo_Device.Items.Count; i++)
+                for (int i = 0; i < _AvailableControllers.Length; i++)
                 {
-                    if (_PlayerData.DeviceName == Cbo_Device.Items[i].ToString())
+                    if (_PlayerData.DeviceName == _AvailableControllers[i].DeviceName)
                     {
-                        Cbo_Device.SelectedItem = Cbo_Device.Items[i];
-                        SelectRawInputController(Cbo_Device.Text);
+                        Cbo_Device.SelectedItem = Cbo_Device.Items[i+1];
+                        SelectRawInputController(_AvailableControllers[i].DeviceName);
                     }
                 }
             }
@@ -104,7 +104,7 @@ namespace DemulShooter_GUI
         /// <param name="RawInputDeviceName">DeviceName string of the wanted RawInputController</param>
         private void SelectRawInputController(String RawInputDeviceName)
         {
-            _PlayerData.RIController = GetRawInputControllerFromDeviceName(Cbo_Device.Text);
+            _PlayerData.RIController = GetRawInputControllerFromDeviceName(RawInputDeviceName);
             if (_PlayerData.RIController != null)
             {
                 if (_PlayerData.RIController.DeviceType == RawInputDeviceType.RIM_TYPEMOUSE)
@@ -124,7 +124,7 @@ namespace DemulShooter_GUI
                     _RihData.Visible = false;
                     _RimData.Visible = false; 
                 }
-                Lbl_ProductManu.Text = _PlayerData.RIController.ManufacturerName + " " + _PlayerData.RIController.ProductName;
+                Lbl_ProductManu.Text = _PlayerData.RIController.DeviceName; //_PlayerData.RIController.ManufacturerName + " " + _PlayerData.RIController.ProductName;
             }
         }
 
@@ -134,6 +134,7 @@ namespace DemulShooter_GUI
         private void ClearRawInputController()
         {
             _PlayerData.RIController = null;
+            Lbl_ProductManu.Text = "";
             _RihData.Visible = false;
             _RimData.Visible = false; 
         }
@@ -143,7 +144,7 @@ namespace DemulShooter_GUI
         private void Cbo_Device_SelectionChangeCommitted(object sender, EventArgs e)
         {
             if (Cbo_Device.Text.Length > 0)
-                SelectRawInputController(Cbo_Device.Text);
+                SelectRawInputController(_AvailableControllers[Cbo_Device.SelectedIndex - 1].DeviceName);
             else
                 ClearRawInputController();
         }

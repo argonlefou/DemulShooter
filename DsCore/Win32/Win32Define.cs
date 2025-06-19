@@ -25,7 +25,8 @@ namespace DsCore.Win32
         public const UInt32 WM_MBUTTONDOWN = 0x0207;
         public const UInt32 WM_MBUTTONUP = 0x0208;
         public const UInt32 WM_MOUSEWHEEL = 0x020A;
-        public const UInt32 WM_USB_DEVICECHANGE = 0x0219;  
+        public const UInt32 WM_USB_DEVICECHANGE = 0x0219;
+        public const UInt32 WM_APP = 0x8000;
       
         //Mapped Memory File
         public const UInt32 ERROR_ALREADY_EXISTS = 183;
