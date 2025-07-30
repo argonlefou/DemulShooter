@@ -22,8 +22,9 @@ namespace DemulShooter
         private InjectionStruct _MouseButtons_InjectionStruct = new InjectionStruct(0x00870130, 5);         //
         private InjectionStruct _P1_Axis_InjectionStruct = new InjectionStruct(0x008F09E8, 6);              //
         private UInt32 _P2_Axis_Patch_Offset = 0x008F0E08;                                                  //
-        private InjectionStruct _Recoil_InjectionStruct = new InjectionStruct(0x008AEA84, 6);               //
+        private InjectionStruct _Recoil_InjectionStruct = new InjectionStruct(0x008AEA80, 6);               //
         private InjectionStruct _Damaged_InjectionStruct = new InjectionStruct(0x008B105C, 8);             //
+        private InjectionStruct _PlayerInfo_InjectionStruct = new InjectionStruct(0x008B1075, 7);
 
         private UInt32 _ForceP2InControllerSelectScreen_Offset = 0x00A29114;
         private UInt32 _BlockP1InControllerSelectScreen_Offset = 0x00A29171;
@@ -42,7 +43,11 @@ namespace DemulShooter
         private UInt32 _P2_Recoil_CaveAddress;
         private UInt32 _P1_Damaged_CaveAddress;
         private UInt32 _P2_Damaged_CaveAddress;
-        
+        private UInt32 _P1_Life_CaveAddress;
+        private UInt32 _P2_Life_CaveAddress;
+        private UInt32 _P1_Ammo_CaveAddress;
+        private UInt32 _P2_Ammo_CaveAddress;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -341,24 +346,33 @@ namespace DemulShooter
         {
             Create_OutputsDataBank();
             _P1_Recoil_CaveAddress = _OutputsDatabank_Address;
-            _P2_Recoil_CaveAddress = _OutputsDatabank_Address + 4;
-            _P1_Damaged_CaveAddress = _OutputsDatabank_Address + 8;
-            _P2_Damaged_CaveAddress = _OutputsDatabank_Address + 12;
+            _P2_Recoil_CaveAddress = _OutputsDatabank_Address + 0x04;
+            _P1_Damaged_CaveAddress = _OutputsDatabank_Address + 0x08;
+            _P2_Damaged_CaveAddress = _OutputsDatabank_Address + 0x0C;
+            _P1_Life_CaveAddress = _OutputsDatabank_Address + 0x10;
+            _P1_Ammo_CaveAddress = _OutputsDatabank_Address + 0x14;
+            _P2_Life_CaveAddress = _OutputsDatabank_Address + 0x18;
+            _P2_Ammo_CaveAddress = _OutputsDatabank_Address + 0x1C;
 
             SetHack_Recoil();
             SetHack_Damage();
+            SetHack_PlayerInfo();
             Logger.WriteLog("Outputs Memory Hack complete !");
             Logger.WriteLog("-");
         }
 
         /// <summary>
         /// In ABEWeaponexecHasAmmo() called before a shot :
+        /// EDI looks like a "Weapon Struct", and Ammo value is available in [EDI+2C0]
+        /// EDI is changing when the gun is changing
+        /// 
         /// Trying to get info if it's for a player (also used for ennemies) and if it's P1 or P2
-        /// [RAX] should be 0x1B8 for players check
-        /// Then [ECX+0x120] can be check between 0 (P1) and 0.4f(P2)   ----------> To Find !!
-        /// Or also [ECX+30] can be check between 1(P1) and 2(P2) (???) ----------> check with gamepad
-        /// And Ammo value is available in [ECX+2C0]
-        /// RCX is changing when the gun is changing
+        /// [EDI+0x9C] is pointing to what look like to be a "player" owner struct
+        /// [EDI+0x9C] + 0x030 => Owner ID (1 or 2)
+        /// [EDI+0x9C] + 0x2DC => Owner Life
+        /// To differentiate Onwer type (player / Ennemy) we can check either :
+        /// - [EDI+0x9C] + 0x50 => 0x16 / 0x2F
+        /// - [EDI+0x9C] + 0x94 => 00 01 03 05 / 01 01 03 07
         /// </summary>
         private void SetHack_Recoil()
         {
@@ -366,67 +380,56 @@ namespace DemulShooter
             CaveMemory.Open();
             CaveMemory.Alloc(0x800);
 
-
-            //mov rax,[rdi]
-            CaveMemory.Write_StrBytes("48 8B 07");
-            //mov r8d,[rsp+48]
-            CaveMemory.Write_StrBytes("44 8B 44 24 48");
-            //movzx edx,byte ptr [rsp+40]
-            CaveMemory.Write_StrBytes("0F B6 54 24 40");
-            //mov rcx,rdi
-            CaveMemory.Write_StrBytes("48 8B CF");
-
-            //cmp rax,00
-            CaveMemory.Write_StrBytes("48 83 F8 00");
+            //mov ecx,edi
+            CaveMemory.Write_StrBytes("8B CF");
+            //cmp ecx,00
+            CaveMemory.Write_StrBytes("83 F9 00");
             //je Exit
-            CaveMemory.Write_StrBytes("74 41");
-            //mov rax,[rax]
-            CaveMemory.Write_StrBytes("48 8B 00");
-            //cmp rax,00
-            CaveMemory.Write_StrBytes("48 83 F8 00");
-            //je Exit1
-            CaveMemory.Write_StrBytes("74 35");
-            //mov rax,[rax]
-            CaveMemory.Write_StrBytes("48 8B 00");
-            //cmp ax,01B8
-            CaveMemory.Write_StrBytes("66 3D B8 01");
-            //jne Exit1
-            CaveMemory.Write_StrBytes("75 2C");
-            //cmp rcx,00
-            CaveMemory.Write_StrBytes("48 83 F9 00");
-            //je Exit1
-            CaveMemory.Write_StrBytes("74 26");
-            //mov rax,[rcx+00000120]
-            CaveMemory.Write_StrBytes("48 8B 81 20 01 00 00");
-            //cmp ax,CCCD
-            CaveMemory.Write_StrBytes("66 3D CD CC");
-            //je Player2
-            CaveMemory.Write_StrBytes("74 0C");
-            //mov rax,_P1_Recoil_CaveAddress
-            CaveMemory.Write_StrBytes("48 B8");
+            CaveMemory.Write_StrBytes("74 2D");
+            //mov ecx,[ecx+0000009C]
+            CaveMemory.Write_StrBytes("8B 89 9C 00 00 00");
+            //cmp ecx,00
+            CaveMemory.Write_StrBytes("83 F9 00");
+            //je Exit
+            CaveMemory.Write_StrBytes("74 22");
+            //cmp byte ptr [ecx+50],2F
+            CaveMemory.Write_StrBytes("80 79 50 2F");
+            //jne Exit
+            CaveMemory.Write_StrBytes("75 1C");
+            //cmp byte ptr [ecx+30],01
+            CaveMemory.Write_StrBytes("80 79 30 01");
+            //jne Player2
+            CaveMemory.Write_StrBytes("75 09");
+            //mov [_P1_Recoil_CaveAddress], 01
+            CaveMemory.Write_StrBytes("C6 05");
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Recoil_CaveAddress));
-            //jmp SetRecoil:
-            CaveMemory.Write_StrBytes("EB 0A");
-            //Player2
-            //mov rax,_P2_Recoil_CaveAddress
-            CaveMemory.Write_StrBytes("48 B8");
+            CaveMemory.Write_StrBytes("01");
+            //jmp Exit
+            CaveMemory.Write_StrBytes("EB 0D");
+            //Player2:
+            //cmp dword ptr [ecx+30],02
+            CaveMemory.Write_StrBytes("83 79 30 02");
+            //jne Exit
+            CaveMemory.Write_StrBytes("75 07");
+            //mov [_P2_Recoil_CaveAddress],00000001
+            CaveMemory.Write_StrBytes("C6 05");
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Recoil_CaveAddress));
-            //SetRecoil:
-            //mov byte ptr [rax],01
-            CaveMemory.Write_StrBytes("C6 00 01");
-            //Exit1
-            //mov rax,[rdi]
-            CaveMemory.Write_StrBytes("48 8B 07");
+            CaveMemory.Write_StrBytes("01");
+            //Exit:            
+            //mov ecx,[esp+10]
+            CaveMemory.Write_StrBytes("8B 4C 24 10");
+            //mov eax,[edi]
+            CaveMemory.Write_StrBytes("8B 07");
 
             //Inject it
             CaveMemory.InjectToOffset(_Recoil_InjectionStruct, "Recoil");
         }
 
-        /// <summary>
+        /// /// <summary>
         /// In ABEPlayerPawnexecPlayerPadHitEffect() called before a shot :
-        /// Player ID seems to be in EDI+4C (1 or 2)        ----------> check with gamepad
-        /// Life value in EDI+0x2DC
-        /// EDI has the value of ECX at the start of the function
+        /// EDI has the value of ECX at the start of the function, same "Player" owner structure as previously used for recoil
+        /// [EDI+0x030] => Player ID (1 or 2)
+        /// [EDI+0x2DC] => Player Life        
         /// </summary>
         private void SetHack_Damage()
         {
@@ -438,8 +441,8 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("83 FF 00");
             //je Exit
             CaveMemory.Write_StrBytes("74 15");
-            //cmp dword ptr [edi+4C],02
-            CaveMemory.Write_StrBytes("83 7F 4C 02");
+            //cmp dword ptr [edi+30],02
+            CaveMemory.Write_StrBytes("83 7F 30 02");
             //je Player2
             CaveMemory.Write_StrBytes("74 07");
             //mov eax,_P1_Damaged_CaveAddress
@@ -462,6 +465,121 @@ namespace DemulShooter
 
             //Inject it
             CaveMemory.InjectToOffset(_Damaged_InjectionStruct, "Damaged");
+        }
+
+        /// <summary>
+        /// ABEPlayerPawnexecPlayerPadUpdate() is called in a loop
+        /// In it, we can acces the "Player" owner struct in ECX and we can access :
+        /// [ECX+0x030] => Player ID (1 or 2)
+        /// [ECX+0x050] => Player playing ? (0x2F) - Not playing is 0x16
+        /// [ECX+0x2DC] => Player Life
+        /// [ECX+0x3C4] => Player Weapon Struct pointer
+        /// +[ECX+0x3C4]+0x2C0 => Weapon Ammo
+        /// </summary>
+        private void SetHack_PlayerInfo()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //cmp byte ptr [ecx+30],01
+            CaveMemory.Write_StrBytes("80 79 30 01");
+            //jne Player2
+            CaveMemory.Write_StrBytes("75 52");
+            //cmp byte ptr [ecx+50],2F
+            CaveMemory.Write_StrBytes("80 79 50 2F");
+            //je Player1Playing
+            CaveMemory.Write_StrBytes("74 19");
+            //mov [_P1_Life_CaveAddress],00000000
+            CaveMemory.Write_StrBytes("C7 05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Life_CaveAddress));
+            CaveMemory.Write_StrBytes("00 00 00 00");
+            //mov [_P1_Ammo_CaveAddress],00000000
+            CaveMemory.Write_StrBytes("C7 05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Ammo_CaveAddress));
+            CaveMemory.Write_StrBytes("00 00 00 00");
+            //jmp Exit
+            CaveMemory.Write_StrBytes("E9 86 00 00 00");
+            //Player1Playing:
+            //mov eax,[ecx+000002DC]
+            CaveMemory.Write_StrBytes("8B 81 DC 02 00 00");
+            //mov [_P1_Life_CaveAddress],eax
+            CaveMemory.Write_StrBytes("A3");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Life_CaveAddress));
+            //cmp dword ptr [ecx+000003C4],00
+            CaveMemory.Write_StrBytes("83 B9 C4 03 00 00 00");
+            //jne HasWeapon
+            CaveMemory.Write_StrBytes("75 0C");
+            //mov [_P1_Ammo_CaveAddress],00000000
+            CaveMemory.Write_StrBytes("C7 05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Ammo_CaveAddress));
+            CaveMemory.Write_StrBytes("00 00 00 00");
+            //jmp Exit
+            CaveMemory.Write_StrBytes("EB 66");
+            //HasWeapon:
+            //mov eax,[ecx+000003C4]
+            CaveMemory.Write_StrBytes("8B 81 C4 03 00 00");
+            //mov eax,[eax+000002C0]
+            CaveMemory.Write_StrBytes("8B 80 C0 02 00 00");
+            //mov [_P1_Ammo_CaveAddress],eax
+            CaveMemory.Write_StrBytes("A3");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P1_Ammo_CaveAddress));
+            //jmp Exit
+            CaveMemory.Write_StrBytes("EB 53");
+
+            //Player2:
+            //cmp byte ptr [ecx+30],02
+            CaveMemory.Write_StrBytes("80 79 30 02");
+            //jne Exit
+            CaveMemory.Write_StrBytes("75 4D");
+            //cmp byte ptr [ecx+50],2F
+            CaveMemory.Write_StrBytes("80 79 50 2F");
+            //je Player2Playing
+            CaveMemory.Write_StrBytes("74 16");
+            //mov [_P2_Life_CaveAddress],00000000
+            CaveMemory.Write_StrBytes("C7 05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Life_CaveAddress));
+            CaveMemory.Write_StrBytes("00 00 00 00");
+            //mov [_P2_Ammo_CaveAddress],00000000
+            CaveMemory.Write_StrBytes("C7 05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Ammo_CaveAddress));
+            CaveMemory.Write_StrBytes("00 00 00 00");
+            //jmp Exit
+            CaveMemory.Write_StrBytes("EB 31");
+            //Player2Playing:
+            //mov eax,[ecx+000002DC]
+            CaveMemory.Write_StrBytes("8B 81 DC 02 00 00");
+            //mov [_P2_Life_CaveAddress],eax
+            CaveMemory.Write_StrBytes("A3");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Life_CaveAddress));
+            //cmp dword ptr [ecx+000003C4],00
+            CaveMemory.Write_StrBytes("83 B9 C4 03 00 00 00");
+            //jne HasWeapon
+            CaveMemory.Write_StrBytes("75 0C");
+            //mov [_P2_Ammo_CaveAddress],00000000
+            CaveMemory.Write_StrBytes("C7 05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Ammo_CaveAddress));
+            CaveMemory.Write_StrBytes("00 00 00 00");
+            //jmp Exit
+            CaveMemory.Write_StrBytes("EB 11");
+            //HasWeapon:
+            //mov eax,[ecx+000003C4]
+            CaveMemory.Write_StrBytes("8B 81 C4 03 00 00");
+            //mov eax,[eax+000002C0]
+            CaveMemory.Write_StrBytes("8B 80 C0 02 00 00");
+            //mov [_P2_Ammo_CaveAddress],eax
+            CaveMemory.Write_StrBytes("A3");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_P2_Ammo_CaveAddress));
+
+            //Exit:
+            //mov esi,[esp+0C]
+            CaveMemory.Write_StrBytes("8B 74 24 0C");
+            //mov eax,[esi+18]
+            CaveMemory.Write_StrBytes("8B 46 18");
+
+
+            //Inject it
+            CaveMemory.InjectToOffset(_PlayerInfo_InjectionStruct, "PlayerInfo");
         }
 
         #endregion
@@ -603,10 +721,13 @@ namespace DemulShooter
         /// </summary>
         protected override void CreateOutputList()
         {
-            //Gun motor : Is activated for every bullet fired AND when player gets
             _Outputs = new List<GameOutput>();
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Ammo, OutputId.P1_Ammo));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Ammo, OutputId.P2_Ammo));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_CtmRecoil, OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_CtmRecoil, OutputId.P2_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P1_Damaged, OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
             _Outputs.Add(new AsyncGameOutput(OutputDesciption.P2_Damaged, OutputId.P2_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
         }
@@ -639,6 +760,11 @@ namespace DemulShooter
                 SetOutputValue(OutputId.P2_Damaged, 1);
                 WriteByte(_P2_Damaged_CaveAddress, 0x00);
             }
+
+            SetOutputValue(OutputId.P1_Life, BitConverter.ToInt32(ReadBytes(_P1_Life_CaveAddress, 4), 0));
+            SetOutputValue(OutputId.P2_Life, BitConverter.ToInt32(ReadBytes(_P2_Life_CaveAddress, 4), 0));
+            SetOutputValue(OutputId.P1_Ammo, BitConverter.ToInt32(ReadBytes(_P1_Ammo_CaveAddress, 4), 0));
+            SetOutputValue(OutputId.P2_Ammo, BitConverter.ToInt32(ReadBytes(_P2_Ammo_CaveAddress, 4), 0));
         }
 
         #endregion

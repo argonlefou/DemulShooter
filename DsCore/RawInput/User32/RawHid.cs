@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace DsCore.RawInput
@@ -38,12 +40,11 @@ namespace DsCore.RawInput
             Marshal.Copy(Ptr, buffer, 0, 8);
             result.dwSizeHid = BitConverter.ToInt32(buffer, 0);
             result.dwCount = BitConverter.ToInt32(buffer, 4);
-
             //Creating a fixed size byte array
             result.bRawData = new byte[result.dwCount * result.dwSizeHid];            
             try
             {
-                Marshal.Copy((IntPtr)((int)Ptr + 8), result.bRawData, 0, result.bRawData.Length);
+                Marshal.Copy(IntPtr.Add(Ptr, 8), result.bRawData, 0, result.bRawData.Length);
                 return result;
             }
             catch

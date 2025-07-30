@@ -11,6 +11,7 @@ namespace DsCore.IPC
         public byte[] StartLamp = new byte[MAX_PLAYER];
         public byte[] PlayerBonusWeaponLamp = new byte[MAX_PLAYER];
         public byte[] SpineMotor = new byte[MAX_PLAYER];
+        public byte[] TicketFeeder = new byte[MAX_PLAYER];
         public byte BonusWeaponLamp;
         public byte SeatVibrationLamp;
         public byte WaterFallLamp;
@@ -19,7 +20,7 @@ namespace DsCore.IPC
         public byte[] Damaged = new byte[MAX_PLAYER];
         public UInt32[] Credits = new UInt32[MAX_PLAYER];
 
-        public static readonly int DATA_LENGTH = 39;
+        public static readonly int DATA_LENGTH = 40;
 
         public DsTcp_OutputData_MechaDino()
         {
@@ -34,6 +35,7 @@ namespace DsCore.IPC
                 StartLamp[i] = 0;
                 PlayerBonusWeaponLamp[i] = 0;
                 SpineMotor[i] = 0;
+                TicketFeeder[i] = 0;
                 Life[i] = 0.0f;
                 Damaged[i] = 0;
                 Credits[i] = 0;
@@ -50,8 +52,9 @@ namespace DsCore.IPC
                 PlayerBonusWeaponLamp[i] = (byte)(ReceivedData[1] >> (i + 4) & 0x01);
                 Damaged[i] = (byte)(ReceivedData[2] >> i & 0x01);
                 SpineMotor[i] = ReceivedData[3 + i];
-                Life[i] = BitConverter.ToSingle(ReceivedData, 7 + (4 * i));
-                Credits[i] = BitConverter.ToUInt32(ReceivedData, 23 + (4 * i));
+                TicketFeeder[i] = (byte)(ReceivedData[7] >> i & 0x01);
+                Life[i] = BitConverter.ToSingle(ReceivedData, 8 + (4 * i));
+                Credits[i] = BitConverter.ToUInt32(ReceivedData, 24 + (4 * i));
             }
             BonusWeaponLamp = (byte)(ReceivedData[2] >> 4 & 0x01);
             SeatVibrationLamp = (byte)(ReceivedData[2] >> 5 & 0x01);
@@ -69,10 +72,11 @@ namespace DsCore.IPC
                 bArray[0] |= (byte)(BallMotor[i] << i + 4);
                 bArray[1] |= (byte)(StartLamp[i] << i);
                 bArray[1] |= (byte)(PlayerBonusWeaponLamp[i] << i + 4);
-                bArray[2] |= (byte)(Damaged[i] << i);   
+                bArray[2] |= (byte)(Damaged[i] << i);
                 bArray[3 + i] = SpineMotor[i];
-                Array.Copy(BitConverter.GetBytes(Life[i]), 0, bArray, 7 + (4 * i), 4);
-                Array.Copy(BitConverter.GetBytes(Credits[i]), 0, bArray, 23 + (4 * i), 4);
+                bArray[7] |= (byte)(TicketFeeder[i] << i);
+                Array.Copy(BitConverter.GetBytes(Life[i]), 0, bArray, 8 + (4 * i), 4);
+                Array.Copy(BitConverter.GetBytes(Credits[i]), 0, bArray, 24 + (4 * i), 4);
             }
 
             bArray[2] |= (byte)(BonusWeaponLamp << 4);

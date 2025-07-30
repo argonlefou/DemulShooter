@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using DsCore;
 using DsCore.RawInput;
 using DsCore.Win32;
 
@@ -40,7 +41,8 @@ namespace DsDiag
             GetRawInputDevices();
             foreach (RawInputController Controller in _Controllers)
             {
-                Cbo_Dev.Items.Add(Controller.DeviceName);
+                //Cbo_Dev.Items.Add(Controller.DeviceName);
+                Cbo_Dev.Items.Add("[" + Controller.DHidUsage + "] " + Controller.ManufacturerName + " - " + Controller.ProductName);                
             }
 
             //Register to RawInput
@@ -87,7 +89,7 @@ namespace DsDiag
 
             if (Cbo_Dev.Text.Length > 0)
             {
-                RawInputController Controller = GetControllerFromName(Cbo_Dev.Text);
+                RawInputController Controller = GetControllerFromName(_Controllers[Cbo_Dev.SelectedIndex].DeviceName);
                 Lbl_dwType.Text = Controller.DeviceType.ToString() + " - " + Controller.DHidUsage;
                 Lbl_Manufacturer.Text = Controller.ManufacturerName;
                 Lbl_Product.Text = Controller.ProductName;
@@ -141,7 +143,7 @@ namespace DsDiag
                     }
                 }
 
-                _SelectedDevice = Cbo_Dev.Text;
+                _SelectedDevice = _Controllers[Cbo_Dev.SelectedIndex].DeviceName;
                 Btn_Export.Visible = true;
             }
             else
@@ -152,13 +154,13 @@ namespace DsDiag
 
         private void Cbo_AxisX_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            RawInputController c = GetControllerFromName(Cbo_Dev.Text);
+            RawInputController c = GetControllerFromName(_Controllers[Cbo_Dev.SelectedIndex].DeviceName);
             c.Selected_AxisX = ushort.Parse(Cbo_AxisX.Text.Substring(2), System.Globalization.NumberStyles.HexNumber);
         }
 
         private void Cbo_AxisY_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            RawInputController c = GetControllerFromName(Cbo_Dev.Text);
+            RawInputController c = GetControllerFromName(_Controllers[Cbo_Dev.SelectedIndex].DeviceName);
             c.Selected_AxisY = ushort.Parse(Cbo_AxisY.Text.Substring(2), System.Globalization.NumberStyles.HexNumber);
         }
 
@@ -167,7 +169,7 @@ namespace DsDiag
         /// </summary>
         private void Btn_Export_Click(object sender, EventArgs e)
         {
-            RawInputController c = GetControllerFromName(Cbo_Dev.Text);
+            RawInputController c = GetControllerFromName(_Controllers[Cbo_Dev.SelectedIndex].DeviceName);
             String DataFile = Application.StartupPath + @"\DsDiag_Report_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".txt";
             System.IO.StreamWriter sw = new System.IO.StreamWriter(DataFile, false);
             try

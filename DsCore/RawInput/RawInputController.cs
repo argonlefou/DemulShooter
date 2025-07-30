@@ -454,7 +454,7 @@ namespace DsCore.RawInput
                             if (_pValueCaps[i].NotRange.Usage == _Selected_HidAxisX)
                             {
                                 _Hid_Axis_X_Min = _pValueCaps[i].LogicalMin;
-                                _Hid_Axis_X_Max = Correct_Axis_Max(_pValueCaps[i].LogicalMax);
+                                _Hid_Axis_X_Max = Correct_Axis_Max(_pValueCaps[i].LogicalMax);                
                                 _ControllerData.Axis.X = CorrectNegative_Value(value, _Hid_Axis_X_Min);
                             }
                             if (_pValueCaps[i].NotRange.Usage == _Selected_HidAxisY)
@@ -804,7 +804,8 @@ namespace DsCore.RawInput
                 result = Win32API.GetRawInputData(LParam, RawInputUiCommand.RID_INPUT, p, ref size, HeaderSize);
                 if (result != 0xFFFF && result == size)
                 {
-                    _RawHidData = RawHid.FromIntPtr((IntPtr)((int)p + HeaderSize));
+                    IntPtr RawHidDataPtr = IntPtr.Add(p, (int)HeaderSize);
+                    _RawHidData = RawHid.FromIntPtr(RawHidDataPtr);
                     Marshal.FreeHGlobal(p);
                     return true;
                 }

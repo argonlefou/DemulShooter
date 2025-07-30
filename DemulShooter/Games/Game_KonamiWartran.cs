@@ -105,11 +105,8 @@ namespace DemulShooter
         /// </summary>
         protected override void CreateOutputList()
         {
-            //Gun motor : Is activated for every bullet fired AND when player gets
             _Outputs = new List<GameOutput>();
 
-            //Gun motor  : Is activated for every bullet fired AND when player gets
-            _Outputs = new List<GameOutput>();
             _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpStart, OutputId.P1_LmpStart));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpStart, OutputId.P2_LmpStart));
             _Outputs.Add(new GameOutput(OutputDesciption.P3_LmpStart, OutputId.P3_LmpStart));

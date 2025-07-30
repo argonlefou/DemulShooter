@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
+using DemulShooter.Games;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
@@ -23,7 +24,7 @@ namespace DemulShooter
 
         private const string DEMULSHOOTER_CONF_FILENAME = "config.ini";
         private string _UserDefinedIniFile = string.Empty;
-
+        
         //Timer for Hooking TimeOut
         private System.Timers.Timer _TimerHookTimeout;
 
@@ -486,6 +487,11 @@ namespace DemulShooter
                 {
                     switch (_Rom.ToLower())
                     {
+                        case "coop9":
+                            {
+                                _Game = new Game_KonamiCoopers9(_Rom.ToLower());
+                            }
+                            break;
                         case "hcv":
                             {
                                 _Game = new Game_KonamiCastlevania(_Rom.ToLower());
@@ -512,7 +518,7 @@ namespace DemulShooter
                             {
                                 _Game = new Game_Lindbergh2spicy(_Rom.ToLower());
                             } break;
-                        case "gsquad":
+                        case "gsevo":
                             {
                                 _Game = new Game_LindberghGhostSquadEvo(_Rom.ToLower());
                             } break;

@@ -456,9 +456,9 @@ namespace DemulShooterX64
                             {
                                 _Game = new Game_ArcadepcOnePoint(_Rom.ToLower());
                             }; break;
-                        case "rha":
+                        case "wzombies":
                             {
-                                _Game = new Game_ArcadepcRha(_Rom.ToLower());
+                                _Game = new Game_ArcadepcWisdomZombies(_Rom.ToLower());
                             }; break;
 
 

@@ -11,22 +11,19 @@ using DsCore.RawInput;
 
 namespace DemulShooterX64
 {
-    class Game_ArcadePcMechaDino : Game
+    class Game_ArcadepcWisdomZombies : Game
     {
         private DsTcp_Client _Tcpclient;
-        private DsTcp_OutputData_MechaDino _OutputData;
+        private DsTcp_OutputData_WisdomZombies _OutputData;
         private DsTcp_InputData _InputData;
-
-        //Thread-safe operation on input/output data
-        //public static System.Object MutexLocker;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game_ArcadePcMechaDino(String RomName)
-            : base(RomName, "game")
+        public Game_ArcadepcWisdomZombies(String RomName)
+            : base(RomName, "ShootZombies")
         {
-            _KnownMd5Prints.Add("Mechanical Dinosaur v6.5 - Original", "25dd74d2eeef2f61ed32ce439bcd264a");
+            _KnownMd5Prints.Add("ShootZombies EN v1.2.8 - Original", "f0288515dd04d49c85dedacaaf922edd");
 
             _tProcess.Start();
             Logger.WriteLog("Waiting for " + _RomName + " game to hook.....");
@@ -54,7 +51,7 @@ namespace DemulShooterX64
                         {
                             // The game may start with other Windows than the main one (BepInEx console, other stuff.....) so we need to filter
                             // the displayed window according to the Title, if DemulShooter is started before the game,  to hook the correct one
-                            if (FindGameWindow_Equals("RobotDragon"))
+                            if (FindGameWindow_Equals("ShotZembies"))
                             {
                                 String AssemblyDllPath = _TargetProcess.MainModule.FileName.Replace(_Target_Process_Name + ".exe", _Target_Process_Name + @"_Data\Managed\Assembly-CSharp.dll");
                                 CheckMd5(AssemblyDllPath);
@@ -62,7 +59,7 @@ namespace DemulShooterX64
                                 _InputData = new DsTcp_InputData();
 
                                 //Start TcpClient to dial with Unity Game
-                                _OutputData = new DsTcp_OutputData_MechaDino();
+                                _OutputData = new DsTcp_OutputData_WisdomZombies();
                                 _Tcpclient = new DsTcp_Client("127.0.0.1", DsTcp_Client.DS_TCP_CLIENT_PORT);
                                 _Tcpclient.PacketReceived += DsTcp_Client_PacketReceived;
                                 _Tcpclient.TcpConnected += DsTcp_client_TcpConnected;
@@ -102,7 +99,7 @@ namespace DemulShooterX64
             }
         }
 
-        ~Game_ArcadePcMechaDino()
+        ~Game_ArcadepcWisdomZombies()
         {
             if (_Tcpclient != null)
                 _Tcpclient.Disconnect();
@@ -177,13 +174,8 @@ namespace DemulShooterX64
                 float AxisX = PlayerData.RIController.Computed_X;
                 float AxisY = PlayerData.RIController.Computed_Y;
 
-                _InputData.Axis_X[PlayerData.ID -1] = AxisX;
-                _InputData.Axis_Y[PlayerData.ID -1] = AxisY;
-
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
-                    _InputData.Trigger[PlayerData.ID -1] = 1;
-                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
-                    _InputData.Trigger[PlayerData.ID -1] = 0;
+                _InputData.Axis_X[PlayerData.ID - 1] = AxisX;
+                _InputData.Axis_Y[PlayerData.ID - 1] = AxisY;
 
                 if (_HideCrosshair)
                     _InputData.HideCrosshairs = 1;
@@ -208,25 +200,24 @@ namespace DemulShooterX64
             _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P2_CtmLmpStart, OutputId.P2_CtmLmpStart, 500));
             _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P3_CtmLmpStart, OutputId.P3_CtmLmpStart, 500));
             _Outputs.Add(new SyncBlinkingGameOutput(OutputDesciption.P4_CtmLmpStart, OutputId.P4_CtmLmpStart, 500));
-            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpGun, OutputId.P1_LmpGun));
-            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpGun, OutputId.P2_LmpGun));
-            _Outputs.Add(new GameOutput(OutputDesciption.P3_LmpGun, OutputId.P3_LmpGun));
-            _Outputs.Add(new GameOutput(OutputDesciption.P4_LmpGun, OutputId.P4_LmpGun));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_WaterFire, OutputId.P1_WaterFire));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_WaterFire, OutputId.P2_WaterFire));
+            _Outputs.Add(new GameOutput(OutputDesciption.P3_WaterFire, OutputId.P3_WaterFire));
+            _Outputs.Add(new GameOutput(OutputDesciption.P4_WaterFire, OutputId.P4_WaterFire));
+            _Outputs.Add(new GameOutput(OutputDesciption.P1_BigGun, OutputId.P1_BigGun));
+            _Outputs.Add(new GameOutput(OutputDesciption.P2_BigGun, OutputId.P2_BigGun));
+            _Outputs.Add(new GameOutput(OutputDesciption.P3_BigGun, OutputId.P3_BigGun));
+            _Outputs.Add(new GameOutput(OutputDesciption.P4_BigGun, OutputId.P4_BigGun));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_GunMotor, OutputId.P1_GunMotor));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_GunMotor, OutputId.P2_GunMotor));
             _Outputs.Add(new GameOutput(OutputDesciption.P3_GunMotor, OutputId.P3_GunMotor));
             _Outputs.Add(new GameOutput(OutputDesciption.P4_GunMotor, OutputId.P4_GunMotor));
-            _Outputs.Add(new GameOutput(OutputDesciption.P1_LmpBonusWeapon, OutputId.P1_LmpBonusWeapon));
-            _Outputs.Add(new GameOutput(OutputDesciption.P2_LmpBonusWeapon, OutputId.P2_LmpBonusWeapon));
-            _Outputs.Add(new GameOutput(OutputDesciption.P3_LmpBonusWeapon, OutputId.P3_LmpBonusWeapon));
-            _Outputs.Add(new GameOutput(OutputDesciption.P4_LmpBonusWeapon, OutputId.P4_LmpBonusWeapon));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_TicketFeeder, OutputId.P1_TicketFeeder));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_TicketFeeder, OutputId.P2_TicketFeeder));
             _Outputs.Add(new GameOutput(OutputDesciption.P3_TicketFeeder, OutputId.P3_TicketFeeder));
             _Outputs.Add(new GameOutput(OutputDesciption.P4_TicketFeeder, OutputId.P4_TicketFeeder));
             _Outputs.Add(new GameOutput(OutputDesciption.BonusWeaponLamp, OutputId.BonusWeaponLamp));
             _Outputs.Add(new GameOutput(OutputDesciption.SeatVibrationLamp, OutputId.SeatVibrationLamp));
-            _Outputs.Add(new GameOutput(OutputDesciption.WaterFallLamp, OutputId.WaterFallLamp));
             _Outputs.Add(new GameOutput(OutputDesciption.WaterLevelLamp, OutputId.WaterLevelLamp));
             _Outputs.Add(new GameOutput(OutputDesciption.P1_Life, OutputId.P1_Life));
             _Outputs.Add(new GameOutput(OutputDesciption.P2_Life, OutputId.P2_Life));
@@ -256,7 +247,6 @@ namespace DemulShooterX64
             {
                 _OutputData.Update(e.Packet.GetPayload());
 
-                //Handling Start Lamps based on player status
                 if (_OutputData.StartLamp[0] == 1)
                     SetOutputValue(OutputId.P1_CtmLmpStart, -1);
                 else
@@ -277,20 +267,20 @@ namespace DemulShooterX64
                 else
                     SetOutputValue(OutputId.P4_CtmLmpStart, 0);
 
-                SetOutputValue(OutputId.P1_LmpGun, _OutputData.BallMotor[0]);
-                SetOutputValue(OutputId.P2_LmpGun, _OutputData.BallMotor[1]);
-                SetOutputValue(OutputId.P3_LmpGun, _OutputData.BallMotor[2]);
-                SetOutputValue(OutputId.P4_LmpGun, _OutputData.BallMotor[3]);
+                SetOutputValue(OutputId.P1_WaterFire, _OutputData.SmallWater[0]);
+                SetOutputValue(OutputId.P2_WaterFire, _OutputData.SmallWater[1]);
+                SetOutputValue(OutputId.P3_WaterFire, _OutputData.SmallWater[2]);
+                SetOutputValue(OutputId.P4_WaterFire, _OutputData.SmallWater[3]);
 
-                SetOutputValue(OutputId.P1_GunMotor, (int)(sbyte)_OutputData.SpineMotor[0]);
-                SetOutputValue(OutputId.P2_GunMotor, (int)(sbyte)_OutputData.SpineMotor[1]);
-                SetOutputValue(OutputId.P3_GunMotor, (int)(sbyte)_OutputData.SpineMotor[2]);
-                SetOutputValue(OutputId.P4_GunMotor, (int)(sbyte)_OutputData.SpineMotor[3]);
+                SetOutputValue(OutputId.P1_BigGun, _OutputData.BigWater[0]);
+                SetOutputValue(OutputId.P2_BigGun, _OutputData.BigWater[1]);
+                SetOutputValue(OutputId.P3_BigGun, _OutputData.BigWater[2]);
+                SetOutputValue(OutputId.P4_BigGun, _OutputData.BigWater[3]);
 
-                SetOutputValue(OutputId.P1_LmpBonusWeapon, _OutputData.PlayerBonusWeaponLamp[0]);
-                SetOutputValue(OutputId.P2_LmpBonusWeapon, _OutputData.PlayerBonusWeaponLamp[1]);
-                SetOutputValue(OutputId.P3_LmpBonusWeapon, _OutputData.PlayerBonusWeaponLamp[2]);
-                SetOutputValue(OutputId.P4_LmpBonusWeapon, _OutputData.PlayerBonusWeaponLamp[3]);
+                SetOutputValue(OutputId.P1_GunMotor, _OutputData.GunMotor[0]);
+                SetOutputValue(OutputId.P2_GunMotor, _OutputData.GunMotor[1]);
+                SetOutputValue(OutputId.P3_GunMotor, _OutputData.GunMotor[2]);
+                SetOutputValue(OutputId.P4_GunMotor, _OutputData.GunMotor[3]);
 
                 SetOutputValue(OutputId.P1_TicketFeeder, _OutputData.TicketFeeder[0]);
                 SetOutputValue(OutputId.P2_TicketFeeder, _OutputData.TicketFeeder[1]);
@@ -298,8 +288,7 @@ namespace DemulShooterX64
                 SetOutputValue(OutputId.P4_TicketFeeder, _OutputData.TicketFeeder[3]);
 
                 SetOutputValue(OutputId.BonusWeaponLamp, _OutputData.BonusWeaponLamp);
-                SetOutputValue(OutputId.SeatVibrationLamp, _OutputData.SeatVibrationLamp);
-                SetOutputValue(OutputId.WaterFallLamp, _OutputData.WaterLevelLamp);
+                SetOutputValue(OutputId.SeatVibrationLamp, _OutputData.SeatVibrationMotor);
                 SetOutputValue(OutputId.WaterLevelLamp, _OutputData.WaterLevelLamp);
 
                 SetOutputValue(OutputId.P1_Damaged, _OutputData.Damaged[0]);
@@ -320,7 +309,7 @@ namespace DemulShooterX64
                 else
                     SetOutputValue(OutputId.P4_Life, 0);
                 if (_OutputData.IsPlaying[3] == 1)
-                    SetOutputValue(OutputId.P1_Life, (int)_OutputData.Life[3]);
+                    SetOutputValue(OutputId.P4_Life, (int)_OutputData.Life[3]);
                 else
                     SetOutputValue(OutputId.P4_Life, 0);
 
@@ -332,5 +321,6 @@ namespace DemulShooterX64
         }
 
         #endregion
+
     }
 }

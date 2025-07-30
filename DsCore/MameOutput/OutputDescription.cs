@@ -195,7 +195,7 @@ namespace DsCore.MameOutput
         public static readonly String WaterPump = "WaterPump";                  //
         public static readonly String P1_BigGun = "P1_BigGun";                  // Happy Water War 2
         public static readonly String P2_BigGun = "P2_BigGun";                  //
-        public static readonly String P1_TicketFeeder = "P2_TicketFeeder";      //
+        public static readonly String P1_TicketFeeder = "P1_TicketFeeder";      //
         public static readonly String P2_TicketFeeder = "P2_TicketFeeder";      //
 
         public static readonly String P3_WaterFire = "P3_WaterFire";
