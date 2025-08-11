@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
-using DemulShooter.Games;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
@@ -492,6 +491,11 @@ namespace DemulShooter
                                 _Game = new Game_KonamiCoopers9(_Rom.ToLower());
                             }
                             break;
+                        case "gashn2":
+                            {
+                                _Game = new Game_KonamiGashaaaan2(_Rom.ToLower());
+                            }
+                            break;
                         case "hcv":
                             {
                                 _Game = new Game_KonamiCastlevania(_Rom.ToLower());
@@ -831,6 +835,12 @@ namespace DemulShooter
                             {
                                 _Game = new Game_WndBlueEstate(_Rom.ToLower());
                             };break;
+
+                        case "rhood":
+                            {
+                                _Game = new Game_ArcadepcRobinHood(_Rom.ToLower());
+                            }
+                            ; break;
 
                         default:
                             break;

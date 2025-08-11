@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Games\Game_ArcadepcHsfr.cs" />
     <Compile Include="Games\Game_ArcadepcMechaTornado.cs" />
+    <Compile Include="Games\Game_ArcadepcRobinHood.cs" />
     <Compile Include="Games\Game_ArcadepcWws.cs" />
     <Compile Include="Games\Game_CxbxGsquad.cs" />
     <Compile Include="Games\Game_CxbxHod3.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Games\Game_ArcadepcGhostBusters.cs" />
     <Compile Include="Games\Game_KonamiCastlevania.cs" />
     <Compile Include="Games\Game_KonamiCoopers9.cs" />
+    <Compile Include="Games\Game_KonamiGashaaaan2.cs" />
     <Compile Include="Games\Game_KonamiLethalEnforcer3.cs" />
     <Compile Include="Games\Game_KonamiWartran.cs" />
     <Compile Include="Games\Game_Lindbergh2spicy.cs" />

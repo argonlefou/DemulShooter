@@ -7,7 +7,7 @@ using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Memory;
 
-namespace DemulShooter.Games
+namespace DemulShooter
 {
     class Game_KonamiCoopers9 : Game
     {
@@ -21,7 +21,11 @@ namespace DemulShooter.Games
         //private UInt32 _GameScene_Offset = 0x01FE7C97;
         private UInt32 _PlayersStatus_Offset = 0x01FE7F4E;
         //<-- Injection to use if reading the outputs byte is not fast enough to get recoil change -->
-        private InjectionStruct _Recoil_InjectionStruct = new InjectionStruct(0x00419495, 6);
+        private InjectionStruct _RecoilTestMenu_InjectionStruct = new InjectionStruct(0x00019507, 6);
+        private InjectionStruct _RecoilInGame_InjectionStruct = new InjectionStruct(0x00019480, 6);
+
+        //Custom values
+        private UInt32 _Recoil_CaveAddress = 0;
 
         /// <summary>
         /// Constructor
@@ -58,10 +62,7 @@ namespace DemulShooter.Games
                             Logger.WriteLog("Attached to Process " + _Target_Process_Name + ".exe, ProcessHandle = " + _ProcessHandle);
                             Logger.WriteLog(_Target_Process_Name + ".exe = 0x" + _TargetProcess_MemoryBaseAddress.ToString("X8"));
                             CheckExeMd5();
-                            /*if (!_DisableInputHack)
-                                SetHack();
-                            else
-                                Logger.WriteLog("Input Hack disabled");*/
+                            Apply_MemoryHacks();
                             _ProcessHooked = true;
                             RaiseGameHookedEvent();
                             break;
@@ -87,6 +88,59 @@ namespace DemulShooter.Games
                 }
             }
         }
+
+        #region Memory Hack
+
+        protected override void Apply_OutputsMemoryHack()
+        {
+            Create_OutputsDataBank();
+            _Recoil_CaveAddress = _OutputsDatabank_Address;
+
+            SetHack_Recoil(_RecoilInGame_InjectionStruct);
+            SetHack_Recoil(_RecoilTestMenu_InjectionStruct);
+
+            Logger.WriteLog("Outputs Memory Hack complete !");
+            Logger.WriteLog("-");
+        }
+
+
+        /// Outputs are stored in a roll buffer:
+        /// [+0] 4 Bytes for next index
+        /// [+0x0C] Output Indexes
+        /// [+0x8C] Corresponding values
+        ///
+        /// Index:
+        /// 0x94: Start Light (0=OFF, 1=ON, 0x2F=FLASH)
+        /// 0x96; Tickets to send
+        /// 0x97: Bonus value, low byte
+        /// 0x98: Bonus value, High byte         
+        private void SetHack_Recoil(InjectionStruct Target)
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //mov eax,_Recoil_CaveAddress
+            CaveMemory.Write_StrBytes("B8");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_Recoil_CaveAddress));
+            //add eax,edx
+            CaveMemory.Write_StrBytes("01 D0");
+            //mov byte ptr[eax], 1
+            CaveMemory.Write_StrBytes("C6 00 01");
+
+            //mov al,01
+            CaveMemory.Write_StrBytes("B0 01");
+            //shl al,cl
+            CaveMemory.Write_StrBytes("D2 E0");
+            //mov cl,al
+            CaveMemory.Write_StrBytes("8A C8");
+
+            //Inject it
+            CaveMemory.InjectToOffset(Target, "Recoil");
+        }
+
+        #endregion
+
 
         #region Outputs
 
@@ -121,9 +175,7 @@ namespace DemulShooter.Games
             SetOutputValue(OutputId.P1_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset) & 0x01);
             SetOutputValue(OutputId.P2_LmpStart, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset) >> 1 & 0x01);
             SetOutputValue(OutputId.P1_GunRecoil, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset) >> 6 & 0x01);
-            SetOutputValue(OutputId.P2_GunRecoil, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset) >> 7 & 0x01);
-            SetOutputValue(OutputId.P1_CtmRecoil, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset) >> 6 & 0x01);
-            SetOutputValue(OutputId.P2_CtmRecoil, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset) >> 7 & 0x01);
+            SetOutputValue(OutputId.P2_GunRecoil, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Outputs_Offset) >> 7 & 0x01);            
 
             byte P1_Life = 0;
             byte P2_Life = 0;
@@ -161,7 +213,19 @@ namespace DemulShooter.Games
             _P1_LastAmmo = P1_Ammo;
             _P2_LastAmmo = P2_Ammo;
             _P1_LastLife = P1_Life;
-            _P2_LastLife = P2_Life;           
+            _P2_LastLife = P2_Life;
+
+            if (ReadByte(_Recoil_CaveAddress) == 1)
+            {
+                SetOutputValue(OutputId.P1_CtmRecoil, 1);
+                WriteByte(_Recoil_CaveAddress, 0);
+            }
+
+            if (ReadByte(_Recoil_CaveAddress + 1) == 1)
+            {
+                SetOutputValue(OutputId.P2_CtmRecoil, 1);
+                WriteByte(_Recoil_CaveAddress + 1, 0);
+            }
 
             SetOutputValue(OutputId.Credits, ReadByte((UInt32)_TargetProcess_MemoryBaseAddress + _Credits_Offset));
         }

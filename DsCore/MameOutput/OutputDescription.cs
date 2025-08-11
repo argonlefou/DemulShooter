@@ -250,6 +250,11 @@ namespace DsCore.MameOutput
         public static readonly String WaterFallLamp = "WaterFallLamp";
         public static readonly String WaterLevelLamp = "WaterLevelLamp";
 
+        public static readonly String BonusDisplay = "BonusDisplay";    // Robin Hood
+
+        public static readonly String CoinBlocker = "CoinBlocker";      //
+        public static readonly String MotorUnit_1 = "MotorUnit_1";      // Gashaaaan 2
+        public static readonly String MotorUnit_2 = "MotorUnit_2";      //
 
 
         //Custom Outputs

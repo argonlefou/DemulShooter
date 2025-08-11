@@ -228,6 +228,10 @@ namespace DsCore.MameOutput
         P2_Shaker,
         P3_Shaker,
         P4_Shaker,
+        BonusDisplay,
+        CoinBlocker,
+        MotorUnit_1,
+        MotorUnit_2,
 
         Credits = 1000,
         P1_CtmLmpStart,

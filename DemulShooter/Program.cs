@@ -107,6 +107,7 @@ namespace DemulShooter
 
             Dictionary<String, String> _KonamiRoms = new Dictionary<String, String>(){
                 {"coop9","Cooper's 9"},
+                {"gashn2","Gashaaaan Refills"},
                 {"hcv","Castlevania Arcade"},
                 {"le3","Lethal Enforcers 3"},
                 {"wartran","Wartran Troopers"}
