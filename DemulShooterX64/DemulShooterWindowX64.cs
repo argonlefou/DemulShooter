@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
+using DemulShooterX64.Games;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
@@ -377,6 +378,11 @@ namespace DemulShooterX64
                             {
                                 _Game = new Game_S357DarkEscape(_Rom.ToLower());
                             }; break;
+                        case "razstorm":
+                            {
+                                _Game = new Game_S357RazingStorm(_Rom.ToLower());
+                            }
+                            ; break;
                         case "sailorz":
                             {
                                 _Game = new Game_S357SailorZombie(_Rom.ToLower());

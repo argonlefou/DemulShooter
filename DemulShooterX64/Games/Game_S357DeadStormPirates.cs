@@ -35,6 +35,7 @@ namespace DemulShooterX64
         public Game_S357DeadStormPirates(String RomName): base(RomName, "rpcs3-gun")
         {
             _KnownMd5Prints.Add("RPCS3 v0.0.27 fork for System 357, GUN version", "3321f7771ae74e8027f0d4e18167d635");
+            _KnownMd5Prints.Add("RPCS3 v0.0.37-2ef2310e Alpha (TeknoParrot)", "56B69E6A8D95FE0AC7BF7BB5D57321DC");
             _tProcess.Start();
             Logger.WriteLog("Waiting for RPCS3 DeadStorm Pirates " + _RomName + " game to hook.....");
         }
@@ -61,7 +62,7 @@ namespace DemulShooterX64
                         {
                             // The game may start with other Windows than the main one (BepInEx console, other stuff.....) so we need to filter
                             // the displayed window according to the Title, if DemulShooter is started before the game,  to hook the correct one
-                            if (FindGameWindow_Contains("Deadstorm Pirates Special Edition"))
+                            if (FindGameWindow_Contains("Deadstorm Pirates Special Edition") || FindGameWindow_Contains("RPCS3 via TeknoParrot"))
                             {
                                 Check_PatchedFiles_Ok();
                                 CheckExeMd5();

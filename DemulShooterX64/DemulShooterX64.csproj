@@ -87,6 +87,7 @@
     <Compile Include="Games\Game_FlycastNinjaslt.cs" />
     <Compile Include="Games\Game_NuLuigiMansion_v2.cs" />
     <Compile Include="Games\Game.cs" />
+    <Compile Include="Games\Game_S357RazingStorm.cs" />
     <Compile Include="Games\Game_WndBhapc.cs" />
     <Compile Include="Games\Game_Es3Lla.cs" />
     <Compile Include="Games\Game_NuLuigiMansion.cs" />

@@ -95,6 +95,7 @@ namespace DemulShooterX64
             Dictionary<String, String> _RPCS3_System357Roms = new Dictionary<String, String>(){
                 {"deadstorm","Dead Storm Pirates"},
                 {"de4d","Dark Escape 4D"},
+                {"razstorm","Razing Storm"},
                 {"sailorz","Sailor Zombies"}
             };            
 
@@ -119,10 +120,10 @@ namespace DemulShooterX64
                         Console.WriteLine("");
                         Console.WriteLine("");
                         Console.WriteLine("DemulShooterX64 v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString());
-                        DateTime CompileTime = new DateTime(Builtin.CompileTime, DateTimeKind.Utc);
-                        String CompileDate = CompileTime.ToString("MMMM d", new CultureInfo("en-US"));
-                        CompileDate = String.Format("{0}{1}, {2}", CompileDate, GetDaySuffix(CompileTime.Day), CompileTime.ToString("yyyy"));
-                        Console.WriteLine("Build date : " + CompileDate);
+                        //DateTime CompileTime = new DateTime(Builtin.CompileTime, DateTimeKind.Utc);
+                        //String CompileDate = CompileTime.ToString("MMMM d", new CultureInfo("en-US"));
+                        //CompileDate = String.Format("{0}{1}, {2}", CompileDate, GetDaySuffix(CompileTime.Day), CompileTime.ToString("yyyy"));
+                        //Console.WriteLine("Build date : " + CompileDate);
                         Console.WriteLine("");
                         Console.WriteLine("usage : DemulShooterX64.exe -target=[target] -rom=[rom] [options]");
                         Console.WriteLine("");

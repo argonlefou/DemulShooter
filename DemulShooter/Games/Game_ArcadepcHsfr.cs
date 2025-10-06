@@ -297,7 +297,6 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 40 08");
             //push eax
             CaveMemory.Write_StrBytes("50");
-
             //mov esi,[ebp+0C]
             CaveMemory.Write_StrBytes("8B 75 0C");
             //shl esi,02
@@ -329,23 +328,23 @@ namespace DemulShooter
             CaveMemory.Write_StrBytes("8B 40 08");
             //push eax
             CaveMemory.Write_StrBytes("50");
-            //mov esi,[ebp+0C]
-            CaveMemory.Write_StrBytes("8B 75 0C");
-            //shl esi,02
-            CaveMemory.Write_StrBytes("C1 E6 02");
-            //add esi,[ebp+10]
-            CaveMemory.Write_StrBytes("03 75 10");
-            //add esi,_Light_Array_CaveAddress
-            CaveMemory.Write_StrBytes("81 C6");
+            //mov edi,[ebp+0C]
+            CaveMemory.Write_StrBytes("8B 7D 0C");
+            //shl edi,02
+            CaveMemory.Write_StrBytes("C1 E7 02");
+            //add edi,[ebp+10]
+            CaveMemory.Write_StrBytes("03 7D 10");
+            //add edi,_Light_Array_CaveAddress
+            CaveMemory.Write_StrBytes("81 C7");
             CaveMemory.Write_Bytes(BitConverter.GetBytes(_Light_Array_CaveAddress));
             //xor eax, eax
             CaveMemory.Write_StrBytes("31 C0");
-            //mov [esi],al
-            CaveMemory.Write_StrBytes("88 06");
+            //mov [edi],al
+            CaveMemory.Write_StrBytes("88 07");
             //pop eax
             CaveMemory.Write_StrBytes("58");
-            //mov esi,[ebp+10]
-            CaveMemory.Write_StrBytes("8B 75 10");
+            //mov edi,[ebp+10]
+            CaveMemory.Write_StrBytes("8B 7D 10");
 
             //Inject it
             CaveMemory.InjectToOffset(_UafControlManager_CloseLight_InjectionStruct, "UAF_ControlManager.CloseLight()");
