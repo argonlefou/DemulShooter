@@ -39,7 +39,7 @@ namespace DemulShooter
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
         public Game_LindberghHotdEx(String RomName)
-            : base(RomName, "BudgieLoader")
+            : base(RomName, "linuxloader")
         {
 
             _KnownMd5Prints.Add("House of The Dead EX (SBRC)", "69a85f6f2ba82e014cf7e3f65f7b3d2a");
@@ -347,7 +347,7 @@ namespace DemulShooter
             SetOutputValue(OutputId.Lmp5, ReadByte(Outputs_Address + 1) >> 2 & 0x01);
             SetOutputValue(OutputId.Lmp6, ReadByte(Outputs_Address + 1) >> 1 & 0x01);
             SetOutputValue(OutputId.P1_LmpFoot, ReadByte(Outputs_Address) >> 5 & 0x01);
-            SetOutputValue(OutputId.P2_LmpFoot, ReadByte(Outputs_Address) >> 4 & 0x01);            
+            SetOutputValue(OutputId.P2_LmpFoot, ReadByte(Outputs_Address) >> 2 & 0x01);            
 
             //Custom Outputs
             int P1_Life = 0;

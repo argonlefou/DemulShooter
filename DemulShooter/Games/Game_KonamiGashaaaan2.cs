@@ -245,7 +245,7 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputId.P4_LmpFront));
             _Outputs.Add(new GameOutput(OutputId.MotorUnit_1));
             _Outputs.Add(new GameOutput(OutputId.MotorUnit_2));
-            _Outputs.Add(new GameOutput(OutputId.CoinBlocker));
+            _Outputs.Add(new GameOutput(OutputId.CoinBlocker_1));
             _Outputs.Add(new GameOutput(OutputId.Credits));
         }
 
@@ -265,7 +265,7 @@ namespace DemulShooter
             SetOutputValue(OutputId.P4_LmpFront, ReadByte(_Lamps_CaveAddress + 7));
             SetOutputValue(OutputId.MotorUnit_1, ReadByte(_MotorUnits_CaveAddress));
             SetOutputValue(OutputId.MotorUnit_2, ReadByte(_MotorUnits_CaveAddress + 1));
-            SetOutputValue(OutputId.CoinBlocker, ReadByte(_CoinBlocker_CaveAddress));
+            SetOutputValue(OutputId.CoinBlocker_1, ReadByte(_CoinBlocker_CaveAddress));
 
             int Credits = (int)ReadPtrChain((UInt32)_TargetProcess_MemoryBaseAddress + _CreditsPtr_Offset, new UInt32[] { 0x20 });
             SetOutputValue(OutputId.Credits, Credits);

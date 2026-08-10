@@ -230,13 +230,14 @@ namespace DsCore.MameOutput
         P3_Shaker,          //
         P4_Shaker,          ///
         BonusDisplay,       //Robin Hood
-        CoinBlocker,        //\
-        MotorUnit_1,        //  Gashaaaan 2
-        MotorUnit_2,        ///
+        MotorUnit_1,        //\  
+        MotorUnit_2,        /// Gashaaaan 2
         P1_WaterRotate,     //\
         P2_WaterRotate,     ///  Hero Fire arcade
         P1_GunType,
         P2_GunType,
+        CoinBlocker_1,
+        CoinBlocker_2,
         Neuralizer,         //MIB
         Lmp_Disinfection,
         Lmp_P1_P2_OutOfTickets,
@@ -251,6 +252,20 @@ namespace DsCore.MameOutput
         P2_OuterWater,
         P3_OuterWater,
         P4_OuterWater,
+        Lmp_Bakuon,         // \
+        Lmp_EMoneyCenter,   //
+        Lmp_EMoneyRight,    //
+        Lmp_EMoneyLeft,     //
+        Lmp_Eye0,           //
+        P1_LmpCeiling_R,    //
+        P1_LmpCeiling_G,    //
+        P1_LmpCeiling_B,    //  House of The Dead : Scarlet Dawn
+        P2_LmpCeiling_R,    //
+        P2_LmpCeiling_G,    //
+        P2_LmpCeiling_B,    //
+        Lmp_ZombieObject_R, //
+        Lmp_ZombieObject_G, //
+        Lmp_ZombieObject_B, // /
 
 
         Credits = 1000,

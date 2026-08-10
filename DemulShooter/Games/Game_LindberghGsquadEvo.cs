@@ -23,21 +23,22 @@ namespace DemulShooter
         private InjectionStruct _JvsRawAxes_InjectionStruct = new InjectionStruct(0x08185951, 7);
         private InjectionStruct _Buttons_InjectionStruct = new InjectionStruct(0x08185710, 7);
 
-
         //MEMORY ADDRESSES
         //private UInt32 _GameMode_Address = 0x08660420;
         private UInt32 _P1_GameState_Address = 0x086617E8;
         private UInt32 _P2_GameState_Address = 0x8661994;
         private UInt32 _P1_LifePtr_Address = 0x086618D4;
         private UInt32 _P2_LifePtr_Address = 0x08661A80;
-        private UInt32 _Outputs_Address = 0x08656330;
+        private UInt32 _Outputs_Address = 0x08656358;
         private UInt32 _Credits_Address = 0x00AE9FBA0;
         private InjectionStruct _PlayerDamage_Injection = new InjectionStruct(0x810C9D9, 6);
+        private InjectionStruct _Recoil_InjectionStruct = new InjectionStruct(0x080E52EC, 6);
 
         //Custom Data
         private UInt32 _JvsRawAxes_CaveAddress;
         private UInt32 _Buttons_CaveAddress;
         private UInt32 _Damage_CaveAddress;
+        private UInt32 _Recoil_Caveaddress;
 
         private UInt32 _RomLoaded_Check_Address = 0x0807C9A0;
 
@@ -253,11 +254,43 @@ namespace DemulShooter
         {
             Create_OutputsDataBank();
             _Damage_CaveAddress = _OutputsDatabank_Address;
+            _Recoil_Caveaddress = _OutputsDatabank_Address + 0x04;
 
+            SetHack_Recoil();
             SetHack_Damage();
 
             Logger.WriteLog("Outputs Memory Hack complete !");
             Logger.WriteLog("-");
+        }
+
+        //Just reading the JVS output bytes miss some bullets recoil on x3 or auto fire
+        //Instead, getting the signal directly from the set_gun_reaction() call
+        private void SetHack_Recoil()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess.MainModule.BaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //push eax
+            CaveMemory.Write_StrBytes("50");
+            //mov eax,[esp+08]
+            CaveMemory.Write_StrBytes("8B 44 24 08");
+            //add eax,_Recoil_Caveaddress
+            CaveMemory.Write_StrBytes("05");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_Recoil_Caveaddress));
+            //mov byte ptr [eax],01
+            CaveMemory.Write_StrBytes("C6 00 01");
+            //pop eax
+            CaveMemory.Write_StrBytes("58");
+            //push ebp
+            CaveMemory.Write_StrBytes("55");
+            //mov ebp,esp
+            CaveMemory.Write_StrBytes("8B EC");
+            //sub esp,18
+            CaveMemory.Write_StrBytes("83 EC 18");
+
+            //Inject it it
+            CaveMemory.InjectToAddress(_Recoil_InjectionStruct, "Recoil");
         }
 
         //Intercept a call to set_player_damage_internal() function to get dammage event
@@ -417,8 +450,13 @@ namespace DemulShooter
                 //[Damaged] custom Output                
                 if (ReadByte(_Damage_CaveAddress) == 1)
                     SetOutputValue(OutputId.P1_Damaged, 1);
+
+                //[Recoil] custom Output
+                if (ReadByte(_Recoil_Caveaddress) == 1)
+                    SetOutputValue(OutputId.P1_CtmRecoil, 1);
             }
             WriteByte(_Damage_CaveAddress, 0);
+            WriteByte(_Recoil_Caveaddress, 0);
 
             // Checking the Player state to not trigger Damage event during Attract mode:
             // 0x00 = Not playing
@@ -434,12 +472,14 @@ namespace DemulShooter
                 //[Damaged] custom Output                
                 if (ReadByte(_Damage_CaveAddress + 1) == 1)
                     SetOutputValue(OutputId.P2_Damaged, 1);
+
+                //[Recoil] custom Output
+                if (ReadByte(_Recoil_Caveaddress + 1) == 1)
+                    SetOutputValue(OutputId.P1_CtmRecoil + 1, 1);
             }
             WriteByte(_Damage_CaveAddress + 1, 0);
+            WriteByte(_Recoil_Caveaddress + 1, 0);
 
-            //Custom recoil will be recoil just like the original one
-            SetOutputValue(OutputId.P1_CtmRecoil, ReadByte(_Outputs_Address) >> 6 & 0x01);
-            SetOutputValue(OutputId.P2_CtmRecoil, ReadByte(_Outputs_Address) >> 3 & 0x01);
             SetOutputValue(OutputId.P1_Life, _P1_Life);
             SetOutputValue(OutputId.P2_Life, _P2_Life);
 

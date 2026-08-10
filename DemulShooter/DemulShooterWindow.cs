@@ -310,7 +310,7 @@ namespace DemulShooter
                     _Wm_OutputHelper = new Wm_OutputHelper(_RawMessageWnd_hWnd);
                     _Wm_OutputHelper.Start();
                 }
-                if (Configurator.GetInstance().Net_OutputEnabled)
+                else if (Configurator.GetInstance().Net_OutputEnabled)
                 {
                     Logger.WriteLog("Creating Network Output Helper...");
                     _Net_OutputHelper = new Net_OutputHelper(_Rom);
@@ -1182,10 +1182,16 @@ namespace DemulShooter
                 {
                     _Game.UpdateOutputValues();
                     
-                    if (Configurator.GetInstance().Wm_OutputEnabled && _Wm_OutputHelper != null && _Wm_OutputHelper.RomNameSent)
-                        _Wm_OutputHelper.SendValues(_Game.Outputs);
-                    if (Configurator.GetInstance().Net_OutputEnabled && _Net_OutputHelper!= null)
-                        _Net_OutputHelper.BroadcastValues(_Game.Outputs);
+                    if (Configurator.GetInstance().Wm_OutputEnabled)
+                    {
+                        if (_Wm_OutputHelper != null && _Wm_OutputHelper.RomNameSent)
+                            _Wm_OutputHelper.SendValues(_Game.Outputs);
+                    }
+                    else if (Configurator.GetInstance().Net_OutputEnabled)
+                    {
+                        if (_Net_OutputHelper != null)
+                            _Net_OutputHelper.BroadcastValues(_Game.Outputs);
+                    }
                 }
 
                 DsCore.Win32.Win32API.MM_BeginPeriod(1);

@@ -341,7 +341,6 @@ namespace DemulShooter
             _Outputs.Add(new GameOutput(OutputId.Lmp6));
             _Outputs.Add(new GameOutput(OutputId.P1_GunRecoil));
             _Outputs.Add(new GameOutput(OutputId.P1_Ammo));
-            _Outputs.Add(new GameOutput(OutputId.P1_Clip));
             _Outputs.Add(new AsyncGameOutput(OutputId.P1_CtmRecoil, Configurator.GetInstance().OutputCustomRecoilOnDelay, Configurator.GetInstance().OutputCustomRecoilOffDelay, 0));
             _Outputs.Add(new GameOutput(OutputId.P1_Life));
             _Outputs.Add(new AsyncGameOutput(OutputId.P1_Damaged, Configurator.GetInstance().OutputCustomDamagedDelay, 100, 0));
@@ -369,10 +368,9 @@ namespace DemulShooter
             //Custom Outputs
             _P1_Life = 0;
             _P1_Ammo = 0;
-            int P1_Clip = 0;
 
             //Filter InGame and not in attract Demo
-            if (ReadByte(ReadPtr(_PlayerStructPtr_Address) + 0x27) == 1 && ReadByte(ReadPtr(_PlayerStructPtr_Address) + 0x2D) == 1)
+            if (ReadByte(ReadPtr(_PlayerStructPtr_Address) + 0x27) != 0 && ReadByte(ReadPtr(_PlayerStructPtr_Address) + 0x2D) == 1)
             {
                 _P1_Life = ReadByte(ReadPtr(_PlayerStructPtr_Address) + 0x78);
                 _P1_Ammo = ReadByte(ReadPtr(_AmmoPtr_Address) + 0x04);
@@ -380,17 +378,12 @@ namespace DemulShooter
                 //[Damaged] custom Output  
                 if (_P1_Life < _P1_LastLife)
                     SetOutputValue(OutputId.P1_Damaged, 1);
-
-                //[Clip] custom Output  
-                if (_P1_Ammo > 0)
-                    P1_Clip = 1;
             }
 
             _P1_LastLife = _P1_Life;
             _P1_LastAmmo = _P1_Ammo;
 
             SetOutputValue(OutputId.P1_Ammo, _P1_Ammo);
-            SetOutputValue(OutputId.P1_Clip, P1_Clip);
             //Custom Recoil will be ctivated just ike the original one
             SetOutputValue(OutputId.P1_CtmRecoil, RecoilStatus); 
             SetOutputValue(OutputId.P1_Life, _P1_Life);

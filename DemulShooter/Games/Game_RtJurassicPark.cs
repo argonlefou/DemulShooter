@@ -476,7 +476,7 @@ namespace DemulShooter
                     //default Gun
                     case 0:
                         {
-                            _P2_Ammo = 0;
+                            _P2_Ammo = 99;
                         } break;
                     //Electro Gun
                     case 4:

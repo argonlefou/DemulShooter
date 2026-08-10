@@ -200,9 +200,9 @@ namespace DemulShooter_GUI
 
             //Fill Output Tab
             Logger.WriteLog("Initializing GUI [Output] pages...");
-            Cbox_Outputs.Checked = Configurator.GetInstance().OutputEnabled;
-            Cbox_WmOutputs.Checked = Configurator.GetInstance().Wm_OutputEnabled;
-            Cbox_NetOutputs.Checked = Configurator.GetInstance().Net_OutputEnabled;
+            Rdo_OutputsNone.Checked = true;
+            Rdo_OutputsWm.Checked = Configurator.GetInstance().Wm_OutputEnabled;
+            Rdo_OutputsNetwork.Checked = Configurator.GetInstance().Net_OutputEnabled;
             Txt_OutputDelay.Text = Configurator.GetInstance().OutputPollingDelay.ToString();
             Txt_OutputRecoilOn.Text = Configurator.GetInstance().OutputCustomRecoilOnDelay.ToString();
             Txt_OutputRecoilOff.Text = Configurator.GetInstance().OutputCustomRecoilOffDelay.ToString();
@@ -1221,37 +1221,26 @@ namespace DemulShooter_GUI
 
         #region Outputs tab
 
-        private void Cbox_Outputs_CheckedChanged(object sender, EventArgs e)
+        private void Rdo_Outputs_CheckedChanged(object sender, EventArgs e)
         {
-            Txt_OutputDelay.Enabled = Cbox_Outputs.Checked;
-            Txt_OutputRecoilOn.Enabled = Cbox_Outputs.Checked;
-            Txt_OutputRecoilOff.Enabled = Cbox_Outputs.Checked;
-            Txt_OutputDamaged.Enabled = Cbox_Outputs.Checked;
-
-            Cbox_WmOutputs.Enabled = Cbox_Outputs.Checked;
-            Cbox_NetOutputs.Enabled = Cbox_Outputs.Checked;
-            Configurator.GetInstance().OutputEnabled = Cbox_Outputs.Checked;
-        }
-
-
-        private void Cbox_WmOutputs_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!Cbox_WmOutputs.Checked)
+            if (Rdo_OutputsNone.Checked)
             {
-                if (!Cbox_NetOutputs.Checked)
-                    Cbox_WmOutputs.Checked = true;
+                Txt_OutputDelay.Enabled = false;
+                Txt_OutputRecoilOn.Enabled = false;
+                Txt_OutputRecoilOff.Enabled = false;
+                Txt_OutputDamaged.Enabled = false;
             }
-            Configurator.GetInstance().Wm_OutputEnabled = Cbox_WmOutputs.Checked;
-        }
-
-        private void Cbox_NetOutputs_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!Cbox_NetOutputs.Checked)
+            else
             {
-                if (!Cbox_WmOutputs.Checked)
-                    Cbox_NetOutputs.Checked = true;
+                Txt_OutputDelay.Enabled = true;
+                Txt_OutputRecoilOn.Enabled = true;
+                Txt_OutputRecoilOff.Enabled = true;
+                Txt_OutputDamaged.Enabled = true;
             }
-            Configurator.GetInstance().Net_OutputEnabled = Cbox_NetOutputs.Checked;
+
+            Configurator.GetInstance().OutputEnabled = Rdo_OutputsNone.Checked ? false : true;
+            Configurator.GetInstance().Wm_OutputEnabled = Rdo_OutputsWm.Checked;
+            Configurator.GetInstance().Net_OutputEnabled = Rdo_OutputsNetwork.Checked;
         }
 
         private void Txt_OutputDelay_TextChanged(object sender, EventArgs e)

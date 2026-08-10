@@ -426,7 +426,7 @@ namespace DemulShooter
                 //4: Cutscene
                 //15: Contnue
                 int P1_Status = ReadByte(P1_StructAddress + 0x5C);
-                int P2_Status = ReadByte(P1_StructAddress + 0x5C);
+                int P2_Status = ReadByte(P2_StructAddress + 0x5C);
                 if (P1_Status == 3 || P1_Status == 4)
                 {
                     _P1_Life = ReadByte(P1_StructAddress + 0x60);
