@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DemulShooterWindowX64.cs" />
+    <Compile Include="TcpInputServer.cs" />
     <Compile Include="Games\Game_ArcadepcDinoInvasion.cs" />
     <Compile Include="Games\Game_ArcadepcDrakon.cs" />
     <Compile Include="Games\Game_ArcadepcMarsSortie.cs" />

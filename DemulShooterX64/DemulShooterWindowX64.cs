@@ -51,6 +51,10 @@ namespace DemulShooterX64
         private Net_OutputHelper _Net_OutputHelper;
         private Thread _OutputUpdateLoop;
 
+        //TCP Input Server
+        private TcpInputServer _TcpInputServer;
+        private object _TcpInputSync = new object();
+
         //Game options
         private Game _Game;
         private string _Rom = String.Empty;
@@ -193,6 +197,32 @@ namespace DemulShooterX64
                 }
                 else
                     Logger.WriteLog("P" + Player.ID + " Gamepad ID = " + Player.GamepadID);
+            }
+
+            bool tcpInputEnabled = false;
+            foreach (PlayerSettings Player in Configurator.GetInstance().PlayersSettings)
+            {
+                if (Player.Mode == PlayerSettings.PLAYER_MODE_TCPINPUT)
+                {
+                    tcpInputEnabled = true;
+                    if (Player.RIController == null)
+                    {
+                        Player.RIController = new RawInputController();
+                        Player.RIController.SetDeviceName("[TCP Input P" + Player.ID + "]");
+                        Player.RIController.SetDeviceType(RawInputDeviceType.RIM_TYPEHID);
+                        Player.RIController.SetAxisRange(0, 0x0000FFFF, 0, 0x0000FFFF);
+                        Player.RIController.SetComputedCoordinates(0, 0);
+                        Player.RIController.SetComputedButtons(0);
+                    }
+                }
+            }
+
+            if (tcpInputEnabled)
+            {
+                int tcpPort = Configurator.GetInstance().TcpInputPort;
+                Logger.WriteLog("Starting TCP input server on port " + tcpPort);
+                _TcpInputServer = new TcpInputServer(ProcessTcpInputData, tcpPort);
+                _TcpInputServer.Start();
             }
 
             //Setting up IPC for inputs/outputs
@@ -793,6 +823,168 @@ namespace DemulShooterX64
         }
 
         /// <summary>
+        /// Handler for binary DemulShooter protocol data from TCP clients.
+        /// Converts normalized float coordinates (0.0-1.0) and button states to player input events.
+        /// </summary>
+        internal void ProcessTcpInputData(float[] axisX, float[] axisY, bool[] trigger, bool[] reload, bool[] action)
+        {
+            if (_Game == null || !_Game.ProcessHooked)
+                return;
+
+            lock (_TcpInputSync)
+            {
+                for (int playerId = 1; playerId <= 4; playerId++)
+                {
+                    PlayerSettings player = Configurator.GetInstance().GetPlayerSettings(playerId);
+                    if (player == null)
+                        continue;
+
+                    if (player.Mode != PlayerSettings.PLAYER_MODE_TCPINPUT || player.RIController == null)
+                        continue;
+
+                    int idx = playerId - 1;
+
+                    player.RIController.Computed_X = (int)(axisX[idx] * 0xFFFF);
+                    player.RIController.Computed_Y = (int)(axisY[idx] * 0xFFFF);
+
+                    RawInputcontrollerButtonEvent buttonEvents = 0;
+
+                    bool currentTrigger = trigger[idx];
+                    if (currentTrigger && !player.TcpFirePressed)
+                        buttonEvents |= RawInputcontrollerButtonEvent.OnScreenTriggerDown;
+                    else if (!currentTrigger && player.TcpFirePressed)
+                        buttonEvents |= RawInputcontrollerButtonEvent.OnScreenTriggerUp;
+                    player.TcpFirePressed = currentTrigger;
+                    player.RIController.Hid_Buttons[0] = currentTrigger;
+
+                    bool currentReload = reload[idx];
+                    if (currentReload && !player.TcpReloadPressed)
+                        buttonEvents |= RawInputcontrollerButtonEvent.OffScreenTriggerDown;
+                    else if (!currentReload && player.TcpReloadPressed)
+                        buttonEvents |= RawInputcontrollerButtonEvent.OffScreenTriggerUp;
+                    player.TcpReloadPressed = currentReload;
+                    player.RIController.Hid_Buttons[2] = currentReload;
+
+                    bool currentAction = action[idx];
+                    if (currentAction && !player.TcpActionPressed)
+                        buttonEvents |= RawInputcontrollerButtonEvent.ActionDown;
+                    else if (!currentAction && player.TcpActionPressed)
+                        buttonEvents |= RawInputcontrollerButtonEvent.ActionUp;
+                    player.TcpActionPressed = currentAction;
+                    player.RIController.Hid_Buttons[1] = currentAction;
+
+                    player.RIController.Computed_Buttons = buttonEvents;
+
+                    ProcessPlayerComputedInput(player);
+                }
+            }
+        }
+
+        private void ProcessPlayerComputedInput(PlayerSettings Player)
+        {
+            if (_Game == null || !_Game.ProcessHooked)
+                return;
+
+            RawInputController Controller = Player.RIController;
+            if (Controller == null)
+                return;
+
+            if (_EnableInputsIpc)
+                _MMF_Inputs.UpdateRawPlayerData(Player.ID, (UInt32)Player.RIController.Computed_X, (UInt32)Player.RIController.Computed_Y);
+
+            _Game.GetScreenResolution();
+            Logger.WriteLog("PrimaryScreen Size (Px) = [ " + _Game.ScreenWidth + "x" + _Game.ScreenHeight + " ]");
+
+            if (!Controller.IsRelativeCoordinates)
+            {
+                if (Player.RIController.DeviceType == RawInputDeviceType.RIM_TYPEHID && Player.AnalogAxisRangeOverride)
+                {
+                    Player.RIController.Computed_X = _Game.ScreenScale(Player.RIController.Computed_X, Player.AnalogManual_Xmin, Player.AnalogManual_Xmax, 0, _Game.ScreenWidth);
+                    Player.RIController.Computed_Y = _Game.ScreenScale(Player.RIController.Computed_Y, Player.AnalogManual_Ymin, Player.AnalogManual_Ymax, 0, _Game.ScreenHeight);
+                }
+                else
+                {
+                    Player.RIController.Computed_X = _Game.ScreenScale(Player.RIController.Computed_X, Player.RIController.Axis_X_Min, Player.RIController.Axis_X_Max, 0, _Game.ScreenWidth);
+                    Player.RIController.Computed_Y = _Game.ScreenScale(Player.RIController.Computed_Y, Player.RIController.Axis_Y_Min, Player.RIController.Axis_Y_Max, 0, _Game.ScreenHeight);
+                }
+
+                if (Player.InvertAxis_X)
+                    Player.RIController.Computed_X = _Game.ScreenWidth - Player.RIController.Computed_X;
+                if (Player.InvertAxis_Y)
+                    Player.RIController.Computed_Y = _Game.ScreenHeight - Player.RIController.Computed_Y;
+
+                Logger.WriteLog("OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
+
+                if (Configurator.GetInstance().Act_Labs_Offset_Enable)
+                {
+                    Player.RIController.Computed_X += Player.Act_Labs_Offset_X;
+                    Player.RIController.Computed_Y += Player.Act_Labs_Offset_Y;
+                    Logger.WriteLog("ActLabs adaptated OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
+                }
+            }
+
+            if (_ForceScalingX != 1.0)
+            {
+                double HalfScreenSize = (double)_Game.ScreenWidth / 2.0;
+                double NewX = (((double)Player.RIController.Computed_X - HalfScreenSize) * _ForceScalingX) + HalfScreenSize;
+                Player.RIController.Computed_X = Convert.ToInt32(NewX);
+                Logger.WriteLog("Forced scaled OnScreen Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
+            }
+
+            _Game.IsFullscreen = _Game.GetFullscreenStatus();
+            if (!_Game.IsFullscreen)
+            {
+                Logger.WriteLog("ClientWindow Style = Windowed");
+                _Game.GetClientwindowInfo();
+
+                if (!_Game.ClientScale(Player))
+                {
+                    Logger.WriteLog("Error converting screen location to client location");
+                    return;
+                }
+                Logger.WriteLog("OnClient Cursor Position (Px) = [ " + Player.RIController.Computed_X + ", " + Player.RIController.Computed_Y + " ]");
+
+                if (!_Game.GetClientRect())
+                {
+                    Logger.WriteLog("Error getting client Rect");
+                    return;
+                }
+            }
+            else
+            {
+                Logger.WriteLog("ClientWindow Style = FullScreen");
+                Rect r = new Rect();
+                r.Top = 0;
+                r.Left = 0;
+                r.Bottom = _Game.ScreenHeight;
+                r.Right = _Game.ScreenWidth;
+                _Game.ClientRect = r;
+            }
+
+            if (!_Game.GameScale(Player))
+            {
+                Logger.WriteLog("Error converting client location to game location");
+                return;
+            }
+
+            Logger.WriteLog("Game Position (Hex) = [ " + Player.RIController.Computed_X.ToString("X4") + ", " + Player.RIController.Computed_Y.ToString("X4") + " ]");
+            Logger.WriteLog("Game Position (Dec) = [ " + Player.RIController.Computed_X.ToString() + ", " + Player.RIController.Computed_Y.ToString() + " ]");
+            if (Player.RIController.Computed_Buttons != 0)
+                Logger.WriteLog("Controller Buttons Events : " + Player.RIController.Computed_Buttons.ToString());
+            Logger.WriteLog("-");
+
+            if (!_NoInput)
+                _Game.SendInput(Player);
+
+            if (_EnableInputsIpc)
+            {
+                _MMF_Inputs.UpdateComputedPlayerData(Player.ID, Player.RIController.Computed_X, Player.RIController.Computed_Y, Player.RIController.Hid_Buttons);
+                if (_MMF_Inputs.WriteData() != 0)
+                    Logger.WriteLog("Succesfully copied P" + Player.ID.ToString() + " data to MMF " + _MMF_Inputs.MemoryFileName);
+            }
+        }
+
+        /// <summary>
         /// Output handling thread :
         /// This infinite loop will check the targeted game values and send them to registerd Output clients
         /// </summary>
@@ -905,6 +1097,11 @@ namespace DemulShooterX64
             if (_Net_OutputHelper != null)
             {
                 _Net_OutputHelper.Stop();
+            }
+
+            if (_TcpInputServer != null)
+            {
+                _TcpInputServer.Stop();
             }
 
             //Cleanup so that the icon will be removed when the application is closed
