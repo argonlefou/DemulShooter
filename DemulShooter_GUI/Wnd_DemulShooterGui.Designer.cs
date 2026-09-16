@@ -224,6 +224,9 @@
             this.Btn_Dcop = new System.Windows.Forms.Button();
             this.Tab_Outputs = new System.Windows.Forms.TabPage();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
+            this.Rdo_OutputsNetwork = new System.Windows.Forms.RadioButton();
+            this.Rdo_OutputsWm = new System.Windows.Forms.RadioButton();
+            this.Rdo_OutputsNone = new System.Windows.Forms.RadioButton();
             this.Btn_SaveOutput = new System.Windows.Forms.Button();
             this.Grp_Outputs = new System.Windows.Forms.GroupBox();
             this.label21 = new System.Windows.Forms.Label();
@@ -242,9 +245,7 @@
             this.Bgw_XInput = new System.ComponentModel.BackgroundWorker();
             this.Cbo_PageSettings = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
-            this.Rdo_OutputsNone = new System.Windows.Forms.RadioButton();
-            this.Rdo_OutputsWm = new System.Windows.Forms.RadioButton();
-            this.Rdo_OutputsNetwork = new System.Windows.Forms.RadioButton();
+            this.Btn_Skos = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.Tab_P1.SuspendLayout();
             this.Tab_P2.SuspendLayout();
@@ -2375,6 +2376,7 @@
             // Tab_UnityPlugins
             // 
             this.Tab_UnityPlugins.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tab_UnityPlugins.Controls.Add(this.Btn_Skos);
             this.Tab_UnityPlugins.Controls.Add(this.label36);
             this.Tab_UnityPlugins.Controls.Add(this.Btn_Wws);
             this.Tab_UnityPlugins.Controls.Add(this.Btn_Pbx);
@@ -2408,7 +2410,7 @@
             // Btn_Wws
             // 
             this.Btn_Wws.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.Btn_Wws.Location = new System.Drawing.Point(42, 222);
+            this.Btn_Wws.Location = new System.Drawing.Point(167, 222);
             this.Btn_Wws.Margin = new System.Windows.Forms.Padding(4);
             this.Btn_Wws.Name = "Btn_Wws";
             this.Btn_Wws.Size = new System.Drawing.Size(118, 48);
@@ -2432,7 +2434,7 @@
             // Btn_Tra
             // 
             this.Btn_Tra.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.Btn_Tra.Location = new System.Drawing.Point(419, 166);
+            this.Btn_Tra.Location = new System.Drawing.Point(42, 222);
             this.Btn_Tra.Margin = new System.Windows.Forms.Padding(4);
             this.Btn_Tra.Name = "Btn_Tra";
             this.Btn_Tra.Size = new System.Drawing.Size(118, 48);
@@ -2585,6 +2587,43 @@
             this.groupBox19.TabIndex = 57;
             this.groupBox19.TabStop = false;
             this.groupBox19.Text = "Outputs :";
+            // 
+            // Rdo_OutputsNetwork
+            // 
+            this.Rdo_OutputsNetwork.AutoSize = true;
+            this.Rdo_OutputsNetwork.Location = new System.Drawing.Point(13, 81);
+            this.Rdo_OutputsNetwork.Name = "Rdo_OutputsNetwork";
+            this.Rdo_OutputsNetwork.Size = new System.Drawing.Size(120, 20);
+            this.Rdo_OutputsNetwork.TabIndex = 60;
+            this.Rdo_OutputsNetwork.TabStop = true;
+            this.Rdo_OutputsNetwork.Text = "Network outputs";
+            this.Rdo_OutputsNetwork.UseVisualStyleBackColor = true;
+            this.Rdo_OutputsNetwork.CheckedChanged += new System.EventHandler(this.Rdo_Outputs_CheckedChanged);
+            // 
+            // Rdo_OutputsWm
+            // 
+            this.Rdo_OutputsWm.AutoSize = true;
+            this.Rdo_OutputsWm.Location = new System.Drawing.Point(13, 55);
+            this.Rdo_OutputsWm.Name = "Rdo_OutputsWm";
+            this.Rdo_OutputsWm.Size = new System.Drawing.Size(273, 20);
+            this.Rdo_OutputsWm.TabIndex = 59;
+            this.Rdo_OutputsWm.TabStop = true;
+            this.Rdo_OutputsWm.Text = "Window Message outputs (MameHooker)";
+            this.Rdo_OutputsWm.UseVisualStyleBackColor = true;
+            this.Rdo_OutputsWm.CheckedChanged += new System.EventHandler(this.Rdo_Outputs_CheckedChanged);
+            // 
+            // Rdo_OutputsNone
+            // 
+            this.Rdo_OutputsNone.AutoSize = true;
+            this.Rdo_OutputsNone.Checked = true;
+            this.Rdo_OutputsNone.Location = new System.Drawing.Point(13, 30);
+            this.Rdo_OutputsNone.Name = "Rdo_OutputsNone";
+            this.Rdo_OutputsNone.Size = new System.Drawing.Size(80, 20);
+            this.Rdo_OutputsNone.TabIndex = 58;
+            this.Rdo_OutputsNone.TabStop = true;
+            this.Rdo_OutputsNone.Text = "Disabled";
+            this.Rdo_OutputsNone.UseVisualStyleBackColor = true;
+            this.Rdo_OutputsNone.CheckedChanged += new System.EventHandler(this.Rdo_Outputs_CheckedChanged);
             // 
             // Btn_SaveOutput
             // 
@@ -2773,42 +2812,17 @@
             this.label39.TabIndex = 40;
             this.label39.Text = "Page selection :";
             // 
-            // Rdo_OutputsNone
+            // Btn_Skos
             // 
-            this.Rdo_OutputsNone.AutoSize = true;
-            this.Rdo_OutputsNone.Checked = true;
-            this.Rdo_OutputsNone.Location = new System.Drawing.Point(13, 30);
-            this.Rdo_OutputsNone.Name = "Rdo_OutputsNone";
-            this.Rdo_OutputsNone.Size = new System.Drawing.Size(80, 20);
-            this.Rdo_OutputsNone.TabIndex = 58;
-            this.Rdo_OutputsNone.TabStop = true;
-            this.Rdo_OutputsNone.Text = "Disabled";
-            this.Rdo_OutputsNone.UseVisualStyleBackColor = true;
-            this.Rdo_OutputsNone.CheckedChanged += new System.EventHandler(this.Rdo_Outputs_CheckedChanged);
-            // 
-            // Rdo_OutputsWm
-            // 
-            this.Rdo_OutputsWm.AutoSize = true;
-            this.Rdo_OutputsWm.Location = new System.Drawing.Point(13, 55);
-            this.Rdo_OutputsWm.Name = "Rdo_OutputsWm";
-            this.Rdo_OutputsWm.Size = new System.Drawing.Size(273, 20);
-            this.Rdo_OutputsWm.TabIndex = 59;
-            this.Rdo_OutputsWm.TabStop = true;
-            this.Rdo_OutputsWm.Text = "Window Message outputs (MameHooker)";
-            this.Rdo_OutputsWm.UseVisualStyleBackColor = true;
-            this.Rdo_OutputsWm.CheckedChanged += new System.EventHandler(this.Rdo_Outputs_CheckedChanged);
-            // 
-            // Rdo_OutputsNetwork
-            // 
-            this.Rdo_OutputsNetwork.AutoSize = true;
-            this.Rdo_OutputsNetwork.Location = new System.Drawing.Point(13, 81);
-            this.Rdo_OutputsNetwork.Name = "Rdo_OutputsNetwork";
-            this.Rdo_OutputsNetwork.Size = new System.Drawing.Size(120, 20);
-            this.Rdo_OutputsNetwork.TabIndex = 60;
-            this.Rdo_OutputsNetwork.TabStop = true;
-            this.Rdo_OutputsNetwork.Text = "Network outputs";
-            this.Rdo_OutputsNetwork.UseVisualStyleBackColor = true;
-            this.Rdo_OutputsNetwork.CheckedChanged += new System.EventHandler(this.Rdo_Outputs_CheckedChanged);
+            this.Btn_Skos.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Btn_Skos.Location = new System.Drawing.Point(419, 166);
+            this.Btn_Skos.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_Skos.Name = "Btn_Skos";
+            this.Btn_Skos.Size = new System.Drawing.Size(118, 48);
+            this.Btn_Skos.TabIndex = 87;
+            this.Btn_Skos.Text = "Skull Of Shadow";
+            this.Btn_Skos.UseVisualStyleBackColor = true;
+            this.Btn_Skos.Click += new System.EventHandler(this.Btn_InstallUnityPlugin_Click);
             // 
             // Wnd_DemulShooterGui
             // 
@@ -3117,6 +3131,7 @@
         private System.Windows.Forms.RadioButton Rdo_OutputsNetwork;
         private System.Windows.Forms.RadioButton Rdo_OutputsWm;
         private System.Windows.Forms.RadioButton Rdo_OutputsNone;
+        private System.Windows.Forms.Button Btn_Skos;
     }
 }
 

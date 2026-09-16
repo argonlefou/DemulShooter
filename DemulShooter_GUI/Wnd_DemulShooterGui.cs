@@ -1016,6 +1016,7 @@ namespace DemulShooter_GUI
                 case "Btn_PvZ": SrcUnityFolder = "PlantsVsZombies"; break;
                 case "Btn_Pbx": SrcUnityFolder = "PointBlankX"; break;
                 case "Btn_Rha": SrcUnityFolder = "RabbidsHollywood"; break;
+                case "Btn_Skos": SrcUnityFolder = "SkullOfShadow"; break;
                 case "Btn_Tra": SrcUnityFolder = "TombRaider"; break;
                 case "Btn_Wws": SrcUnityFolder = "WildWestShootout"; break;
                 default: break;
@@ -1492,7 +1493,5 @@ namespace DemulShooter_GUI
             }
             return true;
         }
-
-       
     }        
 }

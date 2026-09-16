@@ -287,7 +287,7 @@ namespace DemulShooterX64
                         case "eai":
                             {
                                 _Game = new Game_ArcadepcElevatorActionInvasion(_Rom.ToLower());
-                            }break;
+                            }break;                        
                         case "marss":
                             {
                                 _Game = new Game_ArcadepcMarsSortie(_Rom.ToLower());
@@ -312,6 +312,11 @@ namespace DemulShooterX64
                             {
                                 _Game = new Game_ArcadepcRha(_Rom.ToLower());
                             }; break;
+                        case "skullos":
+                            {
+                                _Game = new Game_ArcadepcSkullOfShadow(_Rom.ToLower());
+                            }
+                            ; break;
                         case "tra":
                             {
                                 _Game = new Game_ArcadepcTra(_Rom.ToLower());
@@ -471,12 +476,7 @@ namespace DemulShooterX64
                         case "onept":
                             {
                                 _Game = new Game_ArcadepcOnePoint(_Rom.ToLower());
-                            }; break;
-                        case "skullos":
-                            {
-                                _Game = new Game_ArcadepcSkullOfShadow(_Rom.ToLower());
-                            }
-                            ; break;
+                            }; break;                        
                         case "topgun2":
                             {
                                 _Game = new Game_ArcadepcTopGun2(_Rom.ToLower());

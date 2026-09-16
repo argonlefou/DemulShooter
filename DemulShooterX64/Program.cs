@@ -59,6 +59,7 @@ namespace DemulShooterX64
                 {"nha","Night Hunter"},
                 {"racramp", "Raccoon Rampage Arcade"},
                 {"rha", "Rabbids Hollywood Arcade"},
+                {"skullos", "Skull of Shadow"},
                 {"tra", "Tomb Raider Arcade"}      
             };
 

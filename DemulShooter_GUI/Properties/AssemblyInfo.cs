@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("DemulShooter GUI")]
-[assembly: AssemblyCopyright("Argonlefou © 2025")]
+[assembly: AssemblyCopyright("Argonlefou © 2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,4 +31,4 @@ using System.Runtime.InteropServices;
 //
 // Vous pouvez spécifier toutes les valeurs ou indiquer les numéros de build et de révision par défaut 
 // en utilisant '*', comme indiqué ci-dessous :
-[assembly: AssemblyVersion("17.3.0")]
+[assembly: AssemblyVersion("17.7.0")]
