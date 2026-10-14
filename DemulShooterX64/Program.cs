@@ -94,6 +94,7 @@ namespace DemulShooterX64
             };
 
             Dictionary<String, String> _RawThrillRoms = new Dictionary<String, String>(){
+                {"halo","Halo Fireteam Raven"},
                 {"nerfa","Nerf Arcade"}
             };
 

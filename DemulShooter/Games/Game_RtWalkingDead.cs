@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows.Forms;
 using DsCore;
 using DsCore.Config;
 using DsCore.MameOutput;
 using DsCore.Memory;
+using DsCore.RawInput;
 
 namespace DemulShooter
 {
@@ -14,13 +16,20 @@ namespace DemulShooter
         //Rom loaded + Rom version check
         private UInt32 _RomLoaded_check_Instruction_v105 = 0x0819DE0B;  //Check ForceFeedback setting
 
+        private UInt32 _Calibration_Patch1_Address = 0x081C52BE;
+        private UInt32 _Calibration_Patch2_Address = 0x081C52E2;
+        private InjectionStruct _RawAxis_InjectionStruct = new InjectionStruct(0x081CB412, 10);
+        private InjectionStruct _CalibratedAxis_InjectionStruct = new InjectionStruct(0x081C52B4, 5);
+        private InjectionStruct _GunButtons_InjectionStruct = new InjectionStruct(0x081CB475, 7);
+
+        //Custom Values
+        private UInt32 _RawAxes_CaveAddress = 0;
+        private UInt32 _CalibratedAxes_CaveAddress = 0;
+        private UInt32 _GunButtons_CaveAddress = 0;
+
         //Outputs Address
         private UInt32 _P1_Struct_Address = 0x090100A0;
         private UInt32 _P2_Struct_Address = 0x09010274;
-        /*private UInt32 _P1_Life_Address = 0x090100B0;
-        private UInt32 _P2_Life_Address = 0x09010284;
-        private UInt32 _P1_Ammo_Address = 0x0901010C;
-        private UInt32 _P2_Ammo_Address = 0x090102E0;*/
         private UInt32 _Lamp_Address = 0x08AC2188;
 
         //Custom Values
@@ -39,7 +48,7 @@ namespace DemulShooter
         /// </summary>
         ///  public Naomi_Game(String DemulVersion, bool Verbose, bool DisableWindow)
         public Game_RtWalkingDead(String RomName)
-            : base(RomName, "BudgieLoader")
+            : base(RomName, "linuxloader")
         {
             _KnownMd5Prints.Add("Walking Dead - 01.05 - Teknoparrot Patched", "5158b185b977b38749845be958caddb6");
             _KnownMd5Prints.Add("Walking Dead - 01.05 - Original dump", "6951619cd907173862c5eb337e263af5");
@@ -107,7 +116,152 @@ namespace DemulShooter
             }
         }
 
+        #region Screen
+
+        public override bool GameScale(PlayerSettings PlayerData)
+        {
+            if (_ProcessHandle != IntPtr.Zero)
+            {
+                try
+                {
+                    double TotalResX = _ClientRect.Right - _ClientRect.Left;
+                    double TotalResY = _ClientRect.Bottom - _ClientRect.Top;
+                    Logger.WriteLog("Game Window Rect (Px) = [ " + TotalResX + "x" + TotalResY + " ]");
+
+                    double dRatio = TotalResX / TotalResY;
+                    Logger.WriteLog("Game Window ratio = " + dRatio);
+
+                    double dMinX = 0.0;
+                    double dMaxX = 1023.0;
+                    double dMinY = 0.0;
+                    double dMaxY = 1023.0;
+                    double dRangeX = dMaxX - dMinX + 1;
+                    double dRangeY = dMaxY - dMinY + 1;
+
+                    PlayerData.RIController.Computed_X = Convert.ToInt32(Math.Round(dRangeX * PlayerData.RIController.Computed_X / TotalResX));
+                    PlayerData.RIController.Computed_Y = Convert.ToInt32(dRangeY - Math.Round(dRangeY * PlayerData.RIController.Computed_Y / TotalResY));
+
+                    if (PlayerData.RIController.Computed_X < (int)dMinX)
+                        PlayerData.RIController.Computed_X = (int)dMinX;
+                    if (PlayerData.RIController.Computed_Y < (int)dMinY)
+                        PlayerData.RIController.Computed_Y = (int)dMinY;
+                    if (PlayerData.RIController.Computed_X > (int)dMaxX)
+                        PlayerData.RIController.Computed_X = (int)dMaxX;
+                    if (PlayerData.RIController.Computed_Y > (int)dMaxY)
+                        PlayerData.RIController.Computed_Y = (int)dMaxY;
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLog("Error scaling mouse coordonates to GameFormat : " + ex.Message.ToString());
+                }
+            }
+            return false;
+        }
+
+        #endregion
+
         #region Memory Hack
+
+        protected override void Apply_InputsMemoryHack()
+        {
+            Create_InputsDataBank();
+            _RawAxes_CaveAddress = _InputsDatabank_Address;               //8 x 4 Bytes
+            _CalibratedAxes_CaveAddress = _InputsDatabank_Address + 32;   //8 x 4 Bytes
+            _GunButtons_CaveAddress = _InputsDatabank_Address + 64;       //8 x 1 Byte
+
+            //Jumping over "invert" axis option for calibration
+            WriteByte(_Calibration_Patch1_Address, 0xEB);
+
+            //Jumping over last optional calibration calculation, after our own value is inserted
+            WriteByte(_Calibration_Patch2_Address, 0xEB);
+
+            SetHack_RawAxis();
+            SetHack_CalibratedAxes();
+            SetHack_GunButtons();
+
+            Logger.WriteLog(MethodBase.GetCurrentMethod().Name + "() complete");
+        }
+
+        /// <summary>
+        /// Change the float value used to be sent to the calibration procedure by our own
+        /// 8 slots are used (0-based):
+        /// - Slot 2 = P1 Reload
+        /// - Slot 3 = P2 Reload
+        /// - Slots 4,5,6,7 = P1x, P1y, P2x, P2y
+        /// </summary>
+        private void SetHack_RawAxis()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //mov eax,[eax*4+_Axes_CaveAddress]
+            CaveMemory.Write_StrBytes("8B 04 85");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_RawAxes_CaveAddress));
+
+            //Inject it
+            CaveMemory.InjectToAddress(_RawAxis_InjectionStruct, "Raw Axes");
+        }
+
+        /// <summary>
+        /// At the end of that procedure, the game has moved the raw axis value to [-1.0, 1.0] axis value
+        /// Overriding the result to align the crosshair with the gun sight
+        /// 8 slots are used (0-based):
+        /// - Slot 2 = P1 Reload
+        /// - Slot 3 = P2 Reload
+        /// - Slots 4,5,6,7 = P1x, P1y, P2x, P2y
+        /// </summary>
+        private void SetHack_CalibratedAxes()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //push ebx
+            CaveMemory.Write_StrBytes("53");
+            //mov ebx,[ebp+30]
+            CaveMemory.Write_StrBytes("8B 5D 30");
+            //shl ebx,02
+            CaveMemory.Write_StrBytes("C1 E3 02");
+            //add ebx,_CalibratedAxes_CaveAddress
+            CaveMemory.Write_StrBytes("81 C3");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_CalibratedAxes_CaveAddress));
+            //mov ebx,[ebx]
+            CaveMemory.Write_StrBytes("8B 1B");
+            //mov eax,[ebp+08]
+            CaveMemory.Write_StrBytes("8B 45 08");
+            //mov [eax+04],ebx
+            CaveMemory.Write_StrBytes("89 58 04");
+            //pop ebx
+            CaveMemory.Write_StrBytes("5B");
+            //mov eax,[eax]
+            CaveMemory.Write_StrBytes("8B 00");
+
+            //Inject it
+            CaveMemory.InjectToAddress(_CalibratedAxis_InjectionStruct, "Calibrated Axes");
+        }
+
+        /// <summary>
+        /// Gun buttons (= trigger only ?) is just a counter, incremented with each press/release
+        /// There again, 8 slots are available (0-based) :
+        /// - Slot 4 : P1 Trigger 
+        /// - Slot 6 : P2 Trigger
+        /// </summary>
+        private void SetHack_GunButtons()
+        {
+            Codecave CaveMemory = new Codecave(_TargetProcess, _TargetProcess_MemoryBaseAddress);
+            CaveMemory.Open();
+            CaveMemory.Alloc(0x800);
+
+            //movzx eax,byte ptr [eax+_GunButtons_CaveAddress]
+            CaveMemory.Write_StrBytes("0F B6 80");
+            CaveMemory.Write_Bytes(BitConverter.GetBytes(_GunButtons_CaveAddress));
+
+            //Inject it
+            CaveMemory.InjectToAddress(_GunButtons_InjectionStruct, "Gun Buttons");
+        }
 
         protected override void Apply_OutputsMemoryHack()
         {
@@ -206,6 +360,92 @@ namespace DemulShooter
 
         #endregion
 
+        #region Inputs
+
+        /// <summary>
+        /// Writing Axis and Buttons data in memory
+        /// </summary>  
+        public override void SendInput(PlayerSettings PlayerData)
+        {
+            //Raw axes value
+            byte[] bufferX = BitConverter.GetBytes(PlayerData.RIController.Computed_X);
+            byte[] bufferY = BitConverter.GetBytes(PlayerData.RIController.Computed_Y);
+            
+            //Float 'calibrated' axes values
+            float cX = 1.0f * (float)PlayerData.RIController.Computed_X / 1024.0f;
+            float cY = 1.0f * (float)PlayerData.RIController.Computed_Y / 1024.0f;
+
+            if (PlayerData.ID == 1)
+            {
+                WriteBytes(_RawAxes_CaveAddress + 16, bufferX);
+                WriteBytes(_RawAxes_CaveAddress + 20, bufferY);
+                WriteBytes(_CalibratedAxes_CaveAddress + 16, BitConverter.GetBytes(cX));
+                WriteBytes(_CalibratedAxes_CaveAddress + 20, BitConverter.GetBytes(cY));
+
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
+                {
+                    UInt32 ButtonAddress = _GunButtons_CaveAddress + 4;
+                    byte b = ReadByte(ButtonAddress);
+                    WriteByte(ButtonAddress, ++b);
+                }
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
+                {
+                    UInt32 ButtonAddress = _GunButtons_CaveAddress + 4;
+                    byte b = ReadByte(ButtonAddress);
+                    WriteByte(ButtonAddress, ++b);
+                }
+
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
+                {
+                    //Reload is an analog value, when player is pulling the lever. Max raw power is 0x3FF and calibrated power 1023.0f
+                    WriteBytes(_RawAxes_CaveAddress + 8, BitConverter.GetBytes(0x000003FF));
+                    WriteBytes(_CalibratedAxes_CaveAddress + 8, BitConverter.GetBytes((float)1023));
+                }
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
+                {
+                    //Reload is an analog value, when player is pulling the lever. Min power is 0
+                    WriteBytes(_RawAxes_CaveAddress + 8, BitConverter.GetBytes(0));
+                    WriteBytes(_CalibratedAxes_CaveAddress + 8, BitConverter.GetBytes(0));
+                }
+            }
+
+            else if (PlayerData.ID == 2)
+            {
+                WriteBytes(_RawAxes_CaveAddress + 24, bufferX);
+                WriteBytes(_RawAxes_CaveAddress + 28, bufferY);
+                WriteBytes(_CalibratedAxes_CaveAddress + 24, BitConverter.GetBytes(cX));
+                WriteBytes(_CalibratedAxes_CaveAddress + 28, BitConverter.GetBytes(cY));
+
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerDown) != 0)
+                {
+                    UInt32 ButtonAddress = _GunButtons_CaveAddress + 6;
+                    byte b = ReadByte(ButtonAddress);
+                    WriteByte(ButtonAddress, ++b);
+                }
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OnScreenTriggerUp) != 0)
+                {
+                    UInt32 ButtonAddress = _GunButtons_CaveAddress + 6;
+                    byte b = ReadByte(ButtonAddress);
+                    WriteByte(ButtonAddress, ++b);
+                }
+
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerDown) != 0)
+                {
+                    //Reload is an analog value, when player is pulling the lever. Max raw power is 0x3FF and calibrated power 1023.0f
+                    WriteBytes(_RawAxes_CaveAddress + 12, BitConverter.GetBytes(0x000003FF));
+                    WriteBytes(_CalibratedAxes_CaveAddress + 12, BitConverter.GetBytes((float)1023));
+                }
+                if ((PlayerData.RIController.Computed_Buttons & RawInputcontrollerButtonEvent.OffScreenTriggerUp) != 0)
+                {
+                    //Reload is an analog value, when player is pulling the lever. Min power is 0
+                    WriteBytes(_RawAxes_CaveAddress + 12, BitConverter.GetBytes(0));
+                    WriteBytes(_CalibratedAxes_CaveAddress + 12, BitConverter.GetBytes(0));
+                }
+            }
+        }
+
+        #endregion
+
         #region Outputs
 
         /// <summary>
@@ -260,7 +500,7 @@ namespace DemulShooter
             //Original Outputs
             SetOutputValue(OutputId.P1_LmpStart, ReadByte(_Lamp_Address + 0x18));
             SetOutputValue(OutputId.P2_LmpStart, ReadByte(_Lamp_Address + 0x1C));
-            SetOutputValue(OutputId.P1_LmpGun, (int)(BitConverter.ToSingle(ReadBytes(_Lamp_Address, 4), 0) * 20));
+            SetOutputValue(OutputId.P1_LmpGun, (int)(BitConverter.ToSingle(ReadBytes(_Lamp_Address, 4), 0) * 200));
             SetOutputValue(OutputId.P2_LmpGun, (int)(BitConverter.ToSingle(ReadBytes(_Lamp_Address + 0x04, 4), 0) * 200));
             SetOutputValue(OutputId.P1_LmpHolder, (int)(BitConverter.ToSingle(ReadBytes(_Lamp_Address + 0x84, 4), 0) * 200));
             SetOutputValue(OutputId.P2_LmpHolder, (int)(BitConverter.ToSingle(ReadBytes(_Lamp_Address + 0xB4, 4), 0) * 200));

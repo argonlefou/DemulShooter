@@ -417,6 +417,11 @@ namespace DemulShooterX64
                 {
                     switch (_Rom.ToLower())
                     {
+                        case "halo":
+                            {
+                                _Game = new Game_RtHalo(_Rom.ToLower());
+                            }
+                            ; break;
                         case "nerfa":
                             {
                                 _Game = new Game_RtNerfArcade(_Rom.ToLower());
@@ -477,7 +482,13 @@ namespace DemulShooterX64
                         case "drakon":
                             {
                                 _Game = new Game_ArcadepcDrakon_NoPlugin(_Rom.ToLower());
-                            }; break;                                           
+                            }; break;
+                        case "grangers":
+                            {
+                                _Game = new Game_ArcadepcGalaxyRangers(_Rom.ToLower());
+                            }
+                            ; break;
+                        
                         case "onept":
                             {
                                 _Game = new Game_ArcadepcOnePoint(_Rom.ToLower());

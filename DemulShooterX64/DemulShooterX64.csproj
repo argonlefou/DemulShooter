@@ -74,6 +74,7 @@
     <Compile Include="DemulShooterWindowX64.cs" />
     <Compile Include="Games\Game_ArcadepcDinoInvasion.cs" />
     <Compile Include="Games\Game_ArcadepcDrakon.cs" />
+    <Compile Include="Games\Game_ArcadepcGalaxyRangers.cs" />
     <Compile Include="Games\Game_ArcadepcMarsSortie.cs" />
     <Compile Include="Games\Game_ArcadepcMIB.cs" />
     <Compile Include="Games\Game_ArcadePcMissionImpossible.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Games\Game_ArcadepcTra.cs" />
     <Compile Include="Games\Game_ArcadepcMechaDino.cs" />
     <Compile Include="Games\Game_ArcadepcWisdomZombies.cs" />
+    <Compile Include="Games\Game_RtHalo.cs" />
     <Compile Include="Games\Game_RtNerfArcade.cs" />
     <Compile Include="Games\Game_S357RazingStorm.cs" />
     <Compile Include="Games\Game_WndDcop.cs" />
