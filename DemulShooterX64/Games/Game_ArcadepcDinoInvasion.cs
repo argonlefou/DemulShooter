@@ -40,7 +40,7 @@ namespace DemulShooterX64.Games
         /// Constructor
         /// </summary>
         public Game_ArcadepcDinoInvasion(String RomName)
-            : base(RomName, "DinoInvasion.exe", "shoulie_konglong") //base(RomName, "konglong", "shoulie_konglong") original exe name is konglong.exe
+            : base(RomName, "DinoInvasion", "shoulie_konglong") //base(RomName, "konglong", "shoulie_konglong") original exe name is konglong.exe
         {
             _KnownMd5Prints.Add("DinoInvasion EN v1.2.8 - Original", "30aacfb5fb65d409e7bd6baee679ba2d");
 
