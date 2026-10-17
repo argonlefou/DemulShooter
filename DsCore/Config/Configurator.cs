@@ -414,6 +414,7 @@ namespace DsCore.Config
         private bool _OutputEnabled = false;
         private bool _Wm_OutputEnabled = true;
         private bool _Net_OutputEnabled = false;
+        private int _TcpInputPort = 33610;
         private int _OutputPollingDelay = 1;
         private int _OutputCustomDamagedDelay = 200;
         private int _OutputCustomRecoilOnDelay = 10;
@@ -433,6 +434,10 @@ namespace DsCore.Config
         {
             get { return _Net_OutputEnabled; }
             set { _Net_OutputEnabled = value; }
+        }
+        public int TcpInputPort
+        {
+            get { return _TcpInputPort; }
         }
         public int OutputPollingDelay
         {
@@ -604,6 +609,11 @@ namespace DsCore.Config
                                         _DIK_Dolphin_P2_MClick = (HardwareScanCode)Enum.Parse(typeof(HardwareScanCode), StrValue);
                                     }
                                     catch { Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid"); }
+                                }
+                                else if (StrKey.ToLower().Equals("tcpinputport"))
+                                {
+                                    if (!int.TryParse(StrValue, out _TcpInputPort))
+                                        Logger.WriteLog("Error parsing " + StrKey + " value in INI file : " + StrValue + " is not valid");
                                 }
                                 else if (StrKey.ToLower().Equals("dolphin_p2_rclick"))
                                 {

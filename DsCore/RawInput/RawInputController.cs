@@ -274,6 +274,32 @@ namespace DsCore.RawInput
         #endregion
 
         /// <summary>
+        /// Constructor, build a dummy controller for inputs that are not coming from a physical RawInput device.
+        /// This is used for TCP input where computed axis and button state are driven by an external client.
+        /// </summary>
+        public RawInputController()
+        {
+            _hDevice = IntPtr.Zero;
+            _dwType = RawInputDeviceType.RIM_TYPEHID;
+            _DeviceName = "[TCP Input]";
+            _ManufacturerName = "[TCP Input]";
+            _ProductName = "[TCP Input]";
+            _pPreparsedData = IntPtr.Zero;
+            _Hid_NumberofButtons = 3;
+            _Hid_Buttons = new bool[_Hid_NumberofButtons];
+            _Hid_Axis_List = new List<ushort>() { 0x30, 0x31 };
+            _Hid_Axis_X_Min = 0;
+            _Hid_Axis_X_Max = 0x0000FFFF;
+            _Hid_Axis_Y_Min = 0;
+            _Hid_Axis_Y_Max = 0x0000FFFF;
+            _ControllerData.Axis.X = 0;
+            _ControllerData.Axis.Y = 0;
+            _ControllerData.Buttons = 0;
+            _Selected_HidAxisX = 0x30;
+            _Selected_HidAxisY = 0x31;
+        }
+
+        /// <summary>
         /// Constructor, fill as much Hidp_Struct as we can at the creation
         /// </summary>
         /// <param name="DeviceHandle">A handle to the raw input device.</param>
@@ -553,6 +579,35 @@ namespace DsCore.RawInput
         {
             if (_Hid_Buttons.Length > ButtonNumber)
                 _Hid_Buttons[ButtonNumber] = ButtonState;
+        }
+
+        public void SetComputedCoordinates(int X, int Y)
+        {
+            _ControllerData.Axis.X = X;
+            _ControllerData.Axis.Y = Y;
+        }
+
+        public void SetComputedButtons(RawInputcontrollerButtonEvent Buttons)
+        {
+            _ControllerData.Buttons = Buttons;
+        }
+
+        public void SetAxisRange(int XMin, int XMax, int YMin, int YMax)
+        {
+            _Hid_Axis_X_Min = XMin;
+            _Hid_Axis_X_Max = XMax;
+            _Hid_Axis_Y_Min = YMin;
+            _Hid_Axis_Y_Max = YMax;
+        }
+
+        public void SetDeviceName(string DeviceName)
+        {
+            _DeviceName = DeviceName;
+        }
+
+        public void SetDeviceType(RawInputDeviceType DeviceType)
+        {
+            _dwType = DeviceType;
         }
 
         /// <summary>

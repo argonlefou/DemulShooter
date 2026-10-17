@@ -15,6 +15,7 @@ namespace DsCore.Config
     {
         public const string PLAYER_MODE_RAWINPUT = "RAWINPUT";
         public const string PLAYER_MODE_XINPUT = "XINPUT";
+        public const string PLAYER_MODE_TCPINPUT = "TCPINPUT";
 
         // General Data
         private int _ID = 0;
@@ -44,6 +45,10 @@ namespace DsCore.Config
         private int _HidButton_OnScreenTrigger = 1;
         private int _HidButton_OffScreenTrigger = 2;
         private int _HidButton_Action = 3;
+
+        private bool _TcpFirePressed = false;
+        private bool _TcpReloadPressed = false;
+        private bool _TcpActionPressed = false;
         #region Accessors
         public RawInputController RIController
         {
@@ -94,6 +99,24 @@ namespace DsCore.Config
         public int HidButton_Action
         {
             get { return _HidButton_Action; }
+        }
+
+        public bool TcpFirePressed
+        {
+            get { return _TcpFirePressed; }
+            set { _TcpFirePressed = value; }
+        }
+
+        public bool TcpReloadPressed
+        {
+            get { return _TcpReloadPressed; }
+            set { _TcpReloadPressed = value; }
+        }
+
+        public bool TcpActionPressed
+        {
+            get { return _TcpActionPressed; }
+            set { _TcpActionPressed = value; }
         }
         #endregion
 

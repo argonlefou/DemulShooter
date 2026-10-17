@@ -1,0 +1,52 @@
+name: Build Windows Executables
+
+on:
+  push:
+    branches: [master, tcpinput, tcpinputserver]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Locate MSBuild
+        shell: pwsh
+        run: |
+          $msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+          if (-not $msbuild) { throw 'MSBuild not found via vswhere' }
+          Write-Host "Found MSBuild: $msbuild"
+          echo "MSBUILD=$msbuild" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+
+      - name: Build Visual Studio solution (x86)
+        shell: pwsh
+        run: |
+          & "$env:MSBUILD" DemulShooter.sln /p:Configuration=Release /p:Platform=x86
+
+      - name: Build DemulShooterX64 project (x64)
+        shell: pwsh
+        run: |
+          # Build DsCore with x64 platform so output lands in bin\x64\Release\
+          & "$env:MSBUILD" DsCore/DsCore.csproj /p:Configuration=Release /p:Platform=x64
+          # Build DemulShooterX64 with x64 platform, skipping project references rebuild
+          & "$env:MSBUILD" DemulShooterX64/DemulShooterX64.csproj /p:Configuration=Release /p:Platform=x64 /p:BuildProjectReferences=false
+
+      - name: Upload x86 artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: DemulShooter-Windows-x86-Release
+          path: |
+            DemulShooter/bin/Release/DemulShooter.exe
+            DsCore/bin/Release/DsCore.dll
+            DemulShooter_GUI/bin/Release/DemulShooter_GUI.exe
+            DsDiag/bin/Release/DsDiag.exe
+
+      - name: Upload x64 artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: DemulShooter-Windows-x64-Release
+          path: |
+            DemulShooterX64/bin/x64/Release/DemulShooterX64.exe
+            DsCore/bin/x64/Release/DsCore.dll
