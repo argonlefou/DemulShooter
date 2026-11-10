@@ -6,7 +6,7 @@ I've stopped using it for quite a long time, replacing it with another tool I bu
 **I now can't afford anymore to keep supporting an unused softare, so DemulShooter support will end as of today (November 11th, 2026).  
 Feel free to fork and continue the work, the repo will stay online.**  
 
-**Updates will now only contnue on what would be DemulShooter's big brother : [U-Shoot](https://github.com/argonlefou/U-Shoot)**
+**Updates will now only continue on what should be DemulShooter's big brother : [U-Shoot](https://github.com/argonlefou/U-Shoot)**
 
 ***
 ***
