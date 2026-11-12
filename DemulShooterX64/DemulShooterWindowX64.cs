@@ -389,6 +389,19 @@ namespace DemulShooterX64
                 }
 
 
+                //PCSX2x6 (TeknoParrot) games
+                else if (_Target.Equals("pcsx2x6"))
+                {
+                    switch (_Rom.ToLower())
+                    {
+                        case "tc3":
+                        case "tc4":
+                            {
+                                _Game = new Game_Pcsx2x6TimeCrisis(_Rom.ToLower());
+                            }; break;
+                    }
+                }
+
                 else if (_Target.Equals("rpcs3"))
                 {
                     switch (_Rom.ToLower())

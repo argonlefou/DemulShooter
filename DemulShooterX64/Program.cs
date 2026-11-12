@@ -40,6 +40,7 @@ namespace DemulShooterX64
                 {"arcadepc","Various modern PC Arcade Games without dedicated system"},                
                 {"es3","Namco ES3 games"},
                 {"flycast","Flycast v2.0"},
+                {"pcsx2x6","PCSX2x6 (Namco System 246/256, TeknoParrot)"},
                 {"rpcs3", "RPCS3 (System 357)"},
                 {"rawthrill","Raw Thrill Arcade"},
                 {"seganu","SEGA Nu games"},
@@ -91,6 +92,11 @@ namespace DemulShooterX64
                 {"sprtshot","Sports Shooting USA"},
                 {"xtrmhunt","Extreme Hunting"},
                 {"xtrmhnt2","Extreme Hunting 2"}
+            };
+
+            Dictionary<String, String> _Pcsx2x6Roms = new Dictionary<String, String>(){
+                {"tc3","Time Crisis 3"},
+                {"tc4","Time Crisis 4"}
             };
 
             Dictionary<String, String> _RawThrillRoms = new Dictionary<String, String>(){
@@ -148,6 +154,9 @@ namespace DemulShooterX64
                         Console.WriteLine("");
                         Console.WriteLine("Flycast roms :");
                         DisplayDictionnaryList(_FlycastRoms);
+                        Console.WriteLine("");
+                        Console.WriteLine("PCSX2x6 roms :");
+                        DisplayDictionnaryList(_Pcsx2x6Roms);
                         Console.WriteLine("");
                         Console.WriteLine("RPCS3 (System 357) roms :");
                         DisplayDictionnaryList(_RPCS3_System357Roms);
@@ -232,6 +241,14 @@ namespace DemulShooterX64
                             if (!CheckParameter(strRom, _FlycastRoms))
                             {
                                 Console.WriteLine("Unsupported Flycast rom parameter : \"" + strRom + "\". See help for supported roms list");
+                                ExitConsole();
+                            }
+                        }
+                        else if (strTarget.Equals("pcsx2x6"))
+                        {
+                            if (!CheckParameter(strRom, _Pcsx2x6Roms))
+                            {
+                                Console.WriteLine("Unsupported PCSX2x6 rom parameter : \"" + strRom + "\". See help for supported roms list");
                                 ExitConsole();
                             }
                         }
