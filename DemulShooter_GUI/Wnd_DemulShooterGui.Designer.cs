@@ -211,6 +211,7 @@
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.Btn_Dcop = new System.Windows.Forms.Button();
             this.Btn_Drk = new System.Windows.Forms.Button();
+            this.Btn_Hotd2r = new System.Windows.Forms.Button();
             this.Btn_MarsS = new System.Windows.Forms.Button();
             this.Btn_MechT = new System.Windows.Forms.Button();
             this.Btn_MechD = new System.Windows.Forms.Button();
@@ -2397,6 +2398,7 @@
             this.flowLayoutPanel1.Controls.Add(this.Btn_Dcop);
             this.flowLayoutPanel1.Controls.Add(this.Btn_DinoInv);
             this.flowLayoutPanel1.Controls.Add(this.Btn_Drk);
+            this.flowLayoutPanel1.Controls.Add(this.Btn_Hotd2r);
             this.flowLayoutPanel1.Controls.Add(this.Btn_MarsS);
             this.flowLayoutPanel1.Controls.Add(this.Btn_MechT);
             this.flowLayoutPanel1.Controls.Add(this.Btn_MechD);
@@ -2440,6 +2442,18 @@
             this.Btn_Drk.Text = "Drakon\r\nRealm Keeper";
             this.Btn_Drk.UseVisualStyleBackColor = true;
             this.Btn_Drk.Click += new System.EventHandler(this.Btn_InstallUnityPlugin_Click);
+            // 
+            // Btn_Hotd2r
+            // 
+            this.Btn_Hotd2r.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.Btn_Hotd2r.Location = new System.Drawing.Point(382, 4);
+            this.Btn_Hotd2r.Margin = new System.Windows.Forms.Padding(4);
+            this.Btn_Hotd2r.Name = "Btn_Hotd2r";
+            this.Btn_Hotd2r.Size = new System.Drawing.Size(118, 48);
+            this.Btn_Hotd2r.TabIndex = 93;
+            this.Btn_Hotd2r.Text = "House of the\r\nDead 2 Remake";
+            this.Btn_Hotd2r.UseVisualStyleBackColor = true;
+            this.Btn_Hotd2r.Click += new System.EventHandler(this.Btn_InstallUnityPlugin_Click);
             // 
             // Btn_MarsS
             // 
@@ -3196,6 +3210,7 @@
         private System.Windows.Forms.Button Btn_Mib;
         private System.Windows.Forms.Button Btn_MarsS;
         private System.Windows.Forms.Button Btn_Drk;
+        private System.Windows.Forms.Button Btn_Hotd2r;
         private System.Windows.Forms.RadioButton Rdo_OutputsNetwork;
         private System.Windows.Forms.RadioButton Rdo_OutputsWm;
         private System.Windows.Forms.RadioButton Rdo_OutputsNone;

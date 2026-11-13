@@ -1008,6 +1008,7 @@ namespace DemulShooter_GUI
                 case "Btn_Dcop": SrcUnityFolder = "DCOP"; break;
                 case "Btn_DinoInv": SrcUnityFolder = "DinoInvasion"; break;
                 case "Btn_Drk": SrcUnityFolder = "Drakon"; break;
+                case "Btn_Hotd2r": SrcUnityFolder = "Hotd2Remake"; break;
                 case "Btn_MarsS": SrcUnityFolder = "MarsSortie"; break;
                 case "Btn_MechT": SrcUnityFolder = "MechaTornado"; break;
                 case "Btn_MechD": SrcUnityFolder = "MechaDino"; break;

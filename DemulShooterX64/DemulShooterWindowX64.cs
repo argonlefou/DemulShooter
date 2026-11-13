@@ -462,6 +462,10 @@ namespace DemulShooterX64
                             {
                                 _Game = new Game_WndHotdremakeArcade(_Rom.ToLower());
                             } break;
+                        case "hotd2r":
+                            {
+                                _Game = new Game_WndHotd2Remake(_Rom.ToLower());
+                            } break;
                         case "opwolfr":
                             {
                                 _Game = new Game_WndOpWolfReturn(_Rom.ToLower());

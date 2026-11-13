@@ -114,6 +114,7 @@ namespace DemulShooterX64
                 {"bbhut", "Big Bick Hunter Ultimate Trophy"},
                 {"dcop", "DCOP"},
                 {"hotdra","House of the Dead Remake - Arcade Mod"},
+                {"hotd2r", "House of the Dead 2 Remake"},
                 {"opwolfr", "Operation Wolf Returns First Mission"}
             };
             

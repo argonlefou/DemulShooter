@@ -1,0 +1,8 @@
+Copy the following files from the original game (THE HOUSE OF THE DEAD 2 Remake_Data\Managed) :
+
+ Assembly-CSharp.dll
+ Unity.InputSystem.dll
+ UnityEngine.CoreModule.dll
+ UnityEngine.UIModule.dll
+ UnityEngine.dll
+
